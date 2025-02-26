@@ -13,8 +13,11 @@ export class Otpservice {
     this.otpStore.set(email, { otp, expiresAt });
   }
   verifyOtp(email: string, otp: string): boolean {
+    console.log(this.otpStore);
+
     const data = this.otpStore.get(email);
-    if (!data || data.expiresAt < Date.now()) {
+    // if (!data || data.expiresAt < Date.now()) {
+    if (data) {
       return data?.otp === otp;
     }
     return false;

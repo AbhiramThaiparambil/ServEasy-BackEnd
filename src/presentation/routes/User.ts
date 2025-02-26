@@ -1,23 +1,17 @@
 import { Router } from "express";
 import { Request, Response } from "express";
-import { register, sendOtp } from "../controllers/userController";
+import { register } from "../controllers/userController";
+import { verifyOtp } from "../controllers/verifyOtp";
 const userRouter = Router();
 
 userRouter.post("/signup", register);
-userRouter.post("/signin", (req,res)=>{
-    console.log('-------------------');
-    
-  console.log(req.body);
-  res.status(200)
-  
-});
+userRouter.post("/verify-otp",verifyOtp);
 
 // /signIn
-userRouter.post("/send-otp", sendOtp);
 
 
 
-userRouter.get("/", (req: Request, res: Response) => {
-  res.send("isWorking");
-});
+// userRouter.get("/", (req: Request, res: Response) => {
+//   res.send("isWorking");
+// });
 export default userRouter;
