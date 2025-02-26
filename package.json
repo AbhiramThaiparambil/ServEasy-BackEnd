@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -22,6 +23,7 @@
     "twilio": "^5.4.5"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/nodemailer": "^6.4.17",
     "@types/reflect-metadata": "^0.0.5",
     "@types/twilio": "^3.19.2",
