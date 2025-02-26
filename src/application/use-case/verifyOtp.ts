@@ -12,7 +12,6 @@ export class VerifyOtp {
   async execute(key: string, enteredOtp: string) {
     const isValidOtp = this.otpSErvice.verifyOtp(key, enteredOtp);
 
-
     if (!isValidOtp) return { errorMessage: "Invalid or Expired Otp" };
 
     let user: User | null;
