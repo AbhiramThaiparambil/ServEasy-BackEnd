@@ -16,8 +16,18 @@ export class VerifyOtp {
 
     let user: User | null;
     user = await this.userRepository.findByPhone(key);
+    if(user){
+        user.isVerified = true;
+        await this.userRepository.updateUser(user)
+
+    }
     if (!user) {
       user = await this.userRepository.findByEmail(key);
+      if(user){
+        user.isVerified = true;
+        await this.userRepository.updateUser(user)
+
+    }
     }
 
     return { success: "user verification successful" };

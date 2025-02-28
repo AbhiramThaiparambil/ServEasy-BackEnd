@@ -5,12 +5,7 @@ import { EmailOtpService } from "../../services/OTP/mailOtp";
 import { Otpservice } from "../../services/OTP/OtpService";
 import { SmsOtpService } from "../../services/OTP/phoneOtp";
 import bcrypt from "bcrypt";
-type IUserData = {
-  userName: string;
-  email?: string;
-  phone?: string;
-  password: string;
-};
+
 @injectable()
 export class RegisterUser {
   constructor(
@@ -57,8 +52,17 @@ export class RegisterUser {
       }
     }
     const hashedPassword = await bcrypt.hash(userData?.password, 10);
+    console.log(userData.password);
+    
     userData.password = hashedPassword;
-    const user: User = userData;
+    const user: User = {
+      userName,
+      email,
+      phone,
+      password: hashedPassword,
+      isVerified: false,
+      role: "user",
+    };
 
     console.log(userData);
 
