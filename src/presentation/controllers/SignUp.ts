@@ -66,13 +66,15 @@ export const signIn = async (req: Request, res: Response) => {
                 res.status(401).json({ error: result.errorMessage });
                 return;
             }
-
+               console.log(result?.refreshToken);
+               
             res.cookie("refreshToken", result?.refreshToken, {
-                httpOnly: true, 
-                secure: process.env.NODE_ENV === "production", 
-                sameSite: "strict", 
-                maxAge: 7 * 24 * 60 * 60 * 1000 
-            });
+                httpOnly: true, // ✅ Prevent JavaScript access
+                secure: process.env.NODE_ENV === "production", // ✅ Secure in production
+                sameSite: "strict", // ✅ Protects against CSRF
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: "/", 
+              });
 
              res.status(200).json({ accessToken: result?.accessToken });
              return

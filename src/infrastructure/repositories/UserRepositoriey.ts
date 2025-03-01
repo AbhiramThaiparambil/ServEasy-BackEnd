@@ -41,4 +41,9 @@ export class MongoUserRepository implements UserRepository {
       return false; // Return false in case of error
     }
   }
+  async findById(id: string):Promise<User|null>{
+      
+    return UserModel.findById(id)
+  }
+
 }

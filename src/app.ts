@@ -5,14 +5,20 @@ import "./container"
 import userRoutes from "./presentation/routes/User";
 import cors from 'cors'
 import dbConnect from "./infrastructure/database/db";
+import authRouter from "./presentation/routes/authRoutes"
 dotenv.config();
+import cookieparser  from "cookie-parser";
 
 const app = express();
+app.use(cookieparser())
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// { origin: "http://localhost:5173", credentials: true }
+app.use("/",authRouter)
 app.use("/", userRoutes);
+
 dbConnect().catch((e)=>console.log(e));
 
 const PORT = process.env.PORT || 5001;
