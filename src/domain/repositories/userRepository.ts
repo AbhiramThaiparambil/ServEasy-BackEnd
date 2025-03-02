@@ -8,6 +8,5 @@ export interface UserRepository {
   findByPhone(phone: string): Promise<User|null>;
   HashPassword(passWord:string):Promise<string>;
   comparePassword(passWord1: string, password2: string): Promise<boolean>;
-  updateUser(user: User): Promise<boolean>; // Added updateUser method
-
+  updateUser(user: User): Promise<boolean>;
 }

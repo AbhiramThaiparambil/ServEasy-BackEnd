@@ -6,18 +6,22 @@ import userRoutes from "./presentation/routes/User";
 import cors from 'cors'
 import dbConnect from "./infrastructure/database/db";
 import authRouter from "./presentation/routes/authRoutes"
+import serviceProviderRoute from "./presentation/routes/serviceProvider"
+
 dotenv.config();
 import cookieparser  from "cookie-parser";
 
 const app = express();
 app.use(cookieparser())
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true ,methods:["GET","POST"],allowedHeaders:['Content-Type',"Authorization"]}));
 // { origin: "http://localhost:5173", credentials: true }
+
 app.use("/",authRouter)
 app.use("/", userRoutes);
+app.use("/service-providers",serviceProviderRoute)
 
 dbConnect().catch((e)=>console.log(e));
 
