@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface User{
     _id?:string,
     userName:string,
@@ -5,6 +7,9 @@ export interface User{
     phone?:string,
     password:string,
     isVerified:boolean,
-    role: string
+    role: string,
+    isBlocked?:boolean,
+    serviceProvider?: mongoose.Schema.Types.ObjectId; 
+
 }
 
