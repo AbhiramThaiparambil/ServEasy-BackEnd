@@ -7,6 +7,7 @@ import cors from 'cors'
 import dbConnect from "./infrastructure/database/db";
 import authRouter from "./presentation/routes/authRoutes"
 import serviceProviderRoute from "./presentation/routes/serviceProvider"
+import adminRoute from "./presentation/routes/admin"
 
 dotenv.config();
 import cookieparser  from "cookie-parser";
@@ -22,7 +23,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true ,methods:["GET
 app.use("/",authRouter)
 app.use("/", userRoutes);
 app.use("/service-providers",serviceProviderRoute)
-
+app.use("/admin",adminRoute)
 dbConnect().catch((e)=>console.log(e));
 
 const PORT = process.env.PORT || 5001;

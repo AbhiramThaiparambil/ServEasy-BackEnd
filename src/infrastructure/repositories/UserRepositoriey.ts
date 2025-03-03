@@ -46,4 +46,21 @@ export class MongoUserRepository implements UserRepository {
     return UserModel.findById(id)
   }
 
+  async addServiceProviderId(userId: string, serviceProviderId: string): Promise<boolean> {
+    try {
+        const result = await UserModel.findByIdAndUpdate(
+           
+            
+            userId,
+            { serviceProvider: serviceProviderId }, // Store serviceProvider ID in user document
+            { new: true }
+        );
+        console.log(result);
+        return result !== null;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false;
+    }
+}
+
 }

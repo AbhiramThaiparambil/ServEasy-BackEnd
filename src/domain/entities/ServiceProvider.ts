@@ -1,9 +1,11 @@
+import mongoose from 'mongoose'
 export interface ISkill {
     name: string;
     level: string; 
 }
 
 export interface IServiceProvider {
+    _id?:mongoose.Schema.Types.ObjectId
     serviceProviderName: string;
     serviceProviderEmail: string;
     serviceProviderPhone: string;

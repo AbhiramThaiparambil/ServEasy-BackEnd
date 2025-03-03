@@ -7,9 +7,9 @@ export interface User{
     phone?:string,
     password:string,
     isVerified:boolean,
-    role: string,
     isBlocked?:boolean,
     serviceProvider?: mongoose.Schema.Types.ObjectId; 
+    isAdmin?:boolean;
 
 }
 
