@@ -8,7 +8,8 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     isVerified:{type:Boolean,default:false},
     serviceProvider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider" },
-    isAdmin:{type:Boolean,default:true}
+    isAdmin:{type:Boolean,default:false},
+    isBlocked:{type:Boolean,default:false}
 })
 
 export const UserModel= mongoose.model<User & Document> ("User",UserSchema)
