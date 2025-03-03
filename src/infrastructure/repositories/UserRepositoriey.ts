@@ -61,6 +61,24 @@ export class MongoUserRepository implements UserRepository {
         console.error("Error updating user:", error);
         return false;
     }
+    
 }
 
+async find(): Promise<User[]> {
+    return  await UserModel.find()
+}
+
+async updateUserField<K extends keyof User>(userId: string, field: K, value: User[K]): Promise<boolean> {
+    try {
+        const result = await UserModel.findByIdAndUpdate(
+            userId,
+            { [field]: value },
+            { new: true }
+        );
+        return result !== null; 
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false; 
+    }
+}
 }
