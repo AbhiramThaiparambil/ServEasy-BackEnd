@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
     phone: { type: String ,sparse: true},
     password: { type: String, required: true },
     isVerified:{type:Boolean,default:false},
-    role:{type:String,enum:['user','admin','serviceProvider'],default:'user'}
-
+    serviceProvider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider" },
+    isAdmin:{type:Boolean,default:true}
 })
 
 export const UserModel= mongoose.model<User & Document> ("User",UserSchema)

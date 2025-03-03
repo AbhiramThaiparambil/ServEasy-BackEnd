@@ -61,7 +61,7 @@ export class RegisterUser {
       phone,
       password: hashedPassword,
       isVerified: false,
-      role: "user",
+      
     };
 
     console.log(userData);

@@ -9,4 +9,8 @@ export interface UserRepository {
   HashPassword(passWord:string):Promise<string>;
   comparePassword(passWord1: string, password2: string): Promise<boolean>;
   updateUser(user: User): Promise<boolean>;
+ addServiceProviderId(userId: string, serviceProviderId: string): Promise<boolean>;
+
+
+  
 }
