@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { Request, Response } from "express";
-import { register } from "../controllers/userController";
+import { register } from "../controllers/user/auth/siginIn";
 import { verifyOtp } from "../controllers/verifyOtp";
-import { resendOtp} from "../controllers/resendOtp";
-import {signIn} from "../controllers/SignUp"
+import { resendOtp} from "../controllers/user/auth/resendOtp";
+import {signIn} from "../controllers/user/auth/SignUp"
 import  {authMiddleware} from '../../Middlewares/authMiddleware'
 import { userProfile } from "../controllers/home";
 const userRouter = Router();
