@@ -10,4 +10,9 @@ export interface IServiceProviderRepository {
     id: string,
     data: Partial<IServiceProvider>
   ): Promise<IServiceProvider | null>;
+  
+    find():Promise<IServiceProvider[]>;
+  
+   
+
 }

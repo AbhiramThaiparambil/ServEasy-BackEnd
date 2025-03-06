@@ -11,3 +11,9 @@ export class GetUserProfileUseCase {
    return await this.userRepository.findById(userId)
   }
 }
+
+
+
+
+
+

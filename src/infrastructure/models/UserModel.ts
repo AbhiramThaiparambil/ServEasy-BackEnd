@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
     isVerified:{type:Boolean,default:false},
     serviceProvider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider" },
     isAdmin:{type:Boolean,default:false},
-    isBlocked:{type:Boolean,default:false}
+    isBlocked:{type:Boolean,default:false},
+    profileImage:{type:String}
 })
 
 export const UserModel= mongoose.model<User & Document> ("User",UserSchema)

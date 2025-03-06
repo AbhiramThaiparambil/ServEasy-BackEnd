@@ -4,7 +4,7 @@ import { TokenService } from "../services/auth/TokenService";
 import { JwtPayload } from "jsonwebtoken";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("🔒 Auth middleware called");
+    console.log("Auth middleware called");
 
     const tokenService = container.resolve(TokenService);
     const authHeader = req.headers.authorization;
@@ -19,7 +19,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     try {
         const decoded = tokenService.verifyAccessToken(token) as JwtPayload;
-        console.log("✅ Token decoded:", decoded);
+        console.log(" Token decoded:", decoded);
 
         if (!decoded.userId) {
             console.log("Invalid token data");

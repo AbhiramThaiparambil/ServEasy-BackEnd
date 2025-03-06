@@ -20,6 +20,8 @@ export class SignIn {
     try {
       const user = await this.userRepository.findByEmail(email);
       if (!user) return { errorMessage: "User does not exist" };
+      if(user.isBlocked==true) return {errorMessage: "Your account has been blocked by the admin" }
+
       if (!user.isVerified) return { errorOtp: "User not verified" };
 
       const isMatch = await this.userRepository.comparePassword(
@@ -46,7 +48,7 @@ export class SignIn {
     try {
       const user = await this.userRepository.findByPhone(phone);
       if (!user) return { errorMessage: "User does not exist" };
-
+       if(user.isBlocked==true) return {errorMessage: "Your account has been blocked by the admin" }
       if (!user.isVerified) return { errorOtp: "User not verified" };
 
       const isMatch = await this.userRepository.comparePassword(

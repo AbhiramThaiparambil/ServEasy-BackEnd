@@ -4,7 +4,7 @@ import { TokenService } from "../services/auth/TokenService";
 import { JwtPayload } from "jsonwebtoken";
 
 export const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("🔒 Admin auth middleware called");
+    console.log(" Admin auth middleware called");
     const adminTokenData = req.cookies.adminToken;
     const { isAdmin } = JSON.parse(adminTokenData);
      console.log(isAdmin);
@@ -22,7 +22,7 @@ export const adminAuthMiddleware = async (req: Request, res: Response, next: Nex
 
     try {
         const decoded = tokenService.verifyAccessToken(token) as JwtPayload;
-        console.log("✅ Admin token decoded:", decoded);
+        console.log(" Admin token decoded:", decoded);
 
         if (!decoded.userId || !isAdmin) {
             console.log("Invalid admin token data");
