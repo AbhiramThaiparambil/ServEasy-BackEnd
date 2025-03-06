@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { TokenService } from "../../../services/auth/TokenService"; 
-import {  GetAdminProfileUseCase} from "../../../application/use-case/admin/profile"; 
+import { TokenService } from "../../../services/auth/TokenService";
+import { GetAdminProfileUseCase } from "../../../application/use-case/admin/profile";
 export const adminProfile = async (req: Request, res: Response) => {
   try {
-
-
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       res.status(401).json({ message: "Unauthorized: No token provided" });
@@ -23,8 +21,6 @@ export const adminProfile = async (req: Request, res: Response) => {
     }
 
     const data = await getAdminProfileUseCase.execute(decoded.userId);
-
-     
 
     res.status(200).json({ data });
   } catch (error) {}

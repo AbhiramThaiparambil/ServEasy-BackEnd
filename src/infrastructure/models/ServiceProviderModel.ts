@@ -27,7 +27,7 @@ const ServiceProviderSchema = new Schema(
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
     },
     {
-        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }, // Adds createdAt and updatedAt fields automatically
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
     }
 );
 

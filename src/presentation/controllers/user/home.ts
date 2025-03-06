@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { TokenService } from "../../services/auth/TokenService";
-import { GetUserProfileUseCase } from "../../application/use-case/GetProfile";
+import { TokenService } from "../../../services/auth/TokenService";
+import { GetUserProfileUseCase } from "../../../application/use-case/GetProfile";
 export const userProfile = async (req: Request, res: Response) => {
   try {
     console.log(req.cookies.refreshToken);
-    console.log("---------------------");
 
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -25,15 +24,6 @@ export const userProfile = async (req: Request, res: Response) => {
 
     const user = await getUserProfileUseCase.execute(decoded.userId);
 
-    const data:{userName:string,email?:string,phone?:string} = {userName:user?.userName ||""};
-      if(user?.email){
-        data.email=user.email
-      }
-      if(user?.phone){
-        data.phone=user.phone
-      }
-    console.log(data);
-
-    res.status(200).json({ data });
+    res.status(200).json({ user });
   } catch (error) {}
 };

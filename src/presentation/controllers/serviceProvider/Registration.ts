@@ -19,11 +19,13 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
       services,
       skills,
       profileImage,
-      document,
+      documentImg,
       socialMedia,
       description, 
     } = req.body;
+  
 
+        
     
     if (!serviceProviderName || !serviceProviderEmail || !serviceProviderPhone) {
        res.status(400).json({ message: "Name, email, and phone are required." });
@@ -41,7 +43,7 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
       skills,
       serviceMode,
       profileImage: "",
-      document,
+      document:'',
       businessType,
       category,
       subcategory,
@@ -50,7 +52,7 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
     };
 
     const registerService = container.resolve(RegisterServiceProviderUseCase);
-    const serviceProvider = await registerService.execute(data, profileImage, document);
+    const serviceProvider = await registerService.execute(data, profileImage, documentImg);
 
     const updateUser = container.resolve(UpdateUserWithServiceProviderUseCase);
     const user = res.locals.user;

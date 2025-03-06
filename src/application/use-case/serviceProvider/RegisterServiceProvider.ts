@@ -11,8 +11,9 @@ export class RegisterServiceProviderUseCase {
   ) {}
 
   async execute(serviceProviderData: IServiceProvider, profileImageRow: string, documentRow: string):Promise<IServiceProvider>{
-    const document = await this.cloudinaryService.uploadDocuments(profileImageRow);
+    const document = await this.cloudinaryService.uploadDocuments(documentRow);
     const profileImage = await this.cloudinaryService.uploadServiceProviderProfile(profileImageRow);
+   console.log(document);
    
     serviceProviderData.profileImage=profileImage
     serviceProviderData.document=document
