@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ResendOtp } from "../../application/use-case/ResendOtp";
+import { ResendOtp } from "../../../../application/use-case/ResendOtp";
 import { container } from "tsyringe";
 export const resendOtp = async (req: Request, res: Response): Promise<void> => {
   const resendOtp = await container.resolve(ResendOtp);
