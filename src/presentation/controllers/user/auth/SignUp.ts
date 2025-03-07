@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { SignIn } from "../../application/use-case/SignIn";
+import { SignIn } from "../../../../application/use-case/User/auth/SignIn";
 import { config } from "dotenv";
 
 config();

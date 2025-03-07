@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import { MongoUserRepository } from "../../infrastructure/repositories/UserRepositoriey";
-import { UserRepository } from "../../domain/repositories/userRepository";
+import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
+import { UserRepository } from "../../../domain/repositories/userRepository";
 
 @injectable()
 export class GetUserProfileUseCase {
