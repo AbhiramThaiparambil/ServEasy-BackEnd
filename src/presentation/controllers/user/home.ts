@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { TokenService } from "../../../services/auth/TokenService";
-import { GetUserProfileUseCase } from "../../../application/use-case/GetProfile";
+import { GetUserProfileUseCase } from "../../../application/use-case/User/GetProfile";
 export const userProfile = async (req: Request, res: Response) => {
   try {
     console.log(req.cookies.refreshToken);

@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
-import { Otpservice } from "../../services/OTP/OtpService";
-import { SmsOtpService } from "../../services/OTP/phoneOtp";
-import { EmailOtpService } from "../../services/OTP/mailOtp";
+import { Otpservice } from "../../../../services/OTP/OtpService";
+import { SmsOtpService } from "../../../../services/OTP/phoneOtp";
+import { EmailOtpService } from "../../../../services/OTP/mailOtp";
 
 @injectable()
 export class ResendOtp {

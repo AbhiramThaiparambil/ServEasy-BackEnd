@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { RegisterUser } from "../../../application/use-case/RegisterUser";
+import { RegisterUser } from "../../../application/use-case/User/auth/RegisterUser";
 import { container } from "tsyringe";
-import { UserProfileUpdate } from "../../../application/use-case/updateProfile";
+import { UserProfileUpdate } from "../../../application/use-case/User/updateProfile";
 export const userProfileUpdate = async (req: Request, res: Response) => {
   try {
     res.locals.user_id;
