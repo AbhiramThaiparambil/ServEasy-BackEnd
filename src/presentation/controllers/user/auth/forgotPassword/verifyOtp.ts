@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { VerifyOtp } from "../../../../../application/use-case/forgotPassword/forgotVerifyOtp";
+import { ForgotVerifyOtp } from "../../../../../application/use-case/forgotPassword/forgotVerifyOtp";
 import { container } from "tsyringe";
 
 export const forgotVerifyOtp = async (req: Request, res: Response) => {
@@ -11,7 +11,7 @@ export const forgotVerifyOtp = async (req: Request, res: Response) => {
       return;
     }
 
-    const verifyOtp = container.resolve(VerifyOtp);
+    const verifyOtp = container.resolve(ForgotVerifyOtp);
     const result = await verifyOtp.execute(otp, key);
 
     if (result === true) {
