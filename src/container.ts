@@ -5,7 +5,9 @@ import { container } from "tsyringe";
 import { EmailOtpService } from "./services/OTP/mailOtp";
 import { Otpservice } from "./services/OTP/OtpService";
 import { RegisterUser } from "./application/use-case/RegisterUser";
-import { VerifyOtp } from "./application/use-case/VerifyOtp";
+import { VerifyOtp } from "./application/use-case/verifyOtp";
+
+import { RedisService } from "./services/OTP/redisService";
 import { SmsOtpService } from "./services/OTP/phoneOtp";
 import { ResendOtp } from "./application/use-case/ResendOtp";
 import { TokenService } from "./services/auth/TokenService";
@@ -20,4 +22,5 @@ container.register<TokenService>("TokenService", { useClass: TokenService });
 
 container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register("SmsOtpService", SmsOtpService);
+container.register("RedisService",RedisService)
 console.log("All dependencies registered successfully.");

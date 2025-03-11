@@ -1,28 +1,26 @@
-import { injectable, singleton } from "tsyringe";
-
+import {inject, injectable, singleton } from "tsyringe";
+import { RedisService } from "./redisService";
 @singleton()
 @injectable()
 export class Otpservice {
   private otpStore: Map<string, { otp: string; expiresAt: number }> = new Map();
-
+  constructor(@inject(RedisService) private redisService:RedisService){}
+  
   generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
-  saveOtp(email: string, otp: string) {
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-    this.otpStore.set(email, { otp, expiresAt });
+  async saveOtp(email: string, otp: string) {
+    
+       await this.redisService.set(email,otp,65)
   }
-  verifyOtp(email: string, otp: string): boolean {
-    console.log(this.otpStore);
+  async verifyOtp(email: string, otp: string): Promise<boolean> {
+    const isValid = await this.redisService.get(email)
+    if(!isValid) return false
 
-    const data = this.otpStore.get(email);
-    // if (!data || data.expiresAt < Date.now()) {
-    if (data) {
-      return data?.otp === otp;
-    }
-    return false;
+    return isValid === otp?true:false
+
   }
-  removeOtp(email: string) {
-    this.otpStore.delete(email);
+  async removeOtp(key: string) {
+     this.redisService.delete(key)
   }
 }
