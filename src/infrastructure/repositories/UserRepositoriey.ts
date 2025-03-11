@@ -31,19 +31,28 @@ export class MongoUserRepository implements UserRepository {
   async updateUser(user: User): Promise<boolean> {
     try {
       const result = await UserModel.findByIdAndUpdate(
-        user._id, // Assuming the User entity has an _id field
-        { isVerified: user.isVerified }, // Update the necessary fields
-        { new: true } // Return the updated document
+        user._id, 
+        { isVerified: user.isVerified }, 
+        { new: true } 
       );
-      return result !== null; // Return true if a user was updated, false otherwise
+      return result !== null; 
     } catch (error) {
       console.error('Error updating user:', error);
-      return false; // Return false in case of error
+      return false; 
     }
   }
   async findById(id: string):Promise<User|null>{
       
     return UserModel.findById(id)
+  }
+
+  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+    const result = await UserModel.updateOne(
+      { _id: userId }, 
+      { $set: { password: newPassword } } 
+    );
+  
+    return result.modifiedCount > 0;
   }
 
 }

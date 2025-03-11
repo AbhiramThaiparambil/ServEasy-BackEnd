@@ -4,7 +4,9 @@ export interface User{
     email?:string,
     phone?:string,
     password:string,
+    googleId?:string,
     isVerified:boolean,
-    role: string
+    role: string,
+    profileImage?:string,
 }
 
