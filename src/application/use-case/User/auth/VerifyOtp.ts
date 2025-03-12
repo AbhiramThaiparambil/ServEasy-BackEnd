@@ -1,7 +1,7 @@
-import { UserRepository } from "../../domain/repositories/userRepository";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { Otpservice } from "../../services/OTP/OtpService";
-import { User } from "../../domain/entities/user";
+import { Otpservice } from "../../../../services/OTP/OtpService";
+import { User } from "../../../../domain/entities/user";
 @injectable()
 export class VerifyOtp {
   constructor(
@@ -10,8 +10,9 @@ export class VerifyOtp {
   ) {}
 
   async execute(key: string, enteredOtp: string) {
-    const isValidOtp = this.otpSErvice.verifyOtp(key, enteredOtp);
-
+    const isValidOtp = await this.otpSErvice.verifyOtp(key, enteredOtp);
+       console.log(isValidOtp);
+       
     if (!isValidOtp) return { errorMessage: "Invalid or Expired Otp" };
 
     let user: User | null;

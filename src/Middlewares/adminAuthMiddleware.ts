@@ -3,14 +3,17 @@ import { container } from "tsyringe";
 import { TokenService } from "../services/auth/TokenService";
 import { JwtPayload } from "jsonwebtoken";
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("Auth middleware called");
-
+export const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    console.log(" Admin auth middleware called");
+    const adminTokenData = req.cookies.adminToken;
+    const { isAdmin } = JSON.parse(adminTokenData);
+     console.log(isAdmin);
+         
     const tokenService = container.resolve(TokenService);
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        console.log("No token provided");
+        console.log("No admin token provided");
         res.status(401).json({ message: "Unauthorized: No token provided" });
         return;
     }
@@ -19,19 +22,19 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     try {
         const decoded = tokenService.verifyAccessToken(token) as JwtPayload;
-        console.log(" Token decoded:", decoded);
+        console.log(" Admin token decoded:", decoded);
 
-        if (!decoded.userId) {
-            console.log("Invalid token data");
+        if (!decoded.userId || !isAdmin) {
+            console.log("Invalid admin token data");
             res.status(403).json({ message: "Forbidden: Invalid token payload" });
             return;
         }
 
-        res.locals.user = decoded;
+        res.locals.admin = decoded; 
 
         next(); 
     } catch (error: any) {
-        console.log(" Token verification failed:", error.message);
+        console.log("Admin token verification failed:", error.message);
 
         res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
         return;

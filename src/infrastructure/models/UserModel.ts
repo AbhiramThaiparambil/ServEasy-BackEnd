@@ -7,7 +7,13 @@ const UserSchema = new mongoose.Schema({
     phone: { type: String ,sparse: true},
     password: { type: String, required: true },
     isVerified:{type:Boolean,default:false},
-    role:{type:String,enum:['user','admin','serviceProvider'],default:'user'}
+
+    role:{type:String,enum:['user','admin','serviceProvider'],default:'user'},
+    googleId:{type:String},
+    serviceProvider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider" },
+    isAdmin:{type:Boolean,default:false},
+    isBlocked:{type:Boolean,default:false},
+    profileImage:{type:String}
 
 })
 

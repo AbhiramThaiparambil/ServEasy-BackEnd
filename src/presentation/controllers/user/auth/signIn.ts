@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RegisterUser } from "../../application/use-case/RegisterUser";
+import { RegisterUser } from "../../../../application/use-case/User/auth/RegisterUser";
 import { container } from "tsyringe";
 
 export const register = async (req: Request, res: Response): Promise<void> => {

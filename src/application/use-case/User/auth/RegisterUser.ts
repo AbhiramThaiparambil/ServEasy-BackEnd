@@ -1,9 +1,9 @@
-import { UserRepository } from "../../domain/repositories/userRepository";
-import { User } from "../../domain/entities/user";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { User } from "../../../../domain/entities/user";
 import { inject, injectable } from "tsyringe";
-import { EmailOtpService } from "../../services/OTP/mailOtp";
-import { Otpservice } from "../../services/OTP/OtpService";
-import { SmsOtpService } from "../../services/OTP/phoneOtp";
+import { EmailOtpService } from "../../../../services/OTP/mailOtp";
+import { Otpservice } from "../../../../services/OTP/OtpService";
+import { SmsOtpService } from "../../../../services/OTP/phoneOtp";
 import bcrypt from "bcrypt";
 
 @injectable()
@@ -61,7 +61,7 @@ export class RegisterUser {
       phone,
       password: hashedPassword,
       isVerified: false,
-      role: "user",
+      
     };
 
     console.log(userData);
