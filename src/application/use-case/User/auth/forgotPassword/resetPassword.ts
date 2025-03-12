@@ -1,5 +1,5 @@
-import { UserRepository } from "../../../domain/repositories/userRepository";
-import { User } from "../../../domain/entities/user";
+import { UserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { User } from "../../../../../domain/entities/user";
 import { inject, injectable } from "tsyringe";
 import bcrypt from "bcrypt";
 

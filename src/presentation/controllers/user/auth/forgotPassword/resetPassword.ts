@@ -1,7 +1,7 @@
 
 import {Request,Response} from 'express'
 import { container } from 'tsyringe'
-import { ResetPassword} from "../../../../../application/use-case/forgotPassword/resetPassword";
+import { ResetPassword} from "../../../../../application/use-case/User/auth/forgotPassword/resetPassword";
 
 export const resetPassword = async (req:Request,res:Response)=>{
 try {

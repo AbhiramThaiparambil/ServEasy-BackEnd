@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Signin } from "../../../application/use-case/admin/signin";
+import { Signin } from "../../../application/use-case/admin/auth/signin";
 import { config } from "dotenv";
 import { container } from "tsyringe";
 

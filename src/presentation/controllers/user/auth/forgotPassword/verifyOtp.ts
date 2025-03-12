@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ForgotVerifyOtp } from "../../../../../application/use-case/forgotPassword/forgotVerifyOtp";
+import { ForgotVerifyOtp } from "../../../../../application/use-case/User/auth/forgotPassword/forgotVerifyOtp";
 import { container } from "tsyringe";
 
 export const forgotVerifyOtp = async (req: Request, res: Response) => {

@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { CloudinaryService } from "../../../services/cloudinary/cloudinary"; 
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
-import { UserRepository } from "../../../domain/repositories/userRepository";
+import { UserRepository } from "../../../domain/repositories/IuserRepository";
 
 
 

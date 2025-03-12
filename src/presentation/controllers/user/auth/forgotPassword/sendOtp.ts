@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { SendOtp } from "../../../../../application/use-case/forgotPassword/sendOtp";
+import { SendOtp } from "../../../../../application/use-case/User/auth/forgotPassword/sendOtp";
 import { container } from "tsyringe";
 
 

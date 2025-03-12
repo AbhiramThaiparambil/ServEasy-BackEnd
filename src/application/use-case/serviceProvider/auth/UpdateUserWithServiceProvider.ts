@@ -1,6 +1,6 @@
 
 import {inject,injectable} from 'tsyringe'
-import { UserRepository } from '../../../domain/repositories/userRepository'
+import { UserRepository } from '../../../../domain/repositories/IuserRepository'
 
 @injectable()
 export class UpdateUserWithServiceProviderUseCase {
