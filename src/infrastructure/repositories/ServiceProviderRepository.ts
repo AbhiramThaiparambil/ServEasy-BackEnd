@@ -27,4 +27,11 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     const result = await ServiceProviderModel.findByIdAndDelete(id);
     return result !== null;
   }
+ 
+  async find(): Promise<IServiceProvider[]> {
+      return  await ServiceProviderModel.find()
+  }
+  
+
+  
 }
