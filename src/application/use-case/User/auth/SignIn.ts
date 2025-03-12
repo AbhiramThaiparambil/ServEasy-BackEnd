@@ -1,6 +1,6 @@
-import { UserRepository } from "../../domain/repositories/userRepository";
+import { UserRepository } from "../../../../domain/repositories/userRepository";
 import { container } from "tsyringe";
-import { TokenService } from "../../services/auth/TokenService";
+import { TokenService } from "../../../../services/auth/TokenService";
 export class SignIn {
   private userRepository: UserRepository;
   private tokenService: TokenService;
@@ -20,6 +20,8 @@ export class SignIn {
     try {
       const user = await this.userRepository.findByEmail(email);
       if (!user) return { errorMessage: "User does not exist" };
+      if(user.isBlocked==true) return {errorMessage: "Your account has been blocked by the admin" }
+
       if (!user.isVerified) return { errorOtp: "User not verified" };
 
       const isMatch = await this.userRepository.comparePassword(
@@ -46,7 +48,7 @@ export class SignIn {
     try {
       const user = await this.userRepository.findByPhone(phone);
       if (!user) return { errorMessage: "User does not exist" };
-
+       if(user.isBlocked==true) return {errorMessage: "Your account has been blocked by the admin" }
       if (!user.isVerified) return { errorOtp: "User not verified" };
 
       const isMatch = await this.userRepository.comparePassword(

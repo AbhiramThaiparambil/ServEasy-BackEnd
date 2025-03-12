@@ -1,9 +1,11 @@
+import { config } from 'dotenv';
 import mongoose from 'mongoose'
-const mongoDburl ="mongodb://localhost:27017/ServEasy"
+config()
+const mongoDburl =process.env.MONGOURL
 
 async function dbConnect(){
     try {
-       const crr=await mongoose.connect(mongoDburl)
+       const crr=await mongoose.connect(mongoDburl+"")
        console.log(crr.connection.host);
        
     } catch (error) {

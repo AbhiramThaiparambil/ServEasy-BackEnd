@@ -14,7 +14,6 @@ const userRouter = Router();
 
 userRouter.post("/signup", register);
 userRouter.post("/signin/:method", signIn);
-
 userRouter.post("/verify-otp", verifyOtp);
 userRouter.post("/resend-otp", resendOtp);
 userRouter.get('/profile',authMiddleware,userProfile)

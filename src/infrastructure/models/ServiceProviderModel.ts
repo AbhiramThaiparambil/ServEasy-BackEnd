@@ -6,22 +6,20 @@ interface ISkill {
     level: string;
 }
 
-interface IServiceProviderDocument extends Document, IServiceProvider {}
-
 const SkillSchema = new Schema<ISkill>({
     name: { type: String, required: true },
     level: { type: String, required: true },
 });
 
-const ServiceProviderSchema = new Schema<IServiceProviderDocument>(
-    {
+const ServiceProviderSchema = new Schema(
+    {  
         serviceProviderName: { type: String, required: true },
         serviceProviderEmail: { type: String, required: true },
         serviceProviderPhone: { type: String, required: true },
         description: { type: String, required: true },
         socialMedia: { type: String },
         services: { type: [String], required: true },
-        skills: { type: [SkillSchema], required: true }, // Update here to use SkillSchema
+        skills: { type: [SkillSchema], required: true }, 
         location: { type: String, required: true },
         experience: { type: Number, required: true },
         profileImage: { type: String },
@@ -29,11 +27,11 @@ const ServiceProviderSchema = new Schema<IServiceProviderDocument>(
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
     },
     {
-        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }, // Adds createdAt and updatedAt fields automatically
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
     }
 );
 
-const ServiceProviderModel = mongoose.model<IServiceProviderDocument>(
+const ServiceProviderModel = mongoose.model<IServiceProvider>(
     "ServiceProvider",
     ServiceProviderSchema
 );

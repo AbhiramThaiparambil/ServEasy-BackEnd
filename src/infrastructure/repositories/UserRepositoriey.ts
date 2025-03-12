@@ -46,6 +46,7 @@ export class MongoUserRepository implements UserRepository {
     return UserModel.findById(id)
   }
 
+<<<<<<< HEAD
   async updatePassword(userId: string, newPassword: string): Promise<boolean> {
     const result = await UserModel.updateOne(
       { _id: userId }, 
@@ -55,4 +56,41 @@ export class MongoUserRepository implements UserRepository {
     return result.modifiedCount > 0;
   }
 
+=======
+  async addServiceProviderId(userId: string, serviceProviderId: string): Promise<boolean> {
+    try {
+        const result = await UserModel.findByIdAndUpdate(
+           
+            
+            userId,
+            { serviceProvider: serviceProviderId }, // Store serviceProvider ID in user document
+            { new: true }
+        );
+        console.log(result);
+        return result !== null;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false;
+    }
+    
+}
+
+async find(): Promise<User[]> {
+    return  await UserModel.find()
+}
+
+async updateUserField<K extends keyof User>(userId: string, field: K, value: User[K]): Promise<boolean> {
+    try {
+        const result = await UserModel.findByIdAndUpdate(
+            userId,
+            { [field]: value },
+            { new: true }
+        );
+        return result !== null; 
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false; 
+    }
+}
+>>>>>>> admin
 }
