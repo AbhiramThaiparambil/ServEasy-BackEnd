@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
-import { IServiceProvider } from "../../../domain/entities/ServiceProvider";
-import { IServiceProviderRepository } from "../../../domain/repositories/IserviceProviderRepository";
-import { CloudinaryService } from "../../../services/cloudinary/cloudinary";
+import { IServiceProvider } from "../../../../domain/entities/ServiceProvider";
+import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
+import { CloudinaryService } from "../../../../services/cloudinary/cloudinary";
 
 @injectable()
 export class RegisterServiceProviderUseCase {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { getAllUsersUseCase } from "../../../../application/use-case/admin/getAllUsersUseCase";
+import { getAllUsersUseCase } from "../../../../application/use-case/admin/userManagement/getAllUsersUseCase";
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     console.log("all users");

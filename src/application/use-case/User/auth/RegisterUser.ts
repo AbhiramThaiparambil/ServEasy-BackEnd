@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../domain/repositories/userRepository";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
 import { User } from "../../../../domain/entities/user";
 import { inject, injectable } from "tsyringe";
 import { EmailOtpService } from "../../../../services/OTP/mailOtp";

@@ -1,5 +1,5 @@
 import { User } from "../../domain/entities/user";
-import { UserRepository } from "../../domain/repositories/userRepository";
+import { UserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";
 import { hash, compare } from "bcrypt";
@@ -80,5 +80,13 @@ async updateUserField<K extends keyof User>(userId: string, field: K, value: Use
         console.error("Error updating user:", error);
         return false; 
     }
+}
+async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+  const result = await UserModel.updateOne(
+    { _id: userId }, 
+    { $set: { password: newPassword } } 
+  );
+
+  return result.modifiedCount > 0;
 }
 }

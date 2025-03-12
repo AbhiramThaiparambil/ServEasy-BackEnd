@@ -1,6 +1,6 @@
-import { UserRepository } from "../../../domain/repositories/userRepository";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { TokenService } from "../../../services/auth/TokenService";
+import { TokenService } from "../../../../services/auth/TokenService";
 
 @injectable()
 export class Signin {

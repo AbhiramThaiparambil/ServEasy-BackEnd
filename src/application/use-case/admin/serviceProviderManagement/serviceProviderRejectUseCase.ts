@@ -1,9 +1,9 @@
 
 
 import { inject, injectable } from "tsyringe";
-import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository"; 
-import { IServiceProviderRepository } from "../../../domain/repositories/IserviceProviderRepository"; 
-import { EmailOtpService } from "../../../services/OTP/mailOtp";
+import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository"; 
+import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository"; 
+import { EmailOtpService } from "../../../../services/OTP/mailOtp";
 
 @injectable()
 export class ServiceProviderRejectVerify {
