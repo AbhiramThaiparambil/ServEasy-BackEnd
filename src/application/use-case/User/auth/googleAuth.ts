@@ -1,9 +1,9 @@
 import { injectable, inject } from "tsyringe";
 import { OAuth2Client } from "google-auth-library";
-import { UserRepository } from "../../domain/repositories/userRepository";
-import { User } from "../../domain/entities/user";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { User } from "../../../../domain/entities/user";
 import { config } from "dotenv";
-import { TokenService } from "../../services/auth/TokenService";
+import { TokenService } from "../../../../services/auth/TokenService";
 config();
 
 @injectable()
@@ -49,8 +49,7 @@ export class GoogleAuthUseCase {
         const newUser: User = {
           isVerified: email_verified || false,
           password: sub,
-          userName: name || email.split("@")[0], // Default to email prefix
-          role: "user",
+          userName: name || email.split("@")[0], 
           email,
           googleId: sub,
           profileImage: picture || "",

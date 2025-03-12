@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../domain/repositories/userRepository";
+import { UserRepository } from "../../../../domain/repositories/IuserRepository";
 import { container } from "tsyringe";
 import { TokenService } from "../../../../services/auth/TokenService";
 export class SignIn {

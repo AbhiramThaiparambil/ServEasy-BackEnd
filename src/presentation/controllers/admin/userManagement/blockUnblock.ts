@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { blockUnblockUsersUseCase } from "../../../../application/use-case/admin/blockUnblockUsersUseCase";
+import { blockUnblockUsersUseCase } from "../../../../application/use-case/admin/userManagement/blockUnblockUsersUseCase";
 
 export const blockUnblock = async (req: Request, res: Response) => {
   try {

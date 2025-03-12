@@ -1,5 +1,5 @@
 import { User } from "../../domain/entities/user";
-import { UserRepository } from "../../domain/repositories/userRepository";
+import { UserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";
 import { hash, compare } from "bcrypt";
@@ -46,17 +46,6 @@ export class MongoUserRepository implements UserRepository {
     return UserModel.findById(id)
   }
 
-<<<<<<< HEAD
-  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
-    const result = await UserModel.updateOne(
-      { _id: userId }, 
-      { $set: { password: newPassword } } 
-    );
-  
-    return result.modifiedCount > 0;
-  }
-
-=======
   async addServiceProviderId(userId: string, serviceProviderId: string): Promise<boolean> {
     try {
         const result = await UserModel.findByIdAndUpdate(
@@ -92,5 +81,12 @@ async updateUserField<K extends keyof User>(userId: string, field: K, value: Use
         return false; 
     }
 }
->>>>>>> admin
+async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+  const result = await UserModel.updateOne(
+    { _id: userId }, 
+    { $set: { password: newPassword } } 
+  );
+
+  return result.modifiedCount > 0;
+}
 }

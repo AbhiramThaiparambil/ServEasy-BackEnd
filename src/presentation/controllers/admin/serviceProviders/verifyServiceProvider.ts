@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { ServiceProviderRejectVerify } from "../../../../application/use-case/admin/serviceProviderRejectUseCase";
+import { ServiceProviderRejectVerify } from "../../../../application/use-case/admin/serviceProviderManagement/serviceProviderRejectUseCase";
 
 export const serviceProviderVerify = async (req: Request, res: Response) => {
   try {

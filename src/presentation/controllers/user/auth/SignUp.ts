@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
-<<<<<<< HEAD
-import { SignIn } from "../../../../application/use-case/SignIn";
-=======
+
 import { SignIn } from "../../../../application/use-case/User/auth/SignIn";
->>>>>>> admin
 import { config } from "dotenv";
 
 config();
@@ -39,11 +36,7 @@ export const signIn = async (req: Request, res: Response) => {
 
       res.cookie("refreshToken", result?.refreshToken, {
         httpOnly: true,
-<<<<<<< HEAD
         secure: process.env.NODE_ENV === "production",
-=======
-        secure: false,
->>>>>>> admin
         sameSite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
@@ -76,15 +69,10 @@ export const signIn = async (req: Request, res: Response) => {
       console.log(result?.refreshToken);
 
       res.cookie("refreshToken", result?.refreshToken, {
-<<<<<<< HEAD
+
         httpOnly: true, 
         secure: process.env.NODE_ENV === "production", 
         sameSite: "strict",
-=======
-        httpOnly: true, // ✅ Prevent JavaScript access
-        secure: process.env.NODE_ENV === "production", // ✅ Secure in production
-        sameSite: "strict", // ✅ Protects against CSRF
->>>>>>> admin
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
       });
