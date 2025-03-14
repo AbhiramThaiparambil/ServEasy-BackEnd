@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { RegisterServiceProviderUseCase } from "../../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
-import { IServiceProvider } from "../../../domain/entities/ServiceProvider";
+import { IServiceProvider } from "../../../domain/entities/IServiceProvider";
 import { UpdateUserWithServiceProviderUseCase } from "../../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
 
 export const RegistrationServiceProvider = async (req: Request, res: Response) => {

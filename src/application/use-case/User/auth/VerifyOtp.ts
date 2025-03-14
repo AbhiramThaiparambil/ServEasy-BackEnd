@@ -1,7 +1,7 @@
 import { UserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { Otpservice } from "../../../../services/OTP/OtpService";
-import { User } from "../../../../domain/entities/user";
+import { User } from "../../../../domain/entities/IUser";
 @injectable()
 export class VerifyOtp {
   constructor(

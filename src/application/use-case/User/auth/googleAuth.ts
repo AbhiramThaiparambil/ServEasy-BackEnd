@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { OAuth2Client } from "google-auth-library";
 import { UserRepository } from "../../../../domain/repositories/IuserRepository";
-import { User } from "../../../../domain/entities/user";
+import { User } from "../../../../domain/entities/IUser";
 import { config } from "dotenv";
 import { TokenService } from "../../../../services/auth/TokenService";
 config();
