@@ -14,6 +14,7 @@ import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/auth/TokenService";
 import { CloudinaryService } from "./services/cloudinary/cloudinary";
 import { RegisterServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/RegisterServiceProvider";
+import { LocationService } from "./services/location/location";
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
 });
@@ -33,4 +34,6 @@ container.registerSingleton("CloudinaryService", CloudinaryService);
 container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register("SmsOtpService", SmsOtpService);
 container.register("RedisService", RedisService);
+container.register("LocationService", { useClass: LocationService });
+
 console.log("All dependencies registered successfully.");
