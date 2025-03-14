@@ -1,4 +1,4 @@
-import { User } from "../../domain/entities/user";
+import { User } from "../../domain/entities/IUser";
 import { UserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";

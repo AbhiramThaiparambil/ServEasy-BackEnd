@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { User } from "../../domain/entities/user"
+import { User } from "../../domain/entities/IUser"
 
 const UserSchema = new mongoose.Schema({
     userName: { type: String, required: true },

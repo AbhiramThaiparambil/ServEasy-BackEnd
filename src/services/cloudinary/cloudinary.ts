@@ -39,4 +39,8 @@ export class CloudinaryService {
   async uploadServiceProviderProfile(img_url: string): Promise<string> {
     return this.uploadImage(img_url, "/servEasy-serviceProviderProfiles");
   }
+
+  async uploadServiceImg(img_url: string): Promise<string> {
+    return this.uploadImage(img_url, "/servEasy-services");
+  }
 }

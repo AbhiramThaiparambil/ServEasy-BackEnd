@@ -1,7 +1,7 @@
 
 import { injectable } from "tsyringe";
 import {IServiceProviderRepository} from "../../domain/repositories/IserviceProviderRepository";
-import {IServiceProvider} from "../../domain/entities/ServiceProvider";
+import {IServiceProvider} from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel"; // Mongoose Model
 
 @injectable()

@@ -1,4 +1,4 @@
-import { IServiceProvider } from "../entities/ServiceProvider";
+import { IServiceProvider } from "../entities/IServiceProvider";
 
 export interface IServiceProviderRepository {
   create(ServiceProvider: IServiceProvider): Promise<IServiceProvider>;

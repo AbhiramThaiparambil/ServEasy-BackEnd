@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IServiceProvider } from "../../domain/entities/ServiceProvider";
+import { IServiceProvider } from "../../domain/entities/IServiceProvider";
 
 interface ISkill {
     name: string;
