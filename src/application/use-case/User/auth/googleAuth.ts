@@ -58,10 +58,16 @@ export class GoogleAuthUseCase {
         user = await this.userRepository.create(newUser);
       }
           
-      const accessToken=this.tokenService.generateAccessToken(user._id+"")
-      const refreshToke=this.tokenService.generateRefreshToken(user._id="")
+      if(user){
+        const accessToken=this.tokenService.generateAccessToken(user._id+"")
+        const refreshToke=this.tokenService.generateRefreshToken(user._id="")
+        return {accessToken,refreshToke}
+      }else{
+        throw new Error('use Auth failed')
+      }
+      
 
-      return {accessToken,refreshToke}
+     
     } catch (error) {
       console.error("Google Auth Error:", error);
       throw new Error("Google Authentication Failed");
