@@ -46,7 +46,7 @@ export const addNewService = async (req: Request, res: Response) => {
     const addNewService = container.resolve(AddNewService);
     const service = await addNewService.execute(serviceData);
 
-    res.status(200).json({ data: service });
+    res.status(201).json({ data: service });
     return
   } catch (error) {
     console.error(error);

@@ -1,18 +1,25 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { IService } from "../../../domain/entities/IService";
 import { GetService } from "../../../application/service-management/getServices";
 
 export const getServices = async (req: Request, res: Response) => {
- try{
-    console.log('-------------0-0-0-0-0-0');
+  try {
+    const getService = container.resolve(GetService);
     
-  const getService = container.resolve(GetService);
-    const user = res.locals.user;
-    const result=await getService.execute(user.userId)
-
- }catch(e){
-    console.log(e);
+    const serviceProviderId = res.locals.serviceProvider_id;
     
- }
-}
+    if (!serviceProviderId) {
+       res.status(400).json({ message: "Service Provider ID is required." });
+       return
+      }
+    
+    const result = await getService.execute(serviceProviderId);
+    
+     res.status(200).json({ allServices: result });
+     return
+  } catch (e) {
+    console.error(e); // Consider using a logging library
+     res.status(500).json({ message: "An error occurred while fetching services." });
+     return
+   }
+};

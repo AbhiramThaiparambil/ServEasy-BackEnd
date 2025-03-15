@@ -20,7 +20,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     try {
         const decoded = tokenService.verifyAccessToken(token) as JwtPayload;
         console.log(" Token decoded:", decoded);
-
+          
         if (!decoded.userId) {
             console.log("Invalid token data");
             res.status(403).json({ message: "Forbidden: Invalid token payload" });

@@ -35,8 +35,8 @@ export class SignIn {
       if (!isMatch) return { errorMessage: "Invalid credentials" };
       if (!user._id) return console.log("userId is missing");
 
-      const accessToken = this.tokenService.generateAccessToken(user._id);
-      const refreshToken = this.tokenService.generateRefreshToken(user._id);
+      const accessToken = this.tokenService.generateAccessToken(user._id,"userId");
+      const refreshToken = this.tokenService.generateRefreshToken(user._id,"userId");
 
       return { accessToken, refreshToken };
     } catch (error) {
@@ -58,8 +58,8 @@ export class SignIn {
       if (!isMatch) return { errorMessage: "Invalid credentials" };
       if (!user._id) return console.log("userId is missing");
 
-      const accessToken = this.tokenService.generateAccessToken(user._id);
-      const refreshToken = this.tokenService.generateRefreshToken(user._id);
+      const accessToken = this.tokenService.generateAccessToken(user._id,"userId");
+      const refreshToken = this.tokenService.generateRefreshToken(user._id,"userId");
 
       return { accessToken, refreshToken };
     } catch (error) {
