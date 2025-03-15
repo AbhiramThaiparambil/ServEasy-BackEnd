@@ -13,6 +13,9 @@ export class ServiceRepository implements IServiceRepository {
     async findById(serviceId: Types.ObjectId): Promise<IService | null> {
       return await ServiceModel.findById(serviceId);
     }
+    async findAllServiceProviderId(serviceProviderId: Types.ObjectId|string): Promise<IService[]> {
+      return await ServiceModel.find({ serviceProviderId: serviceProviderId }).exec();
+    }
     
     async findAll(): Promise<IService[]> {
       return await ServiceModel.find();

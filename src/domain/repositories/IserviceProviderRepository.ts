@@ -6,7 +6,11 @@ export interface IServiceProviderRepository {
   // findByPhone(phone:string):Promise<IServiceProvider |null>
 
   findById(id: string): Promise<IServiceProvider | null>;
-  update(id: string,data: Partial<IServiceProvider>): Promise<IServiceProvider | null>;
+  update(
+    id: string,
+    data: Partial<IServiceProvider>
+  ): Promise<IServiceProvider | null>;
 
   find(): Promise<IServiceProvider[]>;
+  findByUserID(userId: string): Promise<IServiceProvider | null>;
 }

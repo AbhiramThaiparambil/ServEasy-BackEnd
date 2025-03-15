@@ -5,7 +5,8 @@ export interface ISkill {
 }
 
 export interface IServiceProvider {
-    _id?:mongoose.Schema.Types.ObjectId
+    _id?:mongoose.Schema.Types.ObjectId;
+    userId:mongoose.Schema.Types.ObjectId;
     serviceProviderName: string;
     serviceProviderEmail: string;
     serviceProviderPhone: string;

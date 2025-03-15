@@ -32,6 +32,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       return  await ServiceProviderModel.find()
   }
   
-
-  
+  async findByUserID(userId:string): Promise<IServiceProvider | null> {
+    return  await ServiceProviderModel.findOne({userId:userId})
+}
 }

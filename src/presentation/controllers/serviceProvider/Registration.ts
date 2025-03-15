@@ -49,7 +49,9 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
       subcategory,
       socialMedia: "", 
       description: description || "", 
+      userId:res.locals.user.userId,
     };
+
 
     const registerService = container.resolve(RegisterServiceProviderUseCase);
     const serviceProvider = await registerService.execute(data, profileImage, documentImg);

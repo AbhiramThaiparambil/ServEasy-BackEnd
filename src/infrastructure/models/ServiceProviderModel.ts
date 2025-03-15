@@ -5,7 +5,11 @@ interface ISkill {
     name: string;
     level: string;
 }
-
+const locationSchema = new Schema({
+    address: { type: String, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
+  });
 const SkillSchema = new Schema<ISkill>({
     name: { type: String, required: true },
     level: { type: String, required: true },
@@ -20,11 +24,13 @@ const ServiceProviderSchema = new Schema(
         socialMedia: { type: String },
         services: { type: [String], required: true },
         skills: { type: [SkillSchema], required: true }, 
-        location: { type: String, required: true },
+        location: locationSchema,
         experience: { type: Number, required: true },
         profileImage: { type: String },
         document: { type: String },
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        
     },
     {
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
