@@ -13,6 +13,7 @@ dotenv.config();
 import cookieparser from "cookie-parser";
 import googleRouter from "./presentation/routes/google";
 import locationRouter from "./presentation/routes/location";
+import serviceRouter from "./presentation/routes/service";
 const app = express();
 app.use(cookieparser());
 
@@ -33,6 +34,7 @@ app.use("/", userRoutes);
 app.use("/service-providers", serviceProviderRoute);
 app.use("/google",googleRouter)
 app.use("/admin", adminRoute);
+app.use("/service", serviceRouter);
 dbConnect().catch((e) => console.log(e));
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);

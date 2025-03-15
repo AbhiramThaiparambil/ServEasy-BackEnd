@@ -17,7 +17,7 @@ export class RegisterServiceProviderUseCase {
    
     serviceProviderData.profileImage=profileImage
     serviceProviderData.document=document
-
+    
    const result= await this.serviceProviderRepository.create(serviceProviderData)
     console.log(result);
      return result
