@@ -7,12 +7,10 @@ import { container } from "tsyringe";
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  console.log(" access token expired new refresh Token is called");
 
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    console.log("hey");
 
     res.status(401).json({ error: "Refresh token is missing" });
     return;
@@ -36,10 +34,9 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     }
 
     const newAccessToken = await tokenService.generateAccessToken(
-      user._id + ""
+      user._id + "","userId"
     );
-    console.log("newAccessToken");
-    console.log(newAccessToken);
+
 
     res.json({ accessToken: newAccessToken });
     return;

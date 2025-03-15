@@ -2,10 +2,12 @@ import { Router } from "express";
 import {addNewService} from '../controllers/service/addnewService'
 import { getServices } from "../controllers/service/getServices";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { verifyServiceProvider } from "../controllers/serviceProvider/verifyServiceProvider";
+import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
 
 const serviceRouter=Router()
 
-serviceRouter.route("/").post(addNewService).get(authMiddleware,getServices)
+serviceRouter.route("/").post(addNewService).get(authMiddleware,serviceProviderAuth,getServices)
 
 // /service
 // router.route("/")

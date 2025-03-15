@@ -15,8 +15,8 @@ export class Signin {
       const isMatch = await this.userRepository.comparePassword(password, user.password);
       if (isMatch) {
         if(!user._id)return null
-        const accessToken = this.tokenService.generateAccessToken(user._id.toString());
-        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString());
+        const accessToken = this.tokenService.generateAccessToken(user._id.toString(),"adminId");
+        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString(),"adminId");
 
         return { accessToken, refreshToken, user };
       }
@@ -30,8 +30,8 @@ export class Signin {
       const isMatch = await this.userRepository.comparePassword(password, user.password);
       if (isMatch) {
         if(!user._id)return null
-        const accessToken = this.tokenService.generateAccessToken(user._id.toString());
-        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString());
+        const accessToken = this.tokenService.generateAccessToken(user._id.toString(),"adminId");
+        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString(),"adminId");
 
         return { accessToken, refreshToken, user };
       }

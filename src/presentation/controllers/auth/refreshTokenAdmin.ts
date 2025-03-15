@@ -7,11 +7,8 @@ import { MongoUserRepository } from "../../../infrastructure/repositories/UserRe
 export const refreshTokenAdmin = async (req: Request, res: Response) => {
   const adminTokenData = req.cookies.adminToken;
   const { refreshToken, isAdmin } = JSON.parse(adminTokenData);
-  console.log(" access token expired new refresh Token is called");
 
   if (!refreshToken) {
-    console.log("hey");
-
     res.status(401).json({ error: "Refresh token is missing" });
     return;
   }
@@ -34,10 +31,8 @@ export const refreshTokenAdmin = async (req: Request, res: Response) => {
     }
 
     const newAccessToken = await tokenService.generateAccessToken(
-      user._id + ""
+      user._id + "","adminId"
     );
-    console.log("newAccessToken");
-    console.log(newAccessToken);
 
     res.json({ accessToken: newAccessToken });
     return;

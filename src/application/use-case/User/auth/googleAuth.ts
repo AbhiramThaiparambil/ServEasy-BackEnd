@@ -59,8 +59,8 @@ export class GoogleAuthUseCase {
       }
           
       if(user){
-        const accessToken=this.tokenService.generateAccessToken(user._id+"")
-        const refreshToke=this.tokenService.generateRefreshToken(user._id="")
+        const accessToken=this.tokenService.generateAccessToken(user._id+"","userId")
+        const refreshToke=this.tokenService.generateRefreshToken(user._id="","userId")
         return {accessToken,refreshToke}
       }else{
         throw new Error('use Auth failed')
