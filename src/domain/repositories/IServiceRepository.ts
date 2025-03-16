@@ -5,7 +5,7 @@ export interface IServiceRepository {
   create(service: IService): Promise<IService>;
   findById(serviceId: Types.ObjectId): Promise<IService | null>;
   findAllServiceProviderId(
-    serviceProviderId: Types.ObjectId|string
+    serviceProviderId: Types.ObjectId | string
   ): Promise<IService[]>;
 
   findAll(): Promise<IService[]>;
@@ -16,4 +16,5 @@ export interface IServiceRepository {
   delete(serviceId: Types.ObjectId): Promise<boolean>;
   blockService(serviceId: string): Promise<boolean>;
   unblockService(serviceId: string): Promise<boolean>;
+  updateService(id: string, newData: IService): Promise<IService | null>;
 }

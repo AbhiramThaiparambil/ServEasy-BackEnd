@@ -9,6 +9,8 @@ import { userProfile } from "../controllers/user/home";
 import { sendOtp } from "../controllers/user/auth/forgotPassword/sendOtp";
 import { forgotVerifyOtp} from "../controllers/user/auth/forgotPassword/verifyOtp";
 import {resetPassword} from "../controllers/user/auth/forgotPassword/resetPassword";
+import { userProfileUpdate } from "../controllers/user/userProfileUpdate";
+import { profileUpdateOtp } from "../controllers/user/profileUpdateOtp";
 
 const userRouter = Router();
 
@@ -20,7 +22,8 @@ userRouter.get('/profile',authMiddleware,userProfile)
 userRouter.post("/forgot-password",sendOtp);
 userRouter.post("/forgot-password/verify-otp",forgotVerifyOtp);
 userRouter.post("/forgot-password/reset",resetPassword);
-
+userRouter.put("/updateProfile/:userid",userProfileUpdate)
+userRouter.post('/updateProfile/verifyotp',profileUpdateOtp)
 // /signIn
 
 // userRouter.get("/", (req: Request, res: Response) => {

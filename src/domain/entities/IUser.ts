@@ -6,14 +6,10 @@ export interface User {
   email?: string;
   phone?: string;
   password: string;
-
   googleId?: string;
-
   isVerified: boolean;
   isBlocked?: boolean;
   serviceProvider?: mongoose.Schema.Types.ObjectId;
-
   profileImage?: string;
-
   isAdmin?: boolean;
 }

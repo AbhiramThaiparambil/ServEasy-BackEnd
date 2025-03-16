@@ -14,6 +14,6 @@ export interface UserRepository {
 //  updateUserField(userId: string, field:any, value: any): Promise<boolean>;
 updateUserField<K extends keyof User>(userId: string, field: K, value: User[K]): Promise<boolean>;
 updatePassword(userId:string,newPassword:string):Promise<boolean>;
-
+updateUserBasedId(userId: string, updateData: Partial<User>): Promise<boolean>
   
 }
