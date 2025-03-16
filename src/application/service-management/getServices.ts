@@ -11,7 +11,7 @@ export class GetService {
   async execute(id: string) {
     try {
       const allServices = await this.serviceRepository.findAllServiceProviderId(id);
-      console.log(allServices);
+     
       return allServices;
     } catch (error) {
       console.error("Error adding new service:", error);
