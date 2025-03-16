@@ -14,4 +14,6 @@ export interface IServiceRepository {
     service: Partial<IService>
   ): Promise<IService | null>;
   delete(serviceId: Types.ObjectId): Promise<boolean>;
+  blockService(serviceId: string): Promise<boolean>;
+  unblockService(serviceId: string): Promise<boolean>;
 }

@@ -52,7 +52,6 @@ export class RegisterUser {
       }
     }
     const hashedPassword = await bcrypt.hash(userData?.password, 10);
-    console.log(userData.password);
     
     userData.password = hashedPassword;
     const user: User = {
@@ -64,10 +63,8 @@ export class RegisterUser {
       
     };
 
-    console.log(userData);
 
     const newUser = await this.userRepository.create(user);
-    console.log(newUser);
 
     if (newUser.email) {
       await this.sendEmailOtp(newUser.email);

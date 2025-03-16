@@ -28,9 +28,8 @@ export class SignIn {
         password,
         user.password,
       );
-      console.log("password match or not ");
       
-      console.log(isMatch);
+      
       
       if (!isMatch) return { errorMessage: "Invalid credentials" };
       if (!user._id) return console.log("userId is missing");

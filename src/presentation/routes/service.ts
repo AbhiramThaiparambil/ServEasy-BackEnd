@@ -1,13 +1,30 @@
 import { Router } from "express";
-import {addNewService} from '../controllers/service/addnewService'
+import { addNewService } from "../controllers/service/addnewService";
 import { getServices } from "../controllers/service/getServices";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { verifyServiceProvider } from "../controllers/serviceProvider/verifyServiceProvider";
 import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
+import { blockUnblockService } from "../controllers/service/activeAndInactive";
+import { updateService } from "../controllers/service/updateService";
 
-const serviceRouter=Router()
+const serviceRouter = Router();
 
-serviceRouter.route("/").post(addNewService).get(authMiddleware,serviceProviderAuth,getServices)
+serviceRouter
+  .route("/")
+  .post(addNewService)
+  .get(authMiddleware, serviceProviderAuth, getServices)
+  .put(updateService)
+ 
+serviceRouter.patch(
+  "/block-unblock",
+  authMiddleware,
+  serviceProviderAuth,
+  blockUnblockService
+);
+
+
+// ${serviceEndPoint.updateService}/${serviceId
+
 
 // /service
 // router.route("/")
@@ -21,5 +38,4 @@ serviceRouter.route("/").post(addNewService).get(authMiddleware,serviceProviderA
 
 // router.get("/search", searchServices); // Search services
 
-
-export default serviceRouter
+export default serviceRouter;

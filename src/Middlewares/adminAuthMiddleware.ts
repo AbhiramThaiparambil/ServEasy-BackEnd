@@ -22,7 +22,6 @@ export const adminAuthMiddleware = async (req: Request, res: Response, next: Nex
 
     try {
         const decoded = tokenService.verifyAccessToken(token) as JwtPayload;
-        console.log(" Admin token decoded:", decoded);
 
         if (!decoded.userId || !isAdmin) {
             console.log("Invalid admin token data");
