@@ -8,12 +8,12 @@ import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
 
 const serviceRouter = Router();
+serviceRouter.put("/:serviceId",updateService)
 
 serviceRouter
   .route("/")
   .post(addNewService)
   .get(authMiddleware, serviceProviderAuth, getServices)
-  .put(updateService)
  
 serviceRouter.patch(
   "/block-unblock",

@@ -62,4 +62,15 @@ export class ServiceRepository implements IServiceRepository {
       throw error;
     }
   }
+  async updateService(id: string, newData: IService):Promise<IService | null>  {
+    try {
+      return  await ServiceModel.findOneAndReplace(
+        { _id: id },
+        newData,
+        { new: true }
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -4,7 +4,6 @@ import { TokenService } from "../../../services/auth/TokenService";
 import { GetUserProfileUseCase } from "../../../application/use-case/User/GetProfile";
 export const userProfile = async (req: Request, res: Response) => {
   try {
-    console.log(req.cookies.refreshToken);
 
     const authHeader = req.headers.authorization;
     if (!authHeader) {

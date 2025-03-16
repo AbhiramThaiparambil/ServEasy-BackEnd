@@ -89,4 +89,19 @@ async updatePassword(userId: string, newPassword: string): Promise<boolean> {
 
   return result.modifiedCount > 0;
 }
+
+async updateUserBasedId(userId: string, updateData: Partial<User>): Promise<boolean> {
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true } // Return updated document
+    );
+
+    return !!updatedUser; // Return true if update successful, false otherwise
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return false;
+  }
+}
 }
