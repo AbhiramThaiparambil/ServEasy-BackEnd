@@ -30,7 +30,8 @@ const ServiceProviderSchema = new Schema(
         document: { type: String },
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        
+        isBlocked:{type:Boolean,default:false},
+
     },
     {
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },

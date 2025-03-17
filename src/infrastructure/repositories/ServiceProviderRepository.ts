@@ -1,7 +1,6 @@
-
 import { injectable } from "tsyringe";
-import {IServiceProviderRepository} from "../../domain/repositories/IserviceProviderRepository";
-import {IServiceProvider} from "../../domain/entities/IServiceProvider";
+import { IServiceProviderRepository } from "../../domain/repositories/IserviceProviderRepository";
+import { IServiceProvider } from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel"; // Mongoose Model
 
 @injectable()
@@ -18,23 +17,50 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   async findById(id: string): Promise<IServiceProvider | null> {
     return await ServiceProviderModel.findById(id);
   }
-  
-  async update(id: string, data: Partial<IServiceProvider>): Promise<IServiceProvider | null> {
-    return await ServiceProviderModel.findByIdAndUpdate(id, data, { new: true });
+
+  async update(
+    id: string,
+    data: Partial<IServiceProvider>
+  ): Promise<IServiceProvider | null> {
+    return await ServiceProviderModel.findByIdAndUpdate(id, data, {
+      new: true,
+    });
   }
 
   async delete(id: string): Promise<boolean> {
     const result = await ServiceProviderModel.findByIdAndDelete(id);
     return result !== null;
   }
- 
+
   async find(): Promise<IServiceProvider[]> {
-      return  await ServiceProviderModel.find()
+    return await ServiceProviderModel.find();
   }
-  
-  async findByUserID(userId:string): Promise<IServiceProvider | null> {
-    return  await ServiceProviderModel.findOne({userId:userId})
-}
 
+  async findByUserID(userId: string): Promise<IServiceProvider | null> {
+    return await ServiceProviderModel.findOne({ userId: userId });
+  }
 
+  async blockService(ProviderId: string): Promise<boolean> {
+    try {
+      const result = await ServiceProviderModel.updateOne(
+        { _id: ProviderId },
+        { $set: { isBlocked: true } }
+      );
+      return result.modifiedCount > 0;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async unblockService(ProviderId: string): Promise<boolean> {
+    try {
+      const result = await ServiceProviderModel.updateOne(
+        { _id: ProviderId },
+        { $set: { isBlocked: false } }
+      );
+      return result.modifiedCount > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
