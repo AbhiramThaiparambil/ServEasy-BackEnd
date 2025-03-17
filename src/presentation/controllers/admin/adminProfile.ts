@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { TokenService } from "../../../services/auth/TokenService";
-import { GetAdminProfileUseCase } from "../../../application/use-case/admin/admin/profile";
+import { GetAdminProfileUseCase } from "../../../application/use-case/admin/profile";
 export const adminProfile = async (req: Request, res: Response) => {
   try {
     const authHeader = req.headers.authorization;

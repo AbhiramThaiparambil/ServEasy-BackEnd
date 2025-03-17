@@ -73,4 +73,32 @@ export class ServiceRepository implements IServiceRepository {
       throw error;
     }
   }
+
+  // async getServicesWithProviderDetails() {
+  //   return await ServiceModel.aggregate([
+  //     {
+  //       $lookup: {
+  //         from: "serviceproviders",
+  //         localField: "serviceProviderId",
+  //         foreignField: "_id",
+  //         as: "serviceProviderDetails"
+  //       }
+  //     }
+  //   ]);
+  // }
+
+
+  async getServicesWithProviderDetails() {
+    return await ServiceModel.aggregate([
+      {
+        $lookup: {
+          from: "serviceproviders",
+          localField: "serviceProviderId",
+          foreignField: "_id",
+          as: "serviceProviderDetails"
+        }
+      },
+      { $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true } } // Unwind the array
+    ]);
+  }
 }

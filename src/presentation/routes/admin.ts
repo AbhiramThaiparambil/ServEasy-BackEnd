@@ -7,15 +7,18 @@ import { blockUnblock } from "../controllers/admin/userManagement/blockUnblock";
 import { getServiceProviders } from "../controllers/admin/serviceProviders/getServiceProviders";
 import { serviceProviderVerify } from "../controllers/admin/serviceProviders/verifyServiceProvider";
 import { serviceProviderReject } from "../controllers/admin/serviceProviders/serviceProviderReject";
+import { getAllServices } from "../controllers/admin/services/getAllServices";
+import { blockUnblockService } from "../controllers/admin/services/blockUnblock";
+import { blockUnblockServiceProvider } from "../controllers/admin/serviceProviders/blockUnblockProvider";
 
 const router = express.Router();
 
 router.post("/signin", signIn);
-router.get("/profile", adminAuthMiddleware, adminProfile);
+router.get("/profile", adminProfile); // adminAuthMiddleware
 // router.post('/profile',adminAuthMiddleware,adminProfile)
 
 router.get("/users", getAllUsers);
-router.patch("/users/block-unblock", adminAuthMiddleware, blockUnblock);
+router.patch("/users/block-unblock", blockUnblock); //adminAuthMiddleware
 router.get("/serviceProvider", getServiceProviders);
 
 router.patch(
@@ -30,9 +33,13 @@ router.patch(
   serviceProviderVerify
 );
 
-router.get("/r", adminAuthMiddleware, (req: Request, res: Response) => {
-  console.log("hey r is called ");
-  res.send("isWorking");
-});
+// router.patch(/service)
+
+
+router.get('/service',getAllServices)
+router.patch('/service',blockUnblockService)
+router.patch('/serviceprovider',blockUnblockServiceProvider)
+
+
 
 export default router;

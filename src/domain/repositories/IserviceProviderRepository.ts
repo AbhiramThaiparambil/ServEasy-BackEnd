@@ -13,4 +13,7 @@ export interface IServiceProviderRepository {
 
   find(): Promise<IServiceProvider[]>;
   findByUserID(userId: string): Promise<IServiceProvider | null>;
+   unblockService(ServiceProviderId: string): Promise<boolean> 
+
+     blockService(ProviderId: string): Promise<boolean> 
 }
