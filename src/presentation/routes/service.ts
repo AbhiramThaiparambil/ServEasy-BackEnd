@@ -8,34 +8,18 @@ import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
 
 const serviceRouter = Router();
-serviceRouter.put("/:serviceId",updateService)
+serviceRouter.put("/:serviceId", updateService);
 
 serviceRouter
   .route("/")
   .post(addNewService)
-  .get(authMiddleware, serviceProviderAuth, getServices)
- 
+  .get(authMiddleware, serviceProviderAuth, getServices);
+
 serviceRouter.patch(
   "/block-unblock",
   authMiddleware,
   serviceProviderAuth,
   blockUnblockService
 );
-
-
-// ${serviceEndPoint.updateService}/${serviceId
-
-
-// /service
-// router.route("/")
-//   .post(addService)         // Add a new service
-//   .get(getAllServices);     // Get all services
-
-// router.route("/:id")
-//   .get(getServiceById)      // Get a single service by ID
-//   .patch(updateService)     // Update a service
-//   .delete(deleteService);   // Delete a service
-
-// router.get("/search", searchServices); // Search services
 
 export default serviceRouter;

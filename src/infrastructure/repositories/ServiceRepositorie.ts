@@ -101,4 +101,9 @@ export class ServiceRepository implements IServiceRepository {
       { $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true } } // Unwind the array
     ]);
   }
+
+  async findAllActiveServices(): Promise<IService[]> {
+    return ServiceModel.find({ isActive: true });
+}
+
 }

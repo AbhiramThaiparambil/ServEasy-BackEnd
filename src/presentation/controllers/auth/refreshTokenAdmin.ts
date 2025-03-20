@@ -6,24 +6,25 @@ import { MongoUserRepository } from "../../../infrastructure/repositories/UserRe
 
 export const refreshTokenAdmin = async (req: Request, res: Response) => {
   const adminTokenData = req.cookies.adminToken;
-  const { refreshToken, isAdmin } = JSON.parse(adminTokenData);
-
-  if (!refreshToken) {
+      console.log('hey hey hey ');
+      
+  if (!adminTokenData) {
     res.status(401).json({ error: "Refresh token is missing" });
     return;
   }
   try {
     const tokenService = container.resolve(TokenService);
     const userRepo = container.resolve(MongoUserRepository);
-    const decoded = tokenService.verifyRefreshToken(refreshToken);
+    const decoded = tokenService.verifyRefreshToken(adminTokenData);
+    console.log(decoded);
+    
     if (!decoded) {
       res.status(401).json({ error: "Refresh token is missing" });
       return;
     }
-    console.log(decoded.userId);
-
-    const user = await userRepo.findById(decoded.userId);
-    console.log(user);
+    console.log(decoded.adminId);
+     
+    const user = await userRepo.findById(decoded.adminId);
 
     if (!user || !user.isAdmin) {
       res.status(404).json({ error: "user no found" });
@@ -33,8 +34,9 @@ export const refreshTokenAdmin = async (req: Request, res: Response) => {
     const newAccessToken = await tokenService.generateAccessToken(
       user._id + "","adminId"
     );
-
-    res.json({ accessToken: newAccessToken });
+   
+   
+    res.json({ adminToken: newAccessToken });
     return;
   } catch (error) {
     console.log(error);

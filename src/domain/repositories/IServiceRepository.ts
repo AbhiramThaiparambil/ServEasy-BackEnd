@@ -17,4 +17,5 @@ export interface IServiceRepository {
   blockService(serviceId: string): Promise<boolean>;
   unblockService(serviceId: string): Promise<boolean>;
   updateService(id: string, newData: IService): Promise<IService | null>;
+  findAllActiveServices(): Promise<IService[]>;
 }

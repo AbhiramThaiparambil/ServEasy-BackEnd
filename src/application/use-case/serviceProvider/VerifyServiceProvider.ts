@@ -21,7 +21,8 @@ export class VerifyServiceProvider {
       if (!userData) {
         throw new Error("User not found");
       }
-
+        
+ 
       if (userData.serviceProvider) {
         const serviceProvider = await this.serviceProviderRepository.findById(userData.serviceProvider.toString());
         

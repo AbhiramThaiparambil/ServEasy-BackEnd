@@ -35,14 +35,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     const { accessToken, refreshToken, user } = result;
 
-    const refreshTokenData = JSON.stringify({
-      refreshToken,
-      isAdmin: true, // Set isAdmin to true
-    });
-    console.log(refreshTokenData);
-
-    // Set the cookie with the JSON string
-    res.cookie("adminToken", refreshTokenData, {
+    res.cookie("adminToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
