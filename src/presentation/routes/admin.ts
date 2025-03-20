@@ -10,16 +10,17 @@ import { serviceProviderReject } from "../controllers/admin/serviceProviders/ser
 import { getAllServices } from "../controllers/admin/services/getAllServices";
 import { blockUnblockService } from "../controllers/admin/services/blockUnblock";
 import { blockUnblockServiceProvider } from "../controllers/admin/serviceProviders/blockUnblockProvider";
+import { logoutAdmin } from "../controllers/admin/Logout";
 
 const router = express.Router();
 
 router.post("/signin", signIn);
-router.get("/profile", adminProfile); // adminAuthMiddleware
+router.get("/profile", adminAuthMiddleware, adminProfile); // adminAuthMiddleware
 // router.post('/profile',adminAuthMiddleware,adminProfile)
 
 router.get("/users", getAllUsers);
-router.patch("/users/block-unblock", blockUnblock); //adminAuthMiddleware
-router.get("/serviceProvider", getServiceProviders);
+router.patch("/users/block-unblock", adminAuthMiddleware, blockUnblock); //adminAuthMiddleware
+router.get("/serviceProvider", adminAuthMiddleware, getServiceProviders);
 
 router.patch(
   "/serviceProvider/reject",
@@ -33,13 +34,8 @@ router.patch(
   serviceProviderVerify
 );
 
-// router.patch(/service)
-
-
-router.get('/service',getAllServices)
-router.patch('/service',blockUnblockService)
-router.patch('/serviceprovider',blockUnblockServiceProvider)
-
-
-
+router.get("/service", adminAuthMiddleware, getAllServices);
+router.patch("/service", adminAuthMiddleware, blockUnblockService);
+router.patch("/serviceprovider",adminAuthMiddleware, blockUnblockServiceProvider);
+router.get("/logout",logoutAdmin)
 export default router;
