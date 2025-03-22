@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { MongoUserRepository } from "./infrastructure/repositories/UserRepositoriey";
 import { ServiceProviderRepository } from "./infrastructure/repositories/ServiceProviderRepository";
 import { IServiceProviderRepository } from "./domain/repositories/IserviceProviderRepository";
+import { ICategoryRepository } from "./domain/repositories/IcategoryRepository";
+
 import { UserRepository } from "./domain/repositories/IuserRepository";
 import { container } from "tsyringe";
 import { EmailOtpService } from "./services/OTP/mailOtp";
@@ -16,6 +18,7 @@ import { CloudinaryService } from "./services/cloudinary/cloudinary";
 import { RegisterServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { LocationService } from "./services/location/location";
 import { ServiceRepository } from "./infrastructure/repositories/ServiceRepositorie";
+import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
 });
@@ -24,6 +27,9 @@ container.register<IServiceProviderRepository>("IServiceProviderRepository", {
 });
 container.register(RegisterServiceProviderUseCase, {
   useClass: RegisterServiceProviderUseCase,
+});
+container.register<ICategoryRepository>("ICategoryRepository", {
+  useClass: CategoryRepository,
 });
 
 container.registerSingleton("EmailOtpService", EmailOtpService);
@@ -36,5 +42,6 @@ container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register("SmsOtpService", SmsOtpService);
 container.register("RedisService", RedisService);
 container.register("LocationService", { useClass: LocationService });
-container.register('ServiceRepository',ServiceRepository)
+container.register("ServiceRepository", ServiceRepository);
+
 console.log("All dependencies registered successfully.");
