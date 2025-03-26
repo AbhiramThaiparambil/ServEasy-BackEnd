@@ -14,6 +14,9 @@ import { profileUpdateOtp } from "../controllers/user/profileUpdateOtp";
 import { logoutUser } from "../controllers/user/logoutUser";
 import { getActiveServices } from "../controllers/user/getServices";
 import { getSingleServiceHandler } from "../controllers/user/getSingleServiceHandile";
+import { addNewAddressHandiler } from "../controllers/user/addresses/addNewAddressHandiler";
+import { deleteAddressHandiler } from "../controllers/user/addresses/deleteAddressHandiler";
+import { setDefaultAddressHandiler } from "../controllers/user/addresses/setDefaultAddressHandiler";
 const userRouter = Router();
 
 userRouter.post("/signup", register);
@@ -30,4 +33,5 @@ userRouter.get("/logout", logoutUser);
 userRouter.get("/user/service/:id", getSingleServiceHandler);
 userRouter.get("/getactive/services", getActiveServices);
 
+userRouter.route("/user/addresses").post(addNewAddressHandiler).put(addNewAddressHandiler).delete(deleteAddressHandiler).patch(setDefaultAddressHandiler)
 export default userRouter;
