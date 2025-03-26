@@ -2,6 +2,8 @@ export interface IServiceType {
     id?: string; 
     serviceName: string;
     serviceDescription: string;
+    isHidden?:boolean
+
   }
 
   
@@ -13,5 +15,6 @@ export interface IServiceType {
     typeService?: IServiceType[];
     createdAt?: Date;
     updatedAt?: Date;
+    
   }
   

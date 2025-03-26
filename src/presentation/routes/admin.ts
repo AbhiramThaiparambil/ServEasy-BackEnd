@@ -17,6 +17,9 @@ import { addServiceHandler } from "../controllers/admin/category-management/addS
 import { editCategoryHandler } from "../controllers/admin/category-management/editCategoryHandler";
 import { blockUnblockCategoryHandler } from "../controllers/admin/category-management/blockUnblockCategoryHandler";
 import { deleteCategoryHandler } from "../controllers/admin/category-management/deleteCategoryHandler";
+import { blockUnblockServiceHandler } from "../controllers/admin/category-management/blockUnblockServiceHandler";
+import { deleteServiceHandler } from "../controllers/admin/category-management/deleteServiceHandler";
+
 const router = express.Router();
 
 router.post("/signin", signIn);
@@ -42,13 +45,17 @@ blockUnblockCategoryHandler
 router.get("/service", adminAuthMiddleware, getAllServices);
 router.patch("/service", adminAuthMiddleware, blockUnblockService);
 router.patch("/serviceprovider",adminAuthMiddleware, blockUnblockServiceProvider);
-router.post("/categorie",addCategoryHandler)
-router.get("/categorie",getCategoryHandler)
-router.put("/categorie",editCategoryHandler)
-router.patch("/categorie",blockUnblockCategoryHandler)
-router.delete("/categorie/:id",deleteCategoryHandler)
+router.post("/category",addCategoryHandler)
+router.get("/category",getCategoryHandler)
+router.put("/category",editCategoryHandler)
+router.patch("/category",blockUnblockCategoryHandler)
+router.delete("/category/:id",deleteCategoryHandler)
 
 
-router.post("/categorie/service",addServiceHandler)
+router.post("/category/service",addServiceHandler)
+router.patch("/category/service",blockUnblockServiceHandler)
+
+router.put("/category/service",addServiceHandler)
+router.delete("/category/service/:categoryId/:serviceId", deleteServiceHandler);
 router.get("/logout",logoutAdmin)
 export default router;

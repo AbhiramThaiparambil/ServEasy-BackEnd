@@ -13,7 +13,7 @@ import { userProfileUpdate } from "../controllers/user/userProfileUpdate";
 import { profileUpdateOtp } from "../controllers/user/profileUpdateOtp";
 import { logoutUser } from "../controllers/user/logoutUser";
 import { getActiveServices } from "../controllers/user/getServices";
-
+import { getSingleServiceHandler } from "../controllers/user/getSingleServiceHandile";
 const userRouter = Router();
 
 userRouter.post("/signup", register);
@@ -27,6 +27,7 @@ userRouter.post("/forgot-password/reset", resetPassword);
 userRouter.put("/updateProfile/:userid", userProfileUpdate);
 userRouter.post("/updateProfile/verifyotp", profileUpdateOtp);
 userRouter.get("/logout", logoutUser);
+userRouter.get("/user/service/:id", getSingleServiceHandler);
 userRouter.get("/getactive/services", getActiveServices);
 
 export default userRouter;
