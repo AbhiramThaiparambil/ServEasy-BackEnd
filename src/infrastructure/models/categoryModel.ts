@@ -6,6 +6,8 @@ interface ICategoryModel extends ICategory, Document {}
 const ServiceTypeSchema = new Schema({
   serviceName: { type: String},
   serviceDescription: { type: String },
+  isHidden:{type:Boolean,default:false},
+
 });
 
 const CategorySchema = new Schema<ICategoryModel>(

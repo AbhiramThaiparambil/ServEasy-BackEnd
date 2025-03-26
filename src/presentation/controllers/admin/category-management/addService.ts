@@ -10,6 +10,7 @@ export const addServiceHandler = async (req: Request, res: Response): Promise<vo
     const service = await addService.execute(categoryId, {
       serviceName: newServiceName,
       serviceDescription: newServiceDescription,
+      isHidden:false,
     });
 
     res.status(200).json({ message: service });
