@@ -104,4 +104,9 @@ async updateUserBasedId(userId: string, updateData: Partial<User>): Promise<bool
     return false;
   }
 }
+
+// async addAddress(userId:String,address:IAddress){
+//   user
+// }
+
 }
