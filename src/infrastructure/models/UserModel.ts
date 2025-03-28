@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     serviceProvider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider" },
     isAdmin:{type:Boolean,default:false},
     isBlocked:{type:Boolean,default:false},
+    address:{type:Array},
     profileImage:{type:String}
 
 })
