@@ -119,8 +119,9 @@ export class ServiceRepository implements IServiceRepository {
       {
         $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true }
       },
+      
       {
-        $limit: 1 // Ensures only one result is returned
+        $limit: 1 
       }
     ]);
   }

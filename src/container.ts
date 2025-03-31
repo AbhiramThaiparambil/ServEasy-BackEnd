@@ -19,6 +19,8 @@ import { RegisterServiceProviderUseCase } from "./application/use-case/servicePr
 import { LocationService } from "./services/location/location";
 import { ServiceRepository } from "./infrastructure/repositories/ServiceRepositorie";
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
+import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
+
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
 });
@@ -43,5 +45,5 @@ container.register("SmsOtpService", SmsOtpService);
 container.register("RedisService", RedisService);
 container.register("LocationService", { useClass: LocationService });
 container.register("ServiceRepository", ServiceRepository);
-
+container.register("ServiceBookingRepository", ServiceBookingRepository);
 console.log("All dependencies registered successfully.");
