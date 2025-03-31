@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { GetAddress } from "../../../../application/use-case/User/Address/getAddress";
+import { GetAddress } from "../../../../application/use-case/User/Address/GetAddress";
 
 export const GetAddressHandler = async (req: Request, res: Response) => {
   try {

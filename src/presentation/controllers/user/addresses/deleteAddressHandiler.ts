@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { DeleteAddress } from "../../../../application/use-case/User/Address/deleteAddress";
+import { DeleteAddress } from "../../../../application/use-case/User/Address/DeleteAddress";
 
 export const deleteAddressHandler = async (req: Request, res: Response) => {
   try {

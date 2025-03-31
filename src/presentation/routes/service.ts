@@ -2,10 +2,13 @@ import { Router } from "express";
 import { addNewService } from "../controllers/service/addnewService";
 import { getServices } from "../controllers/service/getServices";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
-import { verifyServiceProvider } from "../controllers/serviceProvider/verifyServiceProvider";
 import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
 import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
+import { bookServiceHandler } from "../controllers/ServiceBooking/serviceBooking";
+import { GetbookServiceHandler } from "../controllers/ServiceBooking/getBookedService";
+import { getSingleBookedServiceHandler } from "../controllers/ServiceBooking/getSingleBookedService";
+import { GetServiceProviderBookServiceHandler } from "../controllers/serviceProvider/bookings/GetBookServic";
 
 const serviceRouter = Router();
 serviceRouter.put("/:serviceId", updateService);
@@ -21,5 +24,16 @@ serviceRouter.patch(
   serviceProviderAuth,
   blockUnblockService
 );
+
+serviceRouter.post("/book",authMiddleware,bookServiceHandler)
+
+serviceRouter.get("/bookings",authMiddleware,GetbookServiceHandler)
+serviceRouter.get(
+  "/bookings/serviceprovider",
+  authMiddleware,
+  serviceProviderAuth,
+  GetServiceProviderBookServiceHandler
+);
+serviceRouter.get("/bookings:id",getSingleBookedServiceHandler)
 
 export default serviceRouter;

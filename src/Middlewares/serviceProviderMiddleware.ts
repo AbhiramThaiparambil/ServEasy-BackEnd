@@ -36,7 +36,10 @@ export const serviceProviderAuth = async (req: Request, res: Response, next: Nex
                 res.status(403).json({ message: "Forbidden: Invalid token serviceProvider" });
                 return
                }
+               console.log(decodedServiceProvider.serviceProvider);
+               
         res.locals.serviceProvider_id=decodedServiceProvider.serviceProvider
+        
         res.locals.user = decoded;
 
         next();

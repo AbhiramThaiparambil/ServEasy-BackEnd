@@ -2,6 +2,7 @@ import { injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../domain/repositories/IserviceProviderRepository";
 import { IServiceProvider } from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel"; // Mongoose Model
+import mongoose from "mongoose";
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
@@ -14,7 +15,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     return await ServiceProviderModel.findOne({ email });
   }
 
-  async findById(id: string): Promise<IServiceProvider | null> {
+  async findById(id: string|mongoose.Types.ObjectId): Promise<IServiceProvider | null> {
     return await ServiceProviderModel.findById(id);
   }
 

@@ -4,6 +4,10 @@ import { container } from "tsyringe";
 
 export const verifyServiceProvider = async (req: Request, res: Response) => {
   try {
+   
+   
+    
+    
     
     const verifyServiceProvideruseCase = container.resolve(
       VerifyServiceProvider
