@@ -1,5 +1,5 @@
 import { Schema, Types } from "mongoose";
-import { IServiceBooking } from "../entities/IserviceBooking";
+import {IServiceBooking} from "../../domain/entities/IServiceBooking"
 
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(
@@ -36,5 +36,5 @@ export interface IServiceBookingRepository {
       newStatus: string,
       cancelReason: string
     ): Promise<IServiceBooking | null> 
-    
+
 }
