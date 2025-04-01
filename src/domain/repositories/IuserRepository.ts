@@ -1,7 +1,7 @@
 import { User } from "../entities/IUser";
-
+import { Types } from "mongoose";
 export interface UserRepository {
-  create(user: User): Promise<User>;
+  create(user: User|Types.ObjectId): Promise<User>;
   findByEmail(email: string): Promise<User|null>;
   findById(id: string): Promise<User|null>;
   find():Promise<User[]>;
