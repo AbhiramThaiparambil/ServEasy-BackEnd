@@ -1,5 +1,5 @@
 import ServiceBooking from "../models/ServiceBooking";
-import { IServiceBooking } from "../../domain/entities/IserviceBooking";
+import {IServiceBooking} from "../../domain/entities/IServiceBooking"
 import { IServiceBookingRepository } from "../../domain/repositories/IserviceBookingRepository";
 import { Types } from "mongoose";
 import { injectable } from "tsyringe";
