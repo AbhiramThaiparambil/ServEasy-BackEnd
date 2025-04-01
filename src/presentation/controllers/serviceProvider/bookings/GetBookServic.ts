@@ -6,8 +6,7 @@ import { GetBookService } from "../../../../application/use-case/bookService/fet
 export const GetServiceProviderBookServiceHandler  = async (req: Request, res: Response): Promise<void> => {
   try {
     
-    console.log('009090909090909090907ugfhujkgdfhjkfghjkgfdhjikgdf');
-    
+        
     const serviceProviderId = res.locals.serviceProvider_id;
      console.log(serviceProviderId);
    

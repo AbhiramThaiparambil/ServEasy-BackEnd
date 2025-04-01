@@ -131,4 +131,40 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     return await ServiceBooking.findById(id);
   }
 
+
+  async confirmBooking(
+    id: Types.ObjectId,
+    newStatus: string,
+    estimatedServiceTime: string
+  ): Promise<IServiceBooking | null> {
+    return await ServiceBooking.findOneAndUpdate(
+      { _id: id }, 
+      { 
+        $set: { 
+          serviceStatus: newStatus, 
+          estimatedServiceTime: estimatedServiceTime 
+        } 
+      },
+      { new: true } 
+    );
+  }
+  async cancelBooking(
+    id: Types.ObjectId,
+    newStatus: string,
+    cancelReason: string
+  ): Promise<IServiceBooking | null> {
+    return await ServiceBooking.findOneAndUpdate(
+      { _id: id }, 
+      { 
+        $set: { 
+          serviceStatus: newStatus, 
+          cancelReason: cancelReason 
+        } 
+      },
+      { new: true } 
+    );
+  }
+
+  
+
 }
