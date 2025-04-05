@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
-import {IServiceBooking} from "../../domain/entities/IServiceBooking"
+import { IServiceBooking } from "../../domain/entities/IserviceBooking";
+
 const ServiceBookingSchema = new Schema<IServiceBooking>(
   {
     serviceProviderId: {
@@ -30,9 +31,10 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     estimatedServiceTime: { type: String },
     bookedTime: { type: Date },
+    payment:{type:{}},
     cancelReason:{type:String},
     serviceCompletedTime: { type: Date },
-    
+    serviceBills:{type:Array}
   },
   { timestamps: true }
 );

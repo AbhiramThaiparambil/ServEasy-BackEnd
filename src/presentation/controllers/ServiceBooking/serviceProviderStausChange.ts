@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { UpdateServiceStatus } from "../../../application/use-case/bookService/updateBookingStatus";
+import { IPayment } from "../../../domain/entities/Ipayment";
 
 export const serviceProviderStatusChange = async (
   req: Request,
@@ -8,6 +9,7 @@ export const serviceProviderStatusChange = async (
 ): Promise<void> => {
   try {
 
+    
     const { id, action } = req.params;
     const changeStatusContainer = container.resolve(UpdateServiceStatus);
 
@@ -49,6 +51,19 @@ export const serviceProviderStatusChange = async (
       }
 
       updatedService = await changeStatusContainer.bookingCancel(id, serviceStatus, cancellationReason);
+    }else if(action=="payment-request"){
+      const { payment, paymentStatus } = req.body;
+            console.log(payment);
+            
+            
+      if (!payment || !paymentStatus) {
+        res.status(400).json({ error: "Bad Request: Missing payment or paymentStatus" });
+        return;
+      }
+          
+      updatedService = await changeStatusContainer.requestPayment(id, payment, paymentStatus);
+
+
     }
 
     if (!updatedService) {

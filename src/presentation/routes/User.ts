@@ -4,7 +4,6 @@ import { register } from "../controllers/user/auth/signIn";
 import { verifyOtp } from "../controllers/user/auth/verifyOtp";
 import { resendOtp } from "../controllers/user/auth/resendOtp";
 import { signIn } from "../controllers/user/auth/SignUp";
-import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { userProfile } from "../controllers/user/home";
 import { sendOtp } from "../controllers/user/auth/forgotPassword/sendOtp";
 import { forgotVerifyOtp } from "../controllers/user/auth/forgotPassword/verifyOtp";
@@ -19,6 +18,7 @@ import { deleteAddressHandler } from "../controllers/user/addresses/deleteAddres
 import { setDefaultAddressHandiler } from "../controllers/user/addresses/setDefaultAddressHandiler";
 import { GetAddressHandler } from "../controllers/user/addresses/getAddress";
 import { editAddressHandler } from "../controllers/user/addresses/editAddressHandler";
+import { authMiddleware } from "../../Middlewares/authMiddleware";
 
 const userRouter = Router();
 userRouter.post("/signup", register);
@@ -33,10 +33,22 @@ userRouter.put("/updateProfile/:userid", userProfileUpdate);
 userRouter.post("/updateProfile/verifyotp", profileUpdateOtp);
 userRouter.get("/logout", logoutUser);
 userRouter.get("/user/service/:id", getSingleServiceHandler);
-userRouter.get("/getactive/services", authMiddleware,getActiveServices);
+userRouter.get(
+  "/getactive/services",
+  authMiddleware,
+  getActiveServices
+);
 
-userRouter.route("/user/addresses").get(authMiddleware,GetAddressHandler).post(authMiddleware,addNewAddressHandler).put(authMiddleware,editAddressHandler)
+userRouter
+  .route("/user/addresses")
+  .get(authMiddleware, GetAddressHandler)
+  .post(authMiddleware, addNewAddressHandler)
+  .put(authMiddleware, editAddressHandler);
 
-userRouter.delete("/user/addresses:id",authMiddleware,deleteAddressHandler)
+userRouter.delete(
+  "/user/addresses:id",
+  authMiddleware,
+  deleteAddressHandler
+);
 //.patch(setDefaultAddressHandiler)
 export default userRouter;

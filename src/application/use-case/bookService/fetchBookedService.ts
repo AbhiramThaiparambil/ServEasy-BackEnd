@@ -9,24 +9,28 @@ import { UserRepository } from "../../../domain/repositories/IuserRepository";
 export class GetBookService {
   constructor(
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
-    @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository
-) {}
- 
-  async UserBookedServices (uId:mongoose.Types.ObjectId){
-   const userId= new mongoose.Types.ObjectId(uId);
+    @inject(ServiceBookingRepository)
+    private serviceBookingRepository: ServiceBookingRepository
+  ) {}
 
-     
-    const data=await this.serviceBookingRepository.findBookedServicesAndServiceByUserId(userId)
-    
-     return data
-}
-async ServiceProviderBookedServices (sId:mongoose.Types.ObjectId){
-  const serviceProviderId= new mongoose.Types.ObjectId(sId);
+  async UserBookedServices(uId: mongoose.Types.ObjectId) {
+    const userId = new mongoose.Types.ObjectId(uId);
 
-   const data=await this.serviceBookingRepository.findBookedServicesAndServiceByServiceProviderId(serviceProviderId)
+    const data =
+      await this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
+        userId
+      );
 
-  return data
-}    
+    return data;
+  }
+  async ServiceProviderBookedServices(sId: mongoose.Types.ObjectId) {
+    const serviceProviderId = new mongoose.Types.ObjectId(sId);
 
+    const data =
+      await this.serviceBookingRepository.findBookedServicesAndServiceByServiceProviderId(
+        serviceProviderId
+      );
 
+    return data;
+  }
 }

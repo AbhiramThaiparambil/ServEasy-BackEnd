@@ -29,6 +29,7 @@
     "nodemailer": "^6.10.0",
     "npm": "^11.2.0",
     "passport-google-oauth20": "^2.0.0",
+    "razorpay": "^2.9.6",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.8.0",
     "twilio": "^5.4.5",

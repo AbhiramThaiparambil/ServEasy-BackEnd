@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { IAddress } from './IAddress';
-
+import {IPayment} from "../entities/Ipayment"
 export interface IServiceBooking {
     serviceProviderId:ObjectId;
     serviceId: ObjectId;
@@ -12,5 +12,7 @@ export interface IServiceBooking {
     estimatedServiceTime?: Date;
     bookedTime?: Date;
     serviceCompletedTime?: Date;
-    cancelReason?:string
+    payment?:IPayment,
+    cancelReason?:string,
+    serviceBills?:string[]
 }

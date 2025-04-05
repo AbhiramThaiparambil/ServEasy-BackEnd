@@ -19,15 +19,14 @@ import { blockUnblockCategoryHandler } from "../controllers/admin/category-manag
 import { deleteCategoryHandler } from "../controllers/admin/category-management/deleteCategoryHandler";
 import { blockUnblockServiceHandler } from "../controllers/admin/category-management/blockUnblockServiceHandler";
 import { deleteServiceHandler } from "../controllers/admin/category-management/deleteServiceHandler";
-
 const router = express.Router();
 
 router.post("/signin", signIn);
-router.get("/profile", adminAuthMiddleware, adminProfile); // adminAuthMiddleware
+router.get("/profile", adminAuthMiddleware, adminProfile); 
 // router.post('/profile',adminAuthMiddleware,adminProfile)
 
 router.get("/users", getAllUsers);
-router.patch("/users/block-unblock", adminAuthMiddleware, blockUnblock); //adminAuthMiddleware
+router.patch("/users/block-unblock", adminAuthMiddleware, blockUnblock); 
 router.get("/serviceProvider", adminAuthMiddleware, getServiceProviders);
 
 router.patch(
