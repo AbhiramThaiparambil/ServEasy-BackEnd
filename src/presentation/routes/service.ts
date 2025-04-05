@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { addNewService } from "../controllers/service/addnewService";
 import { getServices } from "../controllers/service/getServices";
-import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
 import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
@@ -11,6 +10,8 @@ import { getSingleBookedServiceHandler } from "../controllers/ServiceBooking/get
 import { GetServiceProviderBookServiceHandler } from "../controllers/serviceProvider/bookings/GetBookServic";
 import { getServiceDetailsServiceProvider } from "../controllers/ServiceBooking/getServiceDetailsServiceProvider";
 import { serviceProviderStatusChange } from "../controllers/ServiceBooking/serviceProviderStausChange";
+import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { uploadBillsHandler } from "../controllers/ServiceBooking/uploadBills";
 
 const serviceRouter = Router();
 serviceRouter.put("/:serviceId", updateService);
@@ -27,19 +28,26 @@ serviceRouter.patch(
   blockUnblockService
 );
 
-serviceRouter.post("/book",authMiddleware,bookServiceHandler)
+serviceRouter.post("/book", authMiddleware, bookServiceHandler);
 
-serviceRouter.get("/bookings",authMiddleware,GetbookServiceHandler)
+serviceRouter.get("/bookings", authMiddleware, GetbookServiceHandler);
 serviceRouter.get(
   "/bookings/serviceprovider",
   authMiddleware,
   serviceProviderAuth,
   GetServiceProviderBookServiceHandler
 );
-serviceRouter.put("/service-provider/bookings/:id/:action",serviceProviderStatusChange)
+serviceRouter.post("/service-provider/uploadbills/:id/", uploadBillsHandler);
 
-serviceRouter.get("/bookings/serviceProvider/:id",getServiceDetailsServiceProvider)
+serviceRouter.put(
+  "/service-provider/bookings/:id/:action",
+  serviceProviderStatusChange
+);
 
-serviceRouter.get("/bookings:id",getSingleBookedServiceHandler)
+serviceRouter.get(
+  "/bookings/serviceProvider/:id",
+  getServiceDetailsServiceProvider
+);
 
+serviceRouter.get("/bookings:id", getSingleBookedServiceHandler);
 export default serviceRouter;
