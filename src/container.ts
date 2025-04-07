@@ -20,6 +20,7 @@ import { LocationService } from "./services/location/location";
 import { ServiceRepository } from "./infrastructure/repositories/ServiceRepositorie";
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
+import { RazorpayService } from "./services/razorpayService";
 
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -46,4 +47,5 @@ container.register("RedisService", RedisService);
 container.register("LocationService", { useClass: LocationService });
 container.register("ServiceRepository", ServiceRepository);
 container.register("ServiceBookingRepository", ServiceBookingRepository);
+container.register("RazorpayService", RazorpayService);
 console.log("All dependencies registered successfully.");
