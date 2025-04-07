@@ -16,7 +16,9 @@ export interface IServiceBookingRepository {
   ): Promise<IServiceBooking | null>;
   updatePaymentStatus(
     serviceBookingId: Types.ObjectId,
-    paymentStatus: string
+    paymentStatus: string,
+    paymentType:string
+
   ): Promise<IServiceBooking | null>;
 
   findBookedServicesAndServiceByUserId(Id: Types.ObjectId): Promise<any>;

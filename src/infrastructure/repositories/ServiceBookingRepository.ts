@@ -41,11 +41,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async updatePaymentStatus(
     serviceBookingId: Types.ObjectId,
-    paymentStatus: string
+    paymentStatus: string,
+    paymentType:string
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       serviceBookingId,
-      { paymentStatus },
+      { paymentStatus,
+        paymentType
+       },
       { new: true }
     );
   }
