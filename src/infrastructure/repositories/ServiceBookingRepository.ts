@@ -200,4 +200,134 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
+ 
+   
+ 
+
+  async findPaymentInfoAdmin(): Promise<any> {
+    try {
+      const bookedData = await ServiceBooking.aggregate([
+        {
+          $match: { paymentStatus: "completed" },
+        },
+        {
+          $lookup: {
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
+          },
+        },
+        { $unwind: "$serviceDetails" },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userData",
+          },
+        },
+        { $unwind: "$userData" },
+        {
+          $lookup: {
+            from: "serviceProviders",
+            localField: "serviceProviderId",
+            foreignField: "_id",
+            as: "serviceProviderInfo",
+          },
+        },
+        { $unwind: "$serviceProviderInfo" },
+        {
+          $project: {
+            _id: 1,
+            serviceBookedAddress: "$address",
+            serviceStatus: 1,
+            paymentType: 1,
+  
+
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
+  
+
+            userName: "$userData.userName",
+            userEmail: "$userData.email",
+            userPhone: "$userData.phone",
+            userProfile: "$userData.profileImage",
+
+            
+            serviceProviderName: "$serviceProviderInfo.serviceProviderName",
+            serviceProviderEmail: "$serviceProviderInfo.serviceProviderEmail",
+            profileImage: "$serviceProviderInfo.profileImage"
+          },
+        },
+      ]);
+  
+      return bookedData;
+    } catch (e) {
+      console.error("Error fetching booked service with user and service info:", e);
+      throw e;
+    }
+  }
+  
+
+  
+
+  async findPaymentInfoServiceProvider(id: string): Promise<any> {
+    try {
+      const bookedData = await ServiceBooking.aggregate([
+        {
+          $match: {
+            paymentStatus: "completed",
+            serviceProviderId: new Types.ObjectId(id),
+          },
+        },
+        {
+          $lookup: {
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
+          },
+        },
+        { $unwind: "$serviceDetails" },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userData",
+          },
+        },
+        { $unwind: "$userData" },
+        {
+          $project: {
+            _id: 1,
+            serviceBookedAddress: "$address",
+            payment:1,
+            serviceStatus: 1,
+            paymentType: 1,
+  
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
+  
+            userName: "$userData.userName",
+            userEmail: "$userData.email",
+            userPhone: "$userData.phone",
+            userProfile: "$userData.profileImage",
+          },
+        },
+      ]);
+  
+      return bookedData;
+    } catch (e) {
+      console.error("Error fetching booked service with user and service info:", e);
+      throw e;
+    }
+  }
+
+
+
+
 }
