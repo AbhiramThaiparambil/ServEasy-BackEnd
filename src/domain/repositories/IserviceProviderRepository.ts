@@ -11,9 +11,9 @@ export interface IServiceProviderRepository {
     data: Partial<IServiceProvider>
   ): Promise<IServiceProvider | null>;
 
-  find(): Promise<IServiceProvider[]>;
+  findServiceProviderSkipLimit(skip:number,limit:number): Promise<IServiceProvider[]>;
   findByUserID(userId: string): Promise<IServiceProvider | null>;
    unblockService(ServiceProviderId: string): Promise<boolean> 
-
+   findServiceProvidersCount():Promise<number>
      blockService(ProviderId: string): Promise<boolean> 
 }

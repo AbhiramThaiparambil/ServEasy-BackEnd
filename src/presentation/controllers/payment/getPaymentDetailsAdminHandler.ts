@@ -1,0 +1,20 @@
+import { Request, Response } from "express";
+import { container } from "tsyringe";
+import { GetPaymentInfoServiceProviderUseCase } from "../../../application/use-case/payment/getServiceProviderUseCase";
+
+export const getPaymentDetailsAdminHandler = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query.page as string) || 0;
+    const skip = page * limit;
+
+    const getPaymentInfo = await container.resolve(
+      GetPaymentInfoServiceProviderUseCase
+    );
+    const data = await getPaymentInfo.adminPaymentInfo(skip,limit);
+    res.status(200).json(data);
+  } catch (error) {}
+};

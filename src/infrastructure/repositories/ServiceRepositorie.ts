@@ -88,7 +88,7 @@ export class ServiceRepository implements IServiceRepository {
   // }
 
 
-  async getServicesWithProviderDetails() {
+  async getServicesWithProviderDetails(skip: number, limit: number) {
     return await ServiceModel.aggregate([
       {
         $lookup: {
@@ -98,8 +98,19 @@ export class ServiceRepository implements IServiceRepository {
           as: "serviceProviderDetails"
         }
       },
-      { $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true } } // Unwind the array
+      {
+        $unwind: {
+          path: "$serviceProviderDetails",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      { $skip: skip },
+      { $limit: limit }
     ]);
+  }
+
+  async getServicesWithProviderDetailsCount(){
+return await ServiceModel.countDocuments()
   }
 
 
@@ -128,7 +139,7 @@ export class ServiceRepository implements IServiceRepository {
   
 
   async findAllActiveServices(): Promise<IService[]> {
-    return ServiceModel.find({ isActive: true });
+    return await ServiceModel.find({ isActive: true });
 }
 
 }

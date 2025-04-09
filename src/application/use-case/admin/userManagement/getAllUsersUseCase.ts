@@ -6,7 +6,10 @@ export class getAllUsersUseCase {
   constructor(
     @inject(MongoUserRepository) private userRepository: UserRepository
   ) {}
-  async execute(){
-   return await this.userRepository.find()
+  async execute(skip:number,limit:number){
+  const users=await this.userRepository.findUsersSkipLimit(skip,limit)
+   const count =await this.userRepository.userCount()
+
+   return {users,count}
   }
 }
