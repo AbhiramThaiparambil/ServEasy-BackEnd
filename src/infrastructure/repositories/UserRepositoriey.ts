@@ -109,4 +109,16 @@ async updateUserBasedId(userId: string, updateData: Partial<User>): Promise<bool
 //   user
 // }
 
+
+
+
+async findUsersSkipLimit(skip: number, limit: number): Promise<User[]> {
+  return await UserModel.find().skip(skip).limit(limit);
+}
+
+async userCount():Promise<number>{
+return UserModel.countDocuments()
+}
+
+
 }

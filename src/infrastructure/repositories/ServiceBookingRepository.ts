@@ -200,23 +200,26 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
- 
-   
- 
+  async getBookedServiceCount(): Promise<number> {
+    try {
+      const count = await ServiceBooking.countDocuments();
+      return count;
+    } catch (error) {
+      console.error("Error counting booked services:", error);
+      throw new Error("Failed to count booked services");
+    }
+  }
 
-  async findPaymentInfoAdmin(): Promise<any> {
+  async findPaymentInfoAdmin(skip: number, limit: number): Promise<any> {
     try {
       const bookedData = await ServiceBooking.aggregate([
-        {
-          $match: { paymentStatus: "completed" },
-        },
         {
           $lookup: {
             from: "services",
             localField: "serviceId",
             foreignField: "_id",
-            as: "serviceDetails",
-          },
+            as: "serviceDetails"
+          }
         },
         { $unwind: "$serviceDetails" },
         {
@@ -224,17 +227,17 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             from: "users",
             localField: "userId",
             foreignField: "_id",
-            as: "userData",
-          },
+            as: "userData"
+          }
         },
         { $unwind: "$userData" },
         {
           $lookup: {
-            from: "serviceProviders",
+            from: "serviceproviders",
             localField: "serviceProviderId",
             foreignField: "_id",
-            as: "serviceProviderInfo",
-          },
+            as: "serviceProviderInfo"
+          }
         },
         { $unwind: "$serviceProviderInfo" },
         {
@@ -243,24 +246,39 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             serviceBookedAddress: "$address",
             serviceStatus: 1,
             paymentType: 1,
-  
-
+            paymentStatus: 1,
+            payment: 1,
+            serviceBills: 1,
+            estimatedServiceTime: 1,
+            bookedTime:1,
+            // Service Details
             serviceName: "$serviceDetails.serviceName",
             serviceType: "$serviceDetails.serviceType",
             serviceImage: "$serviceDetails.serviceImage",
   
-
+            // User Details
             userName: "$userData.userName",
             userEmail: "$userData.email",
             userPhone: "$userData.phone",
             userProfile: "$userData.profileImage",
-
-            
+  
+            // Service Provider Details
             serviceProviderName: "$serviceProviderInfo.serviceProviderName",
             serviceProviderEmail: "$serviceProviderInfo.serviceProviderEmail",
             profileImage: "$serviceProviderInfo.profileImage"
-          },
+          }
         },
+        {
+          $sort: {
+            bookedTime: -1 
+          }
+        },
+        {
+          $skip: skip
+        },
+        {
+          $limit: limit
+        }
       ]);
   
       return bookedData;
@@ -270,7 +288,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     }
   }
   
-
+  
   
 
   async findPaymentInfoServiceProvider(id: string): Promise<any> {

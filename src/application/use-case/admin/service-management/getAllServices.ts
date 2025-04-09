@@ -7,14 +7,15 @@ export class GetAllServics {
     @inject("ServiceRepository") private serviceRepository: ServiceRepository
   ) {}
 
-  async execute() {
+  async execute(skip:number,limit:number) {
     try {
-      const allServices:any = await this.serviceRepository.getServicesWithProviderDetails()
-          console.log(allServices);
+      const allServices:any = await this.serviceRepository.getServicesWithProviderDetails(skip,limit)
+      const count = await this.serviceRepository.getServicesWithProviderDetailsCount()
           
+        console.log(count);
+        
        
-       
-      return allServices;
+      return {allServices,count}
     } catch (error) {
       console.error("Error adding new service:", error);
       throw new Error("Failed to Fetch services");

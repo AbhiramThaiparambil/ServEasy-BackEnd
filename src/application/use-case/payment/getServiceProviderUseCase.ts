@@ -22,8 +22,9 @@ export class GetPaymentInfoServiceProviderUseCase {
     return data;
   }
 
-  async adminPaymentInfo() {
-    const data = await this.serviceBookingRepository.findPaymentInfoAdmin();
-    return data;
+  async adminPaymentInfo(skip:number,limit:number) {
+    const data = await this.serviceBookingRepository.findPaymentInfoAdmin(skip,limit)
+    const count= await this.serviceBookingRepository.getBookedServiceCount()
+    return {data,count};
   }
 }

@@ -6,11 +6,13 @@ import { verifyPaymentHandler } from "../controllers/payment/verifyPaymentHandle
 import { getPaymentDetailsHandler } from "../controllers/payment/getServiceProviderPayment";
 import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { getPaymentDetailsAdminHandler } from "../controllers/payment/getPaymentDetailsAdminHandler";
 const paymentRouter = Router();
 // verifyPaymentHandler
 
 paymentRouter.post("/create-order", createOrderHandler);
 paymentRouter.post("/verify",verifyPaymentHandler)
 paymentRouter.get("/service-provider",authMiddleware, serviceProviderAuth,getPaymentDetailsHandler)
+paymentRouter.get("/admin",getPaymentDetailsAdminHandler)
 
 export default paymentRouter;

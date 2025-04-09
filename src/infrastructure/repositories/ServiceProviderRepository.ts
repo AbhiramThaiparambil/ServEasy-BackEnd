@@ -33,8 +33,11 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     return result !== null;
   }
 
-  async find(): Promise<IServiceProvider[]> {
-    return await ServiceProviderModel.find();
+  async findServiceProviderSkipLimit(skip:number,limit:number): Promise<IServiceProvider[]> {
+    return await ServiceProviderModel.find().skip(skip).limit(limit)
+  }
+  async findServiceProvidersCount(){
+    return await  ServiceProviderModel.countDocuments()
   }
 
   async findByUserID(userId: string): Promise<IServiceProvider | null> {
