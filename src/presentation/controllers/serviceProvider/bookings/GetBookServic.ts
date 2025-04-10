@@ -8,9 +8,10 @@ export const GetServiceProviderBookServiceHandler  = async (req: Request, res: R
     
         
     const serviceProviderId = res.locals.serviceProvider_id;
-     console.log(serviceProviderId);
-   
-     console.log(serviceProviderId);
+  const limit = parseInt(req.query.limit as string) || 10;
+      const page = parseInt(req.query.page as string) || 0;
+      const skip = page * limit;
+    
 
     if (!serviceProviderId) {
        res.status(400).json({ error: "Service provider ID is required." });
@@ -18,9 +19,9 @@ export const GetServiceProviderBookServiceHandler  = async (req: Request, res: R
     }
 
     const getBookService = container.resolve(GetBookService);
-    const service = await getBookService.ServiceProviderBookedServices(serviceProviderId);
+    const {service,count} = await getBookService.ServiceProviderBookedServices(serviceProviderId,skip,limit);
 
-    res.status(200).json({ service });
+    res.status(200).json({ service,count});
   } catch (error) {
     console.error("Error in GetBookServiceHandler:", (error as Error).message, (error as Error).stack);
     res.status(500).json({ error: "Internal Server Error", details: (error as Error).message });

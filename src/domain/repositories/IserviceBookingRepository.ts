@@ -23,7 +23,8 @@ export interface IServiceBookingRepository {
 
   findBookedServicesAndServiceByUserId(Id: Types.ObjectId): Promise<any>;
   findBookedServicesAndServiceByServiceProviderId(
-    Id: Types.ObjectId
+    Id: Types.ObjectId,    skip: number,
+    limit: number
   ): Promise<any>;
 
   confirmBooking(
@@ -37,5 +38,5 @@ export interface IServiceBookingRepository {
       newStatus: string,
       cancelReason: string
     ): Promise<IServiceBooking | null> 
-
+   
 }

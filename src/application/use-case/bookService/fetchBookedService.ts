@@ -23,14 +23,18 @@ export class GetBookService {
 
     return data;
   }
-  async ServiceProviderBookedServices(sId: mongoose.Types.ObjectId) {
+  async ServiceProviderBookedServices(sId: mongoose.Types.ObjectId,skip:number,limit:number) {
     const serviceProviderId = new mongoose.Types.ObjectId(sId);
 
-    const data =
+    const service =
       await this.serviceBookingRepository.findBookedServicesAndServiceByServiceProviderId(
-        serviceProviderId
+        serviceProviderId,skip,limit
       );
 
-    return data;
+    const count =await  this.serviceBookingRepository.findCountBookedService(serviceProviderId)
+    console.log(count+"        jhklhjkhkjhkjhhk");
+    
+    return        {service,count}
+
   }
 }

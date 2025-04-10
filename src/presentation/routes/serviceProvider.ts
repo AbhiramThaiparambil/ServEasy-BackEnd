@@ -4,6 +4,7 @@ import { getServiceProvider } from "../controllers/serviceProvider/getServicePro
 import { verifyServiceProvider } from "../controllers/serviceProvider/verifyServiceProvider";
 import { GetbookServiceHandler } from "../controllers/ServiceBooking/getBookedService";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { getCategoryHandler } from "../controllers/admin/category-management/getCategory";
 
 const router = express.Router();
 
@@ -13,5 +14,5 @@ router.get("/", authMiddleware,getServiceProvider);
 
 router.get("/bookedService",)
 router.get("/bookings", authMiddleware,);
-
+router.get('/categories',getCategoryHandler)
 export default router;
