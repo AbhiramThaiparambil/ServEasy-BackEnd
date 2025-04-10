@@ -5,6 +5,7 @@ import { injectable } from "tsyringe";
 // import {IServiceBooking} from "../../domain/entities/IServiceBooking"
 import { IServiceBooking } from "../../domain/entities/IserviceBooking";
 import { IPayment } from "../../domain/entities/Ipayment";
+import { BookService } from "../../application/use-case/bookService/bookService";
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
   async findBookedServicesByUserId(
@@ -79,19 +80,24 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             serviceName: "$serviceDetails.serviceName",
             serviceType: "$serviceDetails.serviceType",
             serviceImage: "$serviceDetails.serviceImage",
+            bookedTime: 1,
           },
         },
+        {
+          $sort: { bookedTime: -1 },
+        },
       ]);
-
+  
       return bookedServices;
     } catch (e) {
       console.error("Error fetching booked services:", e);
       throw e;
     }
   }
-
   async findBookedServicesAndServiceByServiceProviderId(
-    ServiceProviderId: Types.ObjectId
+    ServiceProviderId: Types.ObjectId,
+    skip: number,
+    limit: number
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -106,7 +112,9 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             as: "serviceDetails",
           },
         },
-        { $unwind: "$serviceDetails" },
+        {
+          $unwind: "$serviceDetails",
+        },
         {
           $project: {
             _id: 1,
@@ -116,13 +124,33 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             serviceName: "$serviceDetails.serviceName",
             serviceType: "$serviceDetails.serviceType",
             serviceImage: "$serviceDetails.serviceImage",
+            bookedTime: 1,
           },
         },
+        {
+          $sort: { bookedTime: -1 },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
       ]);
-
+  
       return bookedServices;
     } catch (e) {
       console.error("Error fetching booked services:", e);
+      throw e;
+    }
+  }
+
+
+  async findCountBookedService(serviceProviderId: Types.ObjectId): Promise<number> {
+    try {
+      return await ServiceBooking.countDocuments({ serviceProviderId });
+    } catch (e) {
+      console.error("Error counting booked services:", e);
       throw e;
     }
   }

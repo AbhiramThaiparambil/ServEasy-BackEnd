@@ -5,19 +5,16 @@ import { GetBookSingleService } from "../../../application/use-case/bookService/
 
 export const getServiceDetailsServiceProvider = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("----------------------------------------------------------------------------------------------------------------------------");
 
     const { id } = req.params;
-console.log(id);
-console.log("----------------------------------------------------------------------------------------------------------------------------");
 
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
        res.status(400).json({ error: "Invalid service booking ID" });
        return
     }
-
-  
+    
+    
 
     const bookService = container.resolve(GetBookSingleService);
     const service = await bookService.ServiceProviderBookedService(new mongoose.Types.ObjectId(id));

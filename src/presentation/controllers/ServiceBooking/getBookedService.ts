@@ -8,14 +8,14 @@ export const GetbookServiceHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log('hello');
-    
+    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query.page as string) || 0;
+    const skip = page * limit;
+
     const userId = res.locals.user?.userId;
-      console.log(userId);
       
     const bookService = container.resolve(GetBookService);
     const service = await bookService.UserBookedServices( userId);
-console.log(service);
 
     res.status(200).json({ service });
   } catch (error) {
