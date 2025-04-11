@@ -1,12 +1,10 @@
 import { Types } from 'mongoose';
 
-
 export interface Location {
+  type: "Point";
+  coordinates: [number, number];
   address: string;
-  latitude: number;
-  longitude: number;
 }
-
 export interface Review {
   userId: Types.ObjectId;
   rating: number;
@@ -18,7 +16,7 @@ export interface IService {
   description: string;
   serviceType: string;
   category: string;
-  location: Location;
+  location: any;
   estimatedPrice: number;
   serviceProviderId: Types.ObjectId;
   isActive?: boolean;

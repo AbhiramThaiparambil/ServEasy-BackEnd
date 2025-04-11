@@ -14,7 +14,8 @@ export const addNewService = async (req: Request, res: Response) => {
       estimatedPrice,
       serviceImage,
       serviceProviderId
-    }: IService = req.body;
+    } = req.body;
+console.log(req.body);
 
     // Check for required fields
     if (
@@ -30,13 +31,17 @@ export const addNewService = async (req: Request, res: Response) => {
        res.status(400).json({ error: 'Bad Request: Missing required fields' });
        return
     }
-
+    const updateLocation = {
+      type: "Point",
+      coordinates: [location.longitude, location.latitude],
+      address: location.address
+    };
     const serviceData: IService = {
       serviceName,
       description,
       serviceType,
       category,
-      location,
+      location:updateLocation,
       estimatedPrice,
       serviceImage,
       serviceProviderId
