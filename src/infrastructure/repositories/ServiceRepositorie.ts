@@ -143,7 +143,7 @@ return await ServiceModel.countDocuments()
 }
 
 
-async  findNearestServices(userLongitude: number, userLatitude: number, maxDistanceInMeters = 10000) {
+async  findNearestServices(userLongitude: number, userLatitude: number, maxDistanceInMeters = 50000) {
   return  await ServiceModel.aggregate([
     {
       $geoNear: {
@@ -151,9 +151,9 @@ async  findNearestServices(userLongitude: number, userLatitude: number, maxDista
           type: "Point",
           coordinates: [userLongitude, userLatitude]
         },
-        distanceField: "distance", // this will be added to each document
+        distanceField: "distance", 
         spherical: true,
-        maxDistance: maxDistanceInMeters // optional: set a radius (in meters)
+        maxDistance: maxDistanceInMeters 
       }
     },
     {

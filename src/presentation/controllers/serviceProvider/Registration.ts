@@ -3,6 +3,7 @@ import { container } from "tsyringe";
 import { RegisterServiceProviderUseCase } from "../../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { IServiceProvider } from "../../../domain/entities/IServiceProvider";
 import { UpdateUserWithServiceProviderUseCase } from "../../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const RegistrationServiceProvider = async (req: Request, res: Response) => {
   try {
@@ -28,7 +29,7 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
         
     
     if (!serviceProviderName || !serviceProviderEmail || !serviceProviderPhone) {
-       res.status(400).json({ message: "Name, email, and phone are required." });
+       res.status(HttpStatus.BAD_REQUEST).json({ message: "Name, email, and phone are required." });
        return
     }
 
@@ -58,20 +59,18 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
 
     const updateUser = container.resolve(UpdateUserWithServiceProviderUseCase);
     const user = res.locals.user;
-     console.log(user);
      
     if (user.userId && serviceProvider._id) {
         
-     const result=  await updateUser.execute(user.userId, serviceProvider._id.toString());
-       console.log(result);
+    await updateUser.execute(user.userId, serviceProvider._id.toString());
        
     }
 
-     res.status(201).json({ message: "Service provider registered successfully.",serviceProvider });
+     res.status(HttpStatus.CREATED).json({ message: "Service provider registered successfully.",serviceProvider });
      return
     } catch (error) {
     console.error("Registration error:", error);
-     res.status(500).json({ message: "An error occurred while registering the service provider." });
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while registering the service provider." });
      return
     }
 };

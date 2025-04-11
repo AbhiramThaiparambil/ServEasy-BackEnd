@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GetPaymentInfoServiceProviderUseCase } from "../../../application/use-case/payment/getServiceProviderUseCase";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getPaymentDetailsAdminHandler = async (
   req: Request,
@@ -15,6 +16,6 @@ export const getPaymentDetailsAdminHandler = async (
       GetPaymentInfoServiceProviderUseCase
     );
     const data = await getPaymentInfo.adminPaymentInfo(skip,limit);
-    res.status(200).json(data);
+    res.status(HttpStatus.OK).json(data);
   } catch (error) {}
 };

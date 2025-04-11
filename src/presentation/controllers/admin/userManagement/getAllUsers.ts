@@ -8,9 +8,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 0;
     const skip = page * limit;
     const getAdminProfileUseCase = container.resolve(getAllUsersUseCase);
+ 
 
     const {users,count} = await getAdminProfileUseCase.execute(skip,limit);
-
+     console.log(users);
+       
     res.status(200).json({ users,count });
   } catch (error) {}
 };

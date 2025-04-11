@@ -1,10 +1,10 @@
 
 
 import { Request, Response } from "express";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
-    console.log('logOut-------------------------------');
     
     res.clearCookie("refreshToken", {
       httpOnly: true,
@@ -20,11 +20,11 @@ export const logoutUser = async (req: Request, res: Response) => {
       });
     }
 
-    res.status(200).json({ message: "User logged out successfully" });
+    res.status(HttpStatus.OK).json({ message: "User logged out successfully" });
     return;
   } catch (error) {
     console.error("Logout error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     return;
   }
 };

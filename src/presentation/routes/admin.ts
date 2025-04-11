@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { signIn } from "../controllers/admin/signin";
 import { adminProfile } from "../controllers/admin/adminProfile";
-import { adminAuthMiddleware } from "../../Middlewares/adminAuthMiddleware";
 import { getAllUsers } from "../controllers/admin/userManagement/getAllUsers";
 import { blockUnblock } from "../controllers/admin/userManagement/blockUnblock";
 import { getServiceProviders } from "../controllers/admin/serviceProviders/getServiceProviders";
@@ -19,31 +18,32 @@ import { blockUnblockCategoryHandler } from "../controllers/admin/category-manag
 import { deleteCategoryHandler } from "../controllers/admin/category-management/deleteCategoryHandler";
 import { blockUnblockServiceHandler } from "../controllers/admin/category-management/blockUnblockServiceHandler";
 import { deleteServiceHandler } from "../controllers/admin/category-management/deleteServiceHandler";
+import { authMiddleware } from "../../Middlewares/authMiddleware";
 const router = express.Router();
 
 router.post("/signin", signIn);
-router.get("/profile", adminAuthMiddleware, adminProfile); 
+router.get("/profile", authMiddleware("Admin"), adminProfile); 
 // router.post('/profile',adminAuthMiddleware,adminProfile)
 
-router.get("/users", getAllUsers);
-router.patch("/users/block-unblock", adminAuthMiddleware, blockUnblock); 
-router.get("/serviceProvider", adminAuthMiddleware, getServiceProviders);
+router.get("/users",authMiddleware("Admin"),getAllUsers);
+router.patch("/users/block-unblock", authMiddleware("Admin"), blockUnblock); 
+router.get("/serviceProvider", authMiddleware("Admin"), getServiceProviders);
 
 router.patch(
   "/serviceProvider/reject",
-  adminAuthMiddleware,
+  authMiddleware("Admin"),
   serviceProviderReject
 );
 
 router.patch(
   "/serviceProvider/verify",
-  adminAuthMiddleware,
+  authMiddleware("Admin"),
   serviceProviderVerify
 );
 blockUnblockCategoryHandler
-router.get("/service", adminAuthMiddleware, getAllServices);
-router.patch("/service", adminAuthMiddleware, blockUnblockService);
-router.patch("/serviceprovider",adminAuthMiddleware, blockUnblockServiceProvider);
+router.get("/service", authMiddleware("Admin"), getAllServices);
+router.patch("/service", authMiddleware("Admin"), blockUnblockService);
+router.patch("/serviceprovider",authMiddleware("Admin"), blockUnblockServiceProvider);
 router.post("/category",addCategoryHandler)
 router.get("/category",getCategoryHandler)
 router.put("/category",editCategoryHandler)

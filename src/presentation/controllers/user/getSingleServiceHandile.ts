@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GetServics } from "../../../application/use-case/User/GetServics";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getSingleServiceHandler = async (req: Request, res: Response) => {
   try {
@@ -10,7 +11,7 @@ export const getSingleServiceHandler = async (req: Request, res: Response) => {
       console.log(id);
       
     if (!id) {
-       res.status(400).json({ message: "Service ID is required" });
+       res.status(HttpStatus.BAD_REQUEST).json({ message: "Service ID is required" });
        return
     }
 
@@ -20,13 +21,13 @@ export const getSingleServiceHandler = async (req: Request, res: Response) => {
     console.log(service);
     
     if (!service) {
-       res.status(404).json({ message: "Service not found" });
+       res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
        return
     }
 
-    res.status(200).json({ service });
+    res.status(HttpStatus.OK).json({ service });
   } catch (error) {
     console.error("Error fetching service:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
   }
 };

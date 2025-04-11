@@ -19,21 +19,21 @@ serviceRouter.put("/:serviceId", updateService);
 serviceRouter
   .route("/")
   .post(addNewService)
-  .get(authMiddleware, serviceProviderAuth, getServices);
+  .get(authMiddleware("User"), serviceProviderAuth, getServices);
 
 serviceRouter.patch(
   "/block-unblock",
-  authMiddleware,
+  authMiddleware("User"),
   serviceProviderAuth,
   blockUnblockService
 );
 
-serviceRouter.post("/book", authMiddleware, bookServiceHandler);
+serviceRouter.post("/book", authMiddleware("User"), bookServiceHandler);
 
-serviceRouter.get("/bookings", authMiddleware, GetbookServiceHandler);
+serviceRouter.get("/bookings", authMiddleware("User"), GetbookServiceHandler);
 serviceRouter.get(
   "/bookings/serviceprovider",
-  authMiddleware,
+  authMiddleware("User"),
   serviceProviderAuth,
   GetServiceProviderBookServiceHandler
 );

@@ -12,7 +12,7 @@ const paymentRouter = Router();
 
 paymentRouter.post("/create-order", createOrderHandler);
 paymentRouter.post("/verify",verifyPaymentHandler)
-paymentRouter.get("/service-provider",authMiddleware, serviceProviderAuth,getPaymentDetailsHandler)
+paymentRouter.get("/service-provider",authMiddleware("User"), serviceProviderAuth,getPaymentDetailsHandler)
 paymentRouter.get("/admin",getPaymentDetailsAdminHandler)
 
 export default paymentRouter;

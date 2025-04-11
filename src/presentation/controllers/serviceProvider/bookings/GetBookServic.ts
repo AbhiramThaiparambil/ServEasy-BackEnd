@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GetBookService } from "../../../../application/use-case/bookService/fetchBookedService";
+import { HttpStatus } from "../../../../constants/HttpStatus";
 
 export const GetServiceProviderBookServiceHandler  = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -14,16 +15,16 @@ export const GetServiceProviderBookServiceHandler  = async (req: Request, res: R
     
 
     if (!serviceProviderId) {
-       res.status(400).json({ error: "Service provider ID is required." });
+       res.status(HttpStatus.BAD_REQUEST).json({ error: "Service provider ID is required." });
        return
     }
 
     const getBookService = container.resolve(GetBookService);
     const {service,count} = await getBookService.ServiceProviderBookedServices(serviceProviderId,skip,limit);
 
-    res.status(200).json({ service,count});
+    res.status(HttpStatus.OK).json({ service,count});
   } catch (error) {
     console.error("Error in GetBookServiceHandler:", (error as Error).message, (error as Error).stack);
-    res.status(500).json({ error: "Internal Server Error", details: (error as Error).message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error", details: (error as Error).message });
   }
 };

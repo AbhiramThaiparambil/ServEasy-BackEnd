@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { AutoSuggestion } from "../../../../application/use-case/User/location/autoSuggestion";
+import { HttpStatus } from "../../../../constants/HttpStatus";
 
 export const getAutoSuggestions = async (req: Request, res: Response) => {
   try {
@@ -8,7 +9,7 @@ export const getAutoSuggestions = async (req: Request, res: Response) => {
     console.log(req.query);
 
     if (!query) {
-       res.status(400).json({ message: "query is required" });
+       res.status(HttpStatus.BAD_REQUEST).json({ message: "query is required" });
        return
     }
 
@@ -16,11 +17,11 @@ export const getAutoSuggestions = async (req: Request, res: Response) => {
     const suggestions = await auto.execute(query as string);
 
     console.log(suggestions);
-     res.status(200).json(suggestions); 
+     res.status(HttpStatus.OK).json(suggestions); 
       return
   } catch (error) {
     console.error("Error in getAutoSuggestions:", error);
-     res.status(500).json({ message: "Internal Server Error", error });
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error });
      return
     }
 };

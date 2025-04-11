@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { BookService } from "../../../application/use-case/bookService/bookService";
 import { GetBookService } from "../../../application/use-case/bookService/fetchBookedService";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const GetbookServiceHandler = async (
   req: Request,
@@ -17,11 +18,11 @@ export const GetbookServiceHandler = async (
     const bookService = container.resolve(GetBookService);
     const service = await bookService.UserBookedServices( userId);
 
-    res.status(200).json({ service });
+    res.status(HttpStatus.OK).json({ service });
   } catch (error) {
     console.error("Error in bookServiceHandler:", error);
     res
-      .status(500)
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .json({
         error: "Internal Server Error",
         details: (error as Error).message,
