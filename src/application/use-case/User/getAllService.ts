@@ -6,6 +6,21 @@ export class GetAllActiveService {
     @inject("ServiceRepository") private serviceRepository: ServiceRepository
   ) {}
 
+
+async getNearByservices(userLongitude:number,userLatitude:number){
+  try {
+    const allServices = await this.serviceRepository.findNearestServices(userLongitude,userLatitude);
+   console.log(allServices);
+   
+    return allServices;
+  } catch (error) {
+    console.error("Error adding new service:", error);
+    throw new Error("Failed to add new service");
+  }
+}
+
+
+
   async execute() {
     try {
       const allServices = await this.serviceRepository.findAllActiveServices();
@@ -16,4 +31,5 @@ export class GetAllActiveService {
       throw new Error("Failed to add new service");
     }
   }
+
 }

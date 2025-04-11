@@ -2,9 +2,20 @@ import { Schema, model, Types } from "mongoose";
 import { IService } from "../../domain/entities/IService";
 
 const locationSchema = new Schema({
-  address: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true,
+    default: 'Point'
+  },
+  coordinates: {
+    type: [Number], 
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  }
 });
 
 const ServiceSchema = new Schema<IService>(
@@ -33,7 +44,7 @@ const ServiceSchema = new Schema<IService>(
   },
   { timestamps: true }
 );
-
+ServiceSchema.index({ "location.coordinates": "2dsphere" });
 
 const ServiceModel = model<IService>("Service", ServiceSchema);
 export default ServiceModel;
