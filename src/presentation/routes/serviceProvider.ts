@@ -8,11 +8,11 @@ import { getCategoryHandler } from "../controllers/admin/category-management/get
 
 const router = express.Router();
 
-router.post("/register", authMiddleware, RegistrationServiceProvider);
-router.get('/verify',authMiddleware,verifyServiceProvider);
-router.get("/", authMiddleware,getServiceProvider);
+router.post("/register", authMiddleware("User"), RegistrationServiceProvider);
+router.get('/verify',authMiddleware("User"),verifyServiceProvider);
+router.get("/", authMiddleware("User"),getServiceProvider);
 
 router.get("/bookedService",)
-router.get("/bookings", authMiddleware,);
+router.get("/bookings", authMiddleware("User"),);
 router.get('/categories',getCategoryHandler)
 export default router;

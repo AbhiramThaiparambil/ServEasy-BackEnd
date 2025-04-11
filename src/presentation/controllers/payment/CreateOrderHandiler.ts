@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateOrderUseCase } from "../../../application/use-case/payment/CreateOrderUseCase";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const createOrderHandler = async (req: Request, res: Response) => {
   const { serviceid } = req.body;
 
   if (!serviceid) {
-    res.status(400);
+    res.status(HttpStatus.BAD_REQUEST);
     res.json({ success: false, message: "Missing or invalid service ID" });
     return;
   }
@@ -14,20 +15,19 @@ export const createOrderHandler = async (req: Request, res: Response) => {
   try {
     const createOrder = container.resolve(CreateOrderUseCase);
     const result = await createOrder.execute(serviceid);
-console.log(result);
 
     if (!result || result.success === false) {
-      res.status(400);
+      res.status(HttpStatus.BAD_REQUEST);
       res.json(result);
       return;
     }
 
-    res.status(200);
+    res.status(HttpStatus.OK);
     res.json(result);
     return;
   } catch (error) {
     console.error("Order creation failed:", error);
-    res.status(500);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     res.json({ success: false, message: "Failed to create Razorpay order" });
     return;
   }

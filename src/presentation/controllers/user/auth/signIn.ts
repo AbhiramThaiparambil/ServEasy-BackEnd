@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { RegisterUser } from "../../../../application/use-case/User/auth/RegisterUser";
 import { container } from "tsyringe";
+import { HttpStatus } from "../../../../constants/HttpStatus";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const registerUser = container.resolve(RegisterUser);
-    console.log(registerUser);
 
     const { userName, email, password, phone } = req.body;
 
     if (!userName || !password) {
-      res.status(400).json({ message: "Username and password are required" });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: "Username and password are required" });
     }
 
     const data: {
@@ -28,7 +28,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     } else if (email) {
       data.email = email;
     } else {
-      res.status(400).json({ message: "Either phone or email is required" });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: "Either phone or email is required" });
     }
 
     const result = await registerUser.execute(data);
@@ -39,9 +39,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         ? "OTP sent to phone"
         : "Your account has been successfully created";
 
-      res.status(201).json({ message, regInfo });
+      res.status(HttpStatus.CREATED).json({ message, regInfo });
     } else if (result.errorMessage) {
-      res.status(400).json({ message: result.errorMessage });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: result.errorMessage });
     }
   } catch (error: unknown) {
     let errorMessage = "";
@@ -50,7 +50,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
     console.error("Registration error:", errorMessage);
     res
-      .status(400)
+      .status(HttpStatus.BAD_REQUEST)
       .json({ message: errorMessage || "An unexpected error occurred" });
   }
 };

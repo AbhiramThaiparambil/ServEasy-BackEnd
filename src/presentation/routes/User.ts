@@ -25,7 +25,7 @@ userRouter.post("/signup", register);
 userRouter.post("/signin/:method", signIn);
 userRouter.post("/verify-otp", verifyOtp);
 userRouter.post("/resend-otp", resendOtp);
-userRouter.get("/profile", authMiddleware, userProfile);
+userRouter.get("/profile", authMiddleware("User"), userProfile);
 userRouter.post("/forgot-password", sendOtp);
 userRouter.post("/forgot-password/verify-otp", forgotVerifyOtp);
 userRouter.post("/forgot-password/reset", resetPassword);
@@ -35,19 +35,19 @@ userRouter.get("/logout", logoutUser);
 userRouter.get("/user/service/:id", getSingleServiceHandler);
 userRouter.get(
   "/getactive/services",
-  authMiddleware,
+  authMiddleware("User"),
   getActiveServices
 );
 
 userRouter
   .route("/user/addresses")
-  .get(authMiddleware, GetAddressHandler)
-  .post(authMiddleware, addNewAddressHandler)
-  .put(authMiddleware, editAddressHandler);
+  .get(authMiddleware("User"), GetAddressHandler)
+  .post(authMiddleware("User"), addNewAddressHandler)
+  .put(authMiddleware("User"), editAddressHandler);
 
 userRouter.delete(
   "/user/addresses:id",
-  authMiddleware,
+  authMiddleware("User"),
   deleteAddressHandler
 );
 //.patch(setDefaultAddressHandiler)

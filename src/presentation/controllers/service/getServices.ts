@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GetService } from "../../../application/service-management/getServices";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getServices = async (req: Request, res: Response) => {
   try {
@@ -9,17 +10,17 @@ export const getServices = async (req: Request, res: Response) => {
     const serviceProviderId = res.locals.serviceProvider_id;
     
     if (!serviceProviderId) {
-       res.status(400).json({ message: "Service Provider ID is required." });
+       res.status(HttpStatus.BAD_REQUEST).json({ message: "Service Provider ID is required." });
        return
       }
     
     const result = await getService.execute(serviceProviderId);
     
-     res.status(200).json({ allServices: result });
+     res.status(HttpStatus.OK).json({ allServices: result });
      return
   } catch (e) {
-    console.error(e); // Consider using a logging library
-     res.status(500).json({ message: "An error occurred while fetching services." });
+    console.error(e);
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching services." });
      return
    }
 };

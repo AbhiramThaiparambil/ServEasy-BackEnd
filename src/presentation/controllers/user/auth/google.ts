@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GoogleAuthUseCase } from "../../../../application/use-case/User/auth/googleAuth";
+import { HttpStatus } from "../../../../constants/HttpStatus";
 
 export const googleAuth = async (req: Request, res: Response) => {
   try {
@@ -8,7 +9,7 @@ export const googleAuth = async (req: Request, res: Response) => {
 
     const { googleToken } = req.body;
     if (!googleToken) {
-      res.status(400).json({ message: "google token is Required" });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: "google token is Required" });
     }
     const googleUseCase = container.resolve(GoogleAuthUseCase);
     const result = await googleUseCase.execute(googleToken);
@@ -20,7 +21,7 @@ export const googleAuth = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ accessToken: result?.accessToken });
+    res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
   } catch (error) {
     console.error(error);
   }

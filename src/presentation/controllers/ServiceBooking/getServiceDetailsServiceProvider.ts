@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 import mongoose from "mongoose";
 import { GetBookSingleService } from "../../../application/use-case/bookService/GetBookedServiceById";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getServiceDetailsServiceProvider = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -10,7 +11,7 @@ export const getServiceDetailsServiceProvider = async (req: Request, res: Respon
 
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-       res.status(400).json({ error: "Invalid service booking ID" });
+       res.status(HttpStatus.BAD_REQUEST).json({ error: "Invalid service booking ID" });
        return
     }
     
@@ -19,9 +20,9 @@ export const getServiceDetailsServiceProvider = async (req: Request, res: Respon
     const bookService = container.resolve(GetBookSingleService);
     const service = await bookService.ServiceProviderBookedService(new mongoose.Types.ObjectId(id));
       
-    res.status(200).json({ service });
+    res.status(HttpStatus.OK).json({ service });
   } catch (error) {
     console.error("Error in getSingleBookedServiceHandler:", error);
-    res.status(500).json({ error: "Internal Server Error", details: (error as Error).message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error", details: (error as Error).message });
   }
 };

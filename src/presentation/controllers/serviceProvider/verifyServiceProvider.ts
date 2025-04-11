@@ -1,29 +1,30 @@
 import { VerifyServiceProvider } from "../../../application/use-case/serviceProvider/VerifyServiceProvider";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const verifyServiceProvider = async (req: Request, res: Response) => {
   try {
-   
-   
-    
-    
-    
     const verifyServiceProvideruseCase = container.resolve(
       VerifyServiceProvider
     );
     const user = res.locals.user;
-    console.log(user);
 
     if (!user || !user.userId) {
-      res.status(401).json({ message: "Unauthorized access" });
+      res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Unauthorized access" });
       return;
     }
 
-    const refreshToken = await verifyServiceProvideruseCase.execute(user.userId);
+    const refreshToken = await verifyServiceProvideruseCase.execute(
+      user.userId
+    );
 
     if (!refreshToken) {
-      res.status(400).json({ message: "Not a valid service provider" });
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "Not a valid service provider" });
       return;
     }
 
@@ -34,11 +35,13 @@ export const verifyServiceProvider = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Service provider verified" });
+    res.status(HttpStatus.OK).json({ message: "Service provider verified" });
     return;
   } catch (error) {
     console.error("Error in getServiceProvider:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal server error" });
     return;
   }
 };

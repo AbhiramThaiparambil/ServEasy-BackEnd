@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { GetAllActiveService } from "../../../application/use-case/User/getAllService";
+import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getActiveServices = async (req: Request, res: Response) => {
   try {
@@ -13,18 +14,17 @@ console.log(req.query);
     let result;
 
     if (!isNaN(userLongitude) && !isNaN(userLatitude)) {
-      console.log('hey jey heyhbkjh');
       
       result = await getService.getNearByservices(userLongitude, userLatitude);
     } else {
       result = await getService.execute();
     }
 
-     res.status(200).json({ allServices: result });
+     res.status(HttpStatus.OK).json({ allServices: result });
      return
   } catch (e) {
     console.error(e);
-     res.status(500).json({ message: "An error occurred while fetching services." });
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching services." });
      return
     }
 };

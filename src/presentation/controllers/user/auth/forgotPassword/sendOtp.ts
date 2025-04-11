@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SendOtp } from "../../../../../application/use-case/User/auth/forgotPassword/sendOtp";
 import { container } from "tsyringe";
+import { HttpStatus } from "../../../../../constants/HttpStatus";
 
 
 export const sendOtp=async (req:Request,res:Response)=>{
@@ -9,17 +10,17 @@ export const sendOtp=async (req:Request,res:Response)=>{
         console.log(email);
         
         if(!email && !phone){
-           res.status(400).json({Message: "Email or phone number is required"})
+           res.status(HttpStatus.BAD_REQUEST).json({Message: "Email or phone number is required"})
            return
         }
         const sendOtp=container.resolve(SendOtp)
          if(email){
             const message = await  sendOtp.sendEmailOtp(email)
             if(message.successMessage){
-                res.status(200).json({Message:message})
+                res.status(HttpStatus.OK).json({Message:message})
             }
             if(message.errorMessage){
-                res.status(400).json({Message:message.errorMessage})
+                res.status(HttpStatus.BAD_REQUEST).json({Message:message.errorMessage})
 
             }
             
@@ -28,17 +29,17 @@ export const sendOtp=async (req:Request,res:Response)=>{
          if(phone){
            const message = await sendOtp.sendSmsOtp(phone)
            if(message.successMessage){
-            res.status(200).json({Message:message})
+            res.status(HttpStatus.OK).json({Message:message})
         }
         if(message.errorMessage){
-            res.status(400).json({Message:message.errorMessage})
+            res.status(HttpStatus.BAD_REQUEST).json({Message:message.errorMessage})
 
         }
          }
    }catch(e){
 
        console.log(e);
-        res.status(500).json({ message: "Something went wrong. Please try again later." });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong. Please try again later." });
         return
        
    }
