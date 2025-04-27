@@ -105,4 +105,4 @@ export const serviceProviderStatusChange = async (
       details: (error as Error).message,
     });
   }
-};
+};  
