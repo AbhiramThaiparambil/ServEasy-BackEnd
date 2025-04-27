@@ -50,5 +50,4 @@ userRouter.delete(
   authMiddleware("User"),
   deleteAddressHandler
 );
-//.patch(setDefaultAddressHandiler)
 export default userRouter;

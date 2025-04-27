@@ -23,102 +23,105 @@ export class MongoUserRepository implements UserRepository {
     return await hash(passWord, 10);
   }
 
-  async comparePassword(passWord1: string, password2: string): Promise<boolean> {
-    
-    return await compare(passWord1,password2);
+  async comparePassword(
+    passWord1: string,
+    password2: string
+  ): Promise<boolean> {
+    return await compare(passWord1, password2);
   }
 
   async updateUser(user: User): Promise<boolean> {
     try {
       const result = await UserModel.findByIdAndUpdate(
-        user._id, 
-        { isVerified: user.isVerified }, 
-        { new: true } 
+        user._id,
+        { isVerified: user.isVerified },
+        { new: true }
       );
-      return result !== null; 
+      return result !== null;
     } catch (error) {
-      console.error('Error updating user:', error);
-      return false; 
+      console.error("Error updating user:", error);
+      return false;
     }
   }
-  async findById(id: string):Promise<User|null>{
-      
-    return UserModel.findById(id)
+  async findById(id: string): Promise<User | null> {
+    return UserModel.findById(id);
   }
 
-  async addServiceProviderId(userId: string, serviceProviderId: string): Promise<boolean> {
+  async addServiceProviderId(
+    userId: string,
+    serviceProviderId: string
+  ): Promise<boolean> {
     try {
-        const result = await UserModel.findByIdAndUpdate(
-           
-            
-            userId,
-            { serviceProvider: serviceProviderId }, // Store serviceProvider ID in user document
-            { new: true }
-        );
-        console.log(result);
-        return result !== null;
+      const result = await UserModel.findByIdAndUpdate(
+        userId,
+        { serviceProvider: serviceProviderId }, // Store serviceProvider ID in user document
+        { new: true }
+      );
+      console.log(result);
+      return result !== null;
     } catch (error) {
-        console.error("Error updating user:", error);
-        return false;
+      console.error("Error updating user:", error);
+      return false;
     }
-    
-}
+  }
 
-async find(): Promise<User[]> {
-    return  await UserModel.find()
-}
+  async find(): Promise<User[]> {
+    return await UserModel.find();
+  }
 
-async updateUserField<K extends keyof User>(userId: string, field: K, value: User[K]): Promise<boolean> {
+  async updateUserField<K extends keyof User>(
+    userId: string,
+    field: K,
+    value: User[K]
+  ): Promise<boolean> {
     try {
-        const result = await UserModel.findByIdAndUpdate(
-            userId,
-            { [field]: value },
-            { new: true }
-        );
-        return result !== null; 
+      const result = await UserModel.findByIdAndUpdate(
+        userId,
+        { [field]: value },
+        { new: true }
+      );
+      return result !== null;
     } catch (error) {
-        console.error("Error updating user:", error);
-        return false; 
+      console.error("Error updating user:", error);
+      return false;
     }
-}
-async updatePassword(userId: string, newPassword: string): Promise<boolean> {
-  const result = await UserModel.updateOne(
-    { _id: userId }, 
-    { $set: { password: newPassword } } 
-  );
-
-  return result.modifiedCount > 0;
-}
-
-async updateUserBasedId(userId: string, updateData: Partial<User>): Promise<boolean> {
-  try {
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      { $set: updateData },
-      { new: true } // Return updated document
+  }
+  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+    const result = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { password: newPassword } }
     );
 
-    return !!updatedUser; // Return true if update successful, false otherwise
-  } catch (error) {
-    console.error("Error updating user:", error);
-    return false;
+    return result.modifiedCount > 0;
   }
-}
 
-// async addAddress(userId:String,address:IAddress){
-//   user
-// }
+  async updateUserBasedId(
+    userId: string,
+    updateData: Partial<User>
+  ): Promise<boolean> {
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true } // Return updated document
+      );
 
+      return !!updatedUser; // Return true if update successful, false otherwise
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return false;
+    }
+  }
 
+  // async addAddress(userId:String,address:IAddress){
+  //   user
+  // }
 
+  async findUsersSkipLimit(skip: number, limit: number): Promise<User[]> {
+    return await UserModel.find().skip(skip).limit(limit);
+  }
 
-async findUsersSkipLimit(skip: number, limit: number): Promise<User[]> {
-  return await UserModel.find().skip(skip).limit(limit);
-}
-
-async userCount():Promise<number>{
-return UserModel.countDocuments()
-}
-
-
+  async userCount(): Promise<number> {
+    return UserModel.countDocuments();
+  }
 }
