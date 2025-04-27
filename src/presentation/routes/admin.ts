@@ -22,13 +22,11 @@ import { authMiddleware } from "../../Middlewares/authMiddleware";
 const router = express.Router();
 
 router.post("/signin", signIn);
-router.get("/profile", authMiddleware("Admin"), adminProfile); 
-// router.post('/profile',adminAuthMiddleware,adminProfile)
+router.get("/profile", authMiddleware("Admin"), adminProfile);
 
-router.get("/users",authMiddleware("Admin"),getAllUsers);
-router.patch("/users/block-unblock", authMiddleware("Admin"), blockUnblock); 
+router.get("/users", authMiddleware("Admin"), getAllUsers);
+router.patch("/users/block-unblock", authMiddleware("Admin"), blockUnblock);
 router.get("/serviceProvider", authMiddleware("Admin"), getServiceProviders);
-
 router.patch(
   "/serviceProvider/reject",
   authMiddleware("Admin"),
@@ -40,21 +38,24 @@ router.patch(
   authMiddleware("Admin"),
   serviceProviderVerify
 );
-blockUnblockCategoryHandler
+blockUnblockCategoryHandler;
 router.get("/service", authMiddleware("Admin"), getAllServices);
 router.patch("/service", authMiddleware("Admin"), blockUnblockService);
-router.patch("/serviceprovider",authMiddleware("Admin"), blockUnblockServiceProvider);
-router.post("/category",addCategoryHandler)
-router.get("/category",getCategoryHandler)
-router.put("/category",editCategoryHandler)
-router.patch("/category",blockUnblockCategoryHandler)
-router.delete("/category/:id",deleteCategoryHandler)
+router.patch(
+  "/serviceprovider",
+  authMiddleware("Admin"),
+  blockUnblockServiceProvider
+);
+router.post("/category", addCategoryHandler);
+router.get("/category", getCategoryHandler);
+router.put("/category", editCategoryHandler);
+router.patch("/category", blockUnblockCategoryHandler);
+router.delete("/category/:id", deleteCategoryHandler);
 
+router.post("/category/service", addServiceHandler);
+router.patch("/category/service", blockUnblockServiceHandler);
 
-router.post("/category/service",addServiceHandler)
-router.patch("/category/service",blockUnblockServiceHandler)
-
-router.put("/category/service",addServiceHandler)
+router.put("/category/service", addServiceHandler);
 router.delete("/category/service/:categoryId/:serviceId", deleteServiceHandler);
-router.get("/logout",logoutAdmin)
+router.get("/logout", logoutAdmin);
 export default router;
