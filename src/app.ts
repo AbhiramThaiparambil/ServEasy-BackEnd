@@ -16,7 +16,12 @@ import locationRouter from "./presentation/routes/location";
 import serviceRouter from "./presentation/routes/service";
 import morgan from "morgan"
 import paymentRouter from "./presentation/routes/payment";
+import { SocketService } from "./services/socket/SocketService";
+import { container } from "tsyringe";
+import chatRouter from "./presentation/routes/chat"
+import http from 'http'
 const app = express();
+const server=http.createServer(app)
 app.use(cookieparser());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "50mb" }));
@@ -29,6 +34,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+const socketService = container.resolve(SocketService);
+socketService.initialize(server);
+
 app.use('/location',locationRouter)
 
 app.use("/", authRouter);
@@ -38,11 +47,12 @@ app.use("/google",googleRouter)
 app.use("/admin", adminRoute);
 app.use("/service", serviceRouter);
 app.use("/payment",paymentRouter)
+app.use("/chat",chatRouter)
 dbConnect().catch((e) => console.log(e));
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
 });
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
