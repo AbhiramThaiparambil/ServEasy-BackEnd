@@ -5,7 +5,6 @@ import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getSingleServiceHandler = async (req: Request, res: Response) => {
   try {
-    console.log("_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_");
     
     const { id } = req.params; 
       console.log(id);
@@ -18,7 +17,6 @@ export const getSingleServiceHandler = async (req: Request, res: Response) => {
     const getService = container.resolve(GetServics);
     const service = await getService.execute(id);
  
-    console.log(service);
     
     if (!service) {
        res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
