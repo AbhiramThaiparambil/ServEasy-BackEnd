@@ -5,6 +5,7 @@ import { verifyServiceProvider } from "../controllers/serviceProvider/verifyServ
 import { GetbookServiceHandler } from "../controllers/ServiceBooking/getBookedService";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { getCategoryHandler } from "../controllers/admin/category-management/getCategory";
+import { getAllChatsHandler } from "../controllers/chat/getAllChatsHandler";
 
 const router = express.Router();
 
