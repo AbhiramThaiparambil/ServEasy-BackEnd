@@ -2,12 +2,14 @@ import { inject, injectable } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
 import { IPayment } from "../../../domain/entities/Ipayment";
+import { SocketService } from "../../../services/socket/SocketService";
 
 @injectable()
 export class UpdateServiceStatus {
   constructor(
     @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository
+    private serviceBookingRepository: ServiceBookingRepository,
+    private socketService: SocketService
   ) {}
 
   async updateBookingStatus(serviceBookedId: string, status: string) {
@@ -15,6 +17,17 @@ export class UpdateServiceStatus {
     const data = await this.serviceBookingRepository.updateServiceStatus(
       bookedServiceId,
       status
+    );
+
+
+    const notification = {
+      type: "booking",
+      message: data?.isOnlineService?"Your service has been confirmed. Please complete the payment to proceed":`The status of your booked service has been updated to  ${status}`,
+      timestamp: new Date().toISOString(),
+    };
+    this.socketService.sendNotificationToUser(
+      data?.userId+"",
+      notification
     );
     return data;
   }
@@ -30,6 +43,22 @@ export class UpdateServiceStatus {
       status,
       estimatedServiceTime
     );
+    const bookedService =
+    await this.serviceBookingRepository.findBookedServiceById(
+      bookedServiceId
+    );
+    const notification = {
+      type: "booking",
+      message: `Your booking has been confirmed!`,
+      timestamp: new Date().toISOString(),
+    };
+    this.socketService.sendNotificationToUser(
+      bookedService?.userId + "",
+      notification
+    );
+
+    
+
     return data;
   }
 
@@ -39,6 +68,15 @@ export class UpdateServiceStatus {
       bookedServiceId,
       status,
       cancellationReason
+    );
+    const notification = {
+      type: "booking",
+      message: `Your booking has been cancelled.`,
+      timestamp: new Date().toISOString(),
+    };
+    this.socketService.sendNotificationToUser(
+      data?.userId+"",
+      notification
     );
     return data;
   }
@@ -66,6 +104,17 @@ export class UpdateServiceStatus {
       paymentStatus,
       payment
     );
+
+    const notification = {
+      type: "booking",
+      message: `Payment requested for your service. Please complete the payment to proceed.`,
+      timestamp: new Date().toISOString(),
+    };
+    this.socketService.sendNotificationToUser(
+      data?.userId+"",
+      notification
+    );
+
     return data;
   }
 }

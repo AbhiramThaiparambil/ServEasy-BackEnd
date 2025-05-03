@@ -5,7 +5,7 @@ import { IPayment } from './Ipayment';
 export interface IServiceBooking {
     serviceProviderId:ObjectId;
     serviceId: ObjectId;
-    address: IAddress;
+    address?: IAddress;
     serviceStatus?: 'pending' | 'in-progress' | 'completed' | 'cancelled'|'confirmed';
     paymentType?: 'cash' | 'card' | 'online'|'pending';
     paymentStatus: 'pending' | 'paid' | 'failed';
@@ -16,4 +16,5 @@ export interface IServiceBooking {
     payment?:IPayment,
     cancelReason?:string,
     serviceBills?:string[]
+    isOnlineService?:boolean
 }
