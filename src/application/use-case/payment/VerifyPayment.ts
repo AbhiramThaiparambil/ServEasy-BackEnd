@@ -28,9 +28,14 @@ export class VerifyPaymentUseCase {
         razorpay_payment_id,
         razorpay_signature
       );
-       
-      this.serviceBookingRepository.updateServiceStatus(serviceObjId,"completed")
-      console.log(result);
+      const service =await this.serviceBookingRepository.findBookedServiceById(serviceObjId)
+      if(service?.isOnlineService){
+        this.serviceBookingRepository.updateServiceStatus(serviceObjId,"in-progress")
+
+      }else{
+        this.serviceBookingRepository.updateServiceStatus(serviceObjId,"completed")
+
+      }
 
       const paymentStatus = result.status === "captured" ? "completed" : "failed";
 

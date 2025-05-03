@@ -46,7 +46,6 @@ export const serviceProviderStatusChange = async (
         return;
       }
 
-      console.log("Service Status:", serviceStatus);
 
       updatedService = await changeStatusContainer.updateBookingStatus(
         id,

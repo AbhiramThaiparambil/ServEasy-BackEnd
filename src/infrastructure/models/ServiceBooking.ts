@@ -34,7 +34,8 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
     payment:{type:{}},
     cancelReason:{type:String},
     serviceCompletedTime: { type: Date },
-    serviceBills:{type:Array}
+    serviceBills:{type:Array},
+    isOnlineService:{type:Boolean}
   },
   { timestamps: true }
 );

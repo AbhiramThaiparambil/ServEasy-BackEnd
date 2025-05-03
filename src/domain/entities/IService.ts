@@ -4,7 +4,7 @@ export interface Location {
   type: "Point";
   coordinates: [number, number];
   address: string;
-}
+} 
 export interface Review {
   userId: Types.ObjectId;
   rating: number;

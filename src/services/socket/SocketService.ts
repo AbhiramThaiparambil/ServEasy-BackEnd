@@ -126,10 +126,18 @@ export class SocketService {
 
 
 
-      socket.on("message_delivered",()=>{
-
-
+      socket.on("join_notification", ({ userId }) => {
+        socket.join(userId);
+        console.log(`User ${userId} joined notification room`);
       });
+      
+      socket.on("send_notification", ({ userId, notification }) => {
+        console.log(`Sending notification to ${userId}:`, notification);
+        this.io.to(userId).emit("receive_notification", notification);
+      });
+      
+      // Add method in class
+  
 
 
 
@@ -138,7 +146,15 @@ export class SocketService {
 
     });
   }
-
+  public sendNotificationToUser(userId: string, notification: any) {
+    console.log(userId+"---------------------------------------------))))))))))))))))))(((((((((");
+    if (!this.io) {
+      console.error("SocketService has not been initialized with an HTTP server yet.");
+      return;
+    }
+    
+    this.io.to(userId).emit("receive_notification", notification);
+  }
   private createRoomId(userA: string, userB: string): string {
     return [userA, userB].sort().join("_");
   }
