@@ -23,7 +23,7 @@ export const getSingleBookedServiceHandler = async (
     const service = await bookService.userBookedService(
       new mongoose.Types.ObjectId(id)
     );
-
+     
     res.status(HttpStatus.OK).json({ service });
   } catch (error) {
     console.error("Error in getSingleBookedServiceHandler:", error);

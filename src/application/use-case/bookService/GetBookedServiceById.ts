@@ -4,6 +4,7 @@ import { ServiceRepository } from "../../../infrastructure/repositories/ServiceR
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
 import mongoose from "mongoose";
 import { UserRepository } from "../../../domain/repositories/IuserRepository";
+import { ReviewRepository } from "../../../infrastructure/repositories/ReviewRepository";
 
 @injectable()
 export class GetBookSingleService {
@@ -11,7 +12,8 @@ export class GetBookSingleService {
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository,
     @inject(ServiceProviderRepository) private serviceProviderRepository: ServiceProviderRepository
-   , @inject("UserRepository") private userRepository: UserRepository
+     ,@inject(ReviewRepository) private reviewRepository :ReviewRepository
+    , @inject("UserRepository") private userRepository: UserRepository
   
 ) {}
 
@@ -23,11 +25,13 @@ export class GetBookSingleService {
 
     const serviceProvider = await this.serviceProviderRepository.findById(bookedService.serviceProviderId);
     const service = await this.serviceRepository.findById(bookedService.serviceId);
+    const review = await this.reviewRepository.findByBookingId(bookedServiceId)
 
     return {
       bookedService,
       serviceProvider,
       service,
+      review,
     };
   }
 
@@ -40,11 +44,13 @@ export class GetBookSingleService {
     const serviceProvider = await this.serviceProviderRepository.findById(bookedService.serviceProviderId);
     const service = await this.serviceRepository.findById(bookedService.serviceId);
     const user= await this.userRepository.findById(bookedService.userId+"")
+   const review = await this.reviewRepository.findByBookingId(bookedServiceId)
     return {
       bookedService,
       serviceProvider,
       service,
-      user
+      user,
+      review
     };
   }
 }

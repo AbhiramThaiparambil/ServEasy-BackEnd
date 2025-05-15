@@ -376,5 +376,19 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
 
 
+  async updateReviewId(bookingId: Types.ObjectId, reviewId: Types.ObjectId): Promise<void> {
+    await ServiceBooking.findOneAndUpdate(
+      { _id: bookingId },
+      { $set: { reviewId: reviewId } }
+    );
+  }
+
+
+
+
+
+
+
+
 
 }
