@@ -230,7 +230,6 @@ export class SocketService {
     
       socket.on("join_video_call", ({ user1,user2 }: { user1:string,user2: string }) => {
         console.log(`User ${user1} joined video room: ${user2}`);
-        console.log(`======================================`);
         const roomId = this.createRoomId(user1,user2);
            console.log(roomId);
            
