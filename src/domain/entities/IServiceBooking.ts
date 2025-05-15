@@ -17,4 +17,5 @@ export interface IServiceBooking {
     cancelReason?:string,
     serviceBills?:string[]
     isOnlineService?:boolean
+    reviewId?:ObjectId
 }

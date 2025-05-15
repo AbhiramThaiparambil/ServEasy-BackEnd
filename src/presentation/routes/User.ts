@@ -21,6 +21,7 @@ import { editAddressHandler } from "../controllers/user/addresses/editAddressHan
 import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { getSpecificChat } from "../controllers/chat/getSpecificChat";
 import { getServiceProviderInfoChatHandiler } from "../controllers/user/getServiceProviderInfoChatHandiler";
+import { addReviewHandler } from "../controllers/ServiceBooking/addReviewHandler";
 
 const userRouter = Router();
 userRouter.post("/signup", register);
@@ -34,8 +35,8 @@ userRouter.post("/forgot-password/reset", resetPassword);
 userRouter.put("/updateProfile/:userid", userProfileUpdate);
 userRouter.post("/updateProfile/verifyotp", profileUpdateOtp);
 userRouter.get("/logout", logoutUser);
-userRouter.get("/user/service/:id", getSingleServiceHandler)
-userRouter.get("/user/profile/:id", userProfile); // ✅ This works
+userRouter.get("/user/service/:id", getSingleServiceHandler);
+userRouter.get("/user/profile/:id", userProfile); 
 userRouter.get(
   "/getactive/services",
   authMiddleware("User"),
@@ -54,14 +55,16 @@ userRouter.delete(
   deleteAddressHandler
 );
 
-
-
-
+userRouter.route("/reviews").post(addReviewHandler);
+// userRouter.post("/reviews",addReviewHandler)
 
 
 
 // chat
 
-userRouter.get("/user/profile/serviceprovider-chat/:id",getServiceProviderInfoChatHandiler)
+userRouter.get(
+  "/user/profile/serviceprovider-chat/:id",
+  getServiceProviderInfoChatHandiler
+);
 
 export default userRouter;

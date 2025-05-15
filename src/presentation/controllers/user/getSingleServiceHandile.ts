@@ -5,6 +5,7 @@ import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getSingleServiceHandler = async (req: Request, res: Response) => {
   try {
+    console.log("---------------------------------***888)))))))))");
     
     const { id } = req.params; 
       console.log(id);
@@ -15,15 +16,15 @@ export const getSingleServiceHandler = async (req: Request, res: Response) => {
     }
 
     const getService = container.resolve(GetServics);
-    const service = await getService.execute(id);
+    const data = await getService.execute(id);
  
     
-    if (!service) {
+    if (!data.services) {
        res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
        return
     }
 
-    res.status(HttpStatus.OK).json({ service });
+    res.status(HttpStatus.OK).json(data);
   } catch (error) {
     console.error("Error fetching service:", error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });

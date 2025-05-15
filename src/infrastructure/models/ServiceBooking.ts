@@ -35,7 +35,9 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
     cancelReason:{type:String},
     serviceCompletedTime: { type: Date },
     serviceBills:{type:Array},
-    isOnlineService:{type:Boolean}
+    isOnlineService:{type:Boolean},
+    reviewId: { type: Schema.Types.ObjectId, ref: "Review" }
+
   },
   { timestamps: true }
 );
