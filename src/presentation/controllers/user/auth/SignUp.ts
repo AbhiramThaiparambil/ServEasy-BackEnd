@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import { SignIn } from "../../../../application/use-case/User/auth/SignIn";
 import { config } from "dotenv";
 import { HttpStatus } from "../../../../constants/HttpStatus";
 import { setAuthCookies } from "../../../../utils/setAuthCookies";
+import { SignIn } from "../../../../application/use-case/User/auth/SignIn";
 
 config();
 
@@ -36,12 +36,7 @@ export const signIn = async (req: Request, res: Response) => {
         return;
       }
 
-      // res.cookie("refreshToken", result?.refreshToken, {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === "production",
-      //   sameSite: "strict",
-      //   maxAge: 7 * 24 * 60 * 60 * 1000,
-      // });
+   
 if(result?.refreshToken){
   setAuthCookies(res,result?.refreshToken)
 
@@ -76,13 +71,7 @@ if(result?.refreshToken){
         return;
       }
 
-      // res.cookie("refreshToken", result?.refreshToken, {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === "production",
-      //   sameSite: "strict",
-      //   maxAge: 7 * 24 * 60 * 60 * 1000,
-      //   path: "/",
-      // });
+  
 
       if(result?.refreshToken){
         setAuthCookies(res,result?.refreshToken)

@@ -9,7 +9,7 @@ import { container } from "tsyringe";
 import { EmailOtpService } from "./services/OTP/mailOtp";
 import { Otpservice } from "./services/OTP/OtpService";
 import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
-import { VerifyOtp } from "./application/use-case/User/auth/VerifyOtp";
+
 import { RedisService } from "./services/OTP/redisService";
 import { SmsOtpService } from "./services/OTP/phoneOtp";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
@@ -21,10 +21,11 @@ import { ServiceRepository } from "./infrastructure/repositories/ServiceReposito
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
 import { RazorpayService } from "./services/razorpayService";
-import { SocketService } from "./services/socket/SocketService";
+import { SocketService } from "./services/socket/socketService";
 import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
+import { VerifyOtp } from "./application/use-case/User/auth/VerifyOtp";
 
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -53,9 +54,8 @@ container.register("LocationService", { useClass: LocationService });
 container.register("ServiceRepository", ServiceRepository);
 container.register("ServiceBookingRepository", ServiceBookingRepository);
 container.register("RazorpayService", RazorpayService);
-container.register("ReviewRepository", { useClass: ReviewRepository});
+container.register("ReviewRepository", { useClass: ReviewRepository });
 
 container.registerSingleton<IChatRepository>("ChatRepository", ChatRepository);
 
 console.log("All dependencies registered successfully.");
- 
