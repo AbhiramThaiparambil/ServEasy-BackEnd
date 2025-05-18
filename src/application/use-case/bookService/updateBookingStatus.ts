@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
 import { IPayment } from "../../../domain/entities/Ipayment";
-import { SocketService } from "../../../services/socket/SocketService";
+import { SocketService } from "../../../services/socket/socketService";
 
 @injectable()
 export class UpdateServiceStatus {

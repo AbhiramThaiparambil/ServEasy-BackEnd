@@ -201,14 +201,12 @@ export class SocketService {
         socket.to(roomId).emit("receive_message", { message: savedMessage });
       });
 
-      // --- Chat leave ---
       socket.on("leave_chat", ({ senderId, receiverId, offlineId }: { senderId: string; receiverId: string; offlineId: string }) => {
         const roomId = this.createRoomId(senderId, receiverId);
         socket.leave(roomId);
         saveMessageUseCase.makeItOffline(senderId, receiverId, offlineId);
       });
 
-      // --- Online status ---
       socket.on("makeItOnline", async ({ onlineId, receiverId }) => {
         try {
           await saveMessageUseCase.makeItOnline(onlineId, receiverId);
@@ -217,7 +215,6 @@ export class SocketService {
         }
       });
 
-      // --- Notification ---
       socket.on("join_notification", ({ userId }) => {
         socket.join(userId);
         console.log(`User ${userId} joined notification room`);
@@ -228,33 +225,33 @@ export class SocketService {
       });
 
     
-      socket.on("join_video_call", ({ user1,user2 }: { user1:string,user2: string }) => {
-        console.log(`User ${user1} joined video room: ${user2}`);
+
+    
+      socket.on("join_video_call", ({ user1,user2 }: { user1:string,user2: string,receiverName:string }) => {
+        console.log(`${user2}`);
+        console.log('join video event is on');
+        
+        this.sendNotificationToUser(user2,{ videoCall: `Incoming video call from abhiram` ,callerId:user1})
         const roomId = this.createRoomId(user1,user2);
            console.log(roomId);
            
-        const b = socket.join(roomId);
-        console.log("bbb" +b );
+       socket.join(roomId);
         
         socket.to(roomId).emit("user-joined");
-        // console.log(`User ${socket.id} joined video room: ${roomId}`);
       });
 
-      // 2. Signal exchange (offer, answer, candidates)
       socket.on("signal", ({ user1,user2, data  }: { user1:string,user2: string, data: any }) => {
         const roomId = this.createRoomId(user1,user2);
 
         socket.to(roomId).emit("signal", { data });
       });
 
-      // 3. Handle leaving
       socket.on("leave_video_call", ({ roomId }: { roomId: string }) => {
         socket.leave(roomId);
         socket.to(roomId).emit("user-left");
         console.log(`User ${socket.id} left video room: ${roomId}`);
       });
 
-      // Disconnect (you can enhance this later)
       socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
       });

@@ -5,7 +5,6 @@ import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getSingleServiceHandler = async (req: Request, res: Response) => {
   try {
-    console.log("---------------------------------***888)))))))))");
     
     const { id } = req.params; 
       console.log(id);
