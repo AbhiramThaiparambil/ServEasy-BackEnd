@@ -3,13 +3,16 @@ import { ServiceBookingRepository } from "../../../infrastructure/repositories/S
 import mongoose from "mongoose";
 import { IPayment } from "../../../domain/entities/Ipayment";
 import { SocketService } from "../../../services/socket/socketService";
+import { ISystemNotification } from "../../../domain/entities/INotification";
 
 @injectable()
 export class UpdateServiceStatus {
   constructor(
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
-    private socketService: SocketService
+    @inject(SocketService)    private socketService: SocketService
+
+
   ) {}
 
   async updateBookingStatus(serviceBookedId: string, status: string) {
@@ -18,11 +21,10 @@ export class UpdateServiceStatus {
       bookedServiceId,
       status
     );
-
-
-    const notification = {
-      type: "booking",
-      message: data?.isOnlineService?"Your service has been confirmed. Please complete the payment to proceed":`The status of your booked service has been updated to  ${status}`,
+    
+    const notification:ISystemNotification= {
+      type: "notfication",
+      content: data?.isOnlineService?"Your service has been confirmed. Please complete the payment to proceed":`The status of your booked service has been updated to  ${status}`,
       timestamp: new Date().toISOString(),
     };
     this.socketService.sendNotificationToUser(
@@ -47,9 +49,9 @@ export class UpdateServiceStatus {
     await this.serviceBookingRepository.findBookedServiceById(
       bookedServiceId
     );
-    const notification = {
-      type: "booking",
-      message: `Your booking has been confirmed!`,
+    const notification:ISystemNotification= {
+      type: "notfication",
+      content: `Your booking has been confirmed!`,
       timestamp: new Date().toISOString(),
     };
     this.socketService.sendNotificationToUser(
@@ -69,9 +71,9 @@ export class UpdateServiceStatus {
       status,
       cancellationReason
     );
-    const notification = {
-      type: "booking",
-      message: `Your booking has been cancelled.`,
+    const notification:ISystemNotification = {
+      type: "notfication",
+      content: `Your booking has been cancelled.`,
       timestamp: new Date().toISOString(),
     };
     this.socketService.sendNotificationToUser(
@@ -105,9 +107,9 @@ export class UpdateServiceStatus {
       payment
     );
 
-    const notification = {
-      type: "booking",
-      message: `Payment requested for your service. Please complete the payment to proceed.`,
+    const notification:ISystemNotification = {
+      type: "notfication",
+      content: `Payment requested for your service. Please complete the payment to proceed.`,
       timestamp: new Date().toISOString(),
     };
     this.socketService.sendNotificationToUser(

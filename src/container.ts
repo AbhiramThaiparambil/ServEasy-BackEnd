@@ -26,6 +26,7 @@ import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
 import { VerifyOtp } from "./application/use-case/User/auth/VerifyOtp";
+import { NotificationRepository } from "./infrastructure/repositories/NotificationRepository";
 
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -55,7 +56,7 @@ container.register("ServiceRepository", ServiceRepository);
 container.register("ServiceBookingRepository", ServiceBookingRepository);
 container.register("RazorpayService", RazorpayService);
 container.register("ReviewRepository", { useClass: ReviewRepository });
-
+container.register("NotificationRepository",{useClass:NotificationRepository})
 container.registerSingleton<IChatRepository>("ChatRepository", ChatRepository);
 
 console.log("All dependencies registered successfully.");
