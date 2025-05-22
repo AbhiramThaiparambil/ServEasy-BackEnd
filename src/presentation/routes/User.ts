@@ -23,7 +23,9 @@ import { getServiceProviderInfoChatHandiler } from "../controllers/user/getServi
 import { addReviewHandler } from "../controllers/ServiceBooking/addReviewHandler";
 import { signIn } from "../controllers/user/auth/SignUp";
 import { verifyOtp } from "../controllers/user/auth/verifyOtp";
-
+import { container } from "tsyringe";
+import { UserController } from "../controllers/UserController";
+const userController= container.resolve(UserController)
 const userRouter = Router();
 userRouter.post("/signup", register);
 userRouter.post("/signin/:method", signIn);
@@ -67,4 +69,8 @@ userRouter.get(
   getServiceProviderInfoChatHandiler
 );
 
+userRouter.get("/notification",  authMiddleware("User"),userController.getNotification.bind(userController));
+userRouter.patch("/notification/:id",  authMiddleware("User"),userController.markAsReadNotification.bind(userController));
+
+userRouter.delete("/notification/:id",authMiddleware("User"),userController.deleteNotification.bind(userController))
 export default userRouter;
