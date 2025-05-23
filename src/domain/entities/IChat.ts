@@ -21,3 +21,36 @@ export interface IChat extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IServiceProviderChat {
+  _id: Types.ObjectId;
+  lastMessageAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  lastMessage: IMessage;
+  userName: string;
+  userAvatar: string;
+  userId: Types.ObjectId | string;
+  presence: Array<{
+    userId: Types.ObjectId;
+    online: boolean;
+    lastSeen: Date | null;
+  }>;
+}
+
+
+export interface IUserChat {
+  _id: Types.ObjectId;
+  lastMessageAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  lastMessage: IMessage;
+  userName: string;
+  userID: Types.ObjectId;
+  userAvatar: string;
+  presence: Array<{
+    userId: Types.ObjectId;
+    online: boolean;
+    lastSeen: Date | null;
+  }>;
+}

@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import { ChatModel } from "../models/chatModel";
 import {IChatRepository} from "../../domain/repositories/IChatRepository"
-import {IChat, IMessage} from "../../domain/entities/IChat"
+import {IChat, IMessage, IServiceProviderChat, IUserChat} from "../../domain/entities/IChat"
 import { Collection, Types } from "mongoose";
 import { promises } from "dns";
 @injectable()
@@ -198,7 +198,7 @@ async makeItOnline(id1: Types.ObjectId, onlineId: Types.ObjectId): Promise<void>
     );
   }
 
-  async findUsersChats(userId: string): Promise<any[]> {
+  async findUsersChats(userId: string): Promise<IUserChat[]> {
     const objectId = new Types.ObjectId(userId);
     const chats = await ChatModel.aggregate([
         {
@@ -268,7 +268,7 @@ async makeItOnline(id1: Types.ObjectId, onlineId: Types.ObjectId): Promise<void>
       return chats;
   }
 
-  async findServiceProvidersChat(userId:string) :Promise<any[]>{
+  async findServiceProvidersChat(userId:string) :Promise<IServiceProviderChat[]>{
     const objectId = new Types.ObjectId(userId);
 
     const chats = await ChatModel.aggregate([
