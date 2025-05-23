@@ -1,15 +1,14 @@
 import { UserRepository } from "../../../../domain/repositories/IuserRepository";
-import { container } from "tsyringe";
+import { container, inject, injectable } from "tsyringe";
 import { TokenService } from "../../../../services/auth/TokenService";
+
+
+@injectable()
 export class SignIn {
-  private userRepository: UserRepository;
-  private tokenService: TokenService;
-
-  constructor(userRepository: UserRepository, tokenService: TokenService) {
-    this.userRepository = userRepository;
-    this.tokenService = tokenService;
-  }
-
+  constructor(
+    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("TokenService") private tokenService: TokenService,
+  ) {}
   static create(): SignIn {
     const userRepository = container.resolve<UserRepository>("UserRepository");
     const tokenService = container.resolve<TokenService>("TokenService");
@@ -65,4 +64,7 @@ export class SignIn {
       throw error;
     }
   }
+
+
+  
 }

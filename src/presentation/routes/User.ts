@@ -1,76 +1,50 @@
 import { Router } from "express";
-import { Request, Response } from "express";
-import { register } from "../controllers/user/auth/signIn";
- 
-import { resendOtp } from "../controllers/user/auth/resendOtp";
-import { userProfile } from "../controllers/user/getHome";
-import { sendOtp } from "../controllers/user/auth/forgotPassword/sendOtp";
-import { forgotVerifyOtp } from "../controllers/user/auth/forgotPassword/verifyOtp";
-import { resetPassword } from "../controllers/user/auth/forgotPassword/resetPassword";
-import { userProfileUpdate } from "../controllers/user/updateUserProfile";
-import { profileUpdateOtp } from "../controllers/user/sendProfileUpdateOtp";
-import { logoutUser } from "../controllers/user/logoutUser";
-import { getActiveServices } from "../controllers/user/getServices";
-import { getSingleServiceHandler } from "../controllers/user/getSingleServiceHandler";
-import { addNewAddressHandler } from "../controllers/user/addresses/addNewAddressHandiler";
-import { deleteAddressHandler } from "../controllers/user/addresses/deleteAddressHandiler";
-import { setDefaultAddressHandiler } from "../controllers/user/addresses/setDefaultAddressHandiler";
-import { GetAddressHandler } from "../controllers/user/addresses/getAddress";
-import { editAddressHandler } from "../controllers/user/addresses/editAddressHandler";
+
 import { authMiddleware } from "../../Middlewares/authMiddleware";
-import { getSpecificChat } from "../controllers/chat/getSpecificChat";
-import { getServiceProviderInfoChatHandiler } from "../controllers/user/getServiceProviderInfoChatHandler";
-import { addReviewHandler } from "../controllers/ServiceBooking/addReviewHandler";
-import { signIn } from "../controllers/user/auth/SignUp";
-import { verifyOtp } from "../controllers/user/auth/verifyOtp";
 import { container } from "tsyringe";
 import { UserController } from "../controllers/UserController";
 const userController= container.resolve(UserController)
 const userRouter = Router();
-userRouter.post("/signup", register);
-userRouter.post("/signin/:method", signIn);
-userRouter.post("/verify-otp", verifyOtp);
-userRouter.post("/resend-otp", resendOtp);
-userRouter.get("/profile", authMiddleware("User"), userProfile);
 
-userRouter.post("/forgot-password", sendOtp);
-userRouter.post("/forgot-password/verify-otp", forgotVerifyOtp);
-userRouter.post("/forgot-password/reset", resetPassword);
-userRouter.put("/updateProfile/:userid", userProfileUpdate);
-userRouter.post("/updateProfile/verifyotp", profileUpdateOtp);
-userRouter.get("/logout", logoutUser);
-userRouter.get("/user/service/:id", getSingleServiceHandler);
-userRouter.get("/user/profile/:id", userProfile);
-userRouter.get(
-  "/getactive/services",
-  authMiddleware("User"),
-  getActiveServices
-);
+
+
+userRouter.post("/signup",userController.registerUserController);
+userRouter.post("/signin/:method", userController.signInUserController);
+userRouter.post("/verify-otp", userController.verifyOtpController);
+userRouter.post("/resend-otp", userController.resendOtpController);
+userRouter.get("/profile", authMiddleware("User"), userController.userProfileController);
+
+userRouter.post("/forgot-password", userController.sendOtpController);
+userRouter.post("/forgot-password/verify-otp", userController.forgotVerifyOtp);
+userRouter.post("/forgot-password/reset", userController.resetPassword);
+userRouter.put("/updateProfile/:userid", userController.userProfileUpdateController);
+userRouter.post("/updateProfile/verifyotp", userController.profileUpdateOtpController);
+userRouter.get("/logout", userController.logoutUserController);
+
+userRouter.get("/user/service/:id", userController.getSingleServiceHandler);
+userRouter.get("/user/profile/:id", userController.userProfileController);
+userRouter.get("/getactive/services",authMiddleware("User"),userController.getActiveServices);
 
 userRouter
   .route("/user/addresses")
-  .get(authMiddleware("User"), GetAddressHandler)
-  .post(authMiddleware("User"), addNewAddressHandler)
-  .put(authMiddleware("User"), editAddressHandler);
+  .get(authMiddleware("User"), userController.getAddress) 
+  .post(authMiddleware("User"), userController.addNewAddress)
+  .put(authMiddleware("User"), userController.editAddress);
 
 userRouter.delete(
   "/user/addresses:id",
   authMiddleware("User"),
-  deleteAddressHandler
+  userController.deleteAddress
 );
 
-userRouter.route("/reviews").post(addReviewHandler);
-// userRouter.post("/reviews",addReviewHandler)
+userRouter.route("/reviews").post(userController.addReview);
 
-// chat
 
 userRouter.get(
-  "/user/profile/serviceprovider-chat/:id",
-  getServiceProviderInfoChatHandiler
-);
+  "/user/profile/serviceprovider-chat/:id",userController.getServiceProviderInfoChat);
 
-userRouter.get("/notification",  authMiddleware("User"),userController.getNotification.bind(userController));
-userRouter.patch("/notification/:id",  authMiddleware("User"),userController.markAsReadNotification.bind(userController));
+userRouter.get("/notification",  authMiddleware("User"),userController.getNotification);
+userRouter.patch("/notification/:id",  authMiddleware("User"),userController.markAsReadNotification);
 
-userRouter.delete("/notification/:id",authMiddleware("User"),userController.deleteNotification.bind(userController))
+userRouter.delete("/notification/:id",authMiddleware("User"),userController.deleteNotification);
 export default userRouter;
