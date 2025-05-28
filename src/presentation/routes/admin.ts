@@ -19,7 +19,11 @@ import { deleteCategoryHandler } from "../controllers/admin/category-management/
 import { blockUnblockServiceHandler } from "../controllers/admin/category-management/blockUnblockServiceHandler";
 import { deleteServiceHandler } from "../controllers/admin/category-management/deleteServiceHandler";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { container } from "tsyringe";
+import { AdminController } from "../controllers/AdminController";
 const router = express.Router();
+const adminController = container.resolve(AdminController);
+
 
 router.post("/signin", signIn);
 router.get("/profile", authMiddleware("Admin"), adminProfile);
@@ -58,4 +62,11 @@ router.patch("/category/service", blockUnblockServiceHandler);
 router.put("/category/service", addServiceHandler);
 router.delete("/category/service/:categoryId/:serviceId", deleteServiceHandler);
 router.get("/logout", logoutAdmin);
+
+router.get("/dashboard/payment-info", (req, res) =>
+  adminController.getPaymentInfoForChart(req, res)
+);
 export default router;
+
+
+

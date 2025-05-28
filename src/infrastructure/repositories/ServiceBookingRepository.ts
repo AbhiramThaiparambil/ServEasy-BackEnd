@@ -384,10 +384,46 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
 
+async getPaymentInfo(startDate?: Date | null, endDate?: Date | null): Promise<any> {
+  try {
+    const match: any = {
+      serviceStatus: "completed",
+      paymentStatus: "completed",
+    };
 
+    if (startDate && endDate) {
+      match.bookedTime = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
 
+    const result = await ServiceBooking.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
+          totalConvenienceFee: { $sum: { $ifNull: ["$payment.convenienceFee", 0] } },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalRevenue: 1,
+          totalConvenienceFee: 1,
+          count: 1,
+        },
+      },
+    ]);
 
-
+    return result;
+  } catch (error) {
+    console.error("Error fetching payment info:", error);
+    throw error;
+  }
+}
 
 
 
