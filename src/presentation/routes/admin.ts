@@ -66,6 +66,12 @@ router.get("/logout", logoutAdmin);
 router.get("/dashboard/payment-info", (req, res) =>
   adminController.getPaymentInfoForChart(req, res)
 );
+
+
+router.post('/site-settings/add', (req, res) => adminController.addSiteSettings(req, res));
+router.delete('/site-settings/delete', (req, res) => adminController.deleteSiteSettings(req, res));
+router.put('/site-settings/activate', (req, res) => adminController.makeActiveSiteSettings(req, res));
+router.get('/site-settings', (req, res) => adminController.getSiteSettings(req, res));
 export default router;
 
 
