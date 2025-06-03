@@ -18,18 +18,18 @@ export class ChatHandler {
       const roomId = this.createRoomId(senderId, receiverId);
       const savedMessage = await this.saveMessageUseCase.execute(senderId, receiverId, message);
 
-      const room = this.io.sockets.adapter.rooms.get(roomId);
-      const isRoomActive = room !== undefined && room.size > 0;
-    
-      // Send notification only if room is NOT active
-      // if (!isRoomActive) {
+  const room = this.io.sockets.adapter.rooms.get(roomId);
+  const socketsInRoom = room ? Array.from(room) : [];
+  const isReceiverInRoom = socketsInRoom.some(socketId => socketId !== socket.id); 
+
+  if (!isReceiverInRoom) {
     this.socketService.sendNotificationToUser(receiverId,{type: "chat",
         senderId,
         senderName:senderInfo.senderName,
         senderProfile:senderInfo.senderProfile,
         content:message.content
         })
-    // }
+    }
       socket.to(roomId).emit("receive_message", { message: savedMessage });
     });
 

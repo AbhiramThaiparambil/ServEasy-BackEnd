@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post("/register", authMiddleware("User"), RegistrationServiceProvider);
 router.get('/verify',authMiddleware("User"),verifyServiceProvider);
-router.get("/", authMiddleware("User"),getServiceProvider);
+router.route("/").get(authMiddleware("User"),getServiceProvider).put(authMiddleware("User"),(req, res) => serviceController.updateServiceProvider(req,res));
 
 router.get("/bookedService",)
 router.get("/bookings", authMiddleware("User"),);

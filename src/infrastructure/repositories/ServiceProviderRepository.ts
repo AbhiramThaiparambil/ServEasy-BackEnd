@@ -1,8 +1,9 @@
 import { injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../domain/repositories/IserviceProviderRepository";
-import { IServiceProvider } from "../../domain/entities/IServiceProvider";
+import { IbankDetails, IServiceProvider, IUpdateProfile } from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel"; // Mongoose Model
 import mongoose from "mongoose";
+import { ObjectId } from 'mongoose';
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
@@ -67,4 +68,29 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       throw error;
     }
   }
+
+async editProvider(data:IUpdateProfile): Promise<boolean> {
+  if (!data._id) {
+    throw new Error("Provider ID is required to edit provider.");
+  }
+
+const existingProvider = await this.findById(data._id+"");
+  if (!existingProvider) {
+    throw new Error("Service Provider not found.");
+  }
+
+  const isUnchanged = Object.keys(data).every((key) => {
+    // @ts-ignore 
+    return data[key] === existingProvider[key];
+  });
+
+  if (isUnchanged) {
+    return true; 
+  }
+
+  await ServiceProviderModel.findByIdAndUpdate(data._id, data, { new: true });
+  return true;
+}
+
+
 }
