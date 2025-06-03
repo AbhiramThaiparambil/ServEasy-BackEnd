@@ -5,7 +5,6 @@ import { GetAllChatsUseCase } from '../../../application/use-case/chat/GetAllCha
 
 export const getAllChatsHandler = async (req: Request, res: Response) => {
   try {
-    console.log("090909)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");
     
     const { serviceProviderId, userId } = req.body;
     console.log(serviceProviderId);

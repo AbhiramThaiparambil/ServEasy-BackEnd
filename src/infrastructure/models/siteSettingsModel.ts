@@ -14,7 +14,6 @@ const siteSettingsSchema: mongoose.Schema = new mongoose.Schema<ISiteSettings>({
   themes: [
     {
       name: { type: String, required: true },
-      isActive: { type: Boolean, default: false }
     }
   ],
   footerBanners: [

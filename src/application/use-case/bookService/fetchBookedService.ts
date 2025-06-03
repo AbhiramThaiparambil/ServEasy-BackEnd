@@ -13,16 +13,24 @@ export class GetBookService {
     private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
-  async UserBookedServices(uId: mongoose.Types.ObjectId) {
+  async UserBookedServices(uId: mongoose.Types.ObjectId,skip:number,limit:number) {
     const userId = new mongoose.Types.ObjectId(uId);
 
     const data =
       await this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
-        userId
+        userId,
+        skip,limit
       );
 
     return data;
   }
+
+async findBookedServiceUserCount(uId: mongoose.Types.ObjectId) {
+    const userId = new mongoose.Types.ObjectId(uId);
+
+    return  await this.serviceBookingRepository.findCountBookedServicebyUserId(userId,);
+  }
+
   async ServiceProviderBookedServices(sId: mongoose.Types.ObjectId,skip:number,limit:number) {
     const serviceProviderId = new mongoose.Types.ObjectId(sId);
 

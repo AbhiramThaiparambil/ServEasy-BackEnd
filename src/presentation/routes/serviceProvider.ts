@@ -6,7 +6,10 @@ import { GetbookServiceHandler } from "../controllers/ServiceBooking/getBookedSe
 import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { getCategoryHandler } from "../controllers/admin/category-management/getCategory";
 import { getAllChatsHandler } from "../controllers/chat/getAllChatsHandler";
-
+import { container } from "tsyringe";
+import { ServiceProviderController } from "../controllers/serviceProviderController";
+import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
+const serviceController=container.resolve(ServiceProviderController)
 const router = express.Router();
 
 router.post("/register", authMiddleware("User"), RegistrationServiceProvider);
@@ -16,4 +19,5 @@ router.get("/", authMiddleware("User"),getServiceProvider);
 router.get("/bookedService",)
 router.get("/bookings", authMiddleware("User"),);
 router.get('/categories',getCategoryHandler)
+router.get("/get-paymentinfo",authMiddleware("User"),serviceProviderAuth,(req, res) => serviceController.getPaymentInfoForChartServiceProvider(req,res))
 export default router;

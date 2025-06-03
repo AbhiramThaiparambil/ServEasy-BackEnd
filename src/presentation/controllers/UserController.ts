@@ -23,33 +23,37 @@ import { EditAddress } from "../../application/use-case/User/Address/EditAddress
 import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAddress";
 import { AddReviewUseCase } from "../../application/use-case/bookService/AddReviewUseCase";
 import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
+import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 
 @injectable()
 export class UserController {
   constructor(
-  @inject(NotificationUseCase) private notificationUseCase: NotificationUseCase,
-  @inject(RegisterUser) private registerUser: RegisterUser,
-  @inject(SignIn) private signInUseCase: SignIn,
-  @inject(VerifyOtp) private verifyOtpUseCase: VerifyOtp,
-  @inject(ResendOtp) private resendOtpUseCase: ResendOtp,
-  @inject(TokenService) private tokenService: TokenService,
-  @inject(GetUserProfileUseCase) private getUserProfileUseCase: GetUserProfileUseCase,
-  @inject(SendOtp) private sendOtpUseCase: SendOtp,
-  @inject(ForgotVerifyOtp) private forgotVerifyOtpUseCase: ForgotVerifyOtp,
-  @inject(ResetPassword) private resetPasswordUseCase: ResetPassword,
-  @inject(UserProfileUpdate)private userProfileUpdate: UserProfileUpdate,
-  @inject(ProfileUpdateOtp) private profileUpdateOtp: ProfileUpdateOtp ,
-  @inject(GetServics) private getServics: GetServics,
-  @inject(GetAllActiveService) private getAllActiveService: GetAllActiveService,
-  @inject(GetAddress) private getAddressUseCase: GetAddress,
-  @inject(AddNewAddress) private addNewAddressUseCase: AddNewAddress,
-  @inject(EditAddress) private editAddressUseCase: EditAddress,
-  @inject(DeleteAddress) private deleteAddressUseCase: DeleteAddress,
-  @inject(AddReviewUseCase) private addReviewUseCase: AddReviewUseCase,
-    @inject(GetServiceProviderInfoUseCase) private getServiceProviderInfoUseCase: GetServiceProviderInfoUseCase,
-
-
-) {}
+    @inject(NotificationUseCase)
+    private notificationUseCase: NotificationUseCase,
+    @inject(RegisterUser) private registerUser: RegisterUser,
+    @inject(SignIn) private signInUseCase: SignIn,
+    @inject(VerifyOtp) private verifyOtpUseCase: VerifyOtp,
+    @inject(ResendOtp) private resendOtpUseCase: ResendOtp,
+    @inject(TokenService) private tokenService: TokenService,
+    @inject(GetUserProfileUseCase)
+    private getUserProfileUseCase: GetUserProfileUseCase,
+    @inject(SendOtp) private sendOtpUseCase: SendOtp,
+    @inject(ForgotVerifyOtp) private forgotVerifyOtpUseCase: ForgotVerifyOtp,
+    @inject(ResetPassword) private resetPasswordUseCase: ResetPassword,
+    @inject(UserProfileUpdate) private userProfileUpdate: UserProfileUpdate,
+    @inject(ProfileUpdateOtp) private profileUpdateOtp: ProfileUpdateOtp,
+    @inject(GetServics) private getServics: GetServics,
+    @inject(GetAllActiveService)
+    private getAllActiveService: GetAllActiveService,
+    @inject(GetAddress) private getAddressUseCase: GetAddress,
+    @inject(AddNewAddress) private addNewAddressUseCase: AddNewAddress,
+    @inject(EditAddress) private editAddressUseCase: EditAddress,
+    @inject(DeleteAddress) private deleteAddressUseCase: DeleteAddress,
+    @inject(AddReviewUseCase) private addReviewUseCase: AddReviewUseCase,
+    @inject(GetServiceProviderInfoUseCase)
+    private getServiceProviderInfoUseCase: GetServiceProviderInfoUseCase,
+    @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings
+  ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
@@ -407,124 +411,147 @@ export class UserController {
     }
   };
 
-     forgotVerifyOtp = async (req: Request, res: Response): Promise<void> => {
+  forgotVerifyOtp = async (req: Request, res: Response): Promise<void> => {
     try {
       const { otp, key } = req.body;
 
       if (!otp || !key) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: "OTP and key are required." });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "OTP and key are required." });
         return;
       }
 
       const result = await this.forgotVerifyOtpUseCase.execute(otp, key);
 
       if (result === true) {
-        res.status(HttpStatus.OK).json({ message: "OTP verified successfully." });
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "OTP verified successfully." });
       } else {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: "OTP expired or invalid." });
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: "OTP expired or invalid." });
       }
     } catch (error) {
       console.error("Error in verifyOtp:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong. Please try again later." });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Something went wrong. Please try again later." });
     }
   };
 
-
-
-async resetPassword(req: Request, res: Response): Promise<void> {
+  async resetPassword(req: Request, res: Response): Promise<void> {
     try {
       const { password, email, phone } = req.body;
 
       if (!password) {
-        res.status(HttpStatus.BAD_REQUEST).json({ Message: 'Password is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ Message: "Password is required" });
         return;
       }
 
       if (!email && !phone) {
-        res.status(HttpStatus.BAD_REQUEST).json({ Message: 'Email or phone is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ Message: "Email or phone is required" });
         return;
       }
 
       let result;
 
       if (email) {
-        result = await this.resetPasswordUseCase.resetPasswordEmail(password, email);
+        result = await this.resetPasswordUseCase.resetPasswordEmail(
+          password,
+          email
+        );
       } else {
-        result = await this.resetPasswordUseCase.resetPasswordPhone(password, phone);
+        result = await this.resetPasswordUseCase.resetPasswordPhone(
+          password,
+          phone
+        );
       }
 
       res.status(HttpStatus.OK).json({ Message: result });
     } catch (error) {
       console.error("Error in resetPassword:", error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        Message: "Something went wrong. Please try again later."
+        Message: "Something went wrong. Please try again later.",
       });
     }
   }
 
+  userProfileUpdateController = async (req: Request, res: Response) => {
+    try {
+      console.log("Request Body:", req.body);
+      console.log("User ID:", req.params.userid);
 
-userProfileUpdateController = async (req: Request, res: Response) => {
-  try {
-    console.log("Request Body:", req.body);
-    console.log("User ID:", req.params.userid);
+      const { newEmail, newPhone, newUserName, NewProfileImage } = req.body;
+      const userId = req.params.userid;
 
-    const { newEmail, newPhone, newUserName, NewProfileImage } = req.body;
-    const userId = req.params.userid;
-
-    if (!userId) {
-      res
-        .status(HttpStatus.BAD_REQUEST)
-        .json({ message: "User ID is required" });
-      return;
-    }
-
-    if (newUserName || NewProfileImage) {
-      await this.userProfileUpdate.updateProfile(userId, newUserName, NewProfileImage);
-    }
-
-    let otpResponse;
-
-    if (newEmail) {
-      otpResponse = await this.userProfileUpdate.sendEmailOtp(newEmail);
-      if (otpResponse.errorMessage) {
+      if (!userId) {
         res
           .status(HttpStatus.BAD_REQUEST)
-          .json({ message: otpResponse.errorMessage });
+          .json({ message: "User ID is required" });
         return;
       }
-      res
-        .status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
-        .json({ message: otpResponse.successMessage, auth: otpResponse.auth });
-      return;
-    }
 
-    if (newPhone) {
-      otpResponse = await this.userProfileUpdate.sendSmsOtp(newPhone);
-      if (otpResponse.errorMessage) {
-        res
-          .status(HttpStatus.BAD_REQUEST)
-          .json({ message: otpResponse.errorMessage });
+      if (newUserName || NewProfileImage) {
+        await this.userProfileUpdate.updateProfile(
+          userId,
+          newUserName,
+          NewProfileImage
+        );
+      }
+
+      let otpResponse;
+
+      if (newEmail) {
+        otpResponse = await this.userProfileUpdate.sendEmailOtp(newEmail);
+        if (otpResponse.errorMessage) {
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: otpResponse.errorMessage });
+          return;
+        }
+        res.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).json({
+          message: otpResponse.successMessage,
+          auth: otpResponse.auth,
+        });
         return;
       }
+
+      if (newPhone) {
+        otpResponse = await this.userProfileUpdate.sendSmsOtp(newPhone);
+        if (otpResponse.errorMessage) {
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: otpResponse.errorMessage });
+          return;
+        }
+        res.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).json({
+          message: otpResponse.successMessage,
+          auth: otpResponse.auth,
+        });
+        return;
+      }
+
       res
-        .status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
-        .json({ message: otpResponse.successMessage, auth: otpResponse.auth });
+        .status(HttpStatus.OK)
+        .json({ message: "Profile updated successfully" });
+
+      return;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
       return;
     }
+  };
 
-    res.status(HttpStatus.OK).json({ message: "Profile updated successfully" });
-
-    return;
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ message: "Internal Server Error" });
-    return;
-  }
-};
-
-profileUpdateOtpController = async (req: Request, res: Response) => {
+  profileUpdateOtpController = async (req: Request, res: Response) => {
     try {
       const { userId, key, otp } = req.body;
 
@@ -533,19 +560,21 @@ profileUpdateOtpController = async (req: Request, res: Response) => {
       if (result.success) {
         res.status(HttpStatus.OK).json({ message: result.success });
       } else if (result.errorMessage) {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ errorMessage: result.errorMessage });
       } else {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: "Internal server error" });
+        res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ errorMessage: "Internal server error" });
       }
     } catch (error) {
       console.error("Error in profileUpdateOtp:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ errorMessage: "Internal server error" });
     }
   };
-
-
-
-
 
   logoutUserController = async (req: Request, res: Response) => {
     try {
@@ -563,21 +592,26 @@ profileUpdateOtpController = async (req: Request, res: Response) => {
         });
       }
 
-      res.status(HttpStatus.OK).json({ message: "User logged out successfully" });
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "User logged out successfully" });
     } catch (error) {
       console.error("Logout error:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-
- getSingleServiceHandler = async (req: Request, res: Response) => {
+  getSingleServiceHandler = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       console.log(id);
 
       if (!id) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: "Service ID is required" });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Service ID is required" });
         return;
       }
 
@@ -591,12 +625,13 @@ profileUpdateOtpController = async (req: Request, res: Response) => {
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching service:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-
-public userProfile = async (req: Request, res: Response): Promise<void> => {
+  public userProfile = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.params.id) {
         const user = await this.getUserProfileUseCase.execute(req.params.id);
@@ -625,38 +660,47 @@ public userProfile = async (req: Request, res: Response): Promise<void> => {
       }
     } catch (error) {
       console.error("Error in userProfile:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-
-
-public getActiveServices = async (req: Request, res: Response): Promise<void> => {
+  public getActiveServices = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       console.log(req.query);
 
       const userLongitude = Number(req.query.userLongitude);
       const userLatitude = Number(req.query.userLatitude);
 
+      const userId = res.locals.user?.userId;
+
       let result;
 
       if (!isNaN(userLongitude) && !isNaN(userLatitude)) {
-        result = await this.getAllActiveService.getNearByservices(userLongitude, userLatitude);
+        result = await this.getAllActiveService.getNearByservices(
+          userLongitude,
+          userLatitude,userId
+        );
       } else {
-        result = await this.getAllActiveService.execute();
+        result = await this.getAllActiveService.execute(userId);
       }
 
-      res.status(HttpStatus.OK).json({ allServices: result });
+      res.status(HttpStatus.OK).json( result);
       return;
     } catch (e) {
       console.error(e);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching services." });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "An error occurred while fetching services." });
       return;
     }
   };
 
-
-public getAddress = async (req: Request, res: Response): Promise<void> => {
+  public getAddress = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
 
@@ -678,7 +722,7 @@ public getAddress = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
-public addNewAddress = async (req: Request, res: Response): Promise<void> => {
+  public addNewAddress = async (req: Request, res: Response): Promise<void> => {
     try {
       const { address } = req.body;
       const userId = res.locals.user?.userId;
@@ -707,9 +751,9 @@ public addNewAddress = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
- public editAddress = async (req: Request, res: Response): Promise<void> => {
+  public editAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('-9-0-0-0-0-0-0-0-0');
+      console.log("-9-0-0-0-0-0-0-0-0");
       console.log(req.body);
 
       const { address } = req.body;
@@ -738,9 +782,7 @@ public addNewAddress = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
-
-
-public deleteAddress = async (req: Request, res: Response): Promise<void> => {
+  public deleteAddress = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const userId = res.locals.user?.userId;
@@ -766,13 +808,9 @@ public deleteAddress = async (req: Request, res: Response): Promise<void> => {
       res.status(500).json({ message: "Failed to delete address" });
       return;
     }
-  
-  
-
   };
 
-
-public addReview = async (req: Request, res: Response): Promise<void> => {
+  public addReview = async (req: Request, res: Response): Promise<void> => {
     try {
       const { bookedServiceId, serviceId, rating, comment } = req.body;
       console.log(req.body);
@@ -791,32 +829,77 @@ public addReview = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment);
+      await this.addReviewUseCase.execute(
+        bookedServiceId,
+        serviceId,
+        rating,
+        comment
+      );
 
-      res.status(HttpStatus.CREATED).json({ message: "Review added successfully!" });
+      res
+        .status(HttpStatus.CREATED)
+        .json({ message: "Review added successfully!" });
     } catch (error) {
       console.error("Error adding review:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Failed to add review." });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to add review." });
     }
   };
 
-
-  public getServiceProviderInfoChat = async (req: Request, res: Response): Promise<void> => {
+  public getServiceProviderInfoChat = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getServiceProviderInfoUseCase.execute(req.params.id);
+        const user = await this.getServiceProviderInfoUseCase.execute(
+          req.params.id
+        );
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.serviceProviderName,
         });
         return;
       }
-      res.status(HttpStatus.BAD_REQUEST).json({ message: "Service provider ID is required" });
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "Service provider ID is required" });
     } catch (error) {
       console.error("Error in getServiceProviderInfoChat:", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
+  public getSiteThemes = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const themes = await this.userSiteSettings.getThemes();
+      console.log(themes);
+      res.status(HttpStatus.OK).json({ themes });
+      return;
+    } catch (error) {
+      console.error("Error in getServiceProviderInfoChat:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  };
+  public getSiteBanners = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const banners = await this.userSiteSettings.getBanners();
 
+      res.status(HttpStatus.OK).json(banners);
+      return;
+    } catch (error) {
+      console.error("Error in getServiceProviderInfoChat:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  };
 }

@@ -45,16 +45,14 @@ export class AdminSiteSettingsUseCase {
     return this.siteSettingRepository.findAllThemes();
   };
 
-  findActiveTheme = async () => {
-    return this.siteSettingRepository.findActiveTheme();
-  };
+  
 
   findActiveHomeBanners = async () => {
-    return this.siteSettingRepository.findActiveHomeBanners();
+    return this.siteSettingRepository.findActiveHomeBanner();
   };
 
   findActiveFooterBanners = async () => {
-    return this.siteSettingRepository.findActiveFooterBanners();
+    return this.siteSettingRepository.findActiveFooterBanner();
   };
 
   updateHomeBanner = async (bannerId: string, updateData: Partial<IHomeBanner>) => {
@@ -81,15 +79,15 @@ export class AdminSiteSettingsUseCase {
     return this.siteSettingRepository.deleteTheme(themeName);
   };
 
-  makeThemeActive = async (themeName: string) => {
-    return this.siteSettingRepository.makeThemeActive(themeName);
-  };
 
-  makeThemeInactive = async (themeName: string) => {
-    return this.siteSettingRepository.makeThemeInactive(themeName);
-  };
 
   makeHomeBannerActive = async (bannerId: string) => {
+    const activeHomeBanner= await this.siteSettingRepository.findActiveHomeBanner()
+    if(activeHomeBanner){
+    await this.siteSettingRepository.makeHomeBannerInactive(activeHomeBanner?.id+"")
+
+    }
+    
     return this.siteSettingRepository.makeHomeBannerActive(bannerId);
   };
 
@@ -98,6 +96,11 @@ export class AdminSiteSettingsUseCase {
   };
 
   makeFooterBannerActive = async (bannerId: string) => {
+    const activeFooterBanner=await this.siteSettingRepository.findActiveFooterBanner()
+    if(activeFooterBanner){
+        await this.siteSettingRepository.makeFooterBannerInactive(activeFooterBanner.id+"")
+    }
+    
     return this.siteSettingRepository.makeFooterBannerActive(bannerId);
   };
 

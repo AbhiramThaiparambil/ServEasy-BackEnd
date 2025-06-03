@@ -143,29 +143,224 @@ return await ServiceModel.countDocuments()
 }
 
 
-async  findNearestServices(userLongitude: number, userLatitude: number, maxDistanceInMeters = 50000) {
-  return  await ServiceModel.aggregate([
+
+
+  async findAllActiveServicesUser(): Promise<any> {
+
+return await ServiceModel.aggregate([
+  
+    {
+      $match: {
+        isActive: true,
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories', 
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categoryInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$categoryInfo',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: 'serviceproviders',
+        localField: 'serviceProviderId',
+        foreignField: '_id',
+        as: 'providerInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$providerInfo',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        serviceProviderName: '$providerInfo.serviceProviderName',
+        profileImage: '$providerInfo.profileImage',
+        category: '$categoryInfo.category',
+        serviceName: 1,
+        description: 1,
+        serviceType: 1,
+        location: 1,
+        estimatedPrice: 1,
+        serviceImage: 1,
+        createdAt: 1,
+        distance: 1,
+      },
+    },
+  ]);
+  }
+
+
+
+async  findNearestServices(
+  userLongitude: number,
+  userLatitude: number,
+  serviceProviderId?: Types.ObjectId |string
+) {
+  const maxDistanceInMeters = 50000;
+
+  return await ServiceModel.aggregate([
     {
       $geoNear: {
         near: {
-          type: "Point",
-          coordinates: [userLongitude, userLatitude]
+          type: 'Point',
+          coordinates: [userLongitude, userLatitude],
         },
-        distanceField: "distance", 
+        distanceField: 'distance',
         spherical: true,
-        maxDistance: maxDistanceInMeters 
-      }
+        maxDistance: maxDistanceInMeters,
+      },
     },
     {
       $match: {
-        isActive: true
-      }
-    }
+        isActive: true,
+        serviceProviderId: { $ne: serviceProviderId }, // Exclude the current provider if needed
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories', 
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categoryInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$categoryInfo',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: 'serviceproviders',
+        localField: 'serviceProviderId',
+        foreignField: '_id',
+        as: 'providerInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$providerInfo',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        serviceProviderName: '$providerInfo.serviceProviderName',
+        profileImage: '$providerInfo.profileImage',
+        category: '$categoryInfo.category',
+        serviceName: 1,
+        description: 1,
+        serviceType: 1,
+        location: 1,
+        estimatedPrice: 1,
+        serviceImage: 1,
+        createdAt: 1,
+        distance: 1,
+      },
+    },
   ]);
+}
 
+async findNearestActiveServiceCategories(
+  userLongitude: number,
+  userLatitude: number
+): Promise<{ categoryId: string; category: string }[]> {
+  const maxDistanceInMeters = 50000;
 
+  return await ServiceModel.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [userLongitude, userLatitude],
+        },
+        distanceField: 'distance',
+        spherical: true,
+        maxDistance: maxDistanceInMeters,
+      },
+    },
+    {
+      $match: {
+        isActive: true,
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categoryInfo',
+      },
+    },
+    {
+      $unwind: '$categoryInfo',
+    },
+    {
+      $group: {
+        _id: '$categoryInfo._id',
+        category: { $first: '$categoryInfo.category' },
+      },
+    },
+    {
+      $project: {
+        categoryId: '$_id',
+        category: 1,
+        _id: 0,
+      },
+    },
+  ]);
 }
 
 
+
+async findActiveServiceCategories(
+ 
+): Promise<{ categoryId: string; category: string }[]> {
+
+  return await ServiceModel.aggregate([
+    
+    {
+      $match: {
+        isActive: true,
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categoryInfo',
+      },
+    },
+    {
+      $unwind: '$categoryInfo',
+    },
+    {
+      $group: {
+        _id: '$categoryInfo._id',
+        category: { $first: '$categoryInfo.category' },
+      },
+    },
+    {
+      $project: {
+        categoryId: '$_id',
+        category: 1,
+        _id: 0,
+      },
+    },
+  ]);
+}
 
 }

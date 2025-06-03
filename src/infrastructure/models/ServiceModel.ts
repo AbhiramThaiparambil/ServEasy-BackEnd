@@ -23,7 +23,11 @@ const ServiceSchema = new Schema<IService>(
     serviceName: { type: String, required: true },
     description: { type: String, required: true },
     serviceType: { type: String, required: true },
-    category: { type: String, required: true },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     location: locationSchema,
 
     estimatedPrice: { type: Number, required: true },

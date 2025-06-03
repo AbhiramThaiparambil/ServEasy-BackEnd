@@ -2,6 +2,7 @@ import ServiceBooking from "../models/ServiceBooking";
 import { IServiceBookingRepository } from "../../domain/repositories/IserviceBookingRepository";
 import { Types } from "mongoose";
 import { injectable } from "tsyringe";
+import { ObjectId } from 'mongodb';
 // import {IServiceBooking} from "../../domain/entities/IServiceBooking"
 import { IServiceBooking } from "../../domain/entities/IserviceBooking";
 import { IPayment } from "../../domain/entities/Ipayment";
@@ -53,10 +54,15 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
        },
       { new: true }
     );
-  }
+  } 
+
+
+ async findCountBookedServicebyUserId(userId: Types.ObjectId): Promise<number> {
+  return await ServiceBooking.find({ userId }).countDocuments();
+}
 
   async findBookedServicesAndServiceByUserId(
-    userId: Types.ObjectId
+    userId: Types.ObjectId,skip:number,limit:number
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -84,8 +90,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             bookedTime: 1,
           },
         },
-        {
+         {
           $sort: { bookedTime: -1 },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
         },
       ]);
   
@@ -425,6 +437,51 @@ async getPaymentInfo(startDate?: Date | null, endDate?: Date | null): Promise<an
   }
 }
 
+
+
+async getPaymentInfoServiceProvider(serviceProviderId:string,startDate?: Date | null, endDate?: Date | null): Promise<any> {
+
+
+  try {
+    const match: any = {
+      serviceProviderId:new ObjectId(serviceProviderId),
+      serviceStatus: "completed",
+      paymentStatus: "completed",
+    };
+
+    if (startDate && endDate) {
+      match.bookedTime = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    const result = await ServiceBooking.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
+          totalConvenienceFee: { $sum: { $ifNull: ["$payment.convenienceFee", 0] } },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalRevenue: 1,
+          totalConvenienceFee: 1,
+          count: 1,
+        },
+      },
+    ]);
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching payment info:", error);
+    throw error;
+  }
+}
 
 
 }

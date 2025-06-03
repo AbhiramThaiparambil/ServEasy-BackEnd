@@ -47,4 +47,6 @@ userRouter.get("/notification",  authMiddleware("User"),userController.getNotifi
 userRouter.patch("/notification/:id",  authMiddleware("User"),userController.markAsReadNotification);
 
 userRouter.delete("/notification/:id",authMiddleware("User"),userController.deleteNotification);
+userRouter.get("/banners/active",userController.getSiteBanners)
+userRouter.get("/themes",userController.getSiteThemes)
 export default userRouter;

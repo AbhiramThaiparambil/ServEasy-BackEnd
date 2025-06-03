@@ -25,18 +25,17 @@ export class SiteSettingRepository implements ISiteSettingRepository {
     return (await this.getSettings()).themes.map(t => t.name);
   }
 
-  async findActiveTheme(): Promise<string | null> {
-    const theme = (await this.getSettings()).themes.find(t => t.isActive);
-    return theme?.name ?? null;
-  }
+  
 
-  async findActiveHomeBanners(): Promise<IHomeBanner[]> {
-    return (await this.getSettings()).homeBanners.filter(b => b.isActive);
-  }
+  async findActiveHomeBanner(): Promise<IHomeBanner> {
+      const homeBanner= (await this.getSettings()).homeBanners.filter(b => b.isActive);
+  return homeBanner[0]
+    }
 
-  async findActiveFooterBanners(): Promise<IFooterBanner[]> {
-    return (await this.getSettings()).footerBanners.filter(b => b.isActive);
-  }
+  async findActiveFooterBanner(): Promise<IFooterBanner> {
+     const footerBanner= (await this.getSettings()).footerBanners.filter(b => b.isActive);
+  return footerBanner[0]
+    }
 
   async updateHomeBanner(bannerId: string, updateData: Partial<IHomeBanner>): Promise<IHomeBanner> {
     const settings = await this.getSettings();
@@ -97,21 +96,6 @@ export class SiteSettingRepository implements ISiteSettingRepository {
     return theme.name;
   }
 
-  async makeThemeActive(themeName: string): Promise<string> {
-    const settings = await this.getSettings();
-    settings.themes.forEach(t => t.isActive = t.name === themeName);
-    await settings.save();
-    return themeName;
-  }
-
-  async makeThemeInactive(themeName: string): Promise<string> {
-    const settings = await this.getSettings();
-    const theme = settings.themes.find(t => t.name === themeName);
-    if (!theme) throw new Error("Theme not found");
-    theme.isActive = false;
-    await settings.save();
-    return themeName;
-  }
 
   async makeHomeBannerActive(bannerId: string): Promise<IHomeBanner> {
     const settings = await this.getSettings();
