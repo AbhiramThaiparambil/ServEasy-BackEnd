@@ -10,8 +10,14 @@ export class VideoCallHandler {
 
         const roomId = this.createRoomId(user1, user2);
       socket.join(roomId);
-        this.socketService.sendNotificationToUser(user2,{type:"video_call",callerId:user1,callerName,callerProfile:callerProfile,callRoomId:roomId,user,content:` ${callerName} is calling you via video`,receiverId:user2})
 
+        const room = this.io.sockets.adapter.rooms.get(roomId);
+  const socketsInRoom = room ? Array.from(room) : [];
+  const isReceiverInRoom = socketsInRoom.some(socketId => socketId !== socket.id); // exclude sender socket
+
+  if (!isReceiverInRoom) {
+        this.socketService.sendNotificationToUser(user2,{type:"video_call",callerId:user1,callerName,callerProfile:callerProfile,callRoomId:roomId,user,content:` ${callerName} is calling you via video`,receiverId:user2})
+  }
      
 
         socket.data.userId = user1;

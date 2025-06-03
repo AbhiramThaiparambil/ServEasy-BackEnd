@@ -4,6 +4,11 @@ export interface ISkill {
     level: string; 
 }
 
+export interface IbankDetails
+{accountHolderName:string,accountNumber:string,ifscCode:string
+
+}
+
 export interface IServiceProvider {
     _id?:mongoose.Schema.Types.ObjectId;
     userId:mongoose.Schema.Types.ObjectId;
@@ -23,4 +28,14 @@ export interface IServiceProvider {
     description?: string;
     serviceMode?: string; 
     isVerified?: 'verified' | 'pending' | 'rejected';
+}
+
+
+export interface IUpdateProfile {
+  _id: string;
+  serviceProviderName: string;
+  serviceProviderEmail: string;
+  serviceProviderPhone: string;
+  socialMedia: string;
+  bankDetails: IbankDetails;
 }
