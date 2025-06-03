@@ -21,7 +21,7 @@ export interface IServiceBookingRepository {
 
   ): Promise<IServiceBooking | null>;
 
-  findBookedServicesAndServiceByUserId(Id: Types.ObjectId): Promise<any>;
+  findBookedServicesAndServiceByUserId(Id: Types.ObjectId,skip:number,limit:number): Promise<any>;
   findBookedServicesAndServiceByServiceProviderId(
     Id: Types.ObjectId,    skip: number,
     limit: number

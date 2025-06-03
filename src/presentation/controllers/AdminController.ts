@@ -173,7 +173,6 @@ export class AdminController {
 
   async addSiteSettings(req: Request, res: Response): Promise<void> {
     try {
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         console.log("Received request to add site settings:", req.body);
       if (req.body.type === "addBanner") {
         const banner = await this.adminSiteSettingsUseCase.addHomeBanner(
@@ -248,32 +247,23 @@ export class AdminController {
 
 async makeActiveSiteSettings(req: Request, res: Response): Promise<void> {
   try {
-    if (req.body.type === "makeActiveBanner") {
-      if (req.body.oldActiveBannerId) {
-        await this.adminSiteSettingsUseCase.makeHomeBannerInactive(req.body.oldActiveBannerId);
-      }
-      const banner = await this.adminSiteSettingsUseCase.makeHomeBannerActive(req.body.newActiveBannerId);
+    console.log(req.body);
+    
+    if (req.body.type === "makeActiveHomeBanner") {
+     
+      const banner = await this.adminSiteSettingsUseCase.makeHomeBannerActive(req.body.id);
        res.status(HttpStatus.OK).json({ banner });
     return
     }
 
     if (req.body.type === "makeActiveFooterBanner") {
-      if (req.body.oldActiveFooterBannerId) {
-        await this.adminSiteSettingsUseCase.makeFooterBannerInactive(req.body.oldActiveFooterBannerId);
-      }
-      const footerBanner = await this.adminSiteSettingsUseCase.makeFooterBannerActive(req.body.footerBannerId);
+      
+      const footerBanner = await this.adminSiteSettingsUseCase.makeFooterBannerActive(req.body.id);
        res.status(HttpStatus.OK).json({ footerBanner });
     return
     }
 
-    if (req.body.type === "makeActiveTheme") {
-      if (req.body.oldActiveThemeName) {
-        await this.adminSiteSettingsUseCase.makeThemeInactive(req.body.oldActiveThemeName);
-      }
-      const theme = await this.adminSiteSettingsUseCase.makeThemeActive(req.body.themeName);
-       res.status(HttpStatus.OK).json({ theme });
-    return
-    }
+  
 
      res.status(HttpStatus.BAD_REQUEST).json({ error: "Invalid type provided" });
   return

@@ -7,9 +7,8 @@ export interface ISiteSettingRepository {
   findAllThemes(): Promise<string[]>;
 
   // Fetch active
-  findActiveHomeBanners(): Promise<IHomeBanner[]>;
-  findActiveFooterBanners(): Promise<IFooterBanner[]>;
-  findActiveTheme(): Promise<string | null>;
+  findActiveHomeBanner(): Promise<IHomeBanner|null>;
+  findActiveFooterBanner(): Promise<IFooterBanner|null>;
 
   // Add
   addHomeBanner(banner: IHomeBanner): Promise<IHomeBanner>;
@@ -26,10 +25,7 @@ export interface ISiteSettingRepository {
   deleteFooterBanner(bannerId: string): Promise<void>;
   deleteTheme(themeName: string): Promise<void>;
 
-  // Activate/Deactivate
-  makeThemeActive(themeName: string): Promise<string>;
-  makeThemeInactive(themeName: string): Promise<string>;
-
+  
   makeHomeBannerActive(bannerId: string): Promise<IHomeBanner>;
   makeHomeBannerInactive(bannerId: string): Promise<IHomeBanner>;
 

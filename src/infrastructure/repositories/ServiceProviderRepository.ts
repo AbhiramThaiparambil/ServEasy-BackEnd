@@ -34,7 +34,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async findServiceProviderSkipLimit(skip:number,limit:number): Promise<IServiceProvider[]> {
-    return await ServiceProviderModel.find().skip(skip).limit(limit)
+    return await ServiceProviderModel.find().skip(skip).limit(limit).sort({createdAt:-1})
   }
   async findServiceProvidersCount(){
     return await  ServiceProviderModel.countDocuments()
