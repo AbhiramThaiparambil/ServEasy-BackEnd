@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IServiceProvider } from "../../domain/entities/IServiceProvider";
+import { IBankDetails, IServiceProvider } from "../../domain/entities/IServiceProvider";
 
 interface ISkill {
     name: string;
@@ -10,12 +10,32 @@ const locationSchema = new Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
   });
+
 const SkillSchema = new Schema<ISkill>({
     name: { type: String, required: true },
     level: { type: String, required: true },
 });
 
-const ServiceProviderSchema = new Schema(
+const BankDetailsSchema = new Schema<IBankDetails>(
+  {
+    accountHolderName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    accountNumber: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    ifscCode: {
+      type: String,
+      required: true,
+      
+    },
+  })
+
+const ServiceProviderSchema = new Schema<IServiceProvider>(
     {  
         serviceProviderName: { type: String, required: true },
         serviceProviderEmail: { type: String, required: true },
@@ -27,11 +47,11 @@ const ServiceProviderSchema = new Schema(
         location: locationSchema,
         experience: { type: Number, required: true },
         profileImage: { type: String },
-        document: { type: String },
+        document: { type: [String] },
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         isBlocked:{type:Boolean,default:false},
-
+       BankDetails:{ type: BankDetailsSchema, required: true }
     },
     {
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
