@@ -4,9 +4,12 @@ export interface ISkill {
     level: string; 
 }
 
-export interface IbankDetails
-{accountHolderName:string,accountNumber:string,ifscCode:string
 
+
+export interface IBankDetails {
+  accountHolderName: string;
+  accountNumber: string;
+  ifscCode: string;
 }
 
 export interface IServiceProvider {
@@ -20,7 +23,7 @@ export interface IServiceProvider {
     services: string[];
     skills: ISkill[];
     profileImage?: string;
-    document?: string;
+    document?: string[];
     socialMedia?: string;
     businessType?: string;
     category?: string;
@@ -28,6 +31,8 @@ export interface IServiceProvider {
     description?: string;
     serviceMode?: string; 
     isVerified?: 'verified' | 'pending' | 'rejected';
+    BankDetails:IBankDetails,
+    isBlocked:boolean
 }
 
 
@@ -37,5 +42,25 @@ export interface IUpdateProfile {
   serviceProviderEmail: string;
   serviceProviderPhone: string;
   socialMedia: string;
-  bankDetails: IbankDetails;
+  bankDetails: IBankDetails;
+}
+
+export interface IServiceProviderRegistration {
+  serviceProviderName: string;
+  serviceProviderEmail: string;
+  serviceProviderPhone: string;
+  experience: number;
+  location: string;
+  services: string[];
+  skills: string[];
+  serviceMode: string;
+  profileImage: string;
+  document: string[]; 
+  businessType: string;
+  category: string;
+  subcategory: string;
+  socialMedia: string;
+  description?: string; 
+  userId: string;
+  bankDetails:{}|IBankDetails
 }

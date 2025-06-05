@@ -25,10 +25,10 @@ const router = express.Router();
 const adminController = container.resolve(AdminController);
 
 
-router.post("/signin", signIn);
-router.get("/profile", authMiddleware("Admin"), adminProfile);
+router.post("/signin", (req, res) => adminController.signIn(req, res));
+router.get("/profile", authMiddleware("Admin"), (req, res) => adminController.getProfile(req, res));
 
-router.get("/users", authMiddleware("Admin"), getAllUsers);
+router.get("/users", authMiddleware("Admin"),authMiddleware("Admin"), (req, res) => adminController.getAllUsers(req, res));
 router.patch("/users/block-unblock", authMiddleware("Admin"), blockUnblock);
 router.get("/serviceProvider", authMiddleware("Admin"), getServiceProviders);
 router.patch(

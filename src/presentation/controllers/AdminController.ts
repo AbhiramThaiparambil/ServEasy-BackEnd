@@ -28,15 +28,16 @@ export class AdminController {
     private adminSiteSettingsUseCase: AdminSiteSettingsUseCase
   ) {}
 
-  async signIn(req: Request, res: Response): Promise<Response> {
+  async signIn(req: Request, res: Response) {
     try {
       const { email, phone, password } = req.body;
 
       if (!password || (!email && !phone)) {
-        return res
+         res
           .status(400)
           .json({ error: "Email or phone and password are required" });
-      }
+     return
+        }
 
       let result;
       if (email) {
@@ -46,8 +47,9 @@ export class AdminController {
       }
 
       if (!result) {
-        return res.status(401).json({ error: "Invalid credentials" });
-      }
+         res.status(401).json({ error: "Invalid credentials" });
+     return
+        }
 
       const { accessToken, refreshToken, user } = result;
 
@@ -59,38 +61,42 @@ export class AdminController {
         path: "/",
       });
 
-      return res.status(200).json({ accessToken, user });
-    } catch (error) {
+       res.status(200).json({ accessToken, user });
+    return
+      } catch (error) {
       console.error(error);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+       res.status(500).json({ error: "Internal Server Error" });
+    return
+      }
   }
 
-  async getProfile(req: Request, res: Response): Promise<Response> {
+  async getProfile(req: Request, res: Response) {
     try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader) {
-        return res
+      console.log("-----------------");
+      console.log(res.locals.adminId.adminId)
+      if (!res.locals.adminId.adminId) {
+         res
           .status(401)
           .json({ message: "Unauthorized: No token provided" });
-      }
+      return
+        }
 
-      const token = authHeader.split(" ")[1];
-      const decoded = await this.tokenService.verifyAccessToken(token);
 
-      if (!decoded || !decoded.adminId) {
-        return res.status(401).json({ message: "Admin not found" });
-      }
 
-      const data = await this.getAdminProfileUseCase.execute(decoded.adminId);
-      return res.status(200).json({ data });
+
+
+
+      const data = await this.getAdminProfileUseCase.execute(res.locals.adminId.adminId);
+     res.status(200).json({ data });
+   return
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
+       res.status(500).json({ message: "Internal Server Error" });
+    return
+      }
   }
 
-  async getAllUsers(req: Request, res: Response): Promise<Response> {
+  async getAllUsers(req: Request, res: Response) {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
@@ -100,11 +106,13 @@ export class AdminController {
         skip,
         limit
       );
-      return res.status(200).json({ users, count });
-    } catch (error) {
+       res.status(200).json({ users, count });
+    return
+      } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
+       res.status(500).json({ message: "Internal Server Error" });
+    return
+      }
   }
 
   async blockUnblockUser(req: Request, res: Response): Promise<Response> {
@@ -292,6 +300,13 @@ async getSiteSettings(req: Request, res: Response): Promise<void> {
  
 
 }
+
+
+
+
+
+
+
 
 
 }

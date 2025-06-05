@@ -2,6 +2,7 @@ import Razorpay from "razorpay";
 import { injectable } from "tsyringe";
 import { IPayment } from "../domain/entities/Ipayment";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
+import axios from "axios";
 
 @injectable()
 export class RazorpayService {
@@ -17,13 +18,66 @@ export class RazorpayService {
     });
   }
 
-  async createOrder(payment: IPayment, vendorAccountId: string) {
+
+
+  // async createLinkedAccountTest(): Promise<string> {
+  //   const serviceProvider = {
+  //     name: "Ravi Kumar",
+  //     email: "ravi@example.com",
+  //     phone: "9876543210",
+  //     ifsc: "HDFC0000053",
+  //     accountNumber: "123456789012",
+  //   };
+
+  //   const response = await axios.post(
+  //     "https://api.razorpay.com/v1/accounts",
+  //     {
+  //       email: serviceProvider.email,
+  //       phone: serviceProvider.phone,
+  //       type: "individual",
+  //       legal_business_name: serviceProvider.name,
+  //       business_type: "individual",
+  //       contact_name: serviceProvider.name,
+  //       bank_account: {
+  //         name: serviceProvider.name,
+  //         ifsc: serviceProvider.ifsc,
+  //         account_number: serviceProvider.accountNumber,
+  //       },
+  //     },
+  //     {
+  //       auth: {
+  //         username: process.env.RAZORPAY_KEY_ID!,
+  //         password: process.env.RAZORPAY_KEY_SECRET!,
+  //       },
+  //     }
+  //   );
+
+  //   console.log("✅ Linked Account Created:", response.data);
+  //   return response.data.id; 
+  // }
+
+
+
+
+  async createOrder(payment: IPayment, linkedAccountId: string) {
+    const providerShare = Math.round(payment.total-payment.convenienceFee)
+
     const order = await this.razorpay.orders.create({
-      amount: payment.total * 100,
+      amount: payment.convenienceFee * 100,
       currency: "INR",
       payment_capture: true,
       receipt: `receipt_${Date.now()}`,
-      // transfers: [...]
+      // transfers: [
+      //   {
+      //     account: linkedAccountId, 
+      //     amount: providerShare,
+      //     currency: "INR",
+      //     notes: {
+      //       description: "90% to service provider",
+      //     },
+      //     on_hold: false,
+      //   },
+      // ],
     });
 
     return order;
@@ -64,7 +118,5 @@ export class RazorpayService {
     };
   }
 }
-
-
 
 

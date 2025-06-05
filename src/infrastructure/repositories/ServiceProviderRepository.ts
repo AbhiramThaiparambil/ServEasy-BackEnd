@@ -1,13 +1,13 @@
 import { injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../domain/repositories/IserviceProviderRepository";
-import { IbankDetails, IServiceProvider, IUpdateProfile } from "../../domain/entities/IServiceProvider";
+import { IBankDetails, IServiceProvider, IServiceProviderRegistration, IUpdateProfile } from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel"; // Mongoose Model
 import mongoose from "mongoose";
 import { ObjectId } from 'mongoose';
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
-  async create(serviceProvider: IServiceProvider): Promise<IServiceProvider> {
+  async create(serviceProvider: IServiceProviderRegistration): Promise<IServiceProvider> {
     const newProvider = new ServiceProviderModel(serviceProvider);
     return await newProvider.save();
   }

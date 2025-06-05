@@ -268,81 +268,186 @@ async makeItOnline(id1: Types.ObjectId, onlineId: Types.ObjectId): Promise<void>
       return chats;
   }
 
-  async findServiceProvidersChat(userId:string) :Promise<IServiceProviderChat[]>{
-    const objectId = new Types.ObjectId(userId);
+  // async findServiceProvidersChat(userId:string) :Promise<IServiceProviderChat[]>{
+  //   const objectId = new Types.ObjectId(userId);
 
-    const chats = await ChatModel.aggregate([
-      {
-        $match: {
-          participants: objectId
-        }
-      },
-      {
-        $sort: { lastMessageAt: -1 }
-      },
-      {
-        $unwind: "$participants"
-      },
-      {
-        $match: {
-          participants: { $ne: objectId }
-        }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "participants",
-          foreignField: "_id",
-          as: "userDetails"
-        }
-      },
-      {
-        $unwind: "$userDetails"
-      },
-      {
-        $lookup: {
-          from: "serviceproviders",
-          localField: "userDetails.serviceProvider",
-          foreignField: "_id",
-          as: "serviceProviderDetails"
-        }
-      },
-      {
-        $unwind: "$serviceProviderDetails"
-      },
-      {
-        $addFields: {
-          lastMessage: {
-            $arrayElemAt: ["$messages", -1]
-          },
-          filteredPresence: {
-            $filter: {
-              input: "$presence",
-              as: "presence",
-              cond: { $ne: ["$$presence.userId", objectId] }
-            }
-          }
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          lastMessageAt: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          lastMessage: 1,
-          userName: "$serviceProviderDetails.serviceProviderName",
-          userAvatar: "$serviceProviderDetails.profileImage",
-          userId:"$serviceProviderDetails.userId",
-          presence: "$filteredPresence"
+  //   const chats = await ChatModel.aggregate([
+  //     {
+  //       $match: {
+  //         participants: objectId
+  //       }
+  //     },
+  //     {
+  //       $sort: { lastMessageAt: -1 }
+  //     },
+  //     {
+  //       $unwind: "$participants"
+  //     },
+  //     {
+  //       $match: {
+  //         participants: { $ne: objectId }
+  //       }
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: "users",
+  //         localField: "participants",
+  //         foreignField: "_id",
+  //         as: "userDetails"
+  //       }
+  //     },
+  //     {
+  //       $unwind: "$userDetails"
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: "serviceproviders",
+  //         localField: "userDetails.serviceProvider",
+  //         foreignField: "_id",
+  //         as: "serviceProviderDetails"
+  //       }
+  //     },
+  //     {
+  //       $unwind: "$serviceProviderDetails"
+  //     },
+  //     {
+  //       $addFields: {
+  //         lastMessage: {
+  //           $arrayElemAt: ["$messages", -1]
+  //         },
+  //         filteredPresence: {
+  //           $filter: {
+  //             input: "$presence",
+  //             as: "presence",
+  //             cond: { $ne: ["$$presence.userId", objectId] }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     {
+  //       $project: {
+  //         _id: 1,
+  //         lastMessageAt: 1,
+  //         createdAt: 1,
+  //         updatedAt: 1,
+  //         lastMessage: 1,
+  //         userName: "$serviceProviderDetails.serviceProviderName",
+  //         userAvatar: "$serviceProviderDetails.profileImage",
+  //         userId:"$serviceProviderDetails.userId",
+  //         presence: "$filteredPresence"
+  //       }
+  //     }
+  //   ]);
+    
+  //   return chats;
+    
+    
+    
+  //   }
+    
+
+
+
+async findServiceProvidersChat(userId: string): Promise<IServiceProviderChat[]> {
+  const objectId = new Types.ObjectId(userId);
+
+  const chats = await ChatModel.aggregate([
+    {
+      $match: {
+        participants: objectId
+      }
+    },
+    {
+      $sort: { lastMessageAt: -1 }
+    },
+    {
+      $unwind: "$participants"
+    },
+    {
+      $match: {
+        participants: { $ne: objectId }
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "participants",
+        foreignField: "_id",
+        as: "userDetails"
+      }
+    },
+    {
+      $unwind: "$userDetails"
+    },
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "userDetails.serviceProvider",
+        foreignField: "_id",
+        as: "serviceProviderDetails"
+      }
+    },
+    {
+      $unwind: "$serviceProviderDetails"
+    },
+    {
+      $addFields: {
+        lastMessage: {
+          $arrayElemAt: ["$messages", -1]
+        },
+        currentUserPresence: {
+          $arrayElemAt: [
+            {
+              $filter: {
+                input: "$presence",
+                as: "presence",
+                cond: { $eq: ["$$presence.userId", objectId] }
+              }
+            },
+            0
+          ]
         }
       }
-    ]);
-    
-    return chats;
-    
-    
-    
+    },
+    {
+      $addFields: {
+        unread: {
+          $cond: [
+            { $eq: ["$lastMessage.sender", "serviceProvider"] },
+            {
+              $gt: ["$lastMessage.timestamp", "$currentUserPresence.lastSeen"]
+            },
+            false
+          ]
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        lastMessageAt: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        lastMessage: 1,
+        userName: "$serviceProviderDetails.serviceProviderName",
+        userAvatar: "$serviceProviderDetails.profileImage",
+        userId: "$serviceProviderDetails.userId",
+        presence: {
+          $filter: {
+            input: "$presence",
+            as: "presence",
+            cond: { $ne: ["$$presence.userId", objectId] }
+          }
+        },
+        unread: 1
+      }
     }
-    
+  ]);
+
+  return chats;
 }
+
+
+}
+
+

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
-import { IServiceProvider } from "../entities/IServiceProvider";
+import { IServiceProvider, IServiceProviderRegistration } from "../entities/IServiceProvider";
 export interface IServiceProviderRepository {
-  create(ServiceProvider: IServiceProvider): Promise<IServiceProvider>;
+  create(ServiceProvider: IServiceProviderRegistration): Promise<IServiceProvider>;
   findByEmail(email: string): Promise<IServiceProvider | null>;
   // findByPhone(phone:string):Promise<IServiceProvider |null>
 

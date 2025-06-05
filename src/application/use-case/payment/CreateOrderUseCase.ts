@@ -28,10 +28,14 @@ export class CreateOrderUseCase {
         return { success: false, message: "serviceProvider payment not found" };
 
      }
-      const order = await this.razorpayService.createOrder(service.payment,"acc");
-
+     let linkedAccountId =" "
+    //   linkedAccountId=await this.razorpayService.createLinkedAccountTest()
+      const order = await this.razorpayService.createOrder(service.payment,linkedAccountId );
+          
       return {  order };
-    } catch (error) {
+    } catch (error:any) {
+      // console.log(error.response.data);
+      
       console.error("CreateOrderUseCase Error:", error);
       return { success: false, message: "Failed to create order" };
     }
