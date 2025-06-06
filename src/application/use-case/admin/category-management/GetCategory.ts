@@ -11,11 +11,15 @@ export class GetCategory {
   async execute(): Promise<void|ICategory[]> {
    
     try {
-        return await this.categoryRepository.getAllCategories();
-
+return this.categoryRepository.getAllCategories()
     } catch (error) {
         console.log(error);
         
     }
+  }
+
+  async getActiveCategory(){
+            return await this.categoryRepository.getActiveCategories();
+
   }
 }

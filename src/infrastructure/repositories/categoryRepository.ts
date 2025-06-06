@@ -27,4 +27,9 @@ export class CategoryRepository implements ICategoryRepository {
     const result = await CategoryModel.findByIdAndDelete(id).exec();
     return result !== null;
   }
+
+  async getActiveCategories(): Promise<ICategory[]>{
+        return await CategoryModel.find({isHidden:false});
+
+  }
 }

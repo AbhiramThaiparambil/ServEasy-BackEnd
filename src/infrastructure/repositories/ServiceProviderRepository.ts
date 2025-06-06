@@ -8,6 +8,8 @@ import { ObjectId } from 'mongoose';
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
   async create(serviceProvider: IServiceProviderRegistration): Promise<IServiceProvider> {
+    console.log(serviceProvider.bankDetails);
+    
     const newProvider = new ServiceProviderModel(serviceProvider);
     return await newProvider.save();
   }

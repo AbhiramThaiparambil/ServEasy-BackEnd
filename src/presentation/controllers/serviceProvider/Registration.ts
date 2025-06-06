@@ -7,7 +7,8 @@ import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const RegistrationServiceProvider = async (req: Request, res: Response) => {
    try {
-     console.log(req.body);
+    const {data,bankDetails}=req.body
+console.log(bankDetails);
 
     const {
       serviceProviderName,
@@ -26,15 +27,14 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
       socialMedia,
       description, 
       documentImg2
-    } = req.body.data;
-   
+    } = data
    console.log(documentImg2);
    
         
     
     
     
-    const data:IServiceProviderRegistration = {
+    const serviceProviderData:IServiceProviderRegistration = {
       serviceProviderName,
       serviceProviderEmail,
       serviceProviderPhone,
@@ -51,20 +51,17 @@ export const RegistrationServiceProvider = async (req: Request, res: Response) =
       socialMedia: "", 
       description: description || "", 
       userId:res.locals.user.userId,
-      bankDetails:{}
+      bankDetails:bankDetails
     };
     data.bankDetails=req.body.bankDetails
 // if (!serviceProviderName || !serviceProviderEmail || !serviceProviderPhone) {
 //        res.status(HttpStatus.BAD_REQUEST).json({ message: "Name, email, and phone are required." });
 //        return
 //     }
-     console.log("------------===========================---------------------------------------");
 
-  console.log(documentImg2);
-    console.log("------------===========================---------------------------------------");
 
     const registerService = container.resolve(RegisterServiceProviderUseCase);
-    const serviceProvider = await registerService.execute(data, profileImage,documentImg,documentImg2);
+    const serviceProvider = await registerService.execute(serviceProviderData, profileImage,documentImg,documentImg2);
       console.log(serviceProvider);
       
     const updateUser =await container.resolve(UpdateUserWithServiceProviderUseCase);

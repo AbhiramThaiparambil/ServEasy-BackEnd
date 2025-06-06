@@ -51,7 +51,7 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
         isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         isBlocked:{type:Boolean,default:false},
-       BankDetails:{ type: BankDetailsSchema, required: true }
+       bankDetails:{ type: BankDetailsSchema, required: true }
     },
     {
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },

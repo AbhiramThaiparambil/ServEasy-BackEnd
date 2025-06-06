@@ -31,7 +31,7 @@ export interface IServiceProvider {
     description?: string;
     serviceMode?: string; 
     isVerified?: 'verified' | 'pending' | 'rejected';
-    BankDetails:IBankDetails,
+    bankDetails:IBankDetails,
     isBlocked:boolean
 }
 
