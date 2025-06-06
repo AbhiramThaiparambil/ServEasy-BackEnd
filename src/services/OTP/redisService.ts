@@ -7,20 +7,20 @@ config()
 export class RedisService{
 
     private client!:Redis;
-    // constructor(){
-    //     const redisUrl=process.env.REDIS_URL
-    //     if(!redisUrl){
-    //         throw  new Error('"REDIS_URL is not defined in the environment variables"')
-    //     }
-    //     this.client=new Redis(redisUrl);
+    constructor(){
+        const redisUrl=process.env.REDIS_URL
+        if(!redisUrl){
+            throw  new Error('"REDIS_URL is not defined in the environment variables"')
+        }
+        this.client=new Redis(redisUrl);
  
-    //     this.client.on("error",(err)=>{
-    //         console.log('redis Error ');
+        this.client.on("error",(err)=>{
+            console.log('redis Error ');
             
-    //         console.log(err);
+            console.log(err);
             
-    //     });
-    // }
+        });
+    }
     
     async set(key:string,otp:string,expiry:number):Promise<void>{
         const res = await this.client.set(key,otp,"EX",expiry)

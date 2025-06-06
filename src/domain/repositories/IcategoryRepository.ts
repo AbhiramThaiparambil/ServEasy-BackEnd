@@ -6,4 +6,5 @@ export interface ICategoryRepository {
   getCategoryById(id: string): Promise<ICategory | null>;
   updateCategory(id: string, updateData: Partial<ICategory>): Promise<ICategory | null>;
   deleteCategory(id: string): Promise<boolean>;
+  getActiveCategories(): Promise<ICategory[]>;
 }

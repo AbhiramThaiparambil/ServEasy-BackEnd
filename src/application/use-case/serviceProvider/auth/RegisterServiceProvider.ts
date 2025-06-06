@@ -13,10 +13,9 @@ export class RegisterServiceProviderUseCase {
   async execute(serviceProviderData: IServiceProviderRegistration, profileImageRow: string, documentRow: string,document2Row:string|null):Promise<IServiceProvider>{
     console.log("-----------------");
 
-    console.log(documentRow);
+    console.log(serviceProviderData.bankDetails);
    console.log("-----------------");
    
-       console.log(document2Row);
 
     const document = await this.cloudinaryService.uploadDocuments(documentRow);
     const profileImage = await this.cloudinaryService.uploadServiceProviderProfile(profileImageRow);

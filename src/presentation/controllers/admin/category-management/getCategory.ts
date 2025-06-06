@@ -5,9 +5,8 @@ import { GetCategory } from "../../../../application/use-case/admin/category-man
 export const getCategoryHandler = async (req: Request, res: Response) => {
   try {
     const getCategoryUseCase = container.resolve(GetCategory);
-    const categories = await getCategoryUseCase.execute(); 
+    const categories = await getCategoryUseCase.getActiveCategory(); 
 
-     console.log(categories);
       
 
     res.status(200).json(categories); 

@@ -1,13 +1,32 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { GetPaymentInfoServiceProviderUseCase } from "../../application/use-case/payment/getServiceProviderUseCase";
 import { GetPaymentInfoUseCaseServiceProvider } from "../../application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
 import { EditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/EditProfile";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { RegisterServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
+import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
+import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
+import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
+import { GetCategory } from "../../application/use-case/admin/category-management/GetCategory";
+import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
 
 @injectable()
 export class ServiceProviderController{
-    constructor(@inject(GetPaymentInfoUseCaseServiceProvider)private getPaymentInfo:GetPaymentInfoUseCaseServiceProvider,@inject(EditServiceProviderProfileUseCase)private editServiceProviderProfileUseCase:EditServiceProviderProfileUseCase){}
+    constructor(@inject(GetPaymentInfoUseCaseServiceProvider)private getPaymentInfo:GetPaymentInfoUseCaseServiceProvider,
+        @inject(GetServiceProvider)
+    private getServiceProviderUseCase: GetServiceProvider,
+    @inject(EditServiceProviderProfileUseCase)private editServiceProviderProfileUseCase:EditServiceProviderProfileUseCase,
+      @inject(RegisterServiceProviderUseCase)
+    private registerServiceProviderUseCase: RegisterServiceProviderUseCase,
+  @inject(UpdateUserWithServiceProviderUseCase)
+    private updateUserWithServiceProviderUseCase: UpdateUserWithServiceProviderUseCase,
+  
+      @inject(VerifyServiceProvider)
+    private verifyServiceProviderUseCase: VerifyServiceProvider,
+    @inject(GetCategory)
+    private getCategoryUseCase: GetCategory
+
+  ){}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
 
@@ -54,5 +73,142 @@ console.log("getPaymentInfo is:", this.getPaymentInfo);
   }
 }
 
+async registerServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const { data, bankDetails } = req.body;
+
+      const {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        businessType,
+        category,
+        subcategory,
+        experience,
+        location,
+        serviceMode,
+        services,
+        skills,
+        profileImage,
+        documentImg,
+        documentImg2,
+        socialMedia,
+        description
+      } = data;
+
+      const serviceProviderData: IServiceProviderRegistration = {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        experience: parseInt(experience, 10),
+        location,
+        services,
+        skills,
+        serviceMode,
+        profileImage: "",
+        document: [],
+        businessType,
+        category,
+        subcategory,
+        socialMedia: "",
+        description: description || "",
+        userId: res.locals.user.userId,
+        bankDetails
+      };
+
+      const serviceProvider = await this.registerServiceProviderUseCase.execute(
+        serviceProviderData,
+        profileImage,
+        documentImg,
+        documentImg2
+      );
+
+      const user = res.locals.user;
+
+      if (user.userId && serviceProvider._id) {
+        await this.updateUserWithServiceProviderUseCase.execute(user.userId, serviceProvider._id.toString());
+      }
+
+      res.status(HttpStatus.CREATED).json({
+        message: "Service provider registered successfully.",
+        serviceProvider
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "An error occurred while registering the service provider."
+      });
+    }
+  }
+
+
+
+ async verifyServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const user = res.locals.user;
+
+      if (!user || !user.userId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized access" });
+        return;
+      }
+
+      const refreshToken = await this.verifyServiceProviderUseCase.execute(user.userId);
+
+      if (!refreshToken) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "Not a valid service provider" });
+        return;
+      }
+
+      res.cookie("serviceProviderToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000 
+      });
+
+      res.status(HttpStatus.OK).json({ message: "Service provider verified" });
+    } catch (error) {
+      console.error("Error verifying service provider:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+  async getActiveCategories(req: Request, res: Response): Promise<void> {
+    try {
+      const categories = await this.getCategoryUseCase.getActiveCategory();
+      res.status(HttpStatus.OK).json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+
+
+
+    async getServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const user = res.locals.user;
+
+      const result = await this.getServiceProviderUseCase.execute(user.userId);
+
+      res.status(HttpStatus.CREATED).json({ serviceProvider: result });
+    } catch (error) {
+      console.error("Error fetching service provider:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error." });
+    }
+  }
+  
 
 }
