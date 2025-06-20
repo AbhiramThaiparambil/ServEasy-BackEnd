@@ -666,39 +666,180 @@ export class UserController {
     }
   };
 
-  public getActiveServices = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    try {
-      console.log(req.query);
+public getActiveServices = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = res.locals.user?.userId;
 
-      const userLongitude = Number(req.query.userLongitude);
-      const userLatitude = Number(req.query.userLatitude);
+    const limit = parseInt(req.query.limit as string) || 10;
+    const cursor = req.query.cursor as string | null;
 
-      const userId = res.locals.user?.userId;
+    const result = await this.getAllActiveService.execute({
+      userId,
+      limit,
+      cursor,
+    });
 
-      let result;
+    res.status(HttpStatus.OK).json(result);
+    return;
+  } catch (e) {
+    console.error(e);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "An error occurred while fetching services.",
+    });
+    return;
+  }
+};
 
-      if (!isNaN(userLongitude) && !isNaN(userLatitude)) {
-        result = await this.getAllActiveService.getNearByservices(
-          userLongitude,
-          userLatitude,userId
-        );
-      } else {
-        result = await this.getAllActiveService.execute(userId);
-      }
 
-      res.status(HttpStatus.OK).json( result);
-      return;
-    } catch (e) {
-      console.error(e);
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "An error occurred while fetching services." });
+
+
+public getActiveNearbyServices = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = res.locals.user?.userId;
+ 
+    const filters = req.query.filters as {
+  category?: string;
+  experience?: string;
+  priceSort?: "gtToLow" | "lowTogt";
+  searchQuery?: string;
+};
+    const {
+      limit = 10,
+      cursor = null,
+      
+    } = req.query;
+
+    console.log(req.query);
+    
+    const longitude = Number(req.query.longitude);
+    const latitude = Number(req.query.latitude);
+       const parsedFilters = {
+  category: filters?.category,
+  experience: filters?.experience ? parseInt(filters.experience) : undefined,
+  priceSort: filters?.priceSort,
+  searchQuery: filters?.searchQuery,
+};
+
+    if (isNaN(longitude) || isNaN(latitude)) {
+      
+
+
+ const result = await this.getAllActiveService.getNearByservices(
+      null,
+      null,
+      parsedFilters,
+      Number(limit),
+      cursor as string | null
+    );
+    res.status(HttpStatus.OK).json(result);
+
       return;
     }
-  };
+ 
+
+
+
+    const result = await this.getAllActiveService.getNearByservices(
+      longitude,
+      latitude,
+      parsedFilters,
+      Number(limit),
+      cursor as string | null
+    );
+
+    res.status(HttpStatus.OK).json(result);
+    return;
+  } catch (e) {
+    console.error(e);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "An error occurred while fetching services.",
+    });
+    return;
+  }
+};
+
+
+
+
+
+
+
+//  public getActiveServices = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const {
+//       userLongitude,
+//       userLatitude,
+//       category,
+//       experienceSort,
+//       priceSort,
+//       ratingFilter,
+//       searchQuery,
+//     } = req.query;
+
+//     const longitude = Number(userLongitude);
+//     const latitude = Number(userLatitude);
+//     const userId = res.locals.user?.userId;
+
+//     const filters = {
+//       category: category?.toString(),
+//       experienceSort: experienceSort?.toString(),
+//       priceSort: priceSort?.toString(),
+//       ratingFilter: ratingFilter ? Number(ratingFilter) : null,
+//       searchQuery: searchQuery?.toString(),
+//     };
+
+//     let result;
+//     console.log(req.query);
+    
+//     console.log("____________________________________________");
+//     console.log("____________________________________________");
+//     console.log("____________________________________________");
+
+
+//     if (!isNaN(longitude) && !isNaN(latitude)) {
+//       result = await this.getAllActiveService.getNearByservices(
+//         longitude,
+//         latitude,
+//         userId,
+//         filters
+//       );
+//       console.log(result);
+
+//     } else {
+//       result = await this.getAllActiveService.execute(userId);
+//     }
+
+//     res.status(HttpStatus.OK).json(result);
+//     return;
+//   } catch (e) {
+//     console.error(e);
+//     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+//       message: "An error occurred while fetching services.",
+//     });
+//     return;
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
 
   public getAddress = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -750,6 +891,20 @@ export class UserController {
       return;
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   public editAddress = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -902,4 +1057,10 @@ export class UserController {
         .json({ message: "Internal server error" });
     }
   };
+
+
+
+
+
+
 }

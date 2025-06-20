@@ -36,8 +36,20 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
     serviceCompletedTime: { type: Date },
     serviceBills:{type:Array},
     isOnlineService:{type:Boolean},
-    reviewId: { type: Schema.Types.ObjectId, ref: "Review" }
+    reviewId: { type: Schema.Types.ObjectId, ref: "Review" },
 
+      liveLocation: {
+      lat: { type: Number },
+      lng: { type: Number },
+    },
+    preferredSlot: {
+      date: { type: Date },
+
+      time: {
+        type: String,
+        enum: ["morning", "afternoon", "anyTime"],
+      },
+    }
   },
   { timestamps: true }
 );

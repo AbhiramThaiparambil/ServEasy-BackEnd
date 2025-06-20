@@ -9,6 +9,7 @@ import { IServiceProviderRegistration } from "../../domain/entities/IServiceProv
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
 import { GetCategory } from "../../application/use-case/admin/category-management/GetCategory";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
+import { ManageAllServiceUseCase } from "../../application/use-case/admin/mangageAllserviceUseCase";
 
 @injectable()
 export class ServiceProviderController{
@@ -24,8 +25,9 @@ export class ServiceProviderController{
       @inject(VerifyServiceProvider)
     private verifyServiceProviderUseCase: VerifyServiceProvider,
     @inject(GetCategory)
-    private getCategoryUseCase: GetCategory
-
+    private getCategoryUseCase: GetCategory,
+  
+    @inject(ManageAllServiceUseCase) private manageAllServiceUseCase:ManageAllServiceUseCase,
   ){}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -210,5 +212,59 @@ async registerServiceProvider(req: Request, res: Response): Promise<void> {
     }
   }
   
+
+ async makeItactiveAllService(req: Request, res: Response) {
+    try {
+      const serviceProviderId = req.params.id;
+
+      if (!serviceProviderId) {
+         res.status(HttpStatus.BAD_REQUEST).json({
+          message: "Service provider ID is required",
+        });
+        return
+      }
+
+      await this.manageAllServiceUseCase.makeActiveAllService(serviceProviderId);
+
+       res.status(HttpStatus.OK).json({
+        message: "All services have been activated successfully.",
+      });
+      return
+    } catch (error) {
+      console.error("Error activating services:", error);
+       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while activating services.",
+        error,
+      });
+      return
+    }
+  }
+
+    async makeInactiveAllService(req: Request, res: Response) {
+    try {
+      const serviceProviderId = req.params.id;
+
+      if (!serviceProviderId) {
+         res.status(HttpStatus.BAD_REQUEST).json({
+          message: "Service provider ID is required",
+        });
+        return
+      }
+
+      await this.manageAllServiceUseCase.makeActiveAllService(serviceProviderId);
+
+       res.status(HttpStatus.OK).json({
+        message: "All services have been marked as inactive successfully.",
+      });
+      return
+    } catch (error) {
+      console.error("Error deactivating services:", error);
+       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while deactivating services.",
+        error,
+      });
+      return
+    }
+  }
 
 }

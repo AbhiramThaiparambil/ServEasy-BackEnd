@@ -1,61 +1,72 @@
 import { UserRepository } from "../../../domain/repositories/IuserRepository";
-import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie"; 
+import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { inject, injectable } from "tsyringe";
 @injectable()
 export class GetAllActiveService {
   constructor(
-    @inject("ServiceRepository") private serviceRepository: ServiceRepository,    @inject("UserRepository") private userRepository: UserRepository
+    @inject("ServiceRepository") private serviceRepository: ServiceRepository,
+    @inject("UserRepository") private userRepository: UserRepository
   ) {}
 
-
-async getNearByservices(userLongitude:number,userLatitude:number,userId?:string|null){
+async getNearByservices(
+  userLongitude: number|null,
+  userLatitude: number|null,
+   filters?: {
+    category?: string;
+    experience?: number;
+    priceSort?: "gtToLow" | "lowTogt";
+    searchQuery?: string;
+  },
+  limit: number = 10,
+  cursor: string | null = null
+) {
   try {
+    const allFilterServices = await this.serviceRepository.findNearestServicesFilter(
+      userLongitude,
+      userLatitude,
+      filters,
+      limit,
+      cursor
+    );
 
-  
+    
 
+    console.log(allFilterServices);
+    
+    const categories = await this.serviceRepository.findActiveServiceCategories();
 
-  if(userId){
-    const user = await this.userRepository.findById(userId);
-     if(user?.serviceProvider){
-  const allServices = await this.serviceRepository.findNearestServices(userLongitude,userLatitude,user.serviceProvider+"");
-   console.log(allServices[0])
-   const categories=await this.serviceRepository.findNearestActiveServiceCategories(userLongitude,userLatitude)
+   const activeServiceNames=await this.serviceRepository.getActiveServiceNames()
 
-    return {allServices,categories};
-     }else{
-        const allServices = await this.serviceRepository.findNearestServices(userLongitude,userLatitude);
-   const categories=await this.serviceRepository.findNearestActiveServiceCategories(userLongitude,userLatitude)
-
-
-        return {allServices,categories};
-     }
-
-     
-  }
-
-  
+    return { allFilterServices, categories,activeServiceNames};
   } catch (error) {
-    console.error("Error adding new service:", error);
-    throw new Error("Failed to add new service");
+    console.error("Error fetching services:", error);
+    throw new Error("Failed to fetch services");
   }
 }
 
 
-
-  async execute(userId?:string|null) {
+  async execute({
+    userId,
+    limit,
+    cursor,
+  }: {
+    userId?: string | null;
+    limit: number;
+    cursor?: string | null;
+  }) {
     try {
-      if(userId){
+      // You can use userId for future personalization if needed
+      const categories =
+        await this.serviceRepository.findActiveServiceCategories();
 
-      }
+      const { services: allServices, nextCursor } =
+        await this.serviceRepository.findAllActiveServicesUser(limit, cursor);
 
-
-      const categories=await this.serviceRepository.findActiveServiceCategories()
-      const allServices = await this.serviceRepository.findAllActiveServicesUser();
-      return {allServices,categories};
+      return { allServices, categories, nextCursor };
     } catch (error) {
-      console.error("Error adding new service:", error);
-      throw new Error("Failed to add new service");
+      console.error("Error fetching active services:", error);
+      throw new Error("Failed to fetch active services");
     }
   }
-
 }
+

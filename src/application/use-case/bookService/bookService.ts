@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { IServiceBooking } from "../../../domain/entities/IserviceBooking";
+import { IliveLocation, IPreferredServiceDateTime, IServiceBooking, } from "../../../domain/entities/IserviceBooking";
 import { IAddress } from "../../../domain/entities/IAddress";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import mongoose from "mongoose";
@@ -15,25 +15,32 @@ export class BookService {
   async execute(
     userId: mongoose.Types.ObjectId,
     serviceId: mongoose.Types.ObjectId,
-    address: IAddress
+    address: IAddress,
+    preferredServiceTime:IPreferredServiceDateTime,liveLocation:IliveLocation
   ): Promise<IServiceBooking> {
     const service = await this.serviceRepository.findById(serviceId);
     
     if (!service) {
       throw new Error("Service not found");
     }
+  
+   const data: any = {
+  serviceProviderId: service.serviceProviderId,
+  serviceId,
+  address,
+  userId,
+  serviceStatus: "pending", 
+  paymentType: "pending", 
+  paymentStatus: "pending",
+  bookedTime: new Date(),
+  preferredSlot: preferredServiceTime,
+};
 
-    const result = await this.serviceBookingRepository.createServiceBooking({
-      serviceProviderId: service.serviceProviderId,
-      serviceId,
-      address,
-      userId,
-      serviceStatus: "pending", 
-      paymentType: "pending", 
-      paymentStatus: "pending",
-      estimatedServiceTime: new Date(),
-      bookedTime: new Date(),
-    });
+if (
+  liveLocation) {
+  data.liveLocation = liveLocation;
+}
+    const result = await this.serviceBookingRepository.createServiceBooking(data);
 
     if (!result) {
       throw new Error("Failed to book service");
@@ -47,6 +54,7 @@ export class BookService {
   async bookOnlineService(
     userId: mongoose.Types.ObjectId,
     serviceId: mongoose.Types.ObjectId,
+    preferredServiceTime:IPreferredServiceDateTime,
   ): Promise<IServiceBooking> {
     const service = await this.serviceRepository.findById(serviceId);
   
@@ -69,9 +77,10 @@ export class BookService {
       serviceStatus: "pending",
       paymentType: "pending",
       paymentStatus: "pending",
-      estimatedServiceTime: new Date(),
+
       bookedTime: new Date(),
       isOnlineService: true,
+      preferredSlot:preferredServiceTime,
     });
   
     if (!result) {
