@@ -23,7 +23,9 @@ userRouter.get("/logout", userController.logoutUserController);
 
 userRouter.get("/user/service/:id", userController.getSingleServiceHandler);
 userRouter.get("/user/profile/:id", userController.userProfileController);
-userRouter.get("/getactive/services",authMiddleware("User"),userController.getActiveServices);
+// userRouter.get("/getactive/services",userController.getActiveServices);
+userRouter.get("/getactive/services/",userController.getActiveNearbyServices);
+
 
 userRouter
   .route("/user/addresses")
@@ -49,4 +51,6 @@ userRouter.patch("/notification/:id",  authMiddleware("User"),userController.mar
 userRouter.delete("/notification/:id",authMiddleware("User"),userController.deleteNotification);
 userRouter.get("/banners/active",userController.getSiteBanners)
 userRouter.get("/themes",userController.getSiteThemes)
+// userRouter.get('/services/active-names',userController.getActiveServiceNames)
+
 export default userRouter;

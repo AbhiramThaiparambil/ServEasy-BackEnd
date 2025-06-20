@@ -18,4 +18,21 @@ export interface IServiceBooking {
     serviceBills?:string[]
     isOnlineService?:boolean
     reviewId?:ObjectId
+    preferredSlot?:IPreferredServiceDateTime;
+    liveLocation?:IliveLocation
+
+}
+
+
+ export interface IliveLocation {
+    lat: number;
+    lng: number;
+  };
+
+  type TimeSlot = "morning" | "afternoon" | "anyTime";
+
+
+export interface IPreferredServiceDateTime {
+  date: Date;
+  time: TimeSlot;
 }

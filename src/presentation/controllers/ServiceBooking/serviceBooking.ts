@@ -5,9 +5,9 @@ import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const bookServiceHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { address, serviceId, isOnline } = req.body;
+    const { address, serviceId, isOnline,preferredServiceTime,liveLocation } = req.body;
     const userId = res.locals.user?.userId;
-
+       
     if (!userId || !serviceId || (!isOnline && !address)) {
       res.status(HttpStatus.BAD_REQUEST).json({
         error: "Bad Request: Missing required fields (serviceId, address or userId)",
@@ -15,10 +15,12 @@ export const bookServiceHandler = async (req: Request, res: Response): Promise<v
       return;
     }
 
+    
+
     const bookService = container.resolve(BookService);
     const bookedService = isOnline
-      ? await bookService.bookOnlineService(userId, serviceId)
-      : await bookService.execute(userId, serviceId, address);
+      ? await bookService.bookOnlineService(userId, serviceId,preferredServiceTime)
+      : await bookService.execute(userId, serviceId, address,preferredServiceTime,liveLocation);
 
     res.status(HttpStatus.CREATED).json({
       message: "Service booked successfully",

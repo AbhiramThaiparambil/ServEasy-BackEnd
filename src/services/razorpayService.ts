@@ -3,6 +3,7 @@ import { injectable } from "tsyringe";
 import { IPayment } from "../domain/entities/Ipayment";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 import axios from "axios";
+import { IBankDetails } from "../domain/entities/IServiceProvider";
 
 @injectable()
 export class RazorpayService {
@@ -20,20 +21,16 @@ export class RazorpayService {
 
 
 
-  // async createLinkedAccountTest(): Promise<string> {
+  // async createLinkedAccountTest(bankInfo:IBankDetails): Promise<string> {
   //   const serviceProvider = {
-  //     name: "Ravi Kumar",
-  //     email: "ravi@example.com",
-  //     phone: "9876543210",
-  //     ifsc: "HDFC0000053",
-  //     accountNumber: "123456789012",
+  //     name: bankInfo.accountHolderName,
+  //     ifsc: bankInfo.ifscCode,
+  //     accountNumber: bankInfo.accountNumber,
   //   };
 
   //   const response = await axios.post(
   //     "https://api.razorpay.com/v1/accounts",
   //     {
-  //       email: serviceProvider.email,
-  //       phone: serviceProvider.phone,
   //       type: "individual",
   //       legal_business_name: serviceProvider.name,
   //       business_type: "individual",
@@ -63,7 +60,7 @@ export class RazorpayService {
     const providerShare = Math.round(payment.total-payment.convenienceFee)
 
     const order = await this.razorpay.orders.create({
-      amount: payment.convenienceFee * 100,
+      amount: payment.total * 100,
       currency: "INR",
       payment_capture: true,
       receipt: `receipt_${Date.now()}`,

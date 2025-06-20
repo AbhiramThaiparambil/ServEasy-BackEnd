@@ -12,7 +12,10 @@ import { getServiceDetailsServiceProvider } from "../controllers/ServiceBooking/
 import { serviceProviderStatusChange } from "../controllers/ServiceBooking/serviceProviderStausChange";
 import { authMiddleware } from "../../Middlewares/authMiddleware";
 import { uploadBillsHandler } from "../controllers/ServiceBooking/uploadBills";
+import { ServiceController } from "../controllers/ServiceController";
+import { container } from "tsyringe";
 
+const serviceController=container.resolve(ServiceController)
 const serviceRouter = Router();
 serviceRouter.put("/:serviceId", updateService);
 
@@ -20,6 +23,8 @@ serviceRouter
   .route("/")
   .post(addNewService)
   .get(authMiddleware("User"), serviceProviderAuth, getServices);
+
+
 
 serviceRouter.patch(
   "/block-unblock",
@@ -43,6 +48,12 @@ serviceRouter.put(
   "/service-provider/bookings/:id/:action",
   serviceProviderStatusChange
 );
+
+serviceRouter.put(
+  "/bookings/:id/cancel",
+  (req, res) =>serviceController.cancelUserBooking(req, res)
+);
+
 
 serviceRouter.get(
   "/bookings/serviceProvider/:id",
