@@ -2,7 +2,6 @@ import { Types } from "mongoose";
 import { IChat,IMessage } from "../entities/IChat";
 
 export interface IChatRepository {
-  // saveMessage(data: SaveMessageDTO): Promise<any>;
   findByIds(senderId: Types.ObjectId, receiverId: Types.ObjectId): Promise<any>;
   createChat(
     userA: Types.ObjectId,

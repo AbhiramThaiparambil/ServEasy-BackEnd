@@ -7,3 +7,7 @@ export interface INotificationRepository{
     createNotification(notification:{content:string,userId:Types.ObjectId}):Promise<void>
     
 }
+
+
+
+ 

@@ -1,8 +1,9 @@
 import mongoose, { PipelineStage, Types } from "mongoose";
-import { IService } from "../../domain/entities/IService";
+import { IOnlineService, IService } from "../../domain/entities/IService";
 import { IServiceRepository } from "../../domain/repositories/IServiceRepository";
 import ServiceModel from "../models/ServiceModel";
 import { injectable } from "tsyringe";
+import { SlotModel } from "../models/SlotModel";
 @injectable()
 export class ServiceRepository implements IServiceRepository {
   async create(service: IService): Promise<IService> {
@@ -1668,6 +1669,22 @@ async activateAllServicesByServiceProvider(serviceProviderId: string) {
   }
 }
 
+
+async findOnlineServicesWithSlot(): Promise<IOnlineService[]> {
+  return await ServiceModel.aggregate([
+    {
+      $match: { serviceType: 'Online' }
+    },
+    {
+      $lookup: {
+        from: 'slots',              
+        localField: '_id',          
+        foreignField: 'serviceId',
+        as: 'slots'                 
+      }
+    }
+  ]);
+}
 
 }
 
