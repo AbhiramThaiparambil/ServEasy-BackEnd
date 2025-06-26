@@ -1,4 +1,4 @@
-import { IService } from "../entities/IService";
+import { IOnlineService, IService } from "../entities/IService";
 import { Types } from "mongoose";
 
 export interface IServiceRepository {
@@ -18,4 +18,5 @@ export interface IServiceRepository {
   unblockService(serviceId: string): Promise<boolean>;
   updateService(id: string, newData: IService): Promise<IService | null>;
   findAllActiveServices(): Promise<IService[]>;
+  findOnlineServicesWithSlot():Promise<IOnlineService[]|[]>
 }

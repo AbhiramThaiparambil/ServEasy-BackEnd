@@ -55,7 +55,6 @@ async getNearByservices(
     cursor?: string | null;
   }) {
     try {
-      // You can use userId for future personalization if needed
       const categories =
         await this.serviceRepository.findActiveServiceCategories();
 
@@ -68,5 +67,14 @@ async getNearByservices(
       throw new Error("Failed to fetch active services");
     }
   }
+
+  async getOnlineServicesWithSlot(){
+    const data = await this.serviceRepository.findOnlineServicesWithSlot()
+
+    console.log(data)
+    return data
+  }
+
+
 }
 

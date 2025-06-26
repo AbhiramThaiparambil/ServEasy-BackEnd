@@ -28,6 +28,8 @@ import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository
 import { VerifyOtp } from "./application/use-case/User/auth/VerifyOtp";
 import { NotificationRepository } from "./infrastructure/repositories/NotificationRepository";
 import { SiteSettingRepository } from "./infrastructure/repositories/SiteSettingRepository";
+import { ISlotRepository } from "./domain/repositories/ISlotRepository";
+import { SlotRepository } from "./infrastructure/repositories/SlotRepository";
 
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -40,6 +42,9 @@ container.register(RegisterServiceProviderUseCase, {
 });
 container.register<ICategoryRepository>("ICategoryRepository", {
   useClass: CategoryRepository,
+});
+container.register<ISlotRepository>("ISlotRepository", {
+  useClass: SlotRepository,
 });
 
 container.registerSingleton("EmailOtpService", EmailOtpService);

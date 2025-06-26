@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { ISlot } from './ISlot';
 
 export interface Location {
   type: "Point";
@@ -23,3 +24,13 @@ export interface IService {
   review?: Review[];
   serviceImage: string;
 }
+
+
+export interface IOnlineService extends IService {
+
+slots:ISlot[]|[]
+
+}
+
+
+
