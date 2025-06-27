@@ -6,4 +6,5 @@ export interface ISlotRepository {
   markSlotAsBooked(id: string): Promise<ISlot | null>;
   getSlotById(id: string): Promise<ISlot | null>;
   getSlotByServiceId(id:string):Promise<ISlot[]|[]>
+  getSlotByServiceIdLearn(id:string):Promise<any[]|[]>
 }

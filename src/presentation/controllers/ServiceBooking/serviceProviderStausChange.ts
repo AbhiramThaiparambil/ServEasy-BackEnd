@@ -3,6 +3,7 @@ import { container } from "tsyringe";
 import { UpdateServiceStatus } from "../../../application/use-case/bookService/updateBookingStatus";
 import { IPayment } from "../../../domain/entities/Ipayment";
 import { HttpStatus } from "../../../constants/HttpStatus";
+import { log } from "console";
 
 export const serviceProviderStatusChange = async (
   req: Request,
@@ -19,11 +20,11 @@ export const serviceProviderStatusChange = async (
       return;
     }
 
-    let updatedService;
+    let updatedService: any;
 
     if (action === "accept") {
       const { estimatedServiceTime, serviceStatus } = req.body;
-
+       log(req.body)
       if (!estimatedServiceTime || !serviceStatus) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -32,11 +33,13 @@ export const serviceProviderStatusChange = async (
           });
         return;
       }
-
+      const serviceProviderId =res.locals.serviceProvider_id;
+           console.log(res.locals)
       updatedService = await changeStatusContainer.ConformBookingStatus(
         id,
         serviceStatus,
-        estimatedServiceTime
+        estimatedServiceTime,
+        serviceProviderId
       );
     } else if (action === "status") {
       const { serviceStatus } = req.body;
@@ -86,6 +89,8 @@ export const serviceProviderStatusChange = async (
       );
     }
 
+
+
     if (!updatedService) {
       res
         .status(HttpStatus.BAD_REQUEST)
@@ -93,6 +98,10 @@ export const serviceProviderStatusChange = async (
       return;
     }
 
+    if(updatedService?.error) {
+      res.status(HttpStatus.CONFLICT).json({ error: updatedService.error });
+      return;
+    }
     res.status(HttpStatus.OK).json({
       message: "Booking status updated successfully",
       data: updatedService,

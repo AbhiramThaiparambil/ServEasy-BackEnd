@@ -37,13 +37,27 @@ export class UpdateServiceStatus {
   async ConformBookingStatus(
     serviceBookedId: string,
     status: string,
-    estimatedServiceTime: string
+    estimatedServiceTime: string,
+    serviceProviderId: string
   ) {
+    const isConflicting = await this.serviceBookingRepository.isServiceTimeConflicting(new mongoose.Types.ObjectId(serviceProviderId), estimatedServiceTime);
+       console.log(isConflicting, "isConflicting" );
+       console.log("-------------====----===---=====---===-==-==----");
+       
+       console.log(serviceBookedId, "serviceBookedId" );
+       console.log(serviceProviderId, "serviceProviderId" );
+
+    if(isConflicting) {
+return {error: "You have already allocated this time slot to a service." }
+    }
+
+     
+
     const bookedServiceId = new mongoose.Types.ObjectId(serviceBookedId);
     const data = await this.serviceBookingRepository.confirmBooking(
       bookedServiceId,
       status,
-      estimatedServiceTime
+      estimatedServiceTime+""
     );
     const bookedService =
     await this.serviceBookingRepository.findBookedServiceById(

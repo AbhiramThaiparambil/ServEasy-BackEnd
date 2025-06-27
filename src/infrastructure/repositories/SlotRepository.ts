@@ -64,8 +64,11 @@ export class SlotRepository implements ISlotRepository {
       : null;
   }
 
-  getSlotByServiceId(serviceId: string): Promise<ISlot[] | []> {
-      return SlotModel.find({serviceId})
-      
+  async getSlotByServiceId(serviceId: string): Promise<ISlot[] | []> {
+      return await SlotModel.find({serviceId})
+
+  }
+  async getSlotByServiceIdLearn(serviceId: string,): Promise<any[] | []> {
+return await SlotModel.find({serviceId}).lean()
   }
 }

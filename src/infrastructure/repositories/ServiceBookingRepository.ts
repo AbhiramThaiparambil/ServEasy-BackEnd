@@ -484,4 +484,24 @@ async getPaymentInfoServiceProvider(serviceProviderId:string,startDate?: Date | 
 }
 
 
+
+ async isServiceTimeConflicting(
+    serviceProviderId: Types.ObjectId,
+    estimatedServiceTime: string
+  ): Promise<boolean> {
+    console.log(serviceProviderId, "serviceProviderId");
+    console.log(estimatedServiceTime, "estimatedServiceTime");
+    const conflict = await  ServiceBooking.findOne({
+      serviceProviderId,
+      estimatedServiceTime
+    });
+    console.log(conflict, "conflict");
+    return !!conflict;
+  }
+
+
+
+
+
+
 }
