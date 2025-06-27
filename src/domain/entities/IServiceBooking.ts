@@ -20,7 +20,13 @@ export interface IServiceBooking {
     reviewId?:ObjectId
     preferredSlot?:IPreferredServiceDateTime;
     liveLocation?:IliveLocation
+    serviceSlot?:IServiceSlot
 
+}
+export interface IServiceSlot {
+  date: Date;
+  startTime: string;
+  endTime: string;
 }
 
 

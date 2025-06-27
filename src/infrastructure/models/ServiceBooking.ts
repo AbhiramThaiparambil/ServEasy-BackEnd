@@ -49,6 +49,12 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
         type: String,
         enum: ["morning", "afternoon", "anyTime"],
       },
+    },
+      serviceSlot: {
+      date: { type: Date },
+
+     startTime: { type: String },
+     endTime: { type: String },
     }
   },
   { timestamps: true }

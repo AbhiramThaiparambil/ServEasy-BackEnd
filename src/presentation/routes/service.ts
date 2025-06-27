@@ -31,9 +31,9 @@ serviceRouter.patch(
   blockUnblockService
 );
 
-serviceRouter.post('/book', authMiddleware('User'), bookServiceHandler);
+serviceRouter.post('/book', authMiddleware('User'),serviceProviderAuth, bookServiceHandler);
 
-serviceRouter.get('/bookings', authMiddleware('User'), GetbookServiceHandler);
+serviceRouter.get('/bookings', authMiddleware('User'),serviceProviderAuth, GetbookServiceHandler);
 serviceRouter.get(
   '/bookings/serviceprovider',
   authMiddleware('User'),
@@ -55,7 +55,7 @@ serviceRouter.post('/slots', (req, res) => serviceController.createSlotHandler(r
 
 serviceRouter.post('/service-provider/uploadbills/:id/', uploadBillsHandler);
 
-serviceRouter.put('/service-provider/bookings/:id/:action', serviceProviderStatusChange);
+serviceRouter.put('/service-provider/bookings/:id/:action', authMiddleware('User'),serviceProviderAuth,serviceProviderStatusChange);
 
 serviceRouter.put('/bookings/:id/cancel', (req, res) =>
   serviceController.cancelUserBooking(req, res)

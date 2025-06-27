@@ -39,4 +39,10 @@ export interface IServiceBookingRepository {
       cancelReason: string
     ): Promise<IServiceBooking | null> 
    
+
+  isServiceTimeConflicting(
+    serviceProviderId: Types.ObjectId,
+    estimatedServiceTime: string
+  ): Promise<boolean>;
+
 }
