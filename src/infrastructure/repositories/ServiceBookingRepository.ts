@@ -501,7 +501,36 @@ async getPaymentInfoServiceProvider(serviceProviderId:string,startDate?: Date | 
 
 
 
+async rescheduleBooking(bookingId: Types.ObjectId, newDate: string): Promise<IServiceBooking | null> {
+    return await ServiceBooking.findOneAndUpdate(
+      { _id: bookingId },
+      {
+        $set: {
+
+          estimatedServiceTime: newDate,
+        },
+      },
+      { new: true }
+    );
+  }
 
 
 
+async addBookingHistory(
+    bookingId: Types.ObjectId,
+    action: string,
+    message: string
+  ): Promise<void> {
+    
+    await ServiceBooking.findByIdAndUpdate(bookingId, {
+      $push: {
+        bookingHistory: {
+          action,
+          message,
+          timestamp: new Date(),
+        },
+      },
+    });
+
+  }
 }

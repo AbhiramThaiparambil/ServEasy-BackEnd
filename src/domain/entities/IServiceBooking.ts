@@ -3,6 +3,7 @@ import { IAddress } from './IAddress';
 import { IPayment } from './Ipayment';
 
 export interface IServiceBooking {
+    _id?: ObjectId;
     serviceProviderId:ObjectId;
     serviceId: ObjectId;
     address?: IAddress;
@@ -21,6 +22,7 @@ export interface IServiceBooking {
     preferredSlot?:IPreferredServiceDateTime;
     liveLocation?:IliveLocation
     serviceSlot?:IServiceSlot
+    bookingHistory?: IServiceBookingHistory[];
 
 }
 export interface IServiceSlot {
@@ -29,6 +31,15 @@ export interface IServiceSlot {
   endTime: string;
 }
 
+export interface IServiceBookingHistory {
+  bookingHistory: [
+  {
+    action: string;
+    message: string;
+    timestamp: Date;
+  }
+]
+}
 
  export interface IliveLocation {
     lat: number;

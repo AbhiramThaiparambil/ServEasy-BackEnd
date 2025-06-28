@@ -45,4 +45,10 @@ export interface IServiceBookingRepository {
     estimatedServiceTime: string
   ): Promise<boolean>;
 
+addBookingHistory(
+  bookingId: Types.ObjectId,
+  action: string,
+  message: string
+): Promise<void>;
+
 }
