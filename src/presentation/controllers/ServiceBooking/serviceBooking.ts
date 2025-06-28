@@ -2,12 +2,15 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { BookService } from "../../../application/use-case/bookService/bookService";
 import { HttpStatus } from "../../../constants/HttpStatus";
+import { log } from "console";
 
 export const bookServiceHandler = async (req: Request, res: Response): Promise<void> => {
   try {
+    log("bookServiceHandler called with body:",);
     const { address, serviceId, isOnline,preferredServiceTime,liveLocation,slotId } = req.body;
     const userId = res.locals.user?.userId;
-       
+                console.log(userId+"userId",serviceId+"serviceId",isOnline+"isOnline",address+"address");
+
     if (!userId || !serviceId || (!isOnline && !address)) {
       res.status(HttpStatus.BAD_REQUEST).json({
         error: "Bad Request: Missing required fields (serviceId, address or userId)",

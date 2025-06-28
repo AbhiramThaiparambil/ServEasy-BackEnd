@@ -23,8 +23,7 @@ export const serviceProviderStatusChange = async (
     let updatedService: any;
 
     if (action === "accept") {
-      const { estimatedServiceTime, serviceStatus } = req.body;
-       log(req.body)
+      const { estimatedServiceTime, serviceStatus,reschedule,reschedReason} = req.body;
       if (!estimatedServiceTime || !serviceStatus) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -39,7 +38,9 @@ export const serviceProviderStatusChange = async (
         id,
         serviceStatus,
         estimatedServiceTime,
-        serviceProviderId
+        serviceProviderId,
+        reschedule,
+        reschedReason
       );
     } else if (action === "status") {
       const { serviceStatus } = req.body;

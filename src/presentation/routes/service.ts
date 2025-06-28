@@ -31,9 +31,10 @@ serviceRouter.patch(
   blockUnblockService
 );
 
-serviceRouter.post('/book', authMiddleware('User'),serviceProviderAuth, bookServiceHandler);
+serviceRouter.post('/book', authMiddleware('User'), bookServiceHandler);
 
-serviceRouter.get('/bookings', authMiddleware('User'),serviceProviderAuth, GetbookServiceHandler);
+
+serviceRouter.get('/bookings', authMiddleware('User'), GetbookServiceHandler);
 serviceRouter.get(
   '/bookings/serviceprovider',
   authMiddleware('User'),

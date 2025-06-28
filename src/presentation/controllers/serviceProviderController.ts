@@ -248,4 +248,28 @@ export class ServiceProviderController {
       return;
     }
   }
+
+// async rescheduleBookingHandler(req: Request, res: Response){
+//   try{
+//     const { bookingId, newDate } = req.body;
+
+//     if (!bookingId || !newDate ) {
+//       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Booking ID, new date, and new time are required.' });
+//     }
+
+//     const updatedBooking = await this.manageAllServiceUseCase.rescheduleBooking(bookingId, newDate);
+
+//     if (!updatedBooking) {
+//       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Booking not found or could not be rescheduled.' });
+//     }
+
+//     res.status(HttpStatus.OK).json({ message: 'Booking rescheduled successfully.', booking: updatedBooking });      
+
+//   } catch (error) {
+//     console.error('Error rescheduling booking:', error);
+//     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });  
+
+// }
+// }
+
 }

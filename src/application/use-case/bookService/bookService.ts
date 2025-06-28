@@ -14,12 +14,13 @@ export class BookService {
     @inject("ISlotRepository") private slotRepository: ISlotRepository
   ) {}
 
-  async execute(
-    userId: mongoose.Types.ObjectId,
+  async execute(userId: mongoose.Types.ObjectId,
     serviceId: mongoose.Types.ObjectId,
     address: IAddress,
     preferredServiceTime:IPreferredServiceDateTime,liveLocation:IliveLocation
-  ): Promise<IServiceBooking> {
+  ): Promise<IServiceBooking|void> {
+   try {
+     
     const service = await this.serviceRepository.findById(serviceId);
     
     if (!service) {
@@ -27,7 +28,7 @@ export class BookService {
     }
   
     
-   const data: any = {
+   const data: IServiceBooking = {
   serviceProviderId: service.serviceProviderId,
   serviceId,
   address,
@@ -37,7 +38,9 @@ export class BookService {
   paymentStatus: "pending",
   bookedTime: new Date(),
   preferredSlot: preferredServiceTime,
+
 };
+
 
 if (
   liveLocation) {
@@ -45,11 +48,21 @@ if (
 }
     const result = await this.serviceBookingRepository.createServiceBooking(data);
 
+if(result&&result._id){
+  await this.serviceBookingRepository.addBookingHistory
+  (result._id, "booked", "Service has been booked");
+
+}
+
     if (!result) {
       throw new Error("Failed to book service");
     }
 
     return result;
+   } catch (error) {
+    console.error("Error in bookService:", error);
+    throw new Error("Failed to book service: " + (error as Error).message);
+   }
   }
 
 

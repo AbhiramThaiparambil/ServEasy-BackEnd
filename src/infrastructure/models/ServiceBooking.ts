@@ -55,7 +55,16 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
 
      startTime: { type: String },
      endTime: { type: String },
-    }
+    },
+    bookingHistory: [
+  {
+    action: {
+      type: String,
+    },
+    message: { type: String },
+    timestamp: { type: Date, default: Date.now }
+  }
+]
   },
   { timestamps: true }
 );

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { IPayment } from "../../../domain/entities/Ipayment";
 import { SocketService } from "../../../services/socket/socketService";
 import { ISystemNotification } from "../../../domain/entities/INotification";
+import { formatDateTime } from "../../../utils/formatDateTime";
 
 @injectable()
 export class UpdateServiceStatus {
@@ -21,7 +22,13 @@ export class UpdateServiceStatus {
       bookedServiceId,
       status
     );
-    
+
+    this.serviceBookingRepository.addBookingHistory(
+      bookedServiceId,
+      "status-updated",
+      "booking status has been updated to " + status
+    );
+
     const notification:ISystemNotification= {
       type: "notfication",
       content: data?.isOnlineService?"Your service has been confirmed. Please complete the payment to proceed":`The status of your booked service has been updated to  ${status}`,
@@ -34,49 +41,97 @@ export class UpdateServiceStatus {
     return data;
   }
 
-  async ConformBookingStatus(
-    serviceBookedId: string,
-    status: string,
-    estimatedServiceTime: string,
-    serviceProviderId: string
-  ) {
-    const isConflicting = await this.serviceBookingRepository.isServiceTimeConflicting(new mongoose.Types.ObjectId(serviceProviderId), estimatedServiceTime);
-       console.log(isConflicting, "isConflicting" );
-       console.log("-------------====----===---=====---===-==-==----");
-       
-       console.log(serviceBookedId, "serviceBookedId" );
-       console.log(serviceProviderId, "serviceProviderId" );
+ 
 
-    if(isConflicting) {
-return {error: "You have already allocated this time slot to a service." }
-    }
 
-     
+async ConformBookingStatus(
+  serviceBookedId: string,
+  status: string,
+  estimatedServiceTime: string,
+  serviceProviderId: string,
+  reschedule: boolean,
+  reschedReason?: string
+) {
+  const bookedServiceId = new mongoose.Types.ObjectId(serviceBookedId);
+  const providerId = new mongoose.Types.ObjectId(serviceProviderId);
 
-    const bookedServiceId = new mongoose.Types.ObjectId(serviceBookedId);
+  const isConflicting = await this.serviceBookingRepository.isServiceTimeConflicting(
+    providerId,
+    estimatedServiceTime
+  );
+
+  console.log(isConflicting, "isConflicting");
+  console.log(serviceBookedId, "serviceBookedId");
+  console.log(serviceProviderId, "serviceProviderId");
+
+let notification: ISystemNotification | null = null;
+
+  if (isConflicting) {
+    return { error: "You have already allocated this time slot to a service." };
+  }
+
+  const bookedService = await this.serviceBookingRepository.findBookedServiceById(
+    bookedServiceId
+  );
+
+  if (reschedule) {
+    await this.serviceBookingRepository.rescheduleBooking(bookedServiceId, estimatedServiceTime);
+
+    this.serviceBookingRepository.addBookingHistory(
+      bookedServiceId,
+      "rescheduled",
+      `Your booking has been rescheduled to ${formatDateTime(estimatedServiceTime)}. Reason: ${reschedReason}`
+    );
+
+    notification = {
+      type: "notfication",
+      content: `Your booking has been rescheduled to ${formatDateTime(estimatedServiceTime)}.`,
+      timestamp: new Date().toISOString(),
+    };
+  } else {
     const data = await this.serviceBookingRepository.confirmBooking(
       bookedServiceId,
       status,
-      estimatedServiceTime+""
+      estimatedServiceTime
     );
-    const bookedService =
-    await this.serviceBookingRepository.findBookedServiceById(
-      bookedServiceId
+
+    this.serviceBookingRepository.addBookingHistory(
+      bookedServiceId,
+      "confirmed",
+      "booking has been confirmed by service provider.and is scheduled for " + formatDateTime(estimatedServiceTime)
     );
-    const notification:ISystemNotification= {
+
+    notification = {
       type: "notfication",
-      content: `Your booking has been confirmed!`,
+      content: "Your booking has been confirmed!",
       timestamp: new Date().toISOString(),
     };
+
+    if (notification.content && notification.type) {
+      this.socketService.sendNotificationToUser(
+        bookedService?.userId + "",
+        notification
+      );
+    }
+
+    return data;
+  }
+
+  if (notification.content && notification.type) {
     this.socketService.sendNotificationToUser(
       bookedService?.userId + "",
       notification
     );
-
-    
-
-    return data;
   }
+
+  return { success: true };
+}
+
+
+
+
+
+
 
   async bookingCancel(id: string, status: string, cancellationReason: string) {
     const bookedServiceId = new mongoose.Types.ObjectId(id);
@@ -85,6 +140,13 @@ return {error: "You have already allocated this time slot to a service." }
       status,
       cancellationReason
     );
+     this.serviceBookingRepository.addBookingHistory(
+      bookedServiceId,
+      "cancelled",
+      "booking has been cancelled by service provider. Reason: " + cancellationReason
+    );
+
+
     const notification:ISystemNotification = {
       type: "notfication",
       content: `Your booking has been cancelled.`,
@@ -122,6 +184,12 @@ return {error: "You have already allocated this time slot to a service." }
       payment
     );
 
+    this.serviceBookingRepository.addBookingHistory(
+      requestId,
+      "payment-requested",
+      "Payment requested for your service. Please complete the payment to proceed."
+    );
+    
     const notification:ISystemNotification = {
       type: "notfication",
       content: `Payment requested for your service. Please complete the payment to proceed.`,
