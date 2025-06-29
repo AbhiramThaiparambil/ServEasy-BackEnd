@@ -552,13 +552,11 @@ export class UserController {
 
   public getActiveServices = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = res.locals.user?.userId;
 
       const limit = parseInt(req.query.limit as string) || 10;
       const cursor = req.query.cursor as string | null;
 
       const result = await this.getAllActiveService.execute({
-        userId,
         limit,
         cursor,
       });
@@ -576,7 +574,6 @@ export class UserController {
 
   public getActiveNearbyServices = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = res.locals.user?.userId;
 
       const filters = req.query.filters as {
         category?: string;

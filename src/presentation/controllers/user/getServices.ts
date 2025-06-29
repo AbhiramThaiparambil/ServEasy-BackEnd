@@ -17,7 +17,6 @@ console.log(req.query);
       
       result = await getService.getNearByservices(userLongitude, userLatitude);
     } else {
-      result = await getService.execute();
     }
 
      res.status(HttpStatus.OK).json({ allServices: result });

@@ -3,7 +3,7 @@ import "reflect-metadata";
 import express from "express";
 import dotenv from "dotenv";
 import "./container";
-import userRoutes from "./presentation/routes/user";
+import userRoutes from "./presentation/routes/User";
 import cors from "cors";
 import dbConnect from "./infrastructure/database/db";
 import authRouter from "./presentation/routes/authRoutes";
@@ -16,10 +16,11 @@ import locationRouter from "./presentation/routes/location";
 import serviceRouter from "./presentation/routes/service";
 import morgan from "morgan"
 import paymentRouter from "./presentation/routes/payment";
-import { SocketService } from "./services/socket/socketService";
+
 import { container } from "tsyringe";
 import chatRouter from "./presentation/routes/chat"
 import http from 'http'
+import { SocketService } from "./services/socket/socketService";
 const app = express();
 const server=http.createServer(app)
 app.use(cookieparser());

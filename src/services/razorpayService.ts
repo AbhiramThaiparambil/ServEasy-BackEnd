@@ -2,8 +2,7 @@ import Razorpay from "razorpay";
 import { injectable } from "tsyringe";
 import { IPayment } from "../domain/entities/Ipayment";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
-import axios from "axios";
-import { IBankDetails } from "../domain/entities/IServiceProvider";
+// import { IBankDetails } from "../domain/entities/IServiceProvider";
 
 @injectable()
 export class RazorpayService {

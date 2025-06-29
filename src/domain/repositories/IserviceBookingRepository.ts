@@ -1,5 +1,5 @@
 import { Schema, Types } from "mongoose";
-import {IServiceBooking} from "../entities/IserviceBooking"
+import {IServiceBooking} from "../entities/IServiceBooking"
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(
     userId: Types.ObjectId

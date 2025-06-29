@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { IliveLocation, IPreferredServiceDateTime, IServiceBooking, IServiceSlot, } from "../../../domain/entities/IserviceBooking";
+import { IliveLocation, IPreferredServiceDateTime, IServiceBooking, IServiceSlot, } from "../../../domain/entities/IServiceBooking";
 import { IAddress } from "../../../domain/entities/IAddress";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import mongoose from "mongoose";
