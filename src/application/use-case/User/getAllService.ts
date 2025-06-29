@@ -46,11 +46,9 @@ async getNearByservices(
 
 
   async execute({
-    userId,
     limit,
     cursor,
   }: {
-    userId?: string | null;
     limit: number;
     cursor?: string | null;
   }) {

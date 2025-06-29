@@ -1,0 +1,39 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const addnewService_1 = require("../controllers/service/addnewService");
+const getServices_1 = require("../controllers/service/getServices");
+const serviceProviderMiddleware_1 = require("../../Middlewares/serviceProviderMiddleware");
+const activeAndInactive_1 = require("../controllers/service/activeAndInactive");
+const updateService_1 = require("../controllers/service/updateService");
+const serviceBooking_1 = require("../controllers/ServiceBooking/serviceBooking");
+const getBookedService_1 = require("../controllers/ServiceBooking/getBookedService");
+const getSingleBookedService_1 = require("../controllers/ServiceBooking/getSingleBookedService");
+const GetBookServic_1 = require("../controllers/serviceProvider/bookings/GetBookServic");
+const getServiceDetailsServiceProvider_1 = require("../controllers/ServiceBooking/getServiceDetailsServiceProvider");
+const serviceProviderStausChange_1 = require("../controllers/ServiceBooking/serviceProviderStausChange");
+const authMiddleware_1 = require("../../Middlewares/authMiddleware");
+const uploadBills_1 = require("../controllers/ServiceBooking/uploadBills");
+const ServiceController_1 = require("../controllers/ServiceController");
+const tsyringe_1 = require("tsyringe");
+const serviceController = tsyringe_1.container.resolve(ServiceController_1.ServiceController);
+const serviceRouter = (0, express_1.Router)();
+serviceRouter.put('/:serviceId', updateService_1.updateService);
+serviceRouter
+    .route('/')
+    .post(addnewService_1.addNewService)
+    .get((0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, getServices_1.getServices);
+serviceRouter.patch('/block-unblock', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, activeAndInactive_1.blockUnblockService);
+serviceRouter.post('/book', (0, authMiddleware_1.authMiddleware)('User'), serviceBooking_1.bookServiceHandler);
+serviceRouter.get('/bookings', (0, authMiddleware_1.authMiddleware)('User'), getBookedService_1.GetbookServiceHandler);
+serviceRouter.get('/bookings/serviceprovider', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, GetBookServic_1.GetServiceProviderBookServiceHandler);
+serviceRouter.get('/online-services/with-slots', (req, res) => serviceController.getOnlineServiceWithSlotHandler(req, res));
+serviceRouter.get('/online-services/slots/:id', (req, res) => serviceController.getOnlineServiceSlotsHandler(req, res));
+serviceRouter.delete('/slots/:id', (req, res) => serviceController.deleteSlotHandler(req, res));
+serviceRouter.post('/slots', (req, res) => serviceController.createSlotHandler(req, res));
+serviceRouter.post('/service-provider/uploadbills/:id/', uploadBills_1.uploadBillsHandler);
+serviceRouter.put('/service-provider/bookings/:id/:action', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, serviceProviderStausChange_1.serviceProviderStatusChange);
+serviceRouter.put('/bookings/:id/cancel', (req, res) => serviceController.cancelUserBooking(req, res));
+serviceRouter.get('/bookings/serviceProvider/:id', getServiceDetailsServiceProvider_1.getServiceDetailsServiceProvider);
+serviceRouter.get('/bookings:id', getSingleBookedService_1.getSingleBookedServiceHandler);
+exports.default = serviceRouter;

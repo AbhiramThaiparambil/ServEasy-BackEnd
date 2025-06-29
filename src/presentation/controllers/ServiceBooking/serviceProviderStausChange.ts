@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { UpdateServiceStatus } from "../../../application/use-case/bookService/updateBookingStatus";
-import { IPayment } from "../../../domain/entities/Ipayment";
+// import { IPayment } from "../../../domain/entities/Ipayment";
 import { HttpStatus } from "../../../constants/HttpStatus";
-import { log } from "console";
 
 export const serviceProviderStatusChange = async (
   req: Request,
