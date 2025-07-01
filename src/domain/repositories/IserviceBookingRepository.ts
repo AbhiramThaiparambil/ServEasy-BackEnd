@@ -1,15 +1,9 @@
-import { Schema, Types } from "mongoose";
-import {IServiceBooking} from "../entities/IServiceBooking"
+import { Schema, Types } from 'mongoose';
+import { IServiceBooking } from '../entities/IServiceBooking';
 export interface IServiceBookingRepository {
-  findBookedServicesByUserId(
-    userId: Types.ObjectId
-  ): Promise<IServiceBooking[]>;
-  findServicesByProviderId(
-    serviceProviderId: Types.ObjectId
-  ): Promise<IServiceBooking[]>;
-  createServiceBooking(
-    serviceBookingData: IServiceBooking
-  ): Promise<IServiceBooking>;
+  findBookedServicesByUserId(userId: Types.ObjectId): Promise<IServiceBooking[]>;
+  findServicesByProviderId(serviceProviderId: Types.ObjectId): Promise<IServiceBooking[]>;
+  createServiceBooking(serviceBookingData: IServiceBooking): Promise<IServiceBooking>;
   updateServiceStatus(
     serviceBookingId: Types.ObjectId,
     serviceStatus: string
@@ -17,13 +11,17 @@ export interface IServiceBookingRepository {
   updatePaymentStatus(
     serviceBookingId: Types.ObjectId,
     paymentStatus: string,
-    paymentType:string
-
+    paymentType: string
   ): Promise<IServiceBooking | null>;
 
-  findBookedServicesAndServiceByUserId(Id: Types.ObjectId,skip:number,limit:number): Promise<any>;
+  findBookedServicesAndServiceByUserId(
+    Id: Types.ObjectId,
+    skip: number,
+    limit: number
+  ): Promise<any>;
   findBookedServicesAndServiceByServiceProviderId(
-    Id: Types.ObjectId,    skip: number,
+    Id: Types.ObjectId,
+    skip: number,
     limit: number
   ): Promise<any>;
 
@@ -34,21 +32,17 @@ export interface IServiceBookingRepository {
   ): Promise<IServiceBooking | null>;
 
   cancelBooking(
-      id: Types.ObjectId,
-      newStatus: string,
-      cancelReason: string
-    ): Promise<IServiceBooking | null> 
-   
+    id: Types.ObjectId,
+    newStatus: string,
+    cancelReason: string
+  ): Promise<IServiceBooking | null>;
 
   isServiceTimeConflicting(
     serviceProviderId: Types.ObjectId,
     estimatedServiceTime: string
   ): Promise<boolean>;
 
-addBookingHistory(
-  bookingId: Types.ObjectId,
-  action: string,
-  message: string
-): Promise<void>;
+  addBookingHistory(bookingId: Types.ObjectId, action: string, message: string): Promise<void>;
 
+  findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null>;
 }
