@@ -10,6 +10,7 @@ import { VerifyServiceProvider } from '../../application/use-case/serviceProvide
 import { GetCategory } from '../../application/use-case/admin/category-management/GetCategory';
 import { GetServiceProvider } from '../../application/use-case/serviceProvider/auth/getServiceProvider';
 import { ManageAllServiceUseCase } from '../../application/use-case/admin/mangageAllserviceUseCase';
+import { checkServiceProviderAvailabilityUseCase } from '../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -30,7 +31,9 @@ export class ServiceProviderController {
     @inject(GetCategory)
     private getCategoryUseCase: GetCategory,
 
-    @inject(ManageAllServiceUseCase) private manageAllServiceUseCase: ManageAllServiceUseCase
+    @inject(ManageAllServiceUseCase) private manageAllServiceUseCase: ManageAllServiceUseCase,
+    @inject(checkServiceProviderAvailabilityUseCase) private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
+
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -271,5 +274,26 @@ export class ServiceProviderController {
 
 // }
 // }
+
+
+
+  async getAvailability(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = req.params.serviceProviderId;
+
+      if (!serviceProviderId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Service provider ID is required' });
+        return;
+      }
+
+      const availability = await this.checkServiceProviderAvailabilityUseCase.execute(serviceProviderId);
+
+      res.status(HttpStatus.OK).json({ availability });
+    } catch (error) {
+      console.error('Error fetching availability:', error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+    }
+  }
+
 
 }

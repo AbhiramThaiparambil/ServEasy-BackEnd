@@ -29,5 +29,8 @@ router.put('/services/activate-all/:id', (req, res) =>
 router.put('/services/deactivate-all/:id', (req, res) =>
   serviceController.makeInactiveAllService(req, res)
 );
+router.get('/availability/:serviceProviderId', (req, res) =>
+  serviceController.getAvailability(req, res)
+);
 
 export default router;
