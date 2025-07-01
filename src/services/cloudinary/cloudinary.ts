@@ -55,4 +55,7 @@ export class CloudinaryService {
   async uploadFooterBanner(img_url: string): Promise<string> {
     return this.uploadImage(img_url, "/servEasy-footerBanners");
   }
+    async uploadChatImage(img_url: string): Promise<string> {
+    return this.uploadImage(img_url, "/servEasy-chatImages");
+  }
 }
