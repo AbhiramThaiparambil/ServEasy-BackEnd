@@ -1,10 +1,11 @@
-import { injectable, inject } from "tsyringe";
+import { injectable, inject, container } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import { IliveLocation, IPreferredServiceDateTime, IServiceBooking, IServiceSlot, } from "../../../domain/entities/IServiceBooking";
 import { IAddress } from "../../../domain/entities/IAddress";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { ISlotRepository } from "../../../domain/repositories/ISlotRepository";
+import { BookingQueueService } from "../../../services/jobs/BookingQueueService";
 
 @injectable()
 export class BookService {
@@ -54,9 +55,17 @@ if(result&&result._id){
 
 }
 
-    if (!result) {
+
+
+
+    if (!result|| !result._id) {
       throw new Error("Failed to book service");
     }
+
+    const bookingQueueService = container.resolve(BookingQueueService);
+await bookingQueueService.addAutoCancelJob(new Types.ObjectId(result._id.toString()));
+
+
 
     return result;
    } catch (error) {
