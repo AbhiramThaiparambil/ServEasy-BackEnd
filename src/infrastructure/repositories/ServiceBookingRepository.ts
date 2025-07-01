@@ -532,4 +532,51 @@ async addBookingHistory(
     });
 
   }
+
+async checkAvailability(serviceProviderId: Types.ObjectId): Promise<{ available: boolean; reason?: string }> {
+  try {
+    const bookings = await ServiceBooking.find({
+      serviceProviderId,
+      serviceStatus: { $in: ['in-progress', 'confirmed'] },
+    });
+
+    const now = new Date();
+
+    for (const booking of bookings) {
+      const estimatedTimeString = booking.estimatedServiceTime;
+
+      if (estimatedTimeString) {
+        const estimatedTime = new Date(estimatedTimeString); // convert from string to Date
+
+        if (isNaN(estimatedTime.getTime())) {
+          console.warn(`Invalid estimatedServiceTime format: ${estimatedTimeString}`);
+          continue;
+        }
+
+        if (estimatedTime > now) {
+          return {
+            available: false,
+            reason: `Not available right now — a service is scheduled at ${estimatedTime.toLocaleString()}`
+          };
+        }
+
+        const oneHourAfter = new Date(estimatedTime.getTime() + 60 * 60 * 1000);
+        if (now < oneHourAfter) {
+          return {
+            available: false,
+            reason: `Not available right now — a service is scheduled at ${estimatedTime.toLocaleString()}`
+
+          };
+        }
+      }
+    }
+
+    return { available: true };
+
+  } catch (error) {
+    console.error("Error fetching availability:", error);
+    throw error;
+  }
+}
+
 }
