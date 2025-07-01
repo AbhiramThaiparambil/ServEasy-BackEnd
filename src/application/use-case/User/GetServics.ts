@@ -1,4 +1,3 @@
-// import { IService } from "../../domain/entities/IService";
 import { Types } from "mongoose";
 import { ReviewRepository } from "../../../infrastructure/repositories/ReviewRepository";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie"; 
@@ -13,7 +12,7 @@ export class GetServics {
   async execute(id:String) {
     try {
       const services = await this.serviceRepository.getSingleServiceWithProviderDetails(id+"")
-        const review = await this.reviewRepository.findByServiceId(new Types.ObjectId(id+""))
+        const review = await this.reviewRepository.findReviews(new Types.ObjectId(id+""))
        
        
       return {services,review};

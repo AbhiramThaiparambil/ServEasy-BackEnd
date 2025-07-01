@@ -115,28 +115,58 @@ return await ServiceModel.countDocuments()
   }
 
 
-  async getSingleServiceWithProviderDetails(serviceId: string) {
-    return await ServiceModel.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(serviceId) } 
-      },
-      {
-        $lookup: {
-          from: "serviceproviders",
-          localField: "serviceProviderId",
-          foreignField: "_id",
-          as: "serviceProviderDetails"
-        }
-      },
-      {
-        $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true }
-      },
-      
-      {
-        $limit: 1 
+ async getSingleServiceWithProviderDetails(serviceId: string) {
+  return await ServiceModel.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(serviceId) }
+    },
+    {
+      $lookup: {
+        from: "reviews",
+        let: { serviceId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$serviceId", "$$serviceId"] }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              avgRating: { $avg: "$rating" },
+              totalReviews: { $sum: 1 }
+            }
+          }
+        ],
+        as: "reviewDetails"
       }
-    ]);
-  }
+    },
+    {
+      $unwind: {
+        path: "$reviewDetails",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "serviceProviderId",
+        foreignField: "_id",
+        as: "serviceProviderDetails"
+      }
+    },
+    {
+      $unwind: {
+        path: "$serviceProviderDetails",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $limit: 1
+    }
+  ]);
+}
+
   
 
   async findAllActiveServices(): Promise<IService[]> {

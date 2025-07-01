@@ -51,11 +51,11 @@ export class BookingQueueService {
                 'cancelled',
                 'Auto-cancelled after 15 minutes: service provider did not respond'
               );
-              console.log(`✅ Booking ${bookingId} auto-cancelled`);
+              console.log(` Booking ${bookingId} auto-cancelled`);
             }
           }
         } catch (error) {
-          console.error(`❌ Error processing job [${job.name}]:`, error);
+          console.error(`Error processing job [${job.name}]:`, error);
         }
       },
       { connection: redisConnection } 
