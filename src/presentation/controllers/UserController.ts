@@ -796,8 +796,8 @@ export class UserController {
 
   public addReview = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { bookedServiceId, serviceId, rating, comment } = req.body;
-      console.log(req.body);
+      console.log('Adding review with body:', req.body);
+      const { bookedServiceId, serviceId, rating, comment,userId} = req.body;
 
       if (!bookedServiceId || !serviceId || rating === undefined) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -813,7 +813,7 @@ export class UserController {
         return;
       }
 
-      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment);
+      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment,userId);
 
       res.status(HttpStatus.CREATED).json({ message: 'Review added successfully!' });
     } catch (error) {
@@ -821,6 +821,8 @@ export class UserController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to add review.' });
     }
   };
+
+
 
   public getServiceProviderInfoChat = async (req: Request, res: Response): Promise<void> => {
     try {

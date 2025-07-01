@@ -15,9 +15,11 @@ export class AddReviewUseCase {
     bookedServiceId: string,
     serviceId: string,
     rating: number,
-    comment: string
+    comment: string,
+    userId:string
   ): Promise<void> {
     const review = await this.reviewRepository.create({
+      userId: new Types.ObjectId(userId), 
       bookingId: new Types.ObjectId(bookedServiceId),
       serviceId: new Types.ObjectId(serviceId),
       rating,
