@@ -7,9 +7,10 @@ export class GetAllServics {
     @inject("ServiceRepository") private serviceRepository: ServiceRepository
   ) {}
 
-  async execute(skip:number,limit:number) {
+  async execute(skip:number,limit:number,search:string) {
     try {
-      const allServices:any = await this.serviceRepository.getServicesWithProviderDetails(skip,limit)
+      
+      const allServices:any = await this.serviceRepository.getServicesWithProviderDetails(skip,limit,search);
       const count = await this.serviceRepository.getServicesWithProviderDetailsCount()
           
         console.log(count);

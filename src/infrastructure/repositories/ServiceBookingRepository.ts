@@ -250,85 +250,101 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     }
   }
 
-  async findPaymentInfoAdmin(skip: number, limit: number): Promise<any> {
-    try {
-      const bookedData = await ServiceBooking.aggregate([
-        {
-          $lookup: {
-            from: "services",
-            localField: "serviceId",
-            foreignField: "_id",
-            as: "serviceDetails"
-          }
-        },
-        { $unwind: "$serviceDetails" },
-        {
-          $lookup: {
-            from: "users",
-            localField: "userId",
-            foreignField: "_id",
-            as: "userData"
-          }
-        },
-        { $unwind: "$userData" },
-        {
-          $lookup: {
-            from: "serviceproviders",
-            localField: "serviceProviderId",
-            foreignField: "_id",
-            as: "serviceProviderInfo"
-          }
-        },
-        { $unwind: "$serviceProviderInfo" },
-        {
-          $project: {
-            _id: 1,
-            serviceBookedAddress: "$address",
-            serviceStatus: 1,
-            paymentType: 1,
-            paymentStatus: 1,
-            payment: 1,
-            serviceBills: 1,
-            estimatedServiceTime: 1,
-            bookedTime:1,
-            // Service Details
-            serviceName: "$serviceDetails.serviceName",
-            serviceType: "$serviceDetails.serviceType",
-            serviceImage: "$serviceDetails.serviceImage",
-  
-            // User Details
-            userName: "$userData.userName",
-            userEmail: "$userData.email",
-            userPhone: "$userData.phone",
-            userProfile: "$userData.profileImage",
-  
-            // Service Provider Details
-            serviceProviderName: "$serviceProviderInfo.serviceProviderName",
-            serviceProviderEmail: "$serviceProviderInfo.serviceProviderEmail",
-            profileImage: "$serviceProviderInfo.profileImage"
-          }
-        },
-        {
-          $sort: {
-            bookedTime: -1 
-          }
-        },
-        {
-          $skip: skip
-        },
-        {
-          $limit: limit
-        }
-      ]);
-  
-      return bookedData;
-    } catch (e) {
-      console.error("Error fetching booked service with user and service info:", e);
-      throw e;
+async findPaymentInfoAdmin(
+  skip: number,
+  limit: number,
+  search: string,
+  status: string,
+  statusField: 'serviceStatus' | 'paymentStatus' = 'serviceStatus' 
+): Promise<any> {
+  try {
+    const matchConditions: any[] = [];
+
+    console.log(`${statusField}: ${status} --------------`);
+
+    // Add status filter
+    if (status) {
+      matchConditions.push({ [statusField]: status });
     }
+
+    // Add search filter
+    if (search?.trim()) {
+      matchConditions.push({
+        $or: [
+          { 'serviceDetails.serviceName': { $regex: search, $options: 'i' } },
+          { 'userData.userName': { $regex: search, $options: 'i' } },
+          { 'serviceProviderInfo.serviceProviderName': { $regex: search, $options: 'i' } }
+        ]
+      });
+    }
+
+    const bookedData = await ServiceBooking.aggregate([
+      {
+        $lookup: {
+          from: 'services',
+          localField: 'serviceId',
+          foreignField: '_id',
+          as: 'serviceDetails'
+        }
+      },
+      { $unwind: { path: '$serviceDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userData'
+        }
+      },
+      { $unwind: { path: '$userData', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'serviceproviders',
+          localField: 'serviceProviderId',
+          foreignField: '_id',
+          as: 'serviceProviderInfo'
+        }
+      },
+      { $unwind: { path: '$serviceProviderInfo', preserveNullAndEmptyArrays: true } },
+
+      // Apply match if conditions exist
+      ...(matchConditions.length > 0 ? [{ $match: { $and: matchConditions } }] : []),
+
+      {
+        $project: {
+          _id: 1,
+          serviceBookedAddress: '$address',
+          serviceStatus: 1,
+          paymentType: 1,
+          paymentStatus: 1,
+          payment: 1,
+          serviceBills: 1,
+          estimatedServiceTime: 1,
+          bookedTime: 1,
+          serviceName: '$serviceDetails.serviceName',
+          serviceType: '$serviceDetails.serviceType',
+          serviceImage: '$serviceDetails.serviceImage',
+          userName: '$userData.userName',
+          userEmail: '$userData.email',
+          userPhone: '$userData.phone',
+          userProfile: '$userData.profileImage',
+          serviceProviderName: '$serviceProviderInfo.serviceProviderName',
+          serviceProviderEmail: '$serviceProviderInfo.serviceProviderEmail',
+          profileImage: '$serviceProviderInfo.profileImage'
+        }
+      },
+      { $sort: { bookedTime: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
+
+    console.log(bookedData, "bookedData");
+    return bookedData;
+  } catch (error) {
+    console.error('Error fetching booked service info:', error);
+    throw error;
   }
-  
-  
+}
   
 
   async findPaymentInfoServiceProvider(id: string): Promise<any> {

@@ -117,8 +117,13 @@ export class MongoUserRepository implements UserRepository {
   //   user
   // }
 
-  async findUsersSkipLimit(skip: number, limit: number): Promise<User[]> {
-    return await UserModel.find().skip(skip).limit(limit);
+  async findUsersSkipLimit(skip: number, limit: number,search:string): Promise<User[]> {
+    return await UserModel.find({
+      $or: [
+        { userName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ]
+    }).skip(skip).limit(limit);
   }
 
   async userCount(): Promise<number> {

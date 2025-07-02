@@ -5,7 +5,7 @@ export interface UserRepository {
   findByEmail(email: string): Promise<User|null>;
   findById(id: string): Promise<User|null>;
   find():Promise<User[]>;
-  findUsersSkipLimit(skip:number,limit:number):Promise<User[]>;
+  findUsersSkipLimit(skip:number,limit:number,search:string):Promise<User[]>;
   findByPhone(phone: string): Promise<User|null>;
   HashPassword(passWord:string):Promise<string>;
   comparePassword(passWord1: string, password2: string): Promise<boolean>;
