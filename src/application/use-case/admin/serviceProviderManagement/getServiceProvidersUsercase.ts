@@ -6,8 +6,8 @@ export class getServiceProvidersUseCase {
   constructor(
     @inject(ServiceProviderRepository) private serviceProviderRepository: IServiceProviderRepository
   ) {}
-  async execute(skip:number,limit:number){
-   const data= await this.serviceProviderRepository.findServiceProviderSkipLimit(skip,limit)
+  async execute(skip:number,limit:number,search:string) {
+   const data= await this.serviceProviderRepository.findServiceProviderSkipLimit(skip,limit,search)
   const count = await this.serviceProviderRepository.findServiceProvidersCount()
   return {data,count}
   }

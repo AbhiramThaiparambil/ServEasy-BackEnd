@@ -89,8 +89,16 @@ export class ServiceRepository implements IServiceRepository {
   // }
 
 
-  async getServicesWithProviderDetails(skip: number, limit: number) {
+  async getServicesWithProviderDetails(skip: number, limit: number,search:string) {
     return await ServiceModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { serviceName: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } }
+          ]
+        }
+      },
       {
         $lookup: {
           from: "serviceproviders",

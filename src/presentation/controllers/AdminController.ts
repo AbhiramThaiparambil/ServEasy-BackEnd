@@ -126,8 +126,8 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-
-      const { users, count } = await this.getAllUsersUseCase.execute(skip, limit);
+      const search = req.query.search || '';
+      const { users, count } = await this.getAllUsersUseCase.execute(skip, limit, search as string);
       res.status(200).json({ users, count });
       return;
     } catch (error) {
@@ -142,8 +142,9 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
+      const search = req.query.search || '';
 
-      const { data, count } = await this.getServiceProvidersUseCase.execute(skip, limit);
+      const { data, count } = await this.getServiceProvidersUseCase.execute(skip, limit, search as string);
 
       res.status(HttpStatus.OK).json({ data, count });
       return;
@@ -345,8 +346,9 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
+      const search=req.query.search||"";
 
-      const { allServices, count } = await this.getAllServicesUseCase.execute(skip, limit);
+      const { allServices, count } = await this.getAllServicesUseCase.execute(skip, limit,search as string);
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;

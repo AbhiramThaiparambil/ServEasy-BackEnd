@@ -22,8 +22,8 @@ export class GetPaymentInfoServiceProviderUseCase {
     return data;
   }
 
-  async adminPaymentInfo(skip:number,limit:number) {
-    const data = await this.serviceBookingRepository.findPaymentInfoAdmin(skip,limit)
+  async adminPaymentInfo(skip:number,limit:number,search:string,status:string,statusType:'serviceStatus' | 'paymentStatus' = 'serviceStatus') {
+    const data = await this.serviceBookingRepository.findPaymentInfoAdmin(skip,limit,search,status,statusType);
     const count= await this.serviceBookingRepository.getBookedServiceCount()
     return {data,count};
   }
