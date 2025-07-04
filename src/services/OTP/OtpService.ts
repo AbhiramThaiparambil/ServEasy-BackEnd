@@ -1,5 +1,5 @@
 import {inject, injectable, singleton } from "tsyringe";
-import { RedisService } from "./redisService";
+import { RedisService } from "../RedisService";
 @singleton()
 @injectable()
 export class Otpservice {

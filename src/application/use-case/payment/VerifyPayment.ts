@@ -1,9 +1,9 @@
-import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
-import { RazorpayService } from "../../../services/razorpayService";
-import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
+import { inject, injectable } from 'tsyringe';
+import { Types } from 'mongoose';
+import { RazorpayService } from '../../../services/razorpayService';
+import { ServiceRepository } from '../../../infrastructure/repositories/ServiceRepositorie';
+import { ServiceBookingRepository } from '../../../infrastructure/repositories/ServiceBookingRepository';
+import { ServiceProviderRepository } from '../../../infrastructure/repositories/ServiceProviderRepository';
 
 @injectable()
 export class VerifyPaymentUseCase {
@@ -22,32 +22,35 @@ export class VerifyPaymentUseCase {
   ) {
     try {
       const serviceObjId = new Types.ObjectId(id);
-      
+      const bookedService = await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+
+      if (bookedService?.paymentStatus === 'completed') {
+        return { success: false, message: 'Payment already verified' };
+      }
+
       const result = await this.razorpayService.verifyPaymentSignature(
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature
       );
-      const service =await this.serviceBookingRepository.findBookedServiceById(serviceObjId)
-      if(service?.isOnlineService){
-        this.serviceBookingRepository.updateServiceStatus(serviceObjId,"in-progress")
-
-      }else{
-        this.serviceBookingRepository.updateServiceStatus(serviceObjId,"completed")
-
+      const service = await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+      if (service?.isOnlineService) {
+        this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'in-progress');
+      } else {
+        this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'completed');
       }
 
-      const paymentStatus = result.status === "captured" ? "completed" : "failed";
+      const paymentStatus = result.status === 'captured' ? 'completed' : 'failed';
 
       await this.serviceBookingRepository.updatePaymentStatus(
         serviceObjId,
         paymentStatus,
         result.method
       );
-
+        return { success: true, message: 'Payment verified successfully' };
     } catch (error) {
-      console.error("VerifyPaymentUseCase Error:", error);
-      return { success: false, message: "Failed to verify payment" };
+      console.error('VerifyPaymentUseCase Error:', error);
+      return { success: false, message: 'Failed to verify payment' };
     }
   }
 }
