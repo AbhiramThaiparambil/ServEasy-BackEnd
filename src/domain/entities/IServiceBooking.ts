@@ -9,7 +9,7 @@ export interface IServiceBooking {
     address?: IAddress;
     serviceStatus?: 'pending' | 'in-progress' | 'completed' | 'cancelled'|'confirmed';
     paymentType?: 'cash' | 'card' | 'online'|'pending';
-    paymentStatus: 'pending' | 'paid' | 'failed';
+    paymentStatus: 'pending' | 'paid' | 'failed'|"completed";
     userId: ObjectId;
     estimatedServiceTime?: Date;
     bookedTime?: Date;

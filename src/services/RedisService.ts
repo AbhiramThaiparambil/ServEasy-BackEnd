@@ -36,6 +36,21 @@ async delete(key:string):Promise<void>{
     await this.client.del(key)
 }
 
+async setLock(key: string, ttlSeconds: number): Promise<boolean> {
+  const result = await this.client.set(key, 'locked', 'EX', ttlSeconds, 'NX');
+  return result === 'OK';
+}
+
+async releaseLock(key: string): Promise<void> {
+  await this.client.del(key);
+}
+
+async isLocked(key: string): Promise<boolean> {
+  const result = await this.client.get(key);
+  return !!result;
+}
+
+
 }
 
     

@@ -10,7 +10,7 @@ import { EmailOtpService } from "./services/OTP/mailOtp";
 import { Otpservice } from "./services/OTP/OtpService";
 import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
 
-import { RedisService } from "./services/OTP/redisService";
+import { RedisService } from "./services/RedisService";
 import { SmsOtpService } from "./services/OTP/phoneOtp";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/auth/TokenService";
