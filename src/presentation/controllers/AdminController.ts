@@ -20,6 +20,8 @@ import { BlockUnblockCategory } from '../../application/use-case/admin/category-
 import { DeleteCategory } from '../../application/use-case/admin/category-management/deleteCategory';
 import { AddService } from '../../application/use-case/admin/category-management/addService';
 import { DeleteService } from '../../application/use-case/admin/category-management/deleteService';
+import path from 'path';
+import fs from 'fs';
 
 @injectable()
 export class AdminController {
@@ -594,4 +596,28 @@ export class AdminController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
   }
+
+public async getCurrentLog (req: Request, res: Response) {
+ const logFilePath = path.join(__dirname, '../../../logs/access.log');
+
+  if (!fs.existsSync(logFilePath)) {
+     res.status(404).json({ message: 'Log file not found' });
+  return
+    }
+
+  const logContent = fs.readFileSync(logFilePath, 'utf-8');
+
+  const reversedLog = logContent
+    .split('\n')      // split into array by lines
+    .filter(Boolean)  // remove any empty lines
+    .reverse()        // reverse the order
+    .join('\n');      // join back to string
+
+  res.setHeader('Content-Type', 'text/plain');
+   res.status(200).send(reversedLog);
+return
+  };
+
+
+
 }

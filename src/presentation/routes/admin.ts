@@ -62,6 +62,7 @@ router.post('/site-settings/add',authMiddleware("Admin"), (req, res) => adminCon
 router.delete('/site-settings/delete',authMiddleware("Admin"), (req, res) => adminController.deleteSiteSettings(req, res));
 router.put('/site-settings/activate', authMiddleware("Admin"),(req, res) => adminController.makeActiveSiteSettings(req, res));
 router.get('/site-settings',authMiddleware("Admin"), (req, res) => adminController.getSiteSettings(req, res));
+router.get('/logs',(req, res) => adminController.getCurrentLog(req, res))
 export default router;
 
 
