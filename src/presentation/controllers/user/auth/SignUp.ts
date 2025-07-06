@@ -38,7 +38,7 @@ export const signIn = async (req: Request, res: Response) => {
 
    
 if(result?.refreshToken){
-  setAuthCookies(res,result?.refreshToken)
+  setAuthCookies(res,"refreshToken",result?.refreshToken)
 
 }      
       res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
@@ -74,7 +74,7 @@ if(result?.refreshToken){
   
 
       if(result?.refreshToken){
-        setAuthCookies(res,result?.refreshToken)
+        setAuthCookies(res,"refreshToken",result?.refreshToken)
       
       }
 

@@ -15,7 +15,7 @@ export const googleAuth = async (req: Request, res: Response) => {
     const result = await googleUseCase.execute(googleToken);
 
    
-        setAuthCookies(res,result?.refreshToken)
+        setAuthCookies(res,"refreshToken",result?.refreshToken)
 
 
     res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });

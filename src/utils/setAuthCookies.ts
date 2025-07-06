@@ -1,7 +1,7 @@
 import { Response } from "express";
 
-export const setAuthCookies = (res: Response, refreshToken: string) => {
-  res.cookie("refreshToken", refreshToken, {
+export const setAuthCookies = (res: Response,role:"refreshToken"|"adminToken"|"serviceProviderToken", refreshToken: string) => {
+  res.cookie(role, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",

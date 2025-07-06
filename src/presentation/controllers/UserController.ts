@@ -186,7 +186,7 @@ export class UserController {
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res, result.refreshToken);
+          setAuthCookies(res,'refreshToken', result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
@@ -214,7 +214,7 @@ export class UserController {
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res, result.refreshToken);
+          setAuthCookies(res,'refreshToken', result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });

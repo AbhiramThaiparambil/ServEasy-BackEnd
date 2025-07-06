@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { MongoUserRepository } from "../../../../infrastructure/repositories/UserRepositoriey";
 import { UserRepository } from "../../../../domain/repositories/IuserRepository"; 
+import { userSanitizer } from "../../../../utils/sanitizers/userSanitizer";
 @injectable()
 export class getAllUsersUseCase {
   constructor(
@@ -9,7 +10,11 @@ export class getAllUsersUseCase {
   async execute(skip:number,limit:number,search:string) {
   const users=await this.userRepository.findUsersSkipLimit(skip,limit,search)
    const count =await this.userRepository.userCount()
+  
 
-   return {users,count}
+    
+
+    
+   return {users:users.map(userSanitizer),count}
   }
 }
