@@ -8,8 +8,7 @@ export class GetPaymentInfoUseCase {
     private serviceBooking: ServiceBookingRepository
   ) {}
 
-async execute(startDate: Date = new Date("1970-01-01"), endDate: Date = new Date()): Promise<any> {
-    console.log("fdfdfdf________________________________________");
+async execute(startDate: Date = new Date("1970-01-01"), endDate: Date = new Date()){
     
   return await this.serviceBooking.getPaymentInfo(startDate ?? null, endDate ?? null);
 }

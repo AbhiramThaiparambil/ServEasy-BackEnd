@@ -1,5 +1,5 @@
 import { Schema, Types } from 'mongoose';
-import { IServiceBooking } from '../entities/IServiceBooking';
+import { IBookedServiceWithDetails, IServiceBooking } from '../entities/IServiceBooking';
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(userId: Types.ObjectId): Promise<IServiceBooking[]>;
   findServicesByProviderId(serviceProviderId: Types.ObjectId): Promise<IServiceBooking[]>;
@@ -23,7 +23,7 @@ export interface IServiceBookingRepository {
     Id: Types.ObjectId,
     skip: number,
     limit: number
-  ): Promise<any>;
+  ): Promise<IBookedServiceWithDetails>;
 
   confirmBooking(
     id: Types.ObjectId,

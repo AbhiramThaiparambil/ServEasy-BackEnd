@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { IAddress } from './IAddress';
 import { IPayment } from './Ipayment';
+import { Types } from 'mongoose';
 
 export interface IServiceBooking {
     _id?: ObjectId;
@@ -53,3 +54,18 @@ export interface IPreferredServiceDateTime {
   date: Date;
   time: TimeSlot;
 }
+
+
+export interface IBookedServiceWithDetails {
+  _id?: Types.ObjectId;
+  serviceBookedAddress: IAddress;
+  serviceStatus: string;
+  paymentType: string;
+  serviceName: string;
+  serviceType: string;
+  serviceImage: string;
+  bookedTime: Date;
+}
+
+
+
