@@ -26,10 +26,7 @@ export const signIn = async (req: Request, res: Response) => {
       const result = await signInUseCase.signInWithEmail(email, password);
       console.log(result);
 
-      if (result?.errorOtp) {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-        return;
-      }
+     
 
       if (result?.errorMessage) {
         res.status(401).json({ error: result.errorMessage });
@@ -59,10 +56,6 @@ if(result?.refreshToken){
 
       const result = await signInUseCase.signInWithPhone(phone, password);
 
-      if (result?.errorOtp) {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-        return;
-      }
 
       if (result?.errorMessage) {
         res

@@ -175,10 +175,7 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithEmail(email, password);
 
-        if (result?.errorOtp) {
-          res.status(HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-          return;
-        }
+   
 
         if (result?.errorMessage) {
           res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
@@ -203,10 +200,7 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithPhone(phone, password);
 
-        if (result?.errorOtp) {
-          res.status(HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-          return;
-        }
+    
 
         if (result?.errorMessage) {
           res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
@@ -236,7 +230,10 @@ export class UserController {
       console.log(result);
 
       if (result.success) {
-        res.status(HttpStatus.OK).json({ message: result.success });
+        setAuthCookies(res,'refreshToken', result.refreshToken);
+
+        res.status(HttpStatus.OK).json({ message: result.success,accessToken:result.accessToken,});
+
       } else if (result.errorMessage) {
         res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
       }
