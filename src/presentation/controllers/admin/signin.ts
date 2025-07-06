@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Signin } from "../../../application/use-case/admin/auth/signin";
 import { config } from "dotenv";
 import { container } from "tsyringe";
+import { setAuthCookies } from "../../../utils/setAuthCookies";
 
 config();
 
@@ -35,14 +36,8 @@ export const signIn = async (req: Request, res: Response) => {
 
     const { accessToken, refreshToken, user } = result;
 
-    res.cookie("adminToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-    });
-
+  
+setAuthCookies(res,"adminToken",refreshToken)
     res.status(200).json({ accessToken, user });
     return;
   } catch (error) {

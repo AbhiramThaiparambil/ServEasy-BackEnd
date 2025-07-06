@@ -10,19 +10,13 @@ export class blockUnblockUsersUseCase {
     @inject(MongoUserRepository) private userRepository: UserRepository
   ) {}
 
-  async blockUser(userId: string): Promise<User[] | null> {
-    const res = await this.userRepository.updateUserField(userId, "isBlocked", true);
-    if (res) {
-      return await this.userRepository.find();
-    }
-    return null; 
+  async blockUser(userId: string): Promise<boolean> {
+    return  await this.userRepository.updateUserField(userId, "isBlocked", true);
+
   }
 
-  async unblockUser(userId: string): Promise<User[] | null> {
-    const res = await this.userRepository.updateUserField(userId, "isBlocked", false);
-    if (res) {
-      return await this.userRepository.find();
-    }
-    return null; 
+  async unblockUser(userId: string): Promise<boolean> {
+     return await this.userRepository.updateUserField(userId, "isBlocked", false);
+   
   }
 }

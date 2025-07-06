@@ -11,6 +11,7 @@ import { GetCategory } from '../../application/use-case/admin/category-managemen
 import { GetServiceProvider } from '../../application/use-case/serviceProvider/auth/getServiceProvider';
 import { ManageAllServiceUseCase } from '../../application/use-case/admin/mangageAllserviceUseCase';
 import { checkServiceProviderAvailabilityUseCase } from '../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase';
+import { setAuthCookies } from '../../utils/setAuthCookies';
 
 @injectable()
 export class ServiceProviderController {
@@ -161,13 +162,8 @@ export class ServiceProviderController {
         return;
       }
 
-      res.cookie('serviceProviderToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
+   
+setAuthCookies(res,'serviceProviderToken',refreshToken)
       res.status(HttpStatus.OK).json({ message: 'Service provider verified' });
     } catch (error) {
       console.error('Error verifying service provider:', error);

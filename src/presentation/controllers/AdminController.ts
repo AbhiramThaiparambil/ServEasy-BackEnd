@@ -22,6 +22,7 @@ import { AddService } from '../../application/use-case/admin/category-management
 import { DeleteService } from '../../application/use-case/admin/category-management/deleteService';
 import path from 'path';
 import fs from 'fs';
+import { setAuthCookies } from '../../utils/setAuthCookies';
 
 @injectable()
 export class AdminController {
@@ -87,14 +88,9 @@ export class AdminController {
 
       const { accessToken, refreshToken, user } = result;
 
-      res.cookie('adminToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: '/',
-      });
+     
 
+      setAuthCookies(res,'adminToken',refreshToken)
       res.status(200).json({ accessToken, user });
       return;
     } catch (error) {
@@ -106,8 +102,6 @@ export class AdminController {
 
   async getProfile(req: Request, res: Response) {
     try {
-      console.log('-----------------');
-      console.log(res.locals.adminId.adminId);
       if (!res.locals.adminId.adminId) {
         res.status(401).json({ message: 'Unauthorized: No token provided' });
         return;
@@ -145,8 +139,8 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
       const search = req.query.search || '';
-
-      const { data, count } = await this.getServiceProvidersUseCase.execute(skip, limit, search as string);
+      const verification=req.query.verification
+      const { data, count } = await this.getServiceProvidersUseCase.execute(skip, limit, search as string,verification?true:false);
 
       res.status(HttpStatus.OK).json({ data, count });
       return;

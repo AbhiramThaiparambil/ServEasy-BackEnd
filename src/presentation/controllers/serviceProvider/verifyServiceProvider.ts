@@ -2,6 +2,7 @@ import { VerifyServiceProvider } from "../../../application/use-case/serviceProv
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { HttpStatus } from "../../../constants/HttpStatus";
+import { setAuthCookies } from "../../../utils/setAuthCookies";
 
 export const verifyServiceProvider = async (req: Request, res: Response) => {
   try {
@@ -28,12 +29,8 @@ export const verifyServiceProvider = async (req: Request, res: Response) => {
       return;
     }
 
-    res.cookie("serviceProviderToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    
+    setAuthCookies(res,'serviceProviderToken',refreshToken)
 
     res.status(HttpStatus.OK).json({ message: "Service provider verified" });
     return;

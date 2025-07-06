@@ -33,6 +33,8 @@ export interface IServiceProvider {
     isVerified?: 'verified' | 'pending' | 'rejected';
     bankDetails:IBankDetails,
     isBlocked:boolean
+      createdAt?: Date;
+
 }
 
 
