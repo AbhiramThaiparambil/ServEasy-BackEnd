@@ -36,6 +36,33 @@ let ReviewRepository = class ReviewRepository {
             return ReviewModel_1.ReviewModel.findOne({ bookingId }).lean();
         });
     }
+    findReviews(serviceId) {
+        return ReviewModel_1.ReviewModel.aggregate([
+            {
+                $match: { serviceId }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userDetails"
+                }
+            },
+            {
+                $unwind: "$userDetails"
+            },
+            {
+                $project: {
+                    _id: 1,
+                    rating: 1,
+                    comment: 1,
+                    userProfile: "$userDetails.profileImage",
+                    userName: "$userDetails.userName",
+                }
+            }
+        ]);
+    }
 };
 exports.ReviewRepository = ReviewRepository;
 exports.ReviewRepository = ReviewRepository = __decorate([

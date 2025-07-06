@@ -13,6 +13,7 @@ exports.verifyServiceProvider = void 0;
 const VerifyServiceProvider_1 = require("../../../application/use-case/serviceProvider/VerifyServiceProvider");
 const tsyringe_1 = require("tsyringe");
 const HttpStatus_1 = require("../../../constants/HttpStatus");
+const setAuthCookies_1 = require("../../../utils/setAuthCookies");
 const verifyServiceProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const verifyServiceProvideruseCase = tsyringe_1.container.resolve(VerifyServiceProvider_1.VerifyServiceProvider);
@@ -30,12 +31,7 @@ const verifyServiceProvider = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 .json({ message: "Not a valid service provider" });
             return;
         }
-        res.cookie("serviceProviderToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        (0, setAuthCookies_1.setAuthCookies)(res, 'serviceProviderToken', refreshToken);
         res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Service provider verified" });
         return;
     }

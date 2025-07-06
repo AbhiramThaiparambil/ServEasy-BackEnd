@@ -7,7 +7,7 @@ const tsyringe_1 = require("tsyringe");
 const mailOtp_1 = require("./services/OTP/mailOtp");
 const OtpService_1 = require("./services/OTP/OtpService");
 const RegisterUser_1 = require("./application/use-case/User/auth/RegisterUser");
-const redisService_1 = require("./services/OTP/redisService");
+const RedisService_1 = require("./services/RedisService");
 const phoneOtp_1 = require("./services/OTP/phoneOtp");
 const ResendOtp_1 = require("./application/use-case/User/auth/ResendOtp");
 const TokenService_1 = require("./services/auth/TokenService");
@@ -49,7 +49,7 @@ tsyringe_1.container.registerSingleton("CloudinaryService", cloudinary_1.Cloudin
 tsyringe_1.container.registerSingleton("SocketService", socketService_1.SocketService);
 tsyringe_1.container.register(VerifyOtp_1.VerifyOtp, { useClass: VerifyOtp_1.VerifyOtp });
 tsyringe_1.container.register("SmsOtpService", phoneOtp_1.SmsOtpService);
-tsyringe_1.container.register("RedisService", redisService_1.RedisService);
+tsyringe_1.container.register("RedisService", RedisService_1.RedisService);
 tsyringe_1.container.register("LocationService", { useClass: location_1.LocationService });
 tsyringe_1.container.register("ServiceRepository", ServiceRepositorie_1.ServiceRepository);
 tsyringe_1.container.register("ServiceBookingRepository", ServiceBookingRepository_1.ServiceBookingRepository);

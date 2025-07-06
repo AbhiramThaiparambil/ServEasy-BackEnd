@@ -32,8 +32,10 @@ const VerifyServiceProvider_1 = require("../../application/use-case/serviceProvi
 const GetCategory_1 = require("../../application/use-case/admin/category-management/GetCategory");
 const getServiceProvider_1 = require("../../application/use-case/serviceProvider/auth/getServiceProvider");
 const mangageAllserviceUseCase_1 = require("../../application/use-case/admin/mangageAllserviceUseCase");
+const checkServiceProviderAvailabilityUseCase_1 = require("../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase");
+const setAuthCookies_1 = require("../../utils/setAuthCookies");
 let ServiceProviderController = class ServiceProviderController {
-    constructor(getPaymentInfo, getServiceProviderUseCase, editServiceProviderProfileUseCase, registerServiceProviderUseCase, updateUserWithServiceProviderUseCase, verifyServiceProviderUseCase, getCategoryUseCase, manageAllServiceUseCase) {
+    constructor(getPaymentInfo, getServiceProviderUseCase, editServiceProviderProfileUseCase, registerServiceProviderUseCase, updateUserWithServiceProviderUseCase, verifyServiceProviderUseCase, getCategoryUseCase, manageAllServiceUseCase, checkServiceProviderAvailabilityUseCase) {
         this.getPaymentInfo = getPaymentInfo;
         this.getServiceProviderUseCase = getServiceProviderUseCase;
         this.editServiceProviderProfileUseCase = editServiceProviderProfileUseCase;
@@ -42,6 +44,7 @@ let ServiceProviderController = class ServiceProviderController {
         this.verifyServiceProviderUseCase = verifyServiceProviderUseCase;
         this.getCategoryUseCase = getCategoryUseCase;
         this.manageAllServiceUseCase = manageAllServiceUseCase;
+        this.checkServiceProviderAvailabilityUseCase = checkServiceProviderAvailabilityUseCase;
     }
     getPaymentInfoForChartServiceProvider(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -137,12 +140,7 @@ let ServiceProviderController = class ServiceProviderController {
                     res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Not a valid service provider' });
                     return;
                 }
-                res.cookie('serviceProviderToken', refreshToken, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'strict',
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                });
+                (0, setAuthCookies_1.setAuthCookies)(res, 'serviceProviderToken', refreshToken);
                 res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Service provider verified' });
             }
             catch (error) {
@@ -228,6 +226,39 @@ let ServiceProviderController = class ServiceProviderController {
             }
         });
     }
+    // async rescheduleBookingHandler(req: Request, res: Response){
+    //   try{
+    //     const { bookingId, newDate } = req.body;
+    //     if (!bookingId || !newDate ) {
+    //       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Booking ID, new date, and new time are required.' });
+    //     }
+    //     const updatedBooking = await this.manageAllServiceUseCase.rescheduleBooking(bookingId, newDate);
+    //     if (!updatedBooking) {
+    //       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Booking not found or could not be rescheduled.' });
+    //     }
+    //     res.status(HttpStatus.OK).json({ message: 'Booking rescheduled successfully.', booking: updatedBooking });      
+    //   } catch (error) {
+    //     console.error('Error rescheduling booking:', error);
+    //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });  
+    // }
+    // }
+    getAvailability(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const serviceProviderId = req.params.serviceProviderId;
+                if (!serviceProviderId) {
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Service provider ID is required' });
+                    return;
+                }
+                const availability = yield this.checkServiceProviderAvailabilityUseCase.execute(serviceProviderId);
+                res.status(HttpStatus_1.HttpStatus.OK).json({ availability });
+            }
+            catch (error) {
+                console.error('Error fetching availability:', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+            }
+        });
+    }
 };
 exports.ServiceProviderController = ServiceProviderController;
 exports.ServiceProviderController = ServiceProviderController = __decorate([
@@ -240,6 +271,7 @@ exports.ServiceProviderController = ServiceProviderController = __decorate([
     __param(5, (0, tsyringe_1.inject)(VerifyServiceProvider_1.VerifyServiceProvider)),
     __param(6, (0, tsyringe_1.inject)(GetCategory_1.GetCategory)),
     __param(7, (0, tsyringe_1.inject)(mangageAllserviceUseCase_1.ManageAllServiceUseCase)),
+    __param(8, (0, tsyringe_1.inject)(checkServiceProviderAvailabilityUseCase_1.checkServiceProviderAvailabilityUseCase)),
     __metadata("design:paramtypes", [GetPaymentInfoUseCaseServiceProvider_1.GetPaymentInfoUseCaseServiceProvider,
         getServiceProvider_1.GetServiceProvider,
         EditProfile_1.EditServiceProviderProfileUseCase,
@@ -247,5 +279,6 @@ exports.ServiceProviderController = ServiceProviderController = __decorate([
         UpdateUserWithServiceProvider_1.UpdateUserWithServiceProviderUseCase,
         VerifyServiceProvider_1.VerifyServiceProvider,
         GetCategory_1.GetCategory,
-        mangageAllserviceUseCase_1.ManageAllServiceUseCase])
+        mangageAllserviceUseCase_1.ManageAllServiceUseCase,
+        checkServiceProviderAvailabilityUseCase_1.checkServiceProviderAvailabilityUseCase])
 ], ServiceProviderController);

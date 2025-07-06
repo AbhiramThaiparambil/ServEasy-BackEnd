@@ -30,7 +30,6 @@ let GetPaymentInfoUseCase = class GetPaymentInfoUseCase {
     }
     execute() {
         return __awaiter(this, arguments, void 0, function* (startDate = new Date("1970-01-01"), endDate = new Date()) {
-            console.log("fdfdfdf________________________________________");
             return yield this.serviceBooking.getPaymentInfo(startDate !== null && startDate !== void 0 ? startDate : null, endDate !== null && endDate !== void 0 ? endDate : null);
         });
     }

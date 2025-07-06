@@ -16,6 +16,7 @@ const authMiddleware_1 = require("../../Middlewares/authMiddleware");
 const uploadBills_1 = require("../controllers/ServiceBooking/uploadBills");
 const ServiceController_1 = require("../controllers/ServiceController");
 const tsyringe_1 = require("tsyringe");
+const checkUserBlocked_1 = require("../../Middlewares/checkUserBlocked");
 const serviceController = tsyringe_1.container.resolve(ServiceController_1.ServiceController);
 const serviceRouter = (0, express_1.Router)();
 serviceRouter.put('/:serviceId', updateService_1.updateService);
@@ -24,8 +25,8 @@ serviceRouter
     .post(addnewService_1.addNewService)
     .get((0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, getServices_1.getServices);
 serviceRouter.patch('/block-unblock', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, activeAndInactive_1.blockUnblockService);
-serviceRouter.post('/book', (0, authMiddleware_1.authMiddleware)('User'), serviceBooking_1.bookServiceHandler);
-serviceRouter.get('/bookings', (0, authMiddleware_1.authMiddleware)('User'), getBookedService_1.GetbookServiceHandler);
+serviceRouter.post('/book', (0, authMiddleware_1.authMiddleware)('User'), checkUserBlocked_1.checkUserBlocked, serviceBooking_1.bookServiceHandler);
+serviceRouter.get('/bookings', (0, authMiddleware_1.authMiddleware)('User'), checkUserBlocked_1.checkUserBlocked, getBookedService_1.GetbookServiceHandler);
 serviceRouter.get('/bookings/serviceprovider', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, GetBookServic_1.GetServiceProviderBookServiceHandler);
 serviceRouter.get('/online-services/with-slots', (req, res) => serviceController.getOnlineServiceWithSlotHandler(req, res));
 serviceRouter.get('/online-services/slots/:id', (req, res) => serviceController.getOnlineServiceSlotsHandler(req, res));

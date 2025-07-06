@@ -29,16 +29,12 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const result = yield signInUseCase.signInWithEmail(email, password);
             console.log(result);
-            if (result === null || result === void 0 ? void 0 : result.errorOtp) {
-                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-                return;
-            }
             if (result === null || result === void 0 ? void 0 : result.errorMessage) {
                 res.status(401).json({ error: result.errorMessage });
                 return;
             }
             if (result === null || result === void 0 ? void 0 : result.refreshToken) {
-                (0, setAuthCookies_1.setAuthCookies)(res, result === null || result === void 0 ? void 0 : result.refreshToken);
+                (0, setAuthCookies_1.setAuthCookies)(res, "refreshToken", result === null || result === void 0 ? void 0 : result.refreshToken);
             }
             res.status(HttpStatus_1.HttpStatus.OK).json({ accessToken: result === null || result === void 0 ? void 0 : result.accessToken });
             return;
@@ -53,10 +49,6 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 return;
             }
             const result = yield signInUseCase.signInWithPhone(phone, password);
-            if (result === null || result === void 0 ? void 0 : result.errorOtp) {
-                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-                return;
-            }
             if (result === null || result === void 0 ? void 0 : result.errorMessage) {
                 res
                     .status(HttpStatus_1.HttpStatus.UNAUTHORIZED)
@@ -64,7 +56,7 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 return;
             }
             if (result === null || result === void 0 ? void 0 : result.refreshToken) {
-                (0, setAuthCookies_1.setAuthCookies)(res, result === null || result === void 0 ? void 0 : result.refreshToken);
+                (0, setAuthCookies_1.setAuthCookies)(res, "refreshToken", result === null || result === void 0 ? void 0 : result.refreshToken);
             }
             res.status(HttpStatus_1.HttpStatus.OK).json({ accessToken: result === null || result === void 0 ? void 0 : result.accessToken });
             return;

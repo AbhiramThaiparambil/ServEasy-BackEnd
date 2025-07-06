@@ -43,8 +43,6 @@ let SignIn = SignIn_1 = class SignIn {
                     return { errorMessage: "User does not exist" };
                 if (user.isBlocked == true)
                     return { errorMessage: "Your account has been blocked by the admin" };
-                if (!user.isVerified)
-                    return { errorOtp: "User not verified" };
                 const isMatch = yield this.userRepository.comparePassword(password, user.password);
                 if (!isMatch)
                     return { errorMessage: "Invalid credentials" };
@@ -67,8 +65,6 @@ let SignIn = SignIn_1 = class SignIn {
                     return { errorMessage: "User does not exist" };
                 if (user.isBlocked == true)
                     return { errorMessage: "Your account has been blocked by the admin" };
-                if (!user.isVerified)
-                    return { errorOtp: "User not verified" };
                 const isMatch = yield this.userRepository.comparePassword(password, user.password);
                 if (!isMatch)
                     return { errorMessage: "Invalid credentials" };

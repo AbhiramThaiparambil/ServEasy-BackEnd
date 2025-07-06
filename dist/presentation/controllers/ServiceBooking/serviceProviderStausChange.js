@@ -21,17 +21,15 @@ const serviceProviderStatusChange = (req, res) => __awaiter(void 0, void 0, void
         if (!id) {
             res
                 .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                .json({ error: "Bad Request: Missing required fields (id or action)" });
+                .json({ error: 'Bad Request: Missing required fields (id or action)' });
             return;
         }
         let updatedService;
-        if (action === "accept") {
+        if (action === 'accept') {
             const { estimatedServiceTime, serviceStatus, reschedule, reschedReason } = req.body;
             if (!estimatedServiceTime || !serviceStatus) {
-                res
-                    .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                    .json({
-                    error: "Bad Request: Missing estimatedServiceTime or serviceStatus",
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({
+                    error: 'Bad Request: Missing estimatedServiceTime or serviceStatus',
                 });
                 return;
             }
@@ -39,33 +37,31 @@ const serviceProviderStatusChange = (req, res) => __awaiter(void 0, void 0, void
             console.log(res.locals);
             updatedService = yield changeStatusContainer.ConformBookingStatus(id, serviceStatus, estimatedServiceTime, serviceProviderId, reschedule, reschedReason);
         }
-        else if (action === "status") {
+        else if (action === 'status') {
             const { serviceStatus } = req.body;
             if (!serviceStatus) {
-                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: "Bad Request: Missing serviceStatus" });
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: 'Bad Request: Missing serviceStatus' });
                 return;
             }
             updatedService = yield changeStatusContainer.updateBookingStatus(id, serviceStatus);
         }
-        else if (action === "cancel") {
+        else if (action === 'cancel') {
             const { cancellationReason, serviceStatus } = req.body;
             if (!cancellationReason || !serviceStatus) {
-                res
-                    .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                    .json({
-                    error: "Bad Request: Missing cancellationReason or serviceStatus",
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({
+                    error: 'Bad Request: Missing cancellationReason or serviceStatus',
                 });
                 return;
             }
             updatedService = yield changeStatusContainer.bookingCancel(id, serviceStatus, cancellationReason);
         }
-        else if (action == "payment-request") {
+        else if (action == 'payment-request') {
             const { payment, paymentStatus } = req.body;
             console.log(payment);
             if (!payment || !paymentStatus) {
                 res
                     .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                    .json({ error: "Bad Request: Missing payment or paymentStatus" });
+                    .json({ error: 'Bad Request: Missing payment or paymentStatus' });
                 return;
             }
             updatedService = yield changeStatusContainer.requestPayment(id, payment, paymentStatus);
@@ -73,7 +69,7 @@ const serviceProviderStatusChange = (req, res) => __awaiter(void 0, void 0, void
         if (!updatedService) {
             res
                 .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                .json({ error: "Service booking not found or update failed" });
+                .json({ error: 'Service booking not found or update failed' });
             return;
         }
         if (updatedService === null || updatedService === void 0 ? void 0 : updatedService.error) {
@@ -81,14 +77,14 @@ const serviceProviderStatusChange = (req, res) => __awaiter(void 0, void 0, void
             return;
         }
         res.status(HttpStatus_1.HttpStatus.OK).json({
-            message: "Booking status updated successfully",
+            message: 'Booking status updated successfully',
             data: updatedService,
         });
     }
     catch (error) {
-        console.error("Error in serviceProviderStatusChange:", error);
+        console.error('Error in serviceProviderStatusChange:', error);
         res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({
-            error: "Internal Server Error",
+            error: 'Internal Server Error',
             details: error.message,
         });
     }

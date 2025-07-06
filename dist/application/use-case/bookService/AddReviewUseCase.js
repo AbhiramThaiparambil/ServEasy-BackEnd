@@ -31,9 +31,10 @@ let AddReviewUseCase = class AddReviewUseCase {
         this.reviewRepository = reviewRepository;
         this.serviceBookingRepository = serviceBookingRepository;
     }
-    execute(bookedServiceId, serviceId, rating, comment) {
+    execute(bookedServiceId, serviceId, rating, comment, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const review = yield this.reviewRepository.create({
+                userId: new mongoose_1.Types.ObjectId(userId),
                 bookingId: new mongoose_1.Types.ObjectId(bookedServiceId),
                 serviceId: new mongoose_1.Types.ObjectId(serviceId),
                 rating,

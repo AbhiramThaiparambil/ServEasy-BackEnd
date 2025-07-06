@@ -22,7 +22,7 @@ const googleAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         const googleUseCase = tsyringe_1.container.resolve(googleAuth_1.GoogleAuthUseCase);
         const result = yield googleUseCase.execute(googleToken);
-        (0, setAuthCookies_1.setAuthCookies)(res, result === null || result === void 0 ? void 0 : result.refreshToken);
+        (0, setAuthCookies_1.setAuthCookies)(res, "refreshToken", result === null || result === void 0 ? void 0 : result.refreshToken);
         res.status(HttpStatus_1.HttpStatus.OK).json({ accessToken: result === null || result === void 0 ? void 0 : result.accessToken });
     }
     catch (error) {

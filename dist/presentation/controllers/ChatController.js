@@ -21,30 +21,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getServiceProvidersUseCase = void 0;
+exports.ChatController = void 0;
+const HttpStatus_1 = require("../../constants/HttpStatus");
+const UploadImage_1 = require("../../application/use-case/chat/UploadImage");
 const tsyringe_1 = require("tsyringe");
-const ServiceProviderRepository_1 = require("../../../../infrastructure/repositories/ServiceProviderRepository");
-const serviceProviderSanitrizer_1 = require("../../../../utils/sanitizers/serviceProviderSanitrizer");
-let getServiceProvidersUseCase = class getServiceProvidersUseCase {
-    constructor(serviceProviderRepository) {
-        this.serviceProviderRepository = serviceProviderRepository;
-    }
-    execute(skip, limit, search, serviceProviderVerfication) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.serviceProviderRepository.findServiceProviderSkipLimit(skip, limit, search);
-            const count = yield this.serviceProviderRepository.findServiceProvidersCount();
-            if (serviceProviderVerfication) {
-                return { data, count };
+let ChatController = class ChatController {
+    constructor(uploadImageUseCase) {
+        this.uploadImageUseCase = uploadImageUseCase;
+        this.uploadChatImage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { image } = req.body;
+                if (!image) {
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'No image uploaded' });
+                    return;
+                }
+                const result = yield this.uploadImageUseCase.uploadImage(image);
+                res.status(HttpStatus_1.HttpStatus.OK).json(result);
             }
-            else {
-                return { data: data.map(serviceProviderSanitrizer_1.serviceProviderSanitizer), count };
+            catch (error) {
+                res
+                    .status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json({ message: 'Error uploading image', error });
             }
         });
     }
 };
-exports.getServiceProvidersUseCase = getServiceProvidersUseCase;
-exports.getServiceProvidersUseCase = getServiceProvidersUseCase = __decorate([
+exports.ChatController = ChatController;
+exports.ChatController = ChatController = __decorate([
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)(ServiceProviderRepository_1.ServiceProviderRepository)),
-    __metadata("design:paramtypes", [Object])
-], getServiceProvidersUseCase);
+    __param(0, (0, tsyringe_1.inject)(UploadImage_1.UploadImageUseCase)),
+    __metadata("design:paramtypes", [UploadImage_1.UploadImageUseCase])
+], ChatController);

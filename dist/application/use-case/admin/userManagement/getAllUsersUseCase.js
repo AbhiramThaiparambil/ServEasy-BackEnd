@@ -24,15 +24,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllUsersUseCase = void 0;
 const tsyringe_1 = require("tsyringe");
 const UserRepositoriey_1 = require("../../../../infrastructure/repositories/UserRepositoriey");
+const userSanitizer_1 = require("../../../../utils/sanitizers/userSanitizer");
 let getAllUsersUseCase = class getAllUsersUseCase {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    execute(skip, limit) {
+    execute(skip, limit, search) {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.userRepository.findUsersSkipLimit(skip, limit);
+            const users = yield this.userRepository.findUsersSkipLimit(skip, limit, search);
             const count = yield this.userRepository.userCount();
-            return { users, count };
+            return { users: users.map(userSanitizer_1.userSanitizer), count };
         });
     }
 };

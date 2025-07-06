@@ -24,32 +24,41 @@ const tsyringe_1 = require("tsyringe");
 const chat_1 = __importDefault(require("./presentation/routes/chat"));
 const http_1 = __importDefault(require("http"));
 const socketService_1 = require("./services/socket/socketService");
+const logger_1 = __importDefault(require("./utils/logger"));
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 app.use((0, cookie_parser_1.default)());
-app.use((0, morgan_1.default)("dev"));
-app.use(express_1.default.json({ limit: "50mb" }));
-app.use(express_1.default.urlencoded({ limit: "50mb", extended: true }));
+app.use((0, morgan_1.default)('dev'));
+app.use(express_1.default.json({ limit: '50mb' }));
+app.use(express_1.default.urlencoded({ limit: '50mb', extended: true }));
+app.use(logger_1.default);
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: 'http://localhost:5173',
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 const socketService = tsyringe_1.container.resolve(socketService_1.SocketService);
 socketService.initialize(server);
 app.use('/location', location_1.default);
-app.use("/", authRoutes_1.default);
-app.use("/", User_1.default);
-app.use("/service-providers", serviceProvider_1.default);
-app.use("/google", google_1.default);
-app.use("/admin", admin_1.default);
-app.use("/service", service_1.default);
-app.use("/payment", payment_1.default);
-app.use("/chat", chat_1.default);
-(0, db_1.default)().catch((e) => console.log(e));
+app.use('/', authRoutes_1.default);
+app.use('/', User_1.default);
+app.use('/service-providers', serviceProvider_1.default);
+app.use('/google', google_1.default);
+app.use('/admin', admin_1.default);
+app.use('/service', service_1.default);
+app.use('/payment', payment_1.default);
+app.use('/chat', chat_1.default);
+(0, db_1.default)().catch(e => console.log(e));
 app.use((err, req, res, next) => {
-    console.log(err);
+    if (err instanceof Error) {
+        console.error(err.message);
+        res.status(500).json({ message: err.message });
+        return;
+    }
+    console.error('Unknown error:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+    return;
 });
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {

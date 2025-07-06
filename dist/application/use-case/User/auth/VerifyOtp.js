@@ -24,38 +24,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyOtp = void 0;
 const tsyringe_1 = require("tsyringe");
 const OtpService_1 = require("../../../../services/OTP/OtpService");
+const RedisService_1 = require("../../../../services/RedisService");
+const TokenService_1 = require("../../../../services/auth/TokenService");
 let VerifyOtp = class VerifyOtp {
-    constructor(userRepository, otpSErvice) {
+    constructor(userRepository, otpSErvice, redisService, tokenService) {
         this.userRepository = userRepository;
         this.otpSErvice = otpSErvice;
+        this.redisService = redisService;
+        this.tokenService = tokenService;
     }
     execute(key, enteredOtp) {
         return __awaiter(this, void 0, void 0, function* () {
             const isValidOtp = yield this.otpSErvice.verifyOtp(key, enteredOtp);
             console.log(isValidOtp);
             if (!isValidOtp)
-                return { errorMessage: "Invalid or Expired Otp" };
-            let user;
-            user = yield this.userRepository.findByPhone(key);
-            if (user) {
-                user.isVerified = true;
-                yield this.userRepository.updateUser(user);
+                return { errorMessage: 'Invalid or Expired Otp' };
+            console.log(key);
+            const user = yield this.redisService.getUser(`user:${key}`);
+            console.log('radis saved User', user);
+            if (!user)
+                return { errorMessage: 'We couldn’t find your OTP. Please sign up again.' };
+            const savedUser = yield this.userRepository.create(user);
+            if (!savedUser || !savedUser._id) {
+                return { errorMessage: 'User creation failed. Please try again.' };
             }
-            if (!user) {
-                user = yield this.userRepository.findByEmail(key);
-                if (user) {
-                    user.isVerified = true;
-                    yield this.userRepository.updateUser(user);
-                }
-            }
-            return { success: "user verification successful" };
+            const accessToken = this.tokenService.generateAccessToken(savedUser._id, 'userId');
+            const refreshToken = this.tokenService.generateRefreshToken(savedUser._id, 'userId');
+            return { success: 'user verification successful', accessToken, refreshToken };
         });
     }
 };
 exports.VerifyOtp = VerifyOtp;
 exports.VerifyOtp = VerifyOtp = __decorate([
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)("UserRepository")),
+    __param(0, (0, tsyringe_1.inject)('UserRepository')),
     __param(1, (0, tsyringe_1.inject)(OtpService_1.Otpservice)),
-    __metadata("design:paramtypes", [Object, OtpService_1.Otpservice])
+    __param(2, (0, tsyringe_1.inject)('RedisService')),
+    __param(3, (0, tsyringe_1.inject)('TokenService')),
+    __metadata("design:paramtypes", [Object, OtpService_1.Otpservice,
+        RedisService_1.RedisService,
+        TokenService_1.TokenService])
 ], VerifyOtp);

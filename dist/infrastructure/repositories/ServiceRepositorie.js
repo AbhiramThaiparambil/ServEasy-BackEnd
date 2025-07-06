@@ -136,9 +136,17 @@ let ServiceRepository = class ServiceRepository {
     //     }
     //   ]);
     // }
-    getServicesWithProviderDetails(skip, limit) {
+    getServicesWithProviderDetails(skip, limit, search) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield ServiceModel_1.default.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { serviceName: { $regex: search, $options: "i" } },
+                            { description: { $regex: search, $options: "i" } }
+                        ]
+                    }
+                },
                 {
                     $lookup: {
                         from: "serviceproviders",
@@ -171,6 +179,33 @@ let ServiceRepository = class ServiceRepository {
                 },
                 {
                     $lookup: {
+                        from: "reviews",
+                        let: { serviceId: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: { $eq: ["$serviceId", "$$serviceId"] }
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    avgRating: { $avg: "$rating" },
+                                    totalReviews: { $sum: 1 }
+                                }
+                            }
+                        ],
+                        as: "reviewDetails"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$reviewDetails",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
                         from: "serviceproviders",
                         localField: "serviceProviderId",
                         foreignField: "_id",
@@ -178,7 +213,10 @@ let ServiceRepository = class ServiceRepository {
                     }
                 },
                 {
-                    $unwind: { path: "$serviceProviderDetails", preserveNullAndEmptyArrays: true }
+                    $unwind: {
+                        path: "$serviceProviderDetails",
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
                     $limit: 1

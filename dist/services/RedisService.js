@@ -5,6 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,77 +21,73 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CloudinaryService = void 0;
-const cloudinary_1 = __importDefault(require("cloudinary"));
+exports.RedisService = void 0;
 const tsyringe_1 = require("tsyringe");
+const ioredis_1 = __importDefault(require("ioredis"));
 const dotenv_1 = require("dotenv");
-const uuid_1 = require("uuid");
 (0, dotenv_1.config)();
-cloudinary_1.default.v2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-let CloudinaryService = class CloudinaryService {
-    uploadImage(img_url, folder) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const uniqueFilename = `${folder}${(0, uuid_1.v4)()}`;
-                const res = yield cloudinary_1.default.v2.uploader.upload(img_url, {
-                    folder: folder,
-                    public_id: uniqueFilename
-                });
-                return res.secure_url;
-            }
-            catch (error) {
-                console.error("Cloudinary upload error");
-                console.log(error);
-                throw new Error("Failed to upload image to Cloudinary");
-            }
+let RedisService = class RedisService {
+    constructor() {
+        const redisUrl = process.env.REDIS_URL;
+        if (!redisUrl) {
+            throw new Error('"REDIS_URL is not defined in the environment variables"');
+        }
+        this.client = new ioredis_1.default(redisUrl);
+        this.client.on('error', err => {
+            console.log('redis Error ');
+            console.log(err);
         });
     }
-    uploadDocuments(img_url) {
+    set(key, otp, expiry) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-serviceProvidersDocuments");
+            const res = yield this.client.set(key, otp, 'EX', expiry);
         });
     }
-    uploadUserProfile(img_url) {
+    get(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-userProfiles");
+            return yield this.client.get(key);
         });
     }
-    uploadServiceProviderProfile(img_url) {
+    delete(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-serviceProviderProfiles");
+            yield this.client.del(key);
         });
     }
-    uploadServiceImg(img_url) {
+    setLock(key, ttlSeconds) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-services");
+            const result = yield this.client.set(key, 'locked', 'EX', ttlSeconds, 'NX');
+            return result === 'OK';
         });
     }
-    uploadBillsImg(img_url) {
+    releaseLock(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-ServiceBills");
+            yield this.client.del(key);
         });
     }
-    uploadHomeBanner(img_url) {
+    isLocked(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-homeBanners");
+            const result = yield this.client.get(key);
+            return !!result;
         });
     }
-    uploadFooterBanner(img_url) {
+    saveUser(userKey, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-footerBanners");
+            const ttlSeconds = 60 * 2;
+            const userData = JSON.stringify(user);
+            yield this.client.set(userKey, userData, 'EX', ttlSeconds);
         });
     }
-    uploadChatImage(img_url) {
+    getUser(userKey) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.uploadImage(img_url, "/servEasy-chatImages");
+            const data = yield this.client.get(userKey);
+            if (!data)
+                return null;
+            return JSON.parse(data);
         });
     }
 };
-exports.CloudinaryService = CloudinaryService;
-exports.CloudinaryService = CloudinaryService = __decorate([
-    (0, tsyringe_1.injectable)()
-], CloudinaryService);
+exports.RedisService = RedisService;
+exports.RedisService = RedisService = __decorate([
+    (0, tsyringe_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], RedisService);

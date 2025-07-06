@@ -52,9 +52,14 @@ let ServiceProviderRepository = class ServiceProviderRepository {
             return result !== null;
         });
     }
-    findServiceProviderSkipLimit(skip, limit) {
+    findServiceProviderSkipLimit(skip, limit, search) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ServiceProviderModel_1.default.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+            return yield ServiceProviderModel_1.default.find({
+                $or: [
+                    { serviceProviderName: { $regex: search, $options: "i" } },
+                    { serviceProviderEmail: { $regex: search, $options: "i" } },
+                ]
+            }).skip(skip).limit(limit).sort({ createdAt: -1 });
         });
     }
     findServiceProvidersCount() {

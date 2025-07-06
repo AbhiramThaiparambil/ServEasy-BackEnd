@@ -25,6 +25,8 @@ exports.BookService = void 0;
 const tsyringe_1 = require("tsyringe");
 const ServiceBookingRepository_1 = require("../../../infrastructure/repositories/ServiceBookingRepository");
 const ServiceRepositorie_1 = require("../../../infrastructure/repositories/ServiceRepositorie");
+const mongoose_1 = require("mongoose");
+const BookingQueueService_1 = require("../../../services/jobs/BookingQueueService");
 let BookService = class BookService {
     constructor(serviceRepository, serviceBookingRepository, slotRepository) {
         this.serviceRepository = serviceRepository;
@@ -56,9 +58,11 @@ let BookService = class BookService {
                 if (result && result._id) {
                     yield this.serviceBookingRepository.addBookingHistory(result._id, "booked", "Service has been booked");
                 }
-                if (!result) {
+                if (!result || !result._id) {
                     throw new Error("Failed to book service");
                 }
+                const bookingQueueService = tsyringe_1.container.resolve(BookingQueueService_1.BookingQueueService);
+                yield bookingQueueService.addAutoCancelJob(new mongoose_1.Types.ObjectId(result._id.toString()));
                 return result;
             }
             catch (error) {
