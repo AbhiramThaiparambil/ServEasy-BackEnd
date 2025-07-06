@@ -52,9 +52,17 @@ app.use("/service", serviceRouter);
 app.use("/payment",paymentRouter)
 app.use("/chat",chatRouter)
 dbConnect().catch((e) => console.log(e));
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
-});
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof Error) {
+    console.error(err.message);
+     res.status(500).json({ message: err.message });
+  return
+    }
+
+  console.error('Unknown error:', err);
+   res.status(500).json({ message: 'Internal Server Error' });
+return
+  });
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
