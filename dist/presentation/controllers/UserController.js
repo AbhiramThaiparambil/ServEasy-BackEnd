@@ -177,16 +177,12 @@ let UserController = class UserController {
                         return;
                     }
                     const result = yield this.signInUseCase.signInWithEmail(email, password);
-                    if (result === null || result === void 0 ? void 0 : result.errorOtp) {
-                        res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-                        return;
-                    }
                     if (result === null || result === void 0 ? void 0 : result.errorMessage) {
                         res.status(HttpStatus_1.HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
                         return;
                     }
                     if (result === null || result === void 0 ? void 0 : result.refreshToken) {
-                        (0, setAuthCookies_1.setAuthCookies)(res, result.refreshToken);
+                        (0, setAuthCookies_1.setAuthCookies)(res, 'refreshToken', result.refreshToken);
                     }
                     res.status(HttpStatus_1.HttpStatus.OK).json({ accessToken: result === null || result === void 0 ? void 0 : result.accessToken });
                     return;
@@ -198,16 +194,12 @@ let UserController = class UserController {
                         return;
                     }
                     const result = yield this.signInUseCase.signInWithPhone(phone, password);
-                    if (result === null || result === void 0 ? void 0 : result.errorOtp) {
-                        res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ errorOtp: result.errorOtp });
-                        return;
-                    }
                     if (result === null || result === void 0 ? void 0 : result.errorMessage) {
                         res.status(HttpStatus_1.HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
                         return;
                     }
                     if (result === null || result === void 0 ? void 0 : result.refreshToken) {
-                        (0, setAuthCookies_1.setAuthCookies)(res, result.refreshToken);
+                        (0, setAuthCookies_1.setAuthCookies)(res, 'refreshToken', result.refreshToken);
                     }
                     res.status(HttpStatus_1.HttpStatus.OK).json({ accessToken: result === null || result === void 0 ? void 0 : result.accessToken });
                     return;
@@ -225,7 +217,8 @@ let UserController = class UserController {
                 const result = yield this.verifyOtpUseCase.execute(sender, otp);
                 console.log(result);
                 if (result.success) {
-                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: result.success });
+                    (0, setAuthCookies_1.setAuthCookies)(res, 'refreshToken', result.refreshToken);
+                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: result.success, accessToken: result.accessToken, });
                 }
                 else if (result.errorMessage) {
                     res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
@@ -681,8 +674,8 @@ let UserController = class UserController {
         });
         this.addReview = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { bookedServiceId, serviceId, rating, comment } = req.body;
-                console.log(req.body);
+                console.log('Adding review with body:', req.body);
+                const { bookedServiceId, serviceId, rating, comment, userId } = req.body;
                 if (!bookedServiceId || !serviceId || rating === undefined) {
                     res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({
                         message: 'bookedServiceId, serviceId, and rating are required.',
@@ -695,7 +688,7 @@ let UserController = class UserController {
                     });
                     return;
                 }
-                yield this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment);
+                yield this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment, userId);
                 res.status(HttpStatus_1.HttpStatus.CREATED).json({ message: 'Review added successfully!' });
             }
             catch (error) {

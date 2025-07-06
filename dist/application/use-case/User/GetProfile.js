@@ -24,13 +24,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetUserProfileUseCase = void 0;
 const tsyringe_1 = require("tsyringe");
 const UserRepositoriey_1 = require("../../../infrastructure/repositories/UserRepositoriey");
+const userSanitizer_1 = require("../../../utils/sanitizers/userSanitizer");
 let GetUserProfileUseCase = class GetUserProfileUseCase {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
     execute(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepository.findById(userId);
+            const data = yield this.userRepository.findById(userId);
+            if (!data)
+                return data;
+            return (0, userSanitizer_1.userSanitizer)(data);
         });
     }
 };

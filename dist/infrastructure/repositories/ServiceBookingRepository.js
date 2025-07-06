@@ -49,9 +49,7 @@ let ServiceBookingRepository = class ServiceBookingRepository {
     }
     updatePaymentStatus(serviceBookingId, paymentStatus, paymentType) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ServiceBooking_1.default.findByIdAndUpdate(serviceBookingId, { paymentStatus,
-                paymentType
-            }, { new: true });
+            return yield ServiceBooking_1.default.findByIdAndUpdate(serviceBookingId, { paymentStatus, paymentType }, { new: true });
         });
     }
     findCountBookedServicebyUserId(userId) {
@@ -68,22 +66,22 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                     },
                     {
                         $lookup: {
-                            from: "services",
-                            localField: "serviceId",
-                            foreignField: "_id",
-                            as: "serviceDetails",
+                            from: 'services',
+                            localField: 'serviceId',
+                            foreignField: '_id',
+                            as: 'serviceDetails',
                         },
                     },
-                    { $unwind: "$serviceDetails" },
+                    { $unwind: '$serviceDetails' },
                     {
                         $project: {
                             _id: 1,
-                            serviceBookedAddress: "$address",
+                            serviceBookedAddress: '$address',
                             serviceStatus: 1,
                             paymentType: 1,
-                            serviceName: "$serviceDetails.serviceName",
-                            serviceType: "$serviceDetails.serviceType",
-                            serviceImage: "$serviceDetails.serviceImage",
+                            serviceName: '$serviceDetails.serviceName',
+                            serviceType: '$serviceDetails.serviceType',
+                            serviceImage: '$serviceDetails.serviceImage',
                             bookedTime: 1,
                         },
                     },
@@ -100,7 +98,7 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return bookedServices;
             }
             catch (e) {
-                console.error("Error fetching booked services:", e);
+                console.error('Error fetching booked services:', e);
                 throw e;
             }
         });
@@ -114,24 +112,24 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                     },
                     {
                         $lookup: {
-                            from: "services",
-                            localField: "serviceId",
-                            foreignField: "_id",
-                            as: "serviceDetails",
+                            from: 'services',
+                            localField: 'serviceId',
+                            foreignField: '_id',
+                            as: 'serviceDetails',
                         },
                     },
                     {
-                        $unwind: "$serviceDetails",
+                        $unwind: '$serviceDetails',
                     },
                     {
                         $project: {
                             _id: 1,
-                            serviceBookedAddress: "$address",
+                            serviceBookedAddress: '$address',
                             serviceStatus: 1,
                             paymentType: 1,
-                            serviceName: "$serviceDetails.serviceName",
-                            serviceType: "$serviceDetails.serviceType",
-                            serviceImage: "$serviceDetails.serviceImage",
+                            serviceName: '$serviceDetails.serviceName',
+                            serviceType: '$serviceDetails.serviceType',
+                            serviceImage: '$serviceDetails.serviceImage',
                             bookedTime: 1,
                         },
                     },
@@ -148,7 +146,7 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return bookedServices;
             }
             catch (e) {
-                console.error("Error fetching booked services:", e);
+                console.error('Error fetching booked services:', e);
                 throw e;
             }
         });
@@ -159,7 +157,7 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return yield ServiceBooking_1.default.countDocuments({ serviceProviderId });
             }
             catch (e) {
-                console.error("Error counting booked services:", e);
+                console.error('Error counting booked services:', e);
                 throw e;
             }
         });
@@ -216,46 +214,64 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return count;
             }
             catch (error) {
-                console.error("Error counting booked services:", error);
-                throw new Error("Failed to count booked services");
+                console.error('Error counting booked services:', error);
+                throw new Error('Failed to count booked services');
             }
         });
     }
-    findPaymentInfoAdmin(skip, limit) {
-        return __awaiter(this, void 0, void 0, function* () {
+    findPaymentInfoAdmin(skip_1, limit_1, search_1, status_1) {
+        return __awaiter(this, arguments, void 0, function* (skip, limit, search, status, statusField = 'serviceStatus') {
             try {
+                const matchConditions = [];
+                console.log(`${statusField}: ${status} --------------`);
+                // Add status filter
+                if (status) {
+                    matchConditions.push({ [statusField]: status });
+                }
+                // Add search filter
+                if (search === null || search === void 0 ? void 0 : search.trim()) {
+                    matchConditions.push({
+                        $or: [
+                            { 'serviceDetails.serviceName': { $regex: search, $options: 'i' } },
+                            { 'userData.userName': { $regex: search, $options: 'i' } },
+                            { 'serviceProviderInfo.serviceProviderName': { $regex: search, $options: 'i' } },
+                        ],
+                    });
+                }
                 const bookedData = yield ServiceBooking_1.default.aggregate([
                     {
                         $lookup: {
-                            from: "services",
-                            localField: "serviceId",
-                            foreignField: "_id",
-                            as: "serviceDetails"
-                        }
+                            from: 'services',
+                            localField: 'serviceId',
+                            foreignField: '_id',
+                            as: 'serviceDetails',
+                        },
                     },
-                    { $unwind: "$serviceDetails" },
+                    { $unwind: { path: '$serviceDetails', preserveNullAndEmptyArrays: true } },
                     {
                         $lookup: {
-                            from: "users",
-                            localField: "userId",
-                            foreignField: "_id",
-                            as: "userData"
-                        }
+                            from: 'users',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'userData',
+                        },
                     },
-                    { $unwind: "$userData" },
+                    { $unwind: { path: '$userData', preserveNullAndEmptyArrays: true } },
                     {
                         $lookup: {
-                            from: "serviceproviders",
-                            localField: "serviceProviderId",
-                            foreignField: "_id",
-                            as: "serviceProviderInfo"
-                        }
+                            from: 'serviceproviders',
+                            localField: 'serviceProviderId',
+                            foreignField: '_id',
+                            as: 'serviceProviderInfo',
+                        },
                     },
-                    { $unwind: "$serviceProviderInfo" },
+                    { $unwind: { path: '$serviceProviderInfo', preserveNullAndEmptyArrays: true } },
+                    // Apply match if conditions exist
+                    ...(matchConditions.length > 0 ? [{ $match: { $and: matchConditions } }] : []),
                     {
                         $project: {
                             _id: 1,
-                            serviceBookedAddress: "$address",
+                            serviceBookedAddress: '$address',
                             serviceStatus: 1,
                             paymentType: 1,
                             paymentStatus: 1,
@@ -263,38 +279,28 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                             serviceBills: 1,
                             estimatedServiceTime: 1,
                             bookedTime: 1,
-                            // Service Details
-                            serviceName: "$serviceDetails.serviceName",
-                            serviceType: "$serviceDetails.serviceType",
-                            serviceImage: "$serviceDetails.serviceImage",
-                            // User Details
-                            userName: "$userData.userName",
-                            userEmail: "$userData.email",
-                            userPhone: "$userData.phone",
-                            userProfile: "$userData.profileImage",
-                            // Service Provider Details
-                            serviceProviderName: "$serviceProviderInfo.serviceProviderName",
-                            serviceProviderEmail: "$serviceProviderInfo.serviceProviderEmail",
-                            profileImage: "$serviceProviderInfo.profileImage"
-                        }
+                            serviceName: '$serviceDetails.serviceName',
+                            serviceType: '$serviceDetails.serviceType',
+                            serviceImage: '$serviceDetails.serviceImage',
+                            userName: '$userData.userName',
+                            userEmail: '$userData.email',
+                            userPhone: '$userData.phone',
+                            userProfile: '$userData.profileImage',
+                            serviceProviderName: '$serviceProviderInfo.serviceProviderName',
+                            serviceProviderEmail: '$serviceProviderInfo.serviceProviderEmail',
+                            profileImage: '$serviceProviderInfo.profileImage',
+                        },
                     },
-                    {
-                        $sort: {
-                            bookedTime: -1
-                        }
-                    },
-                    {
-                        $skip: skip
-                    },
-                    {
-                        $limit: limit
-                    }
+                    { $sort: { bookedTime: -1 } },
+                    { $skip: skip },
+                    { $limit: limit },
                 ]);
+                console.log(bookedData, 'bookedData');
                 return bookedData;
             }
-            catch (e) {
-                console.error("Error fetching booked service with user and service info:", e);
-                throw e;
+            catch (error) {
+                console.error('Error fetching booked service info:', error);
+                throw error;
             }
         });
     }
@@ -304,49 +310,49 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 const bookedData = yield ServiceBooking_1.default.aggregate([
                     {
                         $match: {
-                            paymentStatus: "completed",
+                            paymentStatus: 'completed',
                             serviceProviderId: new mongoose_1.Types.ObjectId(id),
                         },
                     },
                     {
                         $lookup: {
-                            from: "services",
-                            localField: "serviceId",
-                            foreignField: "_id",
-                            as: "serviceDetails",
+                            from: 'services',
+                            localField: 'serviceId',
+                            foreignField: '_id',
+                            as: 'serviceDetails',
                         },
                     },
-                    { $unwind: "$serviceDetails" },
+                    { $unwind: '$serviceDetails' },
                     {
                         $lookup: {
-                            from: "users",
-                            localField: "userId",
-                            foreignField: "_id",
-                            as: "userData",
+                            from: 'users',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'userData',
                         },
                     },
-                    { $unwind: "$userData" },
+                    { $unwind: '$userData' },
                     {
                         $project: {
                             _id: 1,
-                            serviceBookedAddress: "$address",
+                            serviceBookedAddress: '$address',
                             payment: 1,
                             serviceStatus: 1,
                             paymentType: 1,
-                            serviceName: "$serviceDetails.serviceName",
-                            serviceType: "$serviceDetails.serviceType",
-                            serviceImage: "$serviceDetails.serviceImage",
-                            userName: "$userData.userName",
-                            userEmail: "$userData.email",
-                            userPhone: "$userData.phone",
-                            userProfile: "$userData.profileImage",
+                            serviceName: '$serviceDetails.serviceName',
+                            serviceType: '$serviceDetails.serviceType',
+                            serviceImage: '$serviceDetails.serviceImage',
+                            userName: '$userData.userName',
+                            userEmail: '$userData.email',
+                            userPhone: '$userData.phone',
+                            userProfile: '$userData.profileImage',
                         },
                     },
                 ]);
                 return bookedData;
             }
             catch (e) {
-                console.error("Error fetching booked service with user and service info:", e);
+                console.error('Error fetching booked service with user and service info:', e);
                 throw e;
             }
         });
@@ -360,8 +366,8 @@ let ServiceBookingRepository = class ServiceBookingRepository {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const match = {
-                    serviceStatus: "completed",
-                    paymentStatus: "completed",
+                    serviceStatus: 'completed',
+                    paymentStatus: 'completed',
                 };
                 if (startDate && endDate) {
                     match.bookedTime = {
@@ -374,8 +380,8 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                     {
                         $group: {
                             _id: null,
-                            totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
-                            totalConvenienceFee: { $sum: { $ifNull: ["$payment.convenienceFee", 0] } },
+                            totalRevenue: { $sum: { $ifNull: ['$payment.total', 0] } },
+                            totalConvenienceFee: { $sum: { $ifNull: ['$payment.convenienceFee', 0] } },
                             count: { $sum: 1 },
                         },
                     },
@@ -391,7 +397,7 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return result;
             }
             catch (error) {
-                console.error("Error fetching payment info:", error);
+                console.error('Error fetching payment info:', error);
                 throw error;
             }
         });
@@ -401,8 +407,8 @@ let ServiceBookingRepository = class ServiceBookingRepository {
             try {
                 const match = {
                     serviceProviderId: new mongodb_1.ObjectId(serviceProviderId),
-                    serviceStatus: "completed",
-                    paymentStatus: "completed",
+                    serviceStatus: 'completed',
+                    paymentStatus: 'completed',
                 };
                 if (startDate && endDate) {
                     match.bookedTime = {
@@ -415,8 +421,8 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                     {
                         $group: {
                             _id: null,
-                            totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
-                            totalConvenienceFee: { $sum: { $ifNull: ["$payment.convenienceFee", 0] } },
+                            totalRevenue: { $sum: { $ifNull: ['$payment.total', 0] } },
+                            totalConvenienceFee: { $sum: { $ifNull: ['$payment.convenienceFee', 0] } },
                             count: { $sum: 1 },
                         },
                     },
@@ -432,20 +438,20 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                 return result;
             }
             catch (error) {
-                console.error("Error fetching payment info:", error);
+                console.error('Error fetching payment info:', error);
                 throw error;
             }
         });
     }
     isServiceTimeConflicting(serviceProviderId, estimatedServiceTime) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(serviceProviderId, "serviceProviderId");
-            console.log(estimatedServiceTime, "estimatedServiceTime");
+            console.log(serviceProviderId, 'serviceProviderId');
+            console.log(estimatedServiceTime, 'estimatedServiceTime');
             const conflict = yield ServiceBooking_1.default.findOne({
                 serviceProviderId,
-                estimatedServiceTime
+                estimatedServiceTime,
             });
-            console.log(conflict, "conflict");
+            console.log(conflict, 'conflict');
             return !!conflict;
         });
     }
@@ -469,6 +475,45 @@ let ServiceBookingRepository = class ServiceBookingRepository {
                     },
                 },
             });
+        });
+    }
+    checkAvailability(serviceProviderId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookings = yield ServiceBooking_1.default.find({
+                    serviceProviderId,
+                    serviceStatus: { $in: ['in-progress', 'confirmed'] },
+                });
+                const now = new Date();
+                for (const booking of bookings) {
+                    const estimatedTimeString = booking.estimatedServiceTime;
+                    if (estimatedTimeString) {
+                        const estimatedTime = new Date(estimatedTimeString); // convert from string to Date
+                        if (isNaN(estimatedTime.getTime())) {
+                            console.warn(`Invalid estimatedServiceTime format: ${estimatedTimeString}`);
+                            continue;
+                        }
+                        if (estimatedTime > now) {
+                            return {
+                                available: false,
+                                reason: `Not available right now — a service is scheduled at ${estimatedTime.toLocaleString()}`,
+                            };
+                        }
+                        const oneHourAfter = new Date(estimatedTime.getTime() + 60 * 60 * 1000);
+                        if (now < oneHourAfter) {
+                            return {
+                                available: false,
+                                reason: `Not available right now — a service is scheduled at ${estimatedTime.toLocaleString()}`,
+                            };
+                        }
+                    }
+                }
+                return { available: true };
+            }
+            catch (error) {
+                console.error('Error fetching availability:', error);
+                throw error;
+            }
         });
     }
 };

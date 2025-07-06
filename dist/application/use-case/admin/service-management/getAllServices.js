@@ -29,10 +29,10 @@ let GetAllServics = class GetAllServics {
     constructor(serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
-    execute(skip, limit) {
+    execute(skip, limit, search) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const allServices = yield this.serviceRepository.getServicesWithProviderDetails(skip, limit);
+                const allServices = yield this.serviceRepository.getServicesWithProviderDetails(skip, limit, search);
                 const count = yield this.serviceRepository.getServicesWithProviderDetailsCount();
                 console.log(count);
                 return { allServices, count };

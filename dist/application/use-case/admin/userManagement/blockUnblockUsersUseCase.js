@@ -30,20 +30,12 @@ let blockUnblockUsersUseCase = class blockUnblockUsersUseCase {
     }
     blockUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.userRepository.updateUserField(userId, "isBlocked", true);
-            if (res) {
-                return yield this.userRepository.find();
-            }
-            return null;
+            return yield this.userRepository.updateUserField(userId, "isBlocked", true);
         });
     }
     unblockUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.userRepository.updateUserField(userId, "isBlocked", false);
-            if (res) {
-                return yield this.userRepository.find();
-            }
-            return null;
+            return yield this.userRepository.updateUserField(userId, "isBlocked", false);
         });
     }
 };

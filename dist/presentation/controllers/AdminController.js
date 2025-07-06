@@ -20,6 +20,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminController = void 0;
 const tsyringe_1 = require("tsyringe");
@@ -43,6 +46,9 @@ const blockUnblockCategory_1 = require("../../application/use-case/admin/categor
 const deleteCategory_1 = require("../../application/use-case/admin/category-management/deleteCategory");
 const addService_1 = require("../../application/use-case/admin/category-management/addService");
 const deleteService_1 = require("../../application/use-case/admin/category-management/deleteService");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const setAuthCookies_1 = require("../../utils/setAuthCookies");
 let AdminController = class AdminController {
     constructor(signInUseCase, tokenService, getAdminProfileUseCase, getAllUsersUseCase, blockUnblockUsersUseCase, getServiceProvidersUseCase, getPaymentInfoUseCase, adminSiteSettingsUseCase, serviceProviderRejectVerify, getAllServicesUseCase, blockUnblockServiceUseCase, blockUnblockProviderUseCase, addCategoryUseCase, getCategoryUseCase, editCategoryUseCase, blockUnblockCategoryUseCase, deleteCategoryUseCase, addServiceUseCase, deleteServiceUseCase) {
         this.signInUseCase = signInUseCase;
@@ -70,9 +76,7 @@ let AdminController = class AdminController {
             try {
                 const { email, phone, password } = req.body;
                 if (!password || (!email && !phone)) {
-                    res
-                        .status(400)
-                        .json({ error: "Email or phone and password are required" });
+                    res.status(400).json({ error: 'Email or phone and password are required' });
                     return;
                 }
                 let result;
@@ -83,23 +87,17 @@ let AdminController = class AdminController {
                     result = yield this.signInUseCase.signByPhone(phone, password);
                 }
                 if (!result) {
-                    res.status(401).json({ error: "Invalid credentials" });
+                    res.status(401).json({ error: 'Invalid credentials' });
                     return;
                 }
                 const { accessToken, refreshToken, user } = result;
-                res.cookie("adminToken", refreshToken, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "strict",
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                    path: "/",
-                });
+                (0, setAuthCookies_1.setAuthCookies)(res, 'adminToken', refreshToken);
                 res.status(200).json({ accessToken, user });
                 return;
             }
             catch (error) {
                 console.error(error);
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
         });
@@ -107,12 +105,8 @@ let AdminController = class AdminController {
     getProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("-----------------");
-                console.log(res.locals.adminId.adminId);
                 if (!res.locals.adminId.adminId) {
-                    res
-                        .status(401)
-                        .json({ message: "Unauthorized: No token provided" });
+                    res.status(401).json({ message: 'Unauthorized: No token provided' });
                     return;
                 }
                 const data = yield this.getAdminProfileUseCase.execute(res.locals.adminId.adminId);
@@ -121,7 +115,7 @@ let AdminController = class AdminController {
             }
             catch (error) {
                 console.error(error);
-                res.status(500).json({ message: "Internal Server Error" });
+                res.status(500).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -132,13 +126,14 @@ let AdminController = class AdminController {
                 const limit = parseInt(req.query.limit) || 10;
                 const page = parseInt(req.query.page) || 0;
                 const skip = page * limit;
-                const { users, count } = yield this.getAllUsersUseCase.execute(skip, limit);
+                const search = req.query.search || '';
+                const { users, count } = yield this.getAllUsersUseCase.execute(skip, limit, search);
                 res.status(200).json({ users, count });
                 return;
             }
             catch (error) {
                 console.error(error);
-                res.status(500).json({ message: "Internal Server Error" });
+                res.status(500).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -149,13 +144,15 @@ let AdminController = class AdminController {
                 const limit = parseInt(req.query.limit) || 10;
                 const page = parseInt(req.query.page) || 0;
                 const skip = page * limit;
-                const { data, count } = yield this.getServiceProvidersUseCase.execute(skip, limit);
+                const search = req.query.search || '';
+                const verification = req.query.verification;
+                const { data, count } = yield this.getServiceProvidersUseCase.execute(skip, limit, search, verification ? true : false);
                 res.status(HttpStatus_1.HttpStatus.OK).json({ data, count });
                 return;
             }
             catch (error) {
-                console.error("AdminController::getServiceProviders error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+                console.error('AdminController::getServiceProviders error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -163,19 +160,15 @@ let AdminController = class AdminController {
     getPaymentInfoForChart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const startDate = req.query.startDate
-                    ? new Date(req.query.startDate)
-                    : undefined;
-                const endDate = req.query.endDate
-                    ? new Date(req.query.endDate)
-                    : undefined;
+                const startDate = req.query.startDate ? new Date(req.query.startDate) : undefined;
+                const endDate = req.query.endDate ? new Date(req.query.endDate) : undefined;
                 const paymentData = yield this.getPaymentInfoUseCase.execute(startDate, endDate);
                 res.status(200).json({ paymentData });
                 return;
             }
             catch (error) {
-                console.error("Failed to fetch payment info for chart:", error);
-                res.status(500).json({ message: "Internal Server Error" });
+                console.error('Failed to fetch payment info for chart:', error);
+                res.status(500).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -183,32 +176,28 @@ let AdminController = class AdminController {
     addSiteSettings(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Received request to add site settings:", req.body);
-                if (req.body.type === "addBanner") {
+                console.log('Received request to add site settings:', req.body);
+                if (req.body.type === 'addBanner') {
                     const banner = yield this.adminSiteSettingsUseCase.addHomeBanner(req.body);
                     res.status(HttpStatus_1.HttpStatus.CREATED).json({ banner });
                     return;
                 }
-                if (req.body.type === "addTheme") {
+                if (req.body.type === 'addTheme') {
                     const theme = yield this.adminSiteSettingsUseCase.addTheme(req.body);
                     res.status(HttpStatus_1.HttpStatus.CREATED).json({ theme });
                     return;
                 }
-                if (req.body.type === "addFooterBanner") {
+                if (req.body.type === 'addFooterBanner') {
                     const footerBanner = yield this.adminSiteSettingsUseCase.addFooterBanner(req.body);
                     res.status(HttpStatus_1.HttpStatus.CREATED).json({ footerBanner });
                     return;
                 }
-                res
-                    .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                    .json({ error: "Invalid type provided" });
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: 'Invalid type provided' });
                 return;
             }
             catch (error) {
-                console.error("Error in addSiteSettings:", error);
-                res
-                    .status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json({ error: "Internal Server Error" });
+                console.error('Error in addSiteSettings:', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
                 return;
             }
         });
@@ -216,27 +205,27 @@ let AdminController = class AdminController {
     deleteSiteSettings(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (req.body.type === "deleteBanner") {
+                if (req.body.type === 'deleteBanner') {
                     yield this.adminSiteSettingsUseCase.deleteHomeBanner(req.body.bannerId);
-                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Banner deleted successfully" });
+                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Banner deleted successfully' });
                     return;
                 }
-                if (req.body.type === "deleteFooterBanner") {
+                if (req.body.type === 'deleteFooterBanner') {
                     yield this.adminSiteSettingsUseCase.deleteFooterBanner(req.body.footerBannerId);
-                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Footer banner deleted successfully" });
+                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Footer banner deleted successfully' });
                     return;
                 }
-                if (req.body.type === "deleteTheme") {
+                if (req.body.type === 'deleteTheme') {
                     yield this.adminSiteSettingsUseCase.deleteTheme(req.body.themeName);
-                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Theme deleted successfully" });
+                    res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Theme deleted successfully' });
                     return;
                 }
-                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: "Invalid type provided" });
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: 'Invalid type provided' });
                 return;
             }
             catch (error) {
-                console.error("Error in deleteSiteSettings:", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+                console.error('Error in deleteSiteSettings:', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
                 return;
             }
         });
@@ -245,22 +234,22 @@ let AdminController = class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log(req.body);
-                if (req.body.type === "makeActiveHomeBanner") {
+                if (req.body.type === 'makeActiveHomeBanner') {
                     const banner = yield this.adminSiteSettingsUseCase.makeHomeBannerActive(req.body.id);
                     res.status(HttpStatus_1.HttpStatus.OK).json({ banner });
                     return;
                 }
-                if (req.body.type === "makeActiveFooterBanner") {
+                if (req.body.type === 'makeActiveFooterBanner') {
                     const footerBanner = yield this.adminSiteSettingsUseCase.makeFooterBannerActive(req.body.id);
                     res.status(HttpStatus_1.HttpStatus.OK).json({ footerBanner });
                     return;
                 }
-                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: "Invalid type provided" });
+                res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ error: 'Invalid type provided' });
                 return;
             }
             catch (error) {
-                console.error("Error in makeActiveSiteSettings:", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+                console.error('Error in makeActiveSiteSettings:', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
                 return;
             }
         });
@@ -278,8 +267,8 @@ let AdminController = class AdminController {
                 });
             }
             catch (error) {
-                console.error("Error in getSiteSettings:", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+                console.error('Error in getSiteSettings:', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
             }
         });
     }
@@ -288,7 +277,7 @@ let AdminController = class AdminController {
             try {
                 const { userId, action } = req.body;
                 let data;
-                if (action === "Block") {
+                if (action === 'Block') {
                     data = yield this.blockUnblockUsersUseCase.blockUser(userId);
                 }
                 else {
@@ -299,13 +288,13 @@ let AdminController = class AdminController {
                     return;
                 }
                 else {
-                    res.status(HttpStatus_1.HttpStatus.NOT_FOUND).json({ message: "User not found or update failed." });
+                    res.status(HttpStatus_1.HttpStatus.NOT_FOUND).json({ message: 'User not found or update failed.' });
                     return;
                 }
             }
             catch (error) {
-                console.error("AdminController::blockUnblockUser error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+                console.error('AdminController::blockUnblockUser error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -320,15 +309,13 @@ let AdminController = class AdminController {
                     return;
                 }
                 else {
-                    res
-                        .status(HttpStatus_1.HttpStatus.NOT_FOUND)
-                        .json({ message: "User not found or update failed." });
+                    res.status(HttpStatus_1.HttpStatus.NOT_FOUND).json({ message: 'User not found or update failed.' });
                     return;
                 }
             }
             catch (error) {
-                console.error("AdminController::serviceProviderReject error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+                console.error('AdminController::serviceProviderReject error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -343,15 +330,13 @@ let AdminController = class AdminController {
                     return;
                 }
                 else {
-                    res
-                        .status(HttpStatus_1.HttpStatus.NOT_FOUND)
-                        .json({ message: "User not found or update failed." });
+                    res.status(HttpStatus_1.HttpStatus.NOT_FOUND).json({ message: 'User not found or update failed.' });
                     return;
                 }
             }
             catch (error) {
-                console.error("AdminController::serviceProviderVerify error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+                console.error('AdminController::serviceProviderVerify error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
                 return;
             }
         });
@@ -362,12 +347,13 @@ let AdminController = class AdminController {
                 const limit = parseInt(req.query.limit) || 10;
                 const page = parseInt(req.query.page) || 0;
                 const skip = page * limit;
-                const { allServices, count } = yield this.getAllServicesUseCase.execute(skip, limit);
+                const search = req.query.search || "";
+                const { allServices, count } = yield this.getAllServicesUseCase.execute(skip, limit, search);
                 res.status(HttpStatus_1.HttpStatus.OK).json({ allServices, count });
                 return;
             }
             catch (error) {
-                console.error("AdminController::getAllServices error", error);
+                console.error('AdminController::getAllServices error', error);
                 res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json(error);
                 return;
             }
@@ -378,16 +364,14 @@ let AdminController = class AdminController {
             try {
                 const { serviceId, action } = req.body;
                 if (!serviceId || !action) {
-                    res
-                        .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                        .json({ message: "serviceId and action are required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'serviceId and action are required' });
                     return;
                 }
                 let result;
-                if (action === "Block") {
+                if (action === 'Block') {
                     result = yield this.blockUnblockServiceUseCase.blockService(serviceId);
                 }
-                else if (action === "Unblock") {
+                else if (action === 'Unblock') {
                     result = yield this.blockUnblockServiceUseCase.unblockService(serviceId);
                 }
                 else {
@@ -410,10 +394,10 @@ let AdminController = class AdminController {
                 }
             }
             catch (error) {
-                console.error("AdminController::blockUnblockService error", error);
+                console.error('AdminController::blockUnblockService error', error);
                 res
                     .status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json({ message: error.message || "Internal server error" });
+                    .json({ message: error.message || 'Internal server error' });
                 return;
             }
         });
@@ -423,16 +407,14 @@ let AdminController = class AdminController {
             try {
                 const { providerId, action } = req.body;
                 if (!providerId || !action) {
-                    res
-                        .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                        .json({ message: "providerId and action are required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'providerId and action are required' });
                     return;
                 }
                 let result;
-                if (action === "Block") {
+                if (action === 'Block') {
                     result = yield this.blockUnblockProviderUseCase.blockServiceProvider(providerId);
                 }
-                else if (action === "Unblock") {
+                else if (action === 'Unblock') {
                     result = yield this.blockUnblockProviderUseCase.unblockServiceProvider(providerId);
                 }
                 else {
@@ -455,10 +437,10 @@ let AdminController = class AdminController {
                 }
             }
             catch (error) {
-                console.error("AdminController::blockUnblockServiceProvider error", error);
+                console.error('AdminController::blockUnblockServiceProvider error', error);
                 res
                     .status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json({ message: error.message || "Internal server error" });
+                    .json({ message: error.message || 'Internal server error' });
                 return;
             }
         });
@@ -468,9 +450,7 @@ let AdminController = class AdminController {
             try {
                 const { newCategory } = req.body;
                 if (!newCategory) {
-                    res
-                        .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
-                        .json({ message: "Category is required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Category is required' });
                     return;
                 }
                 const data = yield this.addCategoryUseCase.execute({ category: newCategory });
@@ -478,10 +458,8 @@ let AdminController = class AdminController {
                 return;
             }
             catch (error) {
-                console.error("AdminController::addCategory error", error);
-                res
-                    .status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json({ message: "Internal server error" });
+                console.error('AdminController::addCategory error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
                 return;
             }
         });
@@ -495,8 +473,8 @@ let AdminController = class AdminController {
                 return;
             }
             catch (error) {
-                console.error("AdminController::getCategory error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error." });
+                console.error('AdminController::getCategory error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error.' });
                 return;
             }
         });
@@ -506,16 +484,16 @@ let AdminController = class AdminController {
             try {
                 const { categoryId, categoryName } = req.body;
                 if (!categoryId || !categoryName) {
-                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: "Category ID and name are required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Category ID and name are required' });
                     return;
                 }
                 const data = yield this.editCategoryUseCase.execute(categoryId, categoryName);
-                res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Category updated successfully", data });
+                res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Category updated successfully', data });
                 return;
             }
             catch (error) {
-                console.error("AdminController::editCategory error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+                console.error('AdminController::editCategory error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
                 return;
             }
         });
@@ -525,7 +503,7 @@ let AdminController = class AdminController {
             try {
                 const { categoryId } = req.body;
                 if (!categoryId) {
-                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: "Category ID is required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Category ID is required' });
                     return;
                 }
                 const message = yield this.blockUnblockCategoryUseCase.execute(categoryId);
@@ -533,8 +511,8 @@ let AdminController = class AdminController {
                 return;
             }
             catch (error) {
-                console.error("AdminController::blockUnblockCategory error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+                console.error('AdminController::blockUnblockCategory error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
                 return;
             }
         });
@@ -544,7 +522,7 @@ let AdminController = class AdminController {
             try {
                 const { id } = req.params;
                 if (!id) {
-                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: "Category ID is required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'Category ID is required' });
                     return;
                 }
                 const message = yield this.deleteCategoryUseCase.execute(id);
@@ -552,8 +530,8 @@ let AdminController = class AdminController {
                 return;
             }
             catch (error) {
-                console.error("AdminController::deleteCategory error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+                console.error('AdminController::deleteCategory error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
                 return;
             }
         });
@@ -563,7 +541,7 @@ let AdminController = class AdminController {
             try {
                 const { categoryId, newServiceName, newServiceDescription } = req.body;
                 if (!categoryId || !newServiceName || !newServiceDescription) {
-                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: "All fields are required" });
+                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: 'All fields are required' });
                     return;
                 }
                 const service = yield this.addServiceUseCase.execute(categoryId, {
@@ -574,8 +552,8 @@ let AdminController = class AdminController {
                 res.status(HttpStatus_1.HttpStatus.OK).json({ message: service });
             }
             catch (error) {
-                console.error("AdminController::addService error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+                console.error('AdminController::addService error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
             }
         });
     }
@@ -584,15 +562,17 @@ let AdminController = class AdminController {
             try {
                 const { categoryId, serviceId } = req.params;
                 if (!categoryId || !serviceId) {
-                    res.status(HttpStatus_1.HttpStatus.BAD_REQUEST).json({ message: "Category ID and Service ID are required" });
+                    res
+                        .status(HttpStatus_1.HttpStatus.BAD_REQUEST)
+                        .json({ message: 'Category ID and Service ID are required' });
                     return;
                 }
                 const message = yield this.deleteServiceUseCase.execute(categoryId, serviceId);
                 res.status(HttpStatus_1.HttpStatus.OK).json({ message });
             }
             catch (error) {
-                console.error("AdminController::deleteService error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+                console.error('AdminController::deleteService error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
                 return;
             }
         });
@@ -600,19 +580,38 @@ let AdminController = class AdminController {
     logoutAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.clearCookie("adminToken", {
+                res.clearCookie('adminToken', {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "strict",
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
                 });
-                res.status(HttpStatus_1.HttpStatus.OK).json({ message: "Admin logged out successfully" });
+                res.status(HttpStatus_1.HttpStatus.OK).json({ message: 'Admin logged out successfully' });
             }
             catch (error) {
-                console.error("AdminController::logoutAdmin error", error);
-                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+                console.error('AdminController::logoutAdmin error', error);
+                res.status(HttpStatus_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
             }
         });
     }
+    getCurrentLog(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const logFilePath = path_1.default.join(__dirname, '../../../logs/access.log');
+            if (!fs_1.default.existsSync(logFilePath)) {
+                res.status(404).json({ message: 'Log file not found' });
+                return;
+            }
+            const logContent = fs_1.default.readFileSync(logFilePath, 'utf-8');
+            const reversedLog = logContent
+                .split('\n') // split into array by lines
+                .filter(Boolean) // remove any empty lines
+                .reverse() // reverse the order
+                .join('\n'); // join back to string
+            res.setHeader('Content-Type', 'text/plain');
+            res.status(200).send(reversedLog);
+            return;
+        });
+    }
+    ;
 };
 exports.AdminController = AdminController;
 exports.AdminController = AdminController = __decorate([

@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetServics = void 0;
-// import { IService } from "../../domain/entities/IService";
 const mongoose_1 = require("mongoose");
 const ReviewRepository_1 = require("../../../infrastructure/repositories/ReviewRepository");
 const ServiceRepositorie_1 = require("../../../infrastructure/repositories/ServiceRepositorie");
@@ -36,7 +35,7 @@ let GetServics = class GetServics {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const services = yield this.serviceRepository.getSingleServiceWithProviderDetails(id + "");
-                const review = yield this.reviewRepository.findByServiceId(new mongoose_1.Types.ObjectId(id + ""));
+                const review = yield this.reviewRepository.findReviews(new mongoose_1.Types.ObjectId(id + ""));
                 return { services, review };
             }
             catch (error) {

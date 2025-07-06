@@ -40,9 +40,9 @@ let GetPaymentInfoServiceProviderUseCase = class GetPaymentInfoServiceProviderUs
             return data;
         });
     }
-    adminPaymentInfo(skip, limit) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.serviceBookingRepository.findPaymentInfoAdmin(skip, limit);
+    adminPaymentInfo(skip_1, limit_1, search_1, status_1) {
+        return __awaiter(this, arguments, void 0, function* (skip, limit, search, status, statusType = 'serviceStatus') {
+            const data = yield this.serviceBookingRepository.findPaymentInfoAdmin(skip, limit, search, status, statusType);
             const count = yield this.serviceBookingRepository.getBookedServiceCount();
             return { data, count };
         });

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setAuthCookies = void 0;
-const setAuthCookies = (res, refreshToken) => {
-    res.cookie("refreshToken", refreshToken, {
+const setAuthCookies = (res, role, refreshToken) => {
+    res.cookie(role, refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",

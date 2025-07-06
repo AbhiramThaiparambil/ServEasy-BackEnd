@@ -30,12 +30,14 @@ const mailOtp_1 = require("../../../../services/OTP/mailOtp");
 const OtpService_1 = require("../../../../services/OTP/OtpService");
 const phoneOtp_1 = require("../../../../services/OTP/phoneOtp");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const RedisService_1 = require("../../../../services/RedisService");
 let RegisterUser = class RegisterUser {
-    constructor(userRepository, emailOtp, otpService, smsOtp) {
+    constructor(userRepository, emailOtp, otpService, smsOtp, redisService) {
         this.userRepository = userRepository;
         this.emailOtp = emailOtp;
         this.otpService = otpService;
         this.smsOtp = smsOtp;
+        this.redisService = redisService;
     }
     sendEmailOtp(email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,15 +60,15 @@ let RegisterUser = class RegisterUser {
                 userData === null || userData === void 0 ? true : delete userData.phone;
                 const isExist = yield this.userRepository.findByEmail(email);
                 if (isExist) {
-                    console.log("email is allready exist");
-                    return { errorMessage: "email is allready exist" };
+                    console.log('email is allready exist');
+                    return { errorMessage: 'email is allready exist' };
                 }
             }
             else if (phone) {
                 userData === null || userData === void 0 ? true : delete userData.email;
                 const isExist = yield this.userRepository.findByPhone(phone);
                 if (isExist) {
-                    return { errorMessage: "phone number  allready exist" };
+                    return { errorMessage: 'phone number  allready exist' };
                 }
             }
             const hashedPassword = yield bcrypt_1.default.hash(userData === null || userData === void 0 ? void 0 : userData.password, 10);
@@ -78,25 +80,28 @@ let RegisterUser = class RegisterUser {
                 password: hashedPassword,
                 isVerified: false,
             };
-            const newUser = yield this.userRepository.create(user);
-            if (newUser.email) {
-                yield this.sendEmailOtp(newUser.email);
+            if (user.email) {
+                this.redisService.saveUser(`user:${user.email}`, user);
+                yield this.sendEmailOtp(user.email);
             }
-            else if (newUser.phone) {
-                yield this.sendSmsOtp(newUser.phone);
+            else if (user.phone) {
+                this.redisService.saveUser(`user:${user.phone}`, user);
+                yield this.sendSmsOtp(user.phone);
             }
-            return { user: newUser };
+            return { user: user };
         });
     }
 };
 exports.RegisterUser = RegisterUser;
 exports.RegisterUser = RegisterUser = __decorate([
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)("UserRepository")),
-    __param(1, (0, tsyringe_1.inject)("EmailOtpService")),
+    __param(0, (0, tsyringe_1.inject)('UserRepository')),
+    __param(1, (0, tsyringe_1.inject)('EmailOtpService')),
     __param(2, (0, tsyringe_1.inject)(OtpService_1.Otpservice)),
-    __param(3, (0, tsyringe_1.inject)("SmsOtpService")),
+    __param(3, (0, tsyringe_1.inject)('SmsOtpService')),
+    __param(4, (0, tsyringe_1.inject)('RedisService')),
     __metadata("design:paramtypes", [Object, mailOtp_1.EmailOtpService,
         OtpService_1.Otpservice,
-        phoneOtp_1.SmsOtpService])
+        phoneOtp_1.SmsOtpService,
+        RedisService_1.RedisService])
 ], RegisterUser);

@@ -10,11 +10,15 @@ const serviceProviderController_1 = require("../controllers/serviceProviderContr
 const serviceProviderMiddleware_1 = require("../../Middlewares/serviceProviderMiddleware");
 const serviceController = tsyringe_1.container.resolve(serviceProviderController_1.ServiceProviderController);
 const router = express_1.default.Router();
-router.post("/register", (0, authMiddleware_1.authMiddleware)("User"), (req, res) => serviceController.registerServiceProvider(req, res));
-router.get('/verify', (0, authMiddleware_1.authMiddleware)("User"), (req, res) => serviceController.verifyServiceProvider(req, res));
-router.route("/").get((0, authMiddleware_1.authMiddleware)("User"), (req, res) => serviceController.getServiceProvider(req, res)).put((0, authMiddleware_1.authMiddleware)("User"), (req, res) => serviceController.updateServiceProvider(req, res));
+router.post('/register', (0, authMiddleware_1.authMiddleware)('User'), (req, res) => serviceController.registerServiceProvider(req, res));
+router.get('/verify', (0, authMiddleware_1.authMiddleware)('User'), (req, res) => serviceController.verifyServiceProvider(req, res));
+router
+    .route('/')
+    .get((0, authMiddleware_1.authMiddleware)('User'), (req, res) => serviceController.getServiceProvider(req, res))
+    .put((0, authMiddleware_1.authMiddleware)('User'), (req, res) => serviceController.updateServiceProvider(req, res));
 router.get('/categories', (req, res) => serviceController.getActiveCategories(req, res));
-router.get("/get-paymentinfo", (0, authMiddleware_1.authMiddleware)("User"), serviceProviderMiddleware_1.serviceProviderAuth, (req, res) => serviceController.getPaymentInfoForChartServiceProvider(req, res));
-router.put("/services/activate-all/:id", (req, res) => serviceController.makeItactiveAllService(req, res));
-router.put("/services/deactivate-all/:id", (req, res) => serviceController.makeInactiveAllService(req, res));
+router.get('/get-paymentinfo', (0, authMiddleware_1.authMiddleware)('User'), serviceProviderMiddleware_1.serviceProviderAuth, (req, res) => serviceController.getPaymentInfoForChartServiceProvider(req, res));
+router.put('/services/activate-all/:id', (req, res) => serviceController.makeItactiveAllService(req, res));
+router.put('/services/deactivate-all/:id', (req, res) => serviceController.makeInactiveAllService(req, res));
+router.get('/availability/:serviceProviderId', (req, res) => serviceController.getAvailability(req, res));
 exports.default = router;

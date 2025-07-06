@@ -117,9 +117,14 @@ let MongoUserRepository = class MongoUserRepository {
     // async addAddress(userId:String,address:IAddress){
     //   user
     // }
-    findUsersSkipLimit(skip, limit) {
+    findUsersSkipLimit(skip, limit, search) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield UserModel_1.UserModel.find().skip(skip).limit(limit);
+            return yield UserModel_1.UserModel.find({
+                $or: [
+                    { userName: { $regex: search, $options: "i" } },
+                    { email: { $regex: search, $options: "i" } },
+                ]
+            }).skip(skip).limit(limit);
         });
     }
     userCount() {

@@ -21,30 +21,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getServiceProvidersUseCase = void 0;
+exports.checkServiceProviderAvailabilityUseCase = void 0;
 const tsyringe_1 = require("tsyringe");
-const ServiceProviderRepository_1 = require("../../../../infrastructure/repositories/ServiceProviderRepository");
-const serviceProviderSanitrizer_1 = require("../../../../utils/sanitizers/serviceProviderSanitrizer");
-let getServiceProvidersUseCase = class getServiceProvidersUseCase {
-    constructor(serviceProviderRepository) {
-        this.serviceProviderRepository = serviceProviderRepository;
+const ServiceBookingRepository_1 = require("../../../infrastructure/repositories/ServiceBookingRepository");
+const mongoose_1 = require("mongoose");
+let checkServiceProviderAvailabilityUseCase = class checkServiceProviderAvailabilityUseCase {
+    constructor(serviceBookingRepository) {
+        this.serviceBookingRepository = serviceBookingRepository;
     }
-    execute(skip, limit, search, serviceProviderVerfication) {
+    execute(serviceProviderId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.serviceProviderRepository.findServiceProviderSkipLimit(skip, limit, search);
-            const count = yield this.serviceProviderRepository.findServiceProvidersCount();
-            if (serviceProviderVerfication) {
-                return { data, count };
-            }
-            else {
-                return { data: data.map(serviceProviderSanitrizer_1.serviceProviderSanitizer), count };
-            }
+            const availability = yield this.serviceBookingRepository.checkAvailability(new mongoose_1.Types.ObjectId(serviceProviderId));
+            return availability;
         });
     }
 };
-exports.getServiceProvidersUseCase = getServiceProvidersUseCase;
-exports.getServiceProvidersUseCase = getServiceProvidersUseCase = __decorate([
+exports.checkServiceProviderAvailabilityUseCase = checkServiceProviderAvailabilityUseCase;
+exports.checkServiceProviderAvailabilityUseCase = checkServiceProviderAvailabilityUseCase = __decorate([
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)(ServiceProviderRepository_1.ServiceProviderRepository)),
-    __metadata("design:paramtypes", [Object])
-], getServiceProvidersUseCase);
+    __param(0, (0, tsyringe_1.inject)(ServiceBookingRepository_1.ServiceBookingRepository)),
+    __metadata("design:paramtypes", [ServiceBookingRepository_1.ServiceBookingRepository])
+], checkServiceProviderAvailabilityUseCase);

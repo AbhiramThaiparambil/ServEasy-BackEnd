@@ -23,7 +23,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Otpservice = void 0;
 const tsyringe_1 = require("tsyringe");
-const redisService_1 = require("./redisService");
+const RedisService_1 = require("../RedisService");
 let Otpservice = class Otpservice {
     constructor(redisService) {
         this.redisService = redisService;
@@ -55,6 +55,6 @@ exports.Otpservice = Otpservice;
 exports.Otpservice = Otpservice = __decorate([
     (0, tsyringe_1.singleton)(),
     (0, tsyringe_1.injectable)(),
-    __param(0, (0, tsyringe_1.inject)(redisService_1.RedisService)),
-    __metadata("design:paramtypes", [redisService_1.RedisService])
+    __param(0, (0, tsyringe_1.inject)(RedisService_1.RedisService)),
+    __metadata("design:paramtypes", [RedisService_1.RedisService])
 ], Otpservice);

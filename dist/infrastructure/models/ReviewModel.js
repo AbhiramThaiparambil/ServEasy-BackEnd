@@ -4,6 +4,7 @@ exports.ReviewModel = void 0;
 const mongoose_1 = require("mongoose");
 const ReviewSchema = new mongoose_1.Schema({
     serviceId: { type: mongoose_1.Schema.Types.ObjectId, ref: "services", required: true },
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "users", required: true },
     bookingId: { type: mongoose_1.Schema.Types.ObjectId, ref: "servicebookings", required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     comment: { type: String, required: true },

@@ -39,20 +39,25 @@ let VerifyPaymentUseCase = class VerifyPaymentUseCase {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const serviceObjId = new mongoose_1.Types.ObjectId(id);
+                const bookedService = yield this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+                if ((bookedService === null || bookedService === void 0 ? void 0 : bookedService.paymentStatus) === 'completed') {
+                    return { success: false, message: 'Payment already verified' };
+                }
                 const result = yield this.razorpayService.verifyPaymentSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature);
                 const service = yield this.serviceBookingRepository.findBookedServiceById(serviceObjId);
                 if (service === null || service === void 0 ? void 0 : service.isOnlineService) {
-                    this.serviceBookingRepository.updateServiceStatus(serviceObjId, "in-progress");
+                    this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'in-progress');
                 }
                 else {
-                    this.serviceBookingRepository.updateServiceStatus(serviceObjId, "completed");
+                    this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'completed');
                 }
-                const paymentStatus = result.status === "captured" ? "completed" : "failed";
+                const paymentStatus = result.status === 'captured' ? 'completed' : 'failed';
                 yield this.serviceBookingRepository.updatePaymentStatus(serviceObjId, paymentStatus, result.method);
+                return { success: true, message: 'Payment verified successfully' };
             }
             catch (error) {
-                console.error("VerifyPaymentUseCase Error:", error);
-                return { success: false, message: "Failed to verify payment" };
+                console.error('VerifyPaymentUseCase Error:', error);
+                return { success: false, message: 'Failed to verify payment' };
             }
         });
     }
