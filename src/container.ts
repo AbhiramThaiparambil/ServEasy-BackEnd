@@ -21,7 +21,6 @@ import { ServiceRepository } from "./infrastructure/repositories/ServiceReposito
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
 import { RazorpayService } from "./services/razorpayService";
-import { SocketService } from "./services/socket/SocketService";
 import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
@@ -30,6 +29,7 @@ import { NotificationRepository } from "./infrastructure/repositories/Notificati
 import { SiteSettingRepository } from "./infrastructure/repositories/SiteSettingRepository";
 import { ISlotRepository } from "./domain/repositories/ISlotRepository";
 import { SlotRepository } from "./infrastructure/repositories/SlotRepository";
+import { SocketService } from "./services/socket/SocketService";
 
 container.register<UserRepository>("UserRepository", {
   useClass: MongoUserRepository,

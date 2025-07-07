@@ -2,9 +2,9 @@ import { inject, injectable } from 'tsyringe';
 import { ServiceBookingRepository } from '../../../infrastructure/repositories/ServiceBookingRepository';
 import mongoose from 'mongoose';
 import { IPayment } from '../../../domain/entities/IPayment';
-import { SocketService } from '../../../services/socket/SocketService';
 import { ISystemNotification } from '../../../domain/entities/INotification';
 import { formatDateTime } from '../../../utils/formatDateTime';
+import { SocketService } from '../../../services/socket/SocketService';
 
 @injectable()
 export class UpdateServiceStatus {
