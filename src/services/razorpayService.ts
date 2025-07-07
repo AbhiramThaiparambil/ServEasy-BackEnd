@@ -1,6 +1,6 @@
 import Razorpay from "razorpay";
 import { injectable } from "tsyringe";
-import { IPayment } from "../domain/entities/Ipayment";
+import { IPayment } from "../domain/entities/IPayment"; 
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 // import { IBankDetails } from "../domain/entities/IServiceProvider";
 

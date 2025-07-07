@@ -20,7 +20,7 @@ import paymentRouter from './presentation/routes/payment';
 import { container } from 'tsyringe';
 import chatRouter from './presentation/routes/chat';
 import http from 'http';
-import { SocketService } from './services/socket/socketService';
+import { SocketService } from './services/socket/SocketService';
 import morganMiddleware from './utils/logger';
 const app = express();
 const server = http.createServer(app);

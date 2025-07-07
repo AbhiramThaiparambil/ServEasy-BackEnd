@@ -5,7 +5,7 @@ import { injectable } from 'tsyringe';
 import { ObjectId } from 'mongodb';
 // import {IServiceBooking} from "../../domain/entities/IServiceBooking"
 import { IServiceBooking } from '../../domain/entities/IServiceBooking';
-import { IPayment } from '../../domain/entities/Ipayment';
+import { IPayment } from '../../domain/entities/IPayment'; 
 
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {

@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { IAddress } from './IAddress';
-import { IPayment } from './Ipayment';
+import { IPayment } from './IPayment';
 import { Types } from 'mongoose';
 
 export interface IServiceBooking {

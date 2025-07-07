@@ -21,7 +21,7 @@ import { ServiceRepository } from "./infrastructure/repositories/ServiceReposito
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
 import { RazorpayService } from "./services/razorpayService";
-import { SocketService } from "./services/socket/socketService";
+import { SocketService } from "./services/socket/SocketService";
 import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
