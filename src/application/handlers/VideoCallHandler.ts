@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { SocketService } from "../../services/socket/socketService";
+import { SocketService } from "../../services/socket/SocketService";
 
 export class VideoCallHandler {
   constructor(private io: Server,private socketService: SocketService) {}
