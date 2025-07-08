@@ -58,6 +58,8 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
     }
 );
 
+ServiceProviderSchema.index({userId:1})
+
 const ServiceProviderModel = mongoose.model<IServiceProvider>(
     "ServiceProvider",
     ServiceProviderSchema

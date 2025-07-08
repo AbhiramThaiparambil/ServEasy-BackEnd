@@ -4,7 +4,6 @@ import { IReview, IReviewWithUser } from "../../domain/entities/IReview";
 import {IReviewRepository} from "../../domain/repositories/IReviewRepository"
 import { ReviewModel } from "../models/ReviewModel"; 
 import { injectable } from "tsyringe";
-import { UserModel } from "../models/UserModel";
 @injectable()
 export class ReviewRepository implements IReviewRepository {
   async create(review: IReview): Promise<IReview> {

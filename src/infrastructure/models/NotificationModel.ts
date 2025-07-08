@@ -1,5 +1,4 @@
-import mongoose, { isObjectIdOrHexString } from "mongoose"
-import { Types } from "mongoose"
+import mongoose from "mongoose"
 import { INotification } from "../../domain/entities/INotification"
 
 const notificationSchema =new  mongoose.Schema<INotification>({
@@ -9,6 +8,7 @@ const notificationSchema =new  mongoose.Schema<INotification>({
     read:{type:Boolean,default:false}
     
 }) 
+notificationSchema.index({userId:1})
 
 export default mongoose.model<INotification>("notification",notificationSchema)
 
