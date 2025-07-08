@@ -9,4 +9,7 @@ const ReviewSchema = new Schema<IReview>({
   comment: { type: String, required: true },
 }, { timestamps: true });
 
+ReviewSchema.index({ bookingId: 1 }, { unique: true });
+
+
 export const ReviewModel = model<IReview>("Review", ReviewSchema);

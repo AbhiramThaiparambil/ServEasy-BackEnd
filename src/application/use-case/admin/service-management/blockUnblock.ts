@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
-import { IService } from "../../../../domain/entities/IService"; 
 import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie"; 
+import { IServiceBlockManager } from "./IServiceBlockManager";
 
 @injectable()
-export class BlockUnblockSericeAdmin {
+export class BlockUnblockSericeAdmin implements IServiceBlockManager {
   constructor(
     @inject("ServiceRepository") private serviceRepository: ServiceRepository
   ) {}
