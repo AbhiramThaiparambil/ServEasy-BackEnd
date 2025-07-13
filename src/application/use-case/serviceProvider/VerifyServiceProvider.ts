@@ -3,14 +3,14 @@
 
 import { inject, injectable } from 'tsyringe';
 import { IServiceProviderRepository } from '../../../domain/repositories/IserviceProviderRepository';
-import { UserRepository } from '../../../domain/repositories/IuserRepository';
+import { IUserRepository } from '../../../domain/repositories/IuserRepository';
 import { TokenService } from '../../../services/auth/TokenService';
 
 @injectable()
 export class VerifyServiceProvider {
   constructor(
     @inject("IServiceProviderRepository") private serviceProviderRepository: IServiceProviderRepository,
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("TokenService") private tokenService: TokenService
   ) {}
 

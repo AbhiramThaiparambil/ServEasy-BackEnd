@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { CloudinaryService } from "../../../services/cloudinary/cloudinary"; 
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
-import { UserRepository } from "../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { Otpservice } from "../../../services/OTP/OtpService";
 import { SmsOtpService } from "../../../services/OTP/phoneOtp";
 import { EmailOtpService } from "../../../services/OTP/mailOtp";
@@ -12,7 +12,7 @@ import { EmailOtpService } from "../../../services/OTP/mailOtp";
 export class UserProfileUpdate {
   constructor(
     @inject("CloudinaryService") private cloudinaryService: CloudinaryService,
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("EmailOtpService") private emailOtp: EmailOtpService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService 

@@ -2,6 +2,7 @@ import { IWalletUseCase } from './IWalletUseCase';
 import { IProviderWalletRepository } from '../../../../domain/repositories/IproviderWallet'; 
 import { inject, injectable } from 'tsyringe';
 import { IProviderWallet, IWalletTransaction } from '../../../../domain/entities/IproviderWallet';
+import { Types } from 'mongoose';
 
 @injectable()
 export class WalletUseCase implements IWalletUseCase {
@@ -10,17 +11,17 @@ export class WalletUseCase implements IWalletUseCase {
     private walletRepo: IProviderWalletRepository
   ) {}
 
-  async addTransactionToProviderWallet(providerId: string, transaction: IWalletTransaction): Promise<IProviderWallet> {
+  async addTransactionToProviderWallet(providerId: Types.ObjectId, transaction: IWalletTransaction): Promise<IProviderWallet> {
     let wallet = await this.walletRepo.findByProviderId(providerId);
 
     if (!wallet) {
       wallet = await this.walletRepo.createWallet(providerId);
     }
 
-    return this.walletRepo.addTransaction(providerId, transaction);
+    return this.walletRepo.addTransaction(new Types.ObjectId(providerId), transaction);
   }
 
-  async getProviderWallet(providerId: string): Promise<IProviderWallet | null> {
+  async getProviderWallet(providerId:Types.ObjectId): Promise<IProviderWallet | null> {
     return this.walletRepo.findByProviderId(providerId);
   }
 

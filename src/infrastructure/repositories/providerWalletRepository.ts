@@ -5,12 +5,12 @@ import { ProviderWalletModel } from "../models/providerWallet";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
 
-async createWallet(providerId: string): Promise<IProviderWallet> {
-  let wallet = await ProviderWalletModel.findOne({ providerId });
+async createWallet(serviceProviderId: Types.ObjectId): Promise<IProviderWallet> {
+  let wallet = await ProviderWalletModel.findOne({ serviceProviderId });
 
   if (!wallet) {
     wallet = new ProviderWalletModel({
-      providerId: new Types.ObjectId(providerId),
+      serviceProviderId,
       balance: 0,
       transactions: [],
     });
@@ -20,8 +20,8 @@ async createWallet(providerId: string): Promise<IProviderWallet> {
   return wallet.toObject() as unknown as IProviderWallet;
 }
 
-async addTransaction(providerId: string, transaction: IWalletTransaction): Promise<IProviderWallet> {
-  const wallet = await ProviderWalletModel.findOne({ providerId });
+async addTransaction(serviceProviderId: Types.ObjectId, transaction: IWalletTransaction): Promise<IProviderWallet> {
+  const wallet = await ProviderWalletModel.findOne({ serviceProviderId });
   if (!wallet) throw new Error("Wallet not found");
 
   wallet.transactions.push(transaction);
@@ -32,8 +32,8 @@ async addTransaction(providerId: string, transaction: IWalletTransaction): Promi
 }
 
 
-  async findByProviderId(providerId: string): Promise<IProviderWallet | null> {
-    return ProviderWalletModel.findOne({ providerId });
+  async findByProviderId(serviceProviderId: Types.ObjectId): Promise<IProviderWallet | null> {
+    return ProviderWalletModel.findOne({ serviceProviderId });
   }
 
 // async findByProviderIdSorted(providerId: string | Types.ObjectId): Promise<IWalletTransaction[]> {

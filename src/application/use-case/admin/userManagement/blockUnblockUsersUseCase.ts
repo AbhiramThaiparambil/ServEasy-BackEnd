@@ -1,13 +1,11 @@
 
 
 import { inject, injectable } from "tsyringe";
-import { MongoUserRepository } from "../../../../infrastructure/repositories/UserRepositoriey";
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
-import { User } from "../../../../domain/entities/IUser";
+import {IUserRepository  } from "../../../../domain/repositories/IuserRepository";
 @injectable()
 export class blockUnblockUsersUseCase {
   constructor(
-    @inject(MongoUserRepository) private userRepository: UserRepository
+    @inject("UserRepository") private userRepository: IUserRepository
   ) {}
 
   async blockUser(userId: string): Promise<boolean> {

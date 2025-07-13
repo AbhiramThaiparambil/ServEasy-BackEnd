@@ -1,10 +1,10 @@
 import { User } from "../../domain/entities/IUser";
-import { UserRepository } from "../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";
 import { hash, compare } from "bcrypt";
 @injectable()
-export class MongoUserRepository implements UserRepository {
+export class MongoUserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
     const newUser = new UserModel(user);
     await newUser.save();

@@ -1,6 +1,6 @@
 import { User } from "../entities/IUser";
 import { Types } from "mongoose";
-export interface UserRepository {
+export interface IUserRepository {
   create(user: User|Types.ObjectId): Promise<User>;
   findByEmail(email: string): Promise<User|null>;
   findById(id: string): Promise<User|null>;

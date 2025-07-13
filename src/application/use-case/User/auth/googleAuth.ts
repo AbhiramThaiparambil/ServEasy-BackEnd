@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { OAuth2Client } from "google-auth-library";
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { User } from "../../../../domain/entities/IUser";
 import { config } from "dotenv";
 import { TokenService } from "../../../../services/auth/TokenService";
@@ -11,7 +11,7 @@ export class GoogleAuthUseCase {
   private client: OAuth2Client;
 
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("TokenService") private tokenService: TokenService
   ) {
     this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);

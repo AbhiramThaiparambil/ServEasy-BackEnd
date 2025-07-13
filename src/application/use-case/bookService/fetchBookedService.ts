@@ -1,10 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { IAddress } from "../../../domain/entities/IAddress";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import mongoose from "mongoose";
-import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
-import { UserRepository } from "../../../domain/repositories/IuserRepository";
 @injectable()
 export class GetBookService {
   constructor(

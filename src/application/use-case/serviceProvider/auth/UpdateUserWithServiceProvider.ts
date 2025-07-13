@@ -1,11 +1,11 @@
 
 import {inject,injectable} from 'tsyringe'
-import { UserRepository } from '../../../../domain/repositories/IuserRepository'
+import { IUserRepository } from '../../../../domain/repositories/IuserRepository'
 
 @injectable()
 export class UpdateUserWithServiceProviderUseCase {
     constructor(
-        @inject("UserRepository") private userRepository: UserRepository
+        @inject("UserRepository") private userRepository: IUserRepository
     ) {}
 
     async execute(userId: string, serviceProviderId: string): Promise<boolean|void> {

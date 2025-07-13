@@ -1,11 +1,10 @@
 import { inject, injectable } from "tsyringe";
-import { MongoUserRepository } from "../../../../infrastructure/repositories/UserRepositoriey";
-import { UserRepository } from "../../../../domain/repositories/IuserRepository"; 
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository"; 
 import { userSanitizer } from "../../../../utils/sanitizers/userSanitizer";
 @injectable()
 export class getAllUsersUseCase {
   constructor(
-    @inject(MongoUserRepository) private userRepository: UserRepository
+    @inject("UserRepository") private userRepository: IUserRepository
   ) {}
   async execute(skip:number,limit:number,search:string) {
   const users=await this.userRepository.findUsersSkipLimit(skip,limit,search)

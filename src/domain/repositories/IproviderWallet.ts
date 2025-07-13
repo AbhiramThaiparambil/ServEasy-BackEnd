@@ -1,11 +1,12 @@
+import { Types } from "mongoose";
 import { IProviderWallet, IWalletTransaction } from "../entities/IproviderWallet";
 
 // interface/db/IProviderWalletRepository.ts
 export interface IProviderWalletRepository {
-  createWallet(providerId: string): Promise<IProviderWallet>;
-  addTransaction(providerId: string, transaction: IWalletTransaction): Promise<IProviderWallet>;
+  createWallet(providerId: Types.ObjectId): Promise<IProviderWallet>;
+  addTransaction(providerId: Types.ObjectId, transaction: IWalletTransaction): Promise<IProviderWallet>;
   
-  findByProviderId(providerId: string): Promise<IProviderWallet | null>;
+  findByProviderId(providerId: Types.ObjectId): Promise<IProviderWallet | null>;
   findAll(): Promise<IProviderWallet[]>;
 
 //   findByProviderIdSorted(providerId: string): Promise<IWalletTransaction[]>;

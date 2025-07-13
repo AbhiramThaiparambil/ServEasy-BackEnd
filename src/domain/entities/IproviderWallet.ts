@@ -6,11 +6,11 @@ export interface IWalletTransaction {
   status?: 'none' | 'pending' | 'approved' | 'rejected';
   refBookingId?: Types.ObjectId|null;
   note?: string | null;
-  date: Date;
+  date?: Date;
 }
 
 export interface IProviderWallet {
-  providerId: string|Types.ObjectId;
+  serviceProviderId: string|Types.ObjectId;
   balance: number;
   transactions: IWalletTransaction[];
 }

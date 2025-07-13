@@ -1,16 +1,14 @@
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 export class DeleteAddress {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository
+    @inject("UserRepository") private userRepository: IUserRepository
   ) {}
 
   async execute(userId: string, addressId: string): Promise<boolean> {
-    console.log(addressId);
-    console.log("--------------------");
-
+    
     const user = await this.userRepository.findById(userId);
     if (!user) throw new Error("User does not exist");
 

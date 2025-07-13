@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { TokenService } from "../../../../services/auth/TokenService";
 import { IAdminSignin } from "./IAdminSignin";
@@ -7,7 +7,7 @@ import { IAuthResponse } from "../../../../domain/entities/IAuthResponse";
 @injectable()
 export class  Signin implements IAdminSignin {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("TokenService") private tokenService: TokenService
   ) {}
 
