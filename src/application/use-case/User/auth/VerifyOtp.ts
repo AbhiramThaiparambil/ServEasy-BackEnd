@@ -1,4 +1,4 @@
-import { UserRepository } from '../../../../domain/repositories/IuserRepository';
+import { IUserRepository } from '../../../../domain/repositories/IuserRepository';
 import { inject, injectable } from 'tsyringe';
 import { Otpservice } from '../../../../services/OTP/OtpService';
 import { User } from '../../../../domain/entities/IUser';
@@ -7,7 +7,7 @@ import { TokenService } from '../../../../services/auth/TokenService';
 @injectable()
 export class VerifyOtp {
   constructor(
-    @inject('UserRepository') private userRepository: UserRepository,
+    @inject('UserRepository') private userRepository: IUserRepository,
     @inject(Otpservice) private otpSErvice: Otpservice,
     @inject('RedisService') private redisService: RedisService,
     @inject('TokenService') private tokenService: TokenService

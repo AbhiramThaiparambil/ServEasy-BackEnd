@@ -1,11 +1,11 @@
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { IAddress } from "../../../../domain/entities/IAddress";
 
 @injectable()
 export class EditAddress {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository
+    @inject("UserRepository") private userRepository: IUserRepository
   ) {}
 
   async execute(userId: string, newAddress: IAddress): Promise<boolean> {

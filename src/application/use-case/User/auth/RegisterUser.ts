@@ -1,4 +1,4 @@
-import { UserRepository } from '../../../../domain/repositories/IuserRepository';
+import { IUserRepository } from '../../../../domain/repositories/IuserRepository';
 import { User } from '../../../../domain/entities/IUser';
 import { inject, injectable } from 'tsyringe';
 import { EmailOtpService } from '../../../../services/OTP/mailOtp';
@@ -10,7 +10,7 @@ import { RedisService } from '../../../../services/RedisService';
 @injectable()
 export class RegisterUser {
   constructor(
-    @inject('UserRepository') private userRepository: UserRepository,
+    @inject('UserRepository') private userRepository: IUserRepository,
     @inject('EmailOtpService') private emailOtp: EmailOtpService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject('SmsOtpService') private smsOtp: SmsOtpService,

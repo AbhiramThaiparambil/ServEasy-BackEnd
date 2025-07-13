@@ -3,7 +3,7 @@ import { ServiceBookingRepository } from "../../../infrastructure/repositories/S
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
 import mongoose from "mongoose";
-import { UserRepository } from "../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { ReviewRepository } from "../../../infrastructure/repositories/ReviewRepository";
 
 @injectable()
@@ -13,7 +13,7 @@ export class GetBookSingleService {
     @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository,
     @inject(ServiceProviderRepository) private serviceProviderRepository: ServiceProviderRepository
      ,@inject(ReviewRepository) private reviewRepository :ReviewRepository
-    , @inject("UserRepository") private userRepository: UserRepository
+    , @inject("UserRepository") private userRepository: IUserRepository
   
 ) {}
 

@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { User } from "../../../../../domain/entities/IUser";
 import { inject, injectable } from "tsyringe";
 import bcrypt from "bcrypt";
@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 @injectable()
 export class ResetPassword {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository
+    @inject("UserRepository") private userRepository: IUserRepository
   ) {}
 
   async resetPasswordEmail(

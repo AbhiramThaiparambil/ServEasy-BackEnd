@@ -4,7 +4,7 @@ import { ServiceProviderRepository } from './infrastructure/repositories/Service
 import { IServiceProviderRepository } from './domain/repositories/IserviceProviderRepository';
 import { ICategoryRepository } from './domain/repositories/IcategoryRepository';
 
-import { UserRepository } from './domain/repositories/IuserRepository';
+import { IUserRepository } from './domain/repositories/IuserRepository';
 import { container } from 'tsyringe';
 import { EmailOtpService } from './services/OTP/mailOtp';
 import { Otpservice } from './services/OTP/OtpService';
@@ -33,7 +33,7 @@ import { SocketService } from './services/socket/SocketService';
 import { ProviderWalletRepository } from './infrastructure/repositories/providerWalletRepository';
 import { IProviderWalletRepository } from './domain/repositories/IproviderWallet';
 
-container.register<UserRepository>('UserRepository', {
+container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
 });
 container.register<IServiceProviderRepository>('IServiceProviderRepository', {
@@ -50,8 +50,8 @@ container.register<ISlotRepository>('ISlotRepository', {
 });
 
 container.register<IProviderWalletRepository>(
-  'IProviderWalletRepository',
-  ProviderWalletRepository
+  'IProviderWalletRepository',{ 
+  useClass: ProviderWalletRepository}
 );
 
 container.registerSingleton('EmailOtpService', EmailOtpService);

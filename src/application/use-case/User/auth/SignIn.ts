@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { container, inject, injectable } from "tsyringe";
 import { TokenService } from "../../../../services/auth/TokenService";
 
@@ -6,11 +6,11 @@ import { TokenService } from "../../../../services/auth/TokenService";
 @injectable()
 export class SignIn {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("TokenService") private tokenService: TokenService,
   ) {}
   static create(): SignIn {
-    const userRepository = container.resolve<UserRepository>("UserRepository");
+    const userRepository = container.resolve<IUserRepository>("UserRepository");
     const tokenService = container.resolve<TokenService>("TokenService");
     return new SignIn(userRepository, tokenService);
   }

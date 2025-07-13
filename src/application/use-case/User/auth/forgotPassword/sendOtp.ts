@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { EmailOtpService } from "../../../../../services/OTP/mailOtp";
 import { Otpservice } from "../../../../../services/OTP/OtpService";
@@ -7,7 +7,7 @@ import { SmsOtpService } from "../../../../../services/OTP/phoneOtp";
 @injectable()
 export class SendOtp {
   constructor(
-    @inject("UserRepository") private userRepository: UserRepository,
+    @inject("UserRepository") private userRepository: IUserRepository,
     @inject("EmailOtpService") private emailOtp: EmailOtpService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService
