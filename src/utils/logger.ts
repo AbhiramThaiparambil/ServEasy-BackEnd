@@ -23,7 +23,6 @@ morgan.token('dayjs-time', () => {
   return dayjs().format('DD-MMM-YYYY hh:mm:ss A');
 });
 
-// Custom emoji based on status code
 morgan.token('status-emoji', (req, res) => {
   const status = res.statusCode;
 
@@ -34,7 +33,6 @@ morgan.token('status-emoji', (req, res) => {
   return '⚪';                            
 });
 
-// Final logger format
 const morganMiddleware = morgan(
   '[:dayjs-time] :status-emoji :method :url :status - :res[content-length] bytes - :response-time ms',
   { stream: accessLogStream }

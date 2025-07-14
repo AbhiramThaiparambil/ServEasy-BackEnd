@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { GetService } from "../../../application/service-management/getServices";
+import { GetService } from "../../../application/use-case/service-management/getServices";
 import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const getServices = async (req: Request, res: Response) => {

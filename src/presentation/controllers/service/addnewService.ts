@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { IService } from "../../../domain/entities/IService";
-import { AddNewService } from "../../../application/service-management/addnewService";
+import { AddNewService } from "../../../application/use-case/service-management/addnewService";
 import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const addNewService = async (req: Request, res: Response) => {

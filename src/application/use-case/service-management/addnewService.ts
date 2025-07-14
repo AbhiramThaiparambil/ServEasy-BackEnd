@@ -1,7 +1,7 @@
 
-import { IService } from "../../domain/entities/IService";
-import { ServiceRepository } from "../../infrastructure/repositories/ServiceRepositorie";
-import { CloudinaryService } from "../../services/cloudinary/cloudinary";
+import { IService } from "../../../domain/entities/IService";
+import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
+import { CloudinaryService } from "../../../services/cloudinary/cloudinary";
 import { inject,injectable } from "tsyringe";
 @injectable()
 export class AddNewService {

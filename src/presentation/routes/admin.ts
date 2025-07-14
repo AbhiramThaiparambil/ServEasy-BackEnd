@@ -85,4 +85,9 @@ router.get('/site-settings', authMiddleware('Admin'), (req, res) =>
   adminController.getSiteSettings(req, res)
 );
 router.get('/logs', (req, res) => adminController.getCurrentLog(req, res));
+router.post('/coupons', (req, res) => adminController.createCoupon(req, res));
+router.get('/coupons',(req, res) => adminController.getAllCoupon(req, res))
+router.patch('/coupons/:id/deactivate',(req, res) => adminController.activeInActiveCoupons(req, res))
+router.patch('/coupons/:id/banner',(req, res) => adminController.showCouponsInBanner(req, res))
+ 
 export default router;
