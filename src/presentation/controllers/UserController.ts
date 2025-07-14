@@ -24,6 +24,8 @@ import { DeleteAddress } from '../../application/use-case/User/Address/DeleteAdd
 import { AddReviewUseCase } from '../../application/use-case/bookService/AddReviewUseCase';
 import { GetServiceProviderInfoUseCase } from '../../application/use-case/User/getServiceProviderInfoUseCase';
 import { UserSiteSettings } from '../../application/use-case/siteSetting/UserSiteSettingsUseCase';
+import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
+import { IFindFeaturedCouponsUseCase } from '../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
 
 @injectable()
 export class UserController {
@@ -52,7 +54,10 @@ export class UserController {
     @inject(AddReviewUseCase) private addReviewUseCase: AddReviewUseCase,
     @inject(GetServiceProviderInfoUseCase)
     private getServiceProviderInfoUseCase: GetServiceProviderInfoUseCase,
-    @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings
+    @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
+
+    @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
+    private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -175,15 +180,13 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithEmail(email, password);
 
-   
-
         if (result?.errorMessage) {
           res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
           return;
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res,'refreshToken', result.refreshToken);
+          setAuthCookies(res, 'refreshToken', result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
@@ -200,15 +203,13 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithPhone(phone, password);
 
-    
-
         if (result?.errorMessage) {
           res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
           return;
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res,'refreshToken', result.refreshToken);
+          setAuthCookies(res, 'refreshToken', result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
@@ -230,10 +231,11 @@ export class UserController {
       console.log(result);
 
       if (result.success) {
-        setAuthCookies(res,'refreshToken', result.refreshToken);
+        setAuthCookies(res, 'refreshToken', result.refreshToken);
 
-        res.status(HttpStatus.OK).json({ message: result.success,accessToken:result.accessToken,});
-
+        res
+          .status(HttpStatus.OK)
+          .json({ message: result.success, accessToken: result.accessToken });
       } else if (result.errorMessage) {
         res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
       }
@@ -549,7 +551,6 @@ export class UserController {
 
   public getActiveServices = async (req: Request, res: Response): Promise<void> => {
     try {
-
       const limit = parseInt(req.query.limit as string) || 10;
       const cursor = req.query.cursor as string | null;
 
@@ -571,7 +572,6 @@ export class UserController {
 
   public getActiveNearbyServices = async (req: Request, res: Response): Promise<void> => {
     try {
-
       const filters = req.query.filters as {
         category?: string;
         experience?: string;
@@ -794,7 +794,7 @@ export class UserController {
   public addReview = async (req: Request, res: Response): Promise<void> => {
     try {
       console.log('Adding review with body:', req.body);
-      const { bookedServiceId, serviceId, rating, comment,userId} = req.body;
+      const { bookedServiceId, serviceId, rating, comment, userId } = req.body;
 
       if (!bookedServiceId || !serviceId || rating === undefined) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -810,7 +810,7 @@ export class UserController {
         return;
       }
 
-      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment,userId);
+      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment, userId);
 
       res.status(HttpStatus.CREATED).json({ message: 'Review added successfully!' });
     } catch (error) {
@@ -818,8 +818,6 @@ export class UserController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to add review.' });
     }
   };
-
-
 
   public getServiceProviderInfoChat = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -860,4 +858,17 @@ export class UserController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
   };
+
+public findFeatureCoupons = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const data = await this.findFeatureCouponsUseCase.execute();
+    res.status(HttpStatus.OK).json(data);
+  } catch (error) {
+    console.error("Error fetching featured coupons:", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+  }
+};
+ 
+
+  
 }

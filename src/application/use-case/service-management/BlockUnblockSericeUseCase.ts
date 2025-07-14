@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import { IService } from "../../domain/entities/IService";
-import { ServiceRepository } from "../../infrastructure/repositories/ServiceRepositorie";
+import { IService } from "../../../domain/entities/IService";
+import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 
 @injectable()
 export class BlockUnblockSericeUseCase {

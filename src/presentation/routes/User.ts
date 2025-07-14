@@ -70,4 +70,5 @@ userRouter.get('/themes', userController.getSiteThemes);
 
 // userRouter.get('/services/active-names',userController.getActiveServiceNames)
 
+userRouter.get('/coupons/featured',userController.findFeatureCoupons)
 export default userRouter;

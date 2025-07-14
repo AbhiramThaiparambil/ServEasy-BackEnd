@@ -32,6 +32,19 @@ import { SlotRepository } from './infrastructure/repositories/SlotRepository';
 import { SocketService } from './services/socket/SocketService';
 import { ProviderWalletRepository } from './infrastructure/repositories/providerWalletRepository';
 import { IProviderWalletRepository } from './domain/repositories/IproviderWallet';
+import { ICouponRepository } from './domain/repositories/IcouponRepository';
+import { CouponRepository } from './infrastructure/repositories/couponRepository';
+import { ICreateCouponUseCase } from './application/use-case/coupon/createCoupon/ICreateCouponUseCase';
+import { IFindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
+import { CreateCouponUseCase } from './application/use-case/coupon/createCoupon/CreateCouponUseCase';
+import { FindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/FindAllCouponsUseCase';
+import { USE_CASE_TOKENS } from './utils/constants/tokens';
+import { MakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/MakeCouponInactiveUseCase';
+import { IMakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
+import { IToggleShowInBannerUseCase } from './application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
+import { ToggleShowInBannerUseCase } from './application/use-case/coupon/toggleShowInBanner/ToggleShowInBannerUseCase';
+import { IFindFeaturedCouponsUseCase } from './application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
+import { FindFeaturedCouponsUseCase } from './application/use-case/coupon/FeaturedCoupons/FindFeaturedCouponsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -49,10 +62,15 @@ container.register<ISlotRepository>('ISlotRepository', {
   useClass: SlotRepository,
 });
 
-container.register<IProviderWalletRepository>(
-  'IProviderWalletRepository',{ 
-  useClass: ProviderWalletRepository}
-);
+container.register<IProviderWalletRepository>('IProviderWalletRepository', {
+  useClass: ProviderWalletRepository,
+});
+
+container.register<ICouponRepository>('ICouponRepository', 
+  { useClass: CouponRepository 
+
+  });
+
 
 container.registerSingleton('EmailOtpService', EmailOtpService);
 container.registerSingleton('OtpService', Otpservice);
@@ -73,3 +91,34 @@ container.register('NotificationRepository', { useClass: NotificationRepository 
 container.registerSingleton<IChatRepository>('ChatRepository', ChatRepository);
 container.register('SiteSettingRepository', SiteSettingRepository);
 console.log('All dependencies registered successfully.');
+
+
+
+
+
+
+
+container.register<ICreateCouponUseCase>(USE_CASE_TOKENS.CreateCouponUseCase, {
+  useClass: CreateCouponUseCase,
+});
+
+container.register<IFindAllCouponsUseCase>(USE_CASE_TOKENS.FindAllCouponsUseCase, {
+  useClass: FindAllCouponsUseCase,
+});
+
+
+
+
+container.register<IMakeCouponInactiveUseCase>(USE_CASE_TOKENS.MakeCouponInactiveUseCase, {
+  useClass: MakeCouponInactiveUseCase,
+});
+
+
+container.register<IToggleShowInBannerUseCase>(USE_CASE_TOKENS.CouponshowInBanner, {
+  useClass: ToggleShowInBannerUseCase,
+});
+
+
+container.register<IFindFeaturedCouponsUseCase>(USE_CASE_TOKENS.FindFeaturedCouponsUseCase, {
+  useClass: FindFeaturedCouponsUseCase,
+});

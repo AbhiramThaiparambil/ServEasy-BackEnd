@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { BlockUnblockSericeUseCase } from "../../../application/service-management/BlockUnblockSericeUseCase";
+import { BlockUnblockSericeUseCase } from "../../../application/use-case/service-management/BlockUnblockSericeUseCase";
 import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const blockUnblockService = async (req: Request, res: Response) => {

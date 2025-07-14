@@ -23,6 +23,12 @@ import { DeleteService } from '../../application/use-case/admin/category-managem
 import path from 'path';
 import fs from 'fs';
 import { setAuthCookies } from '../../utils/setAuthCookies';
+import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
+import { ICreateCouponUseCase } from '../../application/use-case/coupon/createCoupon/ICreateCouponUseCase';
+import { IFindAllActiveCouponsUseCase } from '../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCouponsUseCase';
+import { IFindAllCouponsUseCase } from '../../application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
+import { IMakeCouponInactiveUseCase } from '../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
+import { IToggleShowInBannerUseCase } from '../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
 
 @injectable()
 export class AdminController {
@@ -62,8 +68,12 @@ export class AdminController {
     @inject(AddService)
     private addServiceUseCase: AddService,
     @inject(DeleteService)
-    private deleteServiceUseCase: DeleteService
-  ) {}
+    private deleteServiceUseCase: DeleteService,
+    @inject(USE_CASE_TOKENS.CreateCouponUseCase) private createCouponUseCase: ICreateCouponUseCase,
+    @inject(USE_CASE_TOKENS.FindAllCouponsUseCase) private findAllCouponsUseCase:IFindAllCouponsUseCase,
+    @inject(USE_CASE_TOKENS.MakeCouponInactiveUseCase) private makeActiveInActiveCouponUseCase:IMakeCouponInactiveUseCase,
+    @inject(USE_CASE_TOKENS.CouponshowInBanner) private showInBannerUseCase :IToggleShowInBannerUseCase,
+) {}
 
   async signIn(req: Request, res: Response) {
     try {
@@ -88,9 +98,7 @@ export class AdminController {
 
       const { accessToken, refreshToken, user } = result;
 
-     
-
-      setAuthCookies(res,'adminToken',refreshToken)
+      setAuthCookies(res, 'adminToken', refreshToken);
       res.status(200).json({ accessToken, user });
       return;
     } catch (error) {
@@ -139,8 +147,13 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
       const search = req.query.search || '';
-      const verification=req.query.verification
-      const { data, count } = await this.getServiceProvidersUseCase.execute(skip, limit, search as string,verification?true:false);
+      const verification = req.query.verification;
+      const { data, count } = await this.getServiceProvidersUseCase.execute(
+        skip,
+        limit,
+        search as string,
+        verification ? true : false
+      );
 
       res.status(HttpStatus.OK).json({ data, count });
       return;
@@ -342,9 +355,13 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const search=req.query.search||"";
+      const search = req.query.search || '';
 
-      const { allServices, count } = await this.getAllServicesUseCase.execute(skip, limit,search as string);
+      const { allServices, count } = await this.getAllServicesUseCase.execute(
+        skip,
+        limit,
+        search as string
+      );
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;
@@ -591,27 +608,92 @@ export class AdminController {
     }
   }
 
-public async getCurrentLog (req: Request, res: Response) {
- const logFilePath = path.join(__dirname, '../../../logs/access.log');
+  public async getCurrentLog(req: Request, res: Response) {
+    const logFilePath = path.join(__dirname, '../../../logs/access.log');
 
-  if (!fs.existsSync(logFilePath)) {
-     res.status(404).json({ message: 'Log file not found' });
-  return
+    if (!fs.existsSync(logFilePath)) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Log file not found' });
+      return;
     }
 
-  const logContent = fs.readFileSync(logFilePath, 'utf-8');
+    const logContent = fs.readFileSync(logFilePath, 'utf-8');
 
-  const reversedLog = logContent
-    .split('\n')      // split into array by lines
-    .filter(Boolean)  // remove any empty lines
-    .reverse()        // reverse the order
-    .join('\n');      // join back to string
+    const reversedLog = logContent.split('\n').filter(Boolean).reverse().join('\n');
 
-  res.setHeader('Content-Type', 'text/plain');
-   res.status(200).send(reversedLog);
-return
-  };
+    res.setHeader('Content-Type', 'text/plain');
+    res.status(200).send(reversedLog);
+    return;
+  }
 
 
+  public async createCoupon(req: Request, res: Response) {
+    try {
+      const { data } = req.body;
+      console.log(data)
+      if (!data) {
+        res.status(HttpStatus.BAD_REQUEST);
+        return
+      }
+
+      const resdata=await this.createCouponUseCase.execute(data);
+ console.log(resdata)
+      res.status(HttpStatus.CREATED);
+      return;
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  public async getAllCoupon(req: Request, res: Response) {
+    try {
+     
+
+      const coupons=await this.findAllCouponsUseCase.execute()
+      res.status(HttpStatus.CREATED).json(coupons);
+      return;
+    } catch (e) {
+      console.log(e)
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+
+    }
+  }
+public async activeInActiveCoupons(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id;
+    const action: boolean = req.body.action;
+   if(!id){
+    res.status(HttpStatus.BAD_REQUEST)
+    return
+   }
+
+    await this.makeActiveInActiveCouponUseCase.execute(id,action);
+
+    res.status(HttpStatus.OK).json({ message: `Coupon ${action ? 'activated' : 'deactivated'} successfully` });
+  } catch (error) {
+    console.error("Error toggling coupon status:", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+  }
+}
+
+public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id;
+    const action: boolean = req.body.action;
+
+    if (!id) {
+       res.status(HttpStatus.BAD_REQUEST).json({ message: "Coupon ID is required" });
+    return
+      }
+
+    await this.showInBannerUseCase.execute(id, action);
+
+    res
+      .status(HttpStatus.OK)
+      .json({ message: `Coupon ${action ? "shown in" : "removed from"} banner successfully` });
+  } catch (error) {
+    console.error("Error toggling coupon banner status:", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+  }
+}
 
 }
