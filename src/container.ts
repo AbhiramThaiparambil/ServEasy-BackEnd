@@ -45,6 +45,8 @@ import { IToggleShowInBannerUseCase } from './application/use-case/coupon/toggle
 import { ToggleShowInBannerUseCase } from './application/use-case/coupon/toggleShowInBanner/ToggleShowInBannerUseCase';
 import { IFindFeaturedCouponsUseCase } from './application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
 import { FindFeaturedCouponsUseCase } from './application/use-case/coupon/FeaturedCoupons/FindFeaturedCouponsUseCase';
+import { ApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/ApplyCouponToBookingUseCase';
+import { IApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -122,3 +124,8 @@ container.register<IToggleShowInBannerUseCase>(USE_CASE_TOKENS.CouponshowInBanne
 container.register<IFindFeaturedCouponsUseCase>(USE_CASE_TOKENS.FindFeaturedCouponsUseCase, {
   useClass: FindFeaturedCouponsUseCase,
 });
+
+container.register<IApplyCouponToBookingUseCase>(USE_CASE_TOKENS.ApplyCouponToBookingUseCase,{
+  useClass:ApplyCouponToBookingUseCase
+})
+

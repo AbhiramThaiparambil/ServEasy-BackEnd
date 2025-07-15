@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import { ICoupon } from '../../domain/entities/ICoupon';
 
 const CouponSchema = new Schema<ICoupon>(
@@ -14,6 +14,7 @@ const CouponSchema = new Schema<ICoupon>(
     userId: { type: String },
     showInBanner: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+usedBy: [{ type: Types.ObjectId, ref: 'User', default: [] }]
   },
   {
     timestamps: true,

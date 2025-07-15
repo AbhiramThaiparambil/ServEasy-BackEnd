@@ -4,6 +4,7 @@ export interface IServiceBookingRepository {
   findBookedServicesByUserId(userId: Types.ObjectId): Promise<IServiceBooking[]>;
   findServicesByProviderId(serviceProviderId: Types.ObjectId): Promise<IServiceBooking[]>;
   createServiceBooking(serviceBookingData: IServiceBooking): Promise<IServiceBooking>;
+  findById(serviceId:string):Promise<IServiceBooking|null>
   updateServiceStatus(
     serviceBookingId: Types.ObjectId,
     serviceStatus: string
@@ -45,4 +46,6 @@ export interface IServiceBookingRepository {
   addBookingHistory(bookingId: Types.ObjectId, action: string, message: string): Promise<void>;
 
   findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null>;
+  update(bookingId: string, data: Partial<IServiceBooking>): Promise<IServiceBooking | null>;
+
 }

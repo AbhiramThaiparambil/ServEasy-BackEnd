@@ -3,7 +3,8 @@ export const USE_CASE_TOKENS = {
   FindAllCouponsUseCase: 'IFindAllCouponsUseCase',
   MakeCouponInactiveUseCase: 'IMakeCouponInactiveUseCase',
   CouponshowInBanner: 'ICouponshowInBannerUseCase',
-  FindFeaturedCouponsUseCase:'IFindFeaturedCouponsUseCase'
+  FindFeaturedCouponsUseCase:'IFindFeaturedCouponsUseCase',
+  ApplyCouponToBookingUseCase:"IApplyCouponToBookingUseCase"
 };
 
 export const REPOSITORY_TOKENS = {

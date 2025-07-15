@@ -24,8 +24,17 @@ export interface IServiceBooking {
     liveLocation?:IliveLocation
     serviceSlot?:IServiceSlot
     bookingHistory?: IServiceBookingHistory[];
+    coupon?:ICouponApplied
 
 }
+
+export interface ICouponApplied {
+  _id?: string;
+  code: string;
+  discountAmount: number;
+  appliedAt: Date;
+}
+
 export interface IServiceSlot {
   date: Date;
   startTime: string;

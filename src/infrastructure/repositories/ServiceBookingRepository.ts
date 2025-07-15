@@ -19,6 +19,11 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     });
   }
 
+    findById(_id:string):Promise<IServiceBooking|null>{
+      return ServiceBooking.findById(_id)
+    }
+
+
   async createServiceBooking(serviceBookingData: IServiceBooking): Promise<IServiceBooking> {
     const newServiceBooking = new ServiceBooking(serviceBookingData);
     return await newServiceBooking.save();
@@ -563,4 +568,12 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       throw error;
     }
   }
+
+    async update(bookingId: string, data: Partial<IServiceBooking>): Promise<IServiceBooking | null> {
+    const updatedBooking = await ServiceBooking.findByIdAndUpdate(bookingId, data, {
+      new: true,
+    });
+    return updatedBooking;
+  }
+
 }

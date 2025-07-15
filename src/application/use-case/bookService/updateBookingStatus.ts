@@ -146,6 +146,8 @@ export class UpdateServiceStatus {
       total: paymentData.total,
       travelCost: paymentData.travelCost,
       convenienceFee: convenienceFee,
+      discountAmount:0,
+      finalTotal:paymentData.total,
     };
     const requestId = new mongoose.Types.ObjectId(id);
     const data = await this.serviceBookingRepository.requestPayment(

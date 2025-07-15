@@ -9,6 +9,7 @@ export interface ICoupon {
   usageLimit?: number; 
   usedCount?: number; 
   userId?: string; 
+  usedBy: string[]
   showInBanner: boolean;
   isActive: boolean;
   createdAt?: Date;
