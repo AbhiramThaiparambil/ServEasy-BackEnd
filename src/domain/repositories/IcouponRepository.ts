@@ -8,5 +8,9 @@ export interface ICouponRepository {
   findAllActiveCoupons(): Promise<ICoupon[]>;
   updateCouponShowInBanner(id: string, action: boolean): Promise<boolean>;
   updateCouponStatus(id: string, action: boolean): Promise<boolean>;
-  findFeaturedCoupons(): Promise<ICoupon[]|[]>;
+  findFeaturedCoupons(): Promise<ICoupon[] | []>;
+  findByCode(code: string): Promise<ICoupon | null>;
+  checkIsExceedMaxUseLimit(_id: string): Promise<boolean>;
+  hasUserUsedCoupon(code: string, userId: string): Promise<boolean>;
+  markUsedByUser(code: string, userId: string): Promise<void>
 }

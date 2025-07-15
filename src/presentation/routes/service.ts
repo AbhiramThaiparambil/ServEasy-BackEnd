@@ -32,6 +32,12 @@ serviceRouter.patch(
   blockUnblockService
 );
 
+
+
+serviceRouter.post('/bookings/:bookingId/coupon/apply', authMiddleware('User'), checkUserBlocked,(req, res) =>
+  serviceController.applyCoupon(req, res) );
+serviceRouter.delete('/bookings/:bookingId/coupon/apply', authMiddleware('User'), checkUserBlocked, );
+
 serviceRouter.post('/book', authMiddleware('User'), checkUserBlocked, bookServiceHandler);
 
 serviceRouter.get('/bookings', authMiddleware('User'), checkUserBlocked, GetbookServiceHandler);

@@ -116,6 +116,8 @@ await bookingQueueService.addAutoCancelJob(new Types.ObjectId(result._id.toStrin
         inspectionCost: 0,
         total: service.estimatedPrice,
         convenienceFee: +(service.estimatedPrice * 0.10).toFixed(2),
+        discountAmount:0,
+        finalTotal: service.estimatedPrice,
       },
       serviceStatus: "confirmed",
       paymentType: "pending",
