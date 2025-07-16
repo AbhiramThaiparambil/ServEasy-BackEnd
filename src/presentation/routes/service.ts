@@ -36,7 +36,8 @@ serviceRouter.patch(
 
 serviceRouter.post('/bookings/:bookingId/coupon/apply', authMiddleware('User'), checkUserBlocked,(req, res) =>
   serviceController.applyCoupon(req, res) );
-serviceRouter.delete('/bookings/:bookingId/coupon/apply', authMiddleware('User'), checkUserBlocked, );
+
+serviceRouter.delete('/bookings/:bookingId/coupon/remove', authMiddleware('User'), checkUserBlocked,(req, res) =>serviceController.removeCoupon(req, res)  );
 
 serviceRouter.post('/book', authMiddleware('User'), checkUserBlocked, bookServiceHandler);
 

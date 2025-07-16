@@ -73,4 +73,12 @@ export class CouponRepository implements ICouponRepository {
       { $addToSet: { usedBy: new Types.ObjectId(userId) } } 
     );
   }
+
+async removeCoupon(userId: Types.ObjectId, couponId:string): Promise<void> {
+  await CouponModel.updateOne(
+    { _id: couponId },
+    { $pull: { usedBy: userId } }
+  );
+}
+
 }

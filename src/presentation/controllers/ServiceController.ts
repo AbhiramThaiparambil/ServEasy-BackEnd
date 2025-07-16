@@ -9,6 +9,7 @@ import { CreateSlotUseCase } from '../../application/use-case/admin/slot/CreateS
 import { GetServiceSlot } from '../../application/use-case/admin/slot/getSlot';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IApplyCouponToBookingUseCase } from '../../application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
+import { IRemoveCouponToBookingUseCase } from '../../application/use-case/bookService/coupons/IRemoveCoupon';
 
 @injectable()
 export class ServiceController {
@@ -19,7 +20,10 @@ export class ServiceController {
     @inject(DeleteSlotUseCase) private deleteSlotUseCase: DeleteSlotUseCase,
     @inject(CreateSlotUseCase) private createSlot: CreateSlotUseCase,
     @inject(GetServiceSlot) private getServiceSlot: GetServiceSlot,
-    @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase) private applyCouponUseCase:IApplyCouponToBookingUseCase
+    @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
+    private applyCouponUseCase: IApplyCouponToBookingUseCase,
+    @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
+    private removeCouponUseCase: IRemoveCouponToBookingUseCase
   ) {}
 
   async cancelUserBooking(req: Request, res: Response): Promise<void> {
@@ -128,47 +132,48 @@ export class ServiceController {
     }
   }
 
-   async applyCoupon(req: Request, res: Response) {
+  async applyCoupon(req: Request, res: Response) {
     try {
       const { bookingId } = req.params;
       const { couponCode } = req.body;
 
-      
       const updatedBooking = await this.applyCouponUseCase.execute({ bookingId, couponCode });
 
-       res.status(HttpStatus.OK).json({
-        message: "Coupon applied successfully",
-        payment:updatedBooking
+      res.status(HttpStatus.OK).json({
+        message: 'Coupon applied successfully',
+        payment: updatedBooking,
       });
-return
+      return;
     } catch (error: any) {
-      console.log(error)
-       res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || "Failed to apply coupon" });
-   
-   return
-      }
+      console.log(error);
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: error.message || 'Failed to apply coupon' });
+
+      return;
+    }
   }
 
-  
-  // static async removeCoupon(req: Request, res: Response) {
-  //   try {
-  //     const { bookingId } = req.params;
-
-  //     const removeCouponUseCase = container.resolve(RemoveCouponFromBookingUseCase);
-  //     const updatedBooking = await removeCouponUseCase.execute({ bookingId });
-
-  //     return res.status(200).json({
-  //       message: "Coupon removed successfully",
-  //       finalTotal: updatedBooking.payment.finalTotal,
-  //       booking: updatedBooking
-  //     });
-
-  //   } catch (error: any) {
-  //     return res.status(400).json({ message: error.message || "Failed to remove coupon" });
-  //   }
-  // }
-
-
-
-
+  async removeCoupon(req: Request, res: Response) {
+    try {
+      const { bookingId } = req.params;
+      if (!bookingId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: 'Missing required fields: serviceId, startTime, endTime' });
+        return;
+      }
+      const updatedBooking = await this.removeCouponUseCase.execute( bookingId );
+          console.log(updatedBooking)
+       res.status(200).json({
+        message: 'Coupon removed successfully',
+        updatedBooking
+      });
+      return
+    } catch (error: any) { 
+      console.log(error)
+       res.status(400).json({ message: error.message || 'Failed to remove coupon' });
+    return
+      }
+  }
 }

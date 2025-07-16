@@ -59,7 +59,7 @@ export class RazorpayService {
     const providerShare = Math.round(payment.total-payment.convenienceFee)
 
     const order = await this.razorpay.orders.create({
-      amount: payment.total * 100,
+      amount: payment.finalTotal * 100,
       currency: "INR",
       payment_capture: true,
       receipt: `receipt_${Date.now()}`,
