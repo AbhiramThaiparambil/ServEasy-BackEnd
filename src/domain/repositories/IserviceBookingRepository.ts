@@ -47,5 +47,6 @@ export interface IServiceBookingRepository {
 
   findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null>;
   update(bookingId: string, data: Partial<IServiceBooking>): Promise<IServiceBooking | null>;
+removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking>
 
 }

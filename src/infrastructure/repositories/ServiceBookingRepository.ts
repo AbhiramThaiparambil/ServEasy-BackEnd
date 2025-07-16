@@ -576,4 +576,24 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     return updatedBooking;
   }
 
+
+async removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking> {
+ const booking = await ServiceBooking.findById(bookingId);
+  if (!booking||!booking.payment) throw new Error("Booking not found");
+
+  const updated = await ServiceBooking.findOneAndUpdate(
+    { _id: bookingId },
+    {
+      $unset: { coupon: "" },
+      $set: {
+        "payment.discountAmount": 0,
+        "payment.finalTotal": booking.payment.total, 
+      }
+    },
+    { new: true }
+  );
+
+  return updated as IServiceBooking;
+
+}
 }

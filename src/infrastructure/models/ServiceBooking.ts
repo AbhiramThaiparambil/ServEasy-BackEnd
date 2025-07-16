@@ -4,7 +4,7 @@ import { IServiceBooking } from '../../domain/entities/IServiceBooking';
 
 const PaymentSchema = new Schema({
   serviceCost: { type: Number, required: true },
-  metaialCost: { type: Number, required: true },
+  metaialCost: { type: Number},
   travelCost: { type: Number, required: true },
   inspectionCost: { type: Number, required: true },
   convenienceFee: { type: Number, required: true },

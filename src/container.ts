@@ -47,6 +47,8 @@ import { IFindFeaturedCouponsUseCase } from './application/use-case/coupon/Featu
 import { FindFeaturedCouponsUseCase } from './application/use-case/coupon/FeaturedCoupons/FindFeaturedCouponsUseCase';
 import { ApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/ApplyCouponToBookingUseCase';
 import { IApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
+import { IRemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/IRemoveCoupon';
+import { RemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/RemoveCoupon';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -68,11 +70,7 @@ container.register<IProviderWalletRepository>('IProviderWalletRepository', {
   useClass: ProviderWalletRepository,
 });
 
-container.register<ICouponRepository>('ICouponRepository', 
-  { useClass: CouponRepository 
-
-  });
-
+container.register<ICouponRepository>('ICouponRepository', { useClass: CouponRepository });
 
 container.registerSingleton('EmailOtpService', EmailOtpService);
 container.registerSingleton('OtpService', Otpservice);
@@ -94,12 +92,6 @@ container.registerSingleton<IChatRepository>('ChatRepository', ChatRepository);
 container.register('SiteSettingRepository', SiteSettingRepository);
 console.log('All dependencies registered successfully.');
 
-
-
-
-
-
-
 container.register<ICreateCouponUseCase>(USE_CASE_TOKENS.CreateCouponUseCase, {
   useClass: CreateCouponUseCase,
 });
@@ -108,24 +100,22 @@ container.register<IFindAllCouponsUseCase>(USE_CASE_TOKENS.FindAllCouponsUseCase
   useClass: FindAllCouponsUseCase,
 });
 
-
-
-
 container.register<IMakeCouponInactiveUseCase>(USE_CASE_TOKENS.MakeCouponInactiveUseCase, {
   useClass: MakeCouponInactiveUseCase,
 });
-
 
 container.register<IToggleShowInBannerUseCase>(USE_CASE_TOKENS.CouponshowInBanner, {
   useClass: ToggleShowInBannerUseCase,
 });
 
-
 container.register<IFindFeaturedCouponsUseCase>(USE_CASE_TOKENS.FindFeaturedCouponsUseCase, {
   useClass: FindFeaturedCouponsUseCase,
 });
 
-container.register<IApplyCouponToBookingUseCase>(USE_CASE_TOKENS.ApplyCouponToBookingUseCase,{
-  useClass:ApplyCouponToBookingUseCase
-})
+container.register<IApplyCouponToBookingUseCase>(USE_CASE_TOKENS.ApplyCouponToBookingUseCase, {
+  useClass: ApplyCouponToBookingUseCase,
+});
 
+container.register<IRemoveCouponToBookingUseCase>(USE_CASE_TOKENS.RemoveCouponToBookingUseCase, {
+  useClass: RemoveCouponToBookingUseCase,
+});
