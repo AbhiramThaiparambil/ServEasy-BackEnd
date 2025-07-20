@@ -1,5 +1,5 @@
-import { ICoupon } from "../../../../domain/entities/ICoupon";
+import { IBannerCouponResponse } from "../../../../domain/entities/ICoupon";
 
 export interface IFindFeaturedCouponsUseCase {
-  execute(): Promise<ICoupon[]>;
+  execute(skip:number): Promise<IBannerCouponResponse>;
 }

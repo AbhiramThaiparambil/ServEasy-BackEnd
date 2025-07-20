@@ -1,4 +1,4 @@
-import { ICoupon } from '../../domain/entities/ICoupon';
+import { IBannerCouponResponse, ICoupon } from '../../domain/entities/ICoupon';
 import { CouponModel } from '../models/couponModel';
 import { injectable } from 'tsyringe';
 import { Types } from 'mongoose';
@@ -41,14 +41,32 @@ export class CouponRepository implements ICouponRepository {
     return result.modifiedCount > 0;
   }
 
-  async findFeaturedCoupons(): Promise<ICoupon[] | []> {
-    return await CouponModel.find({
-      isActive: true,
-      showInBanner: true,
-      validFrom: { $lte: new Date() },
-      validTo: { $gte: new Date() },
-    }).lean();
-  }
+async findFeaturedCoupons(skip: number): Promise<IBannerCouponResponse> {
+  const total = await CouponModel.countDocuments({
+    isActive: true,
+    showInBanner: true,
+    validFrom: { $lte: new Date() },
+    validTo: { $gte: new Date() },
+  });
+
+  if (total === 0) return { coupon: null, total: 0 };
+
+  const coupon = await CouponModel.findOne({
+    isActive: true,
+    showInBanner: true,
+    validFrom: { $lte: new Date() },
+    validTo: { $gte: new Date() },
+  })
+    .select('code description discountValue validTo')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .lean();
+
+  return {
+    coupon: coupon || null,
+    total,
+  };
+}
 
   async findByCode(code: string): Promise<ICoupon | null> {
     return await CouponModel.findOne({ code });

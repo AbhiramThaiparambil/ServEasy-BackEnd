@@ -5,10 +5,12 @@ export const USE_CASE_TOKENS = {
   CouponshowInBanner: 'ICouponshowInBannerUseCase',
   FindFeaturedCouponsUseCase:'IFindFeaturedCouponsUseCase',
   ApplyCouponToBookingUseCase:"IApplyCouponToBookingUseCase",
-  RemoveCouponToBookingUseCase:"IRemoveCouponToBookingUseCase"
+  RemoveCouponToBookingUseCase:"IRemoveCouponToBookingUseCase",
+  GetWalletUseCase:"IGetWalletUseCase"
 };
 
 export const REPOSITORY_TOKENS = {
+  WalletRepository: 'IWalletRepository',
   CouponRepository: 'ICouponRepository',
 };
 
