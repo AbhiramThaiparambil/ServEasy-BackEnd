@@ -33,4 +33,6 @@ router.get('/availability/:serviceProviderId', (req, res) =>
   serviceController.getAvailability(req, res)
 );
 
+router.get('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) => serviceController.getWallet(req, res) );
+  
 export default router;

@@ -12,6 +12,8 @@ import { GetServiceProvider } from '../../application/use-case/serviceProvider/a
 import { ManageAllServiceUseCase } from '../../application/use-case/admin/mangageAllserviceUseCase';
 import { checkServiceProviderAvailabilityUseCase } from '../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase';
 import { setAuthCookies } from '../../utils/setAuthCookies';
+import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
+import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/IGetWalletUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -34,7 +36,8 @@ export class ServiceProviderController {
 
     @inject(ManageAllServiceUseCase) private manageAllServiceUseCase: ManageAllServiceUseCase,
     @inject(checkServiceProviderAvailabilityUseCase) private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
-
+    @inject(USE_CASE_TOKENS.GetWalletUseCase)
+    private getWalletUseCase: IGetWalletUseCase
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -292,4 +295,18 @@ setAuthCookies(res,'serviceProviderToken',refreshToken)
   }
 
 
+
+ async getWallet (req: Request, res: Response){
+  try {
+    console.log("------------------------------")
+    const serviceProviderId = res.locals.serviceProvider_id;
+    console.log("Service Provider ID:", serviceProviderId);
+    const wallet = await this.getWalletUseCase.execute(serviceProviderId);
+
+     res.status(HttpStatus.OK).json({ success: true, data: wallet });
+    } catch (error: any) {
+     res.status(HttpStatus.OK).json({ success: false, message: error.message });
+  }
+
+ }
 }

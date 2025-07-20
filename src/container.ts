@@ -3,13 +3,11 @@ import { MongoUserRepository } from './infrastructure/repositories/UserRepositor
 import { ServiceProviderRepository } from './infrastructure/repositories/ServiceProviderRepository';
 import { IServiceProviderRepository } from './domain/repositories/IserviceProviderRepository';
 import { ICategoryRepository } from './domain/repositories/IcategoryRepository';
-
 import { IUserRepository } from './domain/repositories/IuserRepository';
 import { container } from 'tsyringe';
 import { EmailOtpService } from './services/OTP/mailOtp';
 import { Otpservice } from './services/OTP/OtpService';
 import { RegisterUser } from './application/use-case/User/auth/RegisterUser';
-
 import { RedisService } from './services/RedisService';
 import { SmsOtpService } from './services/OTP/phoneOtp';
 import { ResendOtp } from './application/use-case/User/auth/ResendOtp';
@@ -38,7 +36,7 @@ import { ICreateCouponUseCase } from './application/use-case/coupon/createCoupon
 import { IFindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
 import { CreateCouponUseCase } from './application/use-case/coupon/createCoupon/CreateCouponUseCase';
 import { FindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/FindAllCouponsUseCase';
-import { USE_CASE_TOKENS } from './utils/constants/tokens';
+import { REPOSITORY_TOKENS, USE_CASE_TOKENS } from './utils/constants/tokens';
 import { MakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/MakeCouponInactiveUseCase';
 import { IMakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
 import { IToggleShowInBannerUseCase } from './application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
@@ -49,6 +47,8 @@ import { ApplyCouponToBookingUseCase } from './application/use-case/bookService/
 import { IApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
 import { IRemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/IRemoveCoupon';
 import { RemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/RemoveCoupon';
+import { GetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWalletUseCase';
+import { IGetWalletUseCase } from './application/use-case/serviceProvider/wallet/IGetWalletUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -66,11 +66,13 @@ container.register<ISlotRepository>('ISlotRepository', {
   useClass: SlotRepository,
 });
 
-container.register<IProviderWalletRepository>('IProviderWalletRepository', {
+container.register<IProviderWalletRepository>(REPOSITORY_TOKENS.WalletRepository, {
   useClass: ProviderWalletRepository,
 });
 
-container.register<ICouponRepository>('ICouponRepository', { useClass: CouponRepository });
+container.register<ICouponRepository>(REPOSITORY_TOKENS.CouponRepository, {
+  useClass: CouponRepository,
+});
 
 container.registerSingleton('EmailOtpService', EmailOtpService);
 container.registerSingleton('OtpService', Otpservice);
@@ -118,4 +120,9 @@ container.register<IApplyCouponToBookingUseCase>(USE_CASE_TOKENS.ApplyCouponToBo
 
 container.register<IRemoveCouponToBookingUseCase>(USE_CASE_TOKENS.RemoveCouponToBookingUseCase, {
   useClass: RemoveCouponToBookingUseCase,
+});
+
+
+container.register<IGetWalletUseCase>(USE_CASE_TOKENS.GetWalletUseCase, {
+  useClass: GetWalletUseCase,
 });

@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { ICoupon } from "../../../../domain/entities/ICoupon";
+import {  IBannerCouponResponse, ICoupon } from "../../../../domain/entities/ICoupon";
 import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 import { ICouponRepository } from "../../../../domain/repositories/IcouponRepository";
 import { IFindFeaturedCouponsUseCase } from "./IFindFeaturedCouponsUseCase";
@@ -11,7 +11,7 @@ export class FindFeaturedCouponsUseCase implements IFindFeaturedCouponsUseCase {
     private couponRepository: ICouponRepository
   ) {}
 
-  async execute(): Promise<ICoupon[]> {
-    return await this.couponRepository.findFeaturedCoupons();
+  async execute(skip:number): Promise<IBannerCouponResponse> {
+    return await this.couponRepository.findFeaturedCoupons(skip);
   }
 }

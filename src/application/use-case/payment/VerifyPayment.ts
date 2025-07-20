@@ -6,6 +6,7 @@ import { ServiceBookingRepository } from '../../../infrastructure/repositories/S
 import { ServiceProviderRepository } from '../../../infrastructure/repositories/ServiceProviderRepository';
 import { IProviderWalletRepository } from '../../../domain/repositories/IproviderWallet';
 import { IWalletTransaction } from '../../../domain/entities/IproviderWallet';
+import { REPOSITORY_TOKENS } from '../../../utils/constants/tokens';
 @injectable()
 export class VerifyPaymentUseCase {
   constructor(
@@ -13,7 +14,7 @@ export class VerifyPaymentUseCase {
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository,
     @inject(ServiceProviderRepository) private serviceProviderRepository: ServiceProviderRepository,
-    @inject('IProviderWalletRepository') private walletRepository: IProviderWalletRepository
+    @inject(REPOSITORY_TOKENS.WalletRepository) private walletRepository: IProviderWalletRepository
   ) {}
 
   async execute(

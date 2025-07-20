@@ -16,3 +16,16 @@ export interface ICoupon {
   updatedAt?: Date;
   
 }
+
+
+export interface IBannerCoupon {
+  code: string;
+  description?: string;
+  discountValue: number;
+  validTo: Date;
+}
+
+export interface IBannerCouponResponse {
+  coupon: IBannerCoupon | null;
+  total: number;
+}

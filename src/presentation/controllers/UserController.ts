@@ -859,16 +859,15 @@ export class UserController {
     }
   };
 
-public findFeatureCoupons = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const data = await this.findFeatureCouponsUseCase.execute();
-    res.status(HttpStatus.OK).json(data);
-  } catch (error) {
-    console.error("Error fetching featured coupons:", error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
-  }
-};
- 
+  public findFeatureCoupons = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const skip = Number(req.query.skip) || 0;
 
-  
+      const data = await this.findFeatureCouponsUseCase.execute(skip);
+      res.status(HttpStatus.OK).json(data);
+    } catch (error) {
+      console.error('Error fetching featured coupons:', error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' });
+    }
+  };
 }
