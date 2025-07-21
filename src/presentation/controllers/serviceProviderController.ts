@@ -13,7 +13,7 @@ import { ManageAllServiceUseCase } from '../../application/use-case/admin/mangag
 import { checkServiceProviderAvailabilityUseCase } from '../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase';
 import { setAuthCookies } from '../../utils/setAuthCookies';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
-import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/IGetWalletUseCase';
+import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
 
 @injectable()
 export class ServiceProviderController {

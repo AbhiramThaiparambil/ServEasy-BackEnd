@@ -47,8 +47,10 @@ import { ApplyCouponToBookingUseCase } from './application/use-case/bookService/
 import { IApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
 import { IRemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/IRemoveCoupon';
 import { RemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/RemoveCoupon';
-import { GetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWalletUseCase';
-import { IGetWalletUseCase } from './application/use-case/serviceProvider/wallet/IGetWalletUseCase';
+import { GetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWallet/getWalletUseCase';
+import { IGetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
+import { IWithdrawPaymentUseCase } from './application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase';
+import { WithdrawPaymentUseCase } from './application/use-case/serviceProvider/wallet/withdrawPayment/WithdrawPaymentUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -126,3 +128,8 @@ container.register<IRemoveCouponToBookingUseCase>(USE_CASE_TOKENS.RemoveCouponTo
 container.register<IGetWalletUseCase>(USE_CASE_TOKENS.GetWalletUseCase, {
   useClass: GetWalletUseCase,
 });
+
+container.register<IWithdrawPaymentUseCase>(USE_CASE_TOKENS.WithdrawPaymentUseCase, {
+
+  useClass: WithdrawPaymentUseCase,}
+)
