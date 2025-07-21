@@ -6,7 +6,9 @@ export const USE_CASE_TOKENS = {
   FindFeaturedCouponsUseCase:'IFindFeaturedCouponsUseCase',
   ApplyCouponToBookingUseCase:"IApplyCouponToBookingUseCase",
   RemoveCouponToBookingUseCase:"IRemoveCouponToBookingUseCase",
-  GetWalletUseCase:"IGetWalletUseCase"
+  GetWalletUseCase:"IGetWalletUseCase",
+  WithdrawPaymentUseCase: "IWithdrawPaymentUseCase",
+  conformWithdrawPaymentUseCase: "IConformWithdrawPaymentUseCase",
 };
 
 export const REPOSITORY_TOKENS = {

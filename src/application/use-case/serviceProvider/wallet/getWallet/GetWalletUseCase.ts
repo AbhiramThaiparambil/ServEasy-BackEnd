@@ -1,8 +1,8 @@
 import { inject, injectable } from 'tsyringe';
-import { IProviderWalletRepository } from '../../../../domain/repositories/IproviderWallet';
-import { IProviderWallet } from '../../../../domain/entities/IproviderWallet';
+import { IProviderWalletRepository } from '../../../../../domain/repositories/IproviderWallet';
+import { IProviderWallet } from '../../../../../domain/entities/IproviderWallet';
 import { Types } from 'mongoose';
-import { REPOSITORY_TOKENS } from '../../../../utils/constants/tokens';
+import { REPOSITORY_TOKENS } from '../../../../../utils/constants/tokens';
 
 @injectable()
 export class GetWalletUseCase {
