@@ -36,6 +36,33 @@ async addTransaction(serviceProviderId: Types.ObjectId, transaction: IWalletTran
     return ProviderWalletModel.findOne({ serviceProviderId });
   }
 
+   async findProviderWalletWithPaginatedTransactions(serviceProviderId: Types.ObjectId, limit?: number, skip?: number): Promise<IProviderWallet | null> {
+  const result = await ProviderWalletModel.aggregate([
+    { $match: { serviceProviderId } },
+    {
+      $project: {
+        serviceProviderId: 1,
+        balance: 1,
+        transactions: {
+          $slice: [
+            {
+              $reverseArray: {
+                $sortArray: {
+                  input: "$transactions",
+                  sortBy: { date: -1 }
+                }
+              }
+            },
+            skip,
+            limit
+          ]
+        }
+      }
+    }
+  ]);
+
+  return result[0] || null;
+}
 // async findByProviderIdSorted(providerId: string | Types.ObjectId): Promise<IWalletTransaction[]> {
 //     const walletDoc = await ProviderWalletModel.findOne({ providerId }).lean();
 

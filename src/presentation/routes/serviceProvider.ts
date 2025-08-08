@@ -34,5 +34,6 @@ router.get('/availability/:serviceProviderId', (req, res) =>
 );
 
 router.get('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) => serviceController.getWallet(req, res) );
-  
+router.post('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) => serviceController.withdrawPayment(req, res) );
+
 export default router;
