@@ -1,5 +1,5 @@
 import { IProviderWallet } from "../../../../../domain/entities/IproviderWallet";
 
 export interface IGetWalletUseCase {
-  execute(serviceProviderId: string): Promise<IProviderWallet | null>;
+  execute(serviceProviderId: string,limit:number,skip:number,pagination:Boolean): Promise<IProviderWallet | null>;
 }

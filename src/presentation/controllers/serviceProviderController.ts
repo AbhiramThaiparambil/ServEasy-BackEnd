@@ -14,6 +14,7 @@ import { checkServiceProviderAvailabilityUseCase } from '../../application/use-c
 import { setAuthCookies } from '../../utils/setAuthCookies';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
+import { IWithdrawPaymentUseCase } from '../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -35,9 +36,11 @@ export class ServiceProviderController {
     private getCategoryUseCase: GetCategory,
 
     @inject(ManageAllServiceUseCase) private manageAllServiceUseCase: ManageAllServiceUseCase,
-    @inject(checkServiceProviderAvailabilityUseCase) private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
+    @inject(checkServiceProviderAvailabilityUseCase)
+    private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
     @inject(USE_CASE_TOKENS.GetWalletUseCase)
-    private getWalletUseCase: IGetWalletUseCase
+    private getWalletUseCase: IGetWalletUseCase,
+    @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase) private withdrawPaymentUseCase: IWithdrawPaymentUseCase,
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -165,8 +168,7 @@ export class ServiceProviderController {
         return;
       }
 
-   
-setAuthCookies(res,'serviceProviderToken',refreshToken)
+      setAuthCookies(res, 'serviceProviderToken', refreshToken);
       res.status(HttpStatus.OK).json({ message: 'Service provider verified' });
     } catch (error) {
       console.error('Error verifying service provider:', error);
@@ -251,30 +253,28 @@ setAuthCookies(res,'serviceProviderToken',refreshToken)
     }
   }
 
-// async rescheduleBookingHandler(req: Request, res: Response){
-//   try{
-//     const { bookingId, newDate } = req.body;
+  // async rescheduleBookingHandler(req: Request, res: Response){
+  //   try{
+  //     const { bookingId, newDate } = req.body;
 
-//     if (!bookingId || !newDate ) {
-//       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Booking ID, new date, and new time are required.' });
-//     }
+  //     if (!bookingId || !newDate ) {
+  //       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Booking ID, new date, and new time are required.' });
+  //     }
 
-//     const updatedBooking = await this.manageAllServiceUseCase.rescheduleBooking(bookingId, newDate);
+  //     const updatedBooking = await this.manageAllServiceUseCase.rescheduleBooking(bookingId, newDate);
 
-//     if (!updatedBooking) {
-//       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Booking not found or could not be rescheduled.' });
-//     }
+  //     if (!updatedBooking) {
+  //       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Booking not found or could not be rescheduled.' });
+  //     }
 
-//     res.status(HttpStatus.OK).json({ message: 'Booking rescheduled successfully.', booking: updatedBooking });      
+  //     res.status(HttpStatus.OK).json({ message: 'Booking rescheduled successfully.', booking: updatedBooking });
 
-//   } catch (error) {
-//     console.error('Error rescheduling booking:', error);
-//     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });  
+  //   } catch (error) {
+  //     console.error('Error rescheduling booking:', error);
+  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
 
-// }
-// }
-
-
+  // }
+  // }
 
   async getAvailability(req: Request, res: Response): Promise<void> {
     try {
@@ -285,7 +285,8 @@ setAuthCookies(res,'serviceProviderToken',refreshToken)
         return;
       }
 
-      const availability = await this.checkServiceProviderAvailabilityUseCase.execute(serviceProviderId);
+      const availability =
+        await this.checkServiceProviderAvailabilityUseCase.execute(serviceProviderId);
 
       res.status(HttpStatus.OK).json({ availability });
     } catch (error) {
@@ -294,19 +295,41 @@ setAuthCookies(res,'serviceProviderToken',refreshToken)
     }
   }
 
+  async getWallet(req: Request, res: Response) {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      console.log(req.query)
+                const limit = parseInt(req.query.limit as string) || 10;
+          const page = parseInt(req.query.page as string) || 0;
+           const skip = page * limit;
+const pagination = req.query.pagination === 'true';
 
+ 
 
- async getWallet (req: Request, res: Response){
-  try {
-    console.log("------------------------------")
-    const serviceProviderId = res.locals.serviceProvider_id;
-    console.log("Service Provider ID:", serviceProviderId);
-    const wallet = await this.getWalletUseCase.execute(serviceProviderId);
+      const wallet = await this.getWalletUseCase.execute(serviceProviderId,limit,skip,pagination);
 
-     res.status(HttpStatus.OK).json({ success: true, data: wallet });
+      res.status(HttpStatus.OK).json({ success: true, data: wallet });
     } catch (error: any) {
-     res.status(HttpStatus.OK).json({ success: false, message: error.message });
+      res.status(HttpStatus.OK).json({ success: false, message: error.message });
+    }
   }
 
- }
-}
+
+  withdrawPayment = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const { amount } = req.body;
+
+      if (!amount || !serviceProviderId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Amount and Service Provider ID are required' });
+        return;
+      }
+      const result = await this.withdrawPaymentUseCase.execute(serviceProviderId, amount)
+
+
+      res.status(HttpStatus.OK).json({ success: true, data: result });
+    } catch (error: any) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+    }
+  }
+  }

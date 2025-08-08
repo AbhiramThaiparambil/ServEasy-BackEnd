@@ -11,8 +11,8 @@ export class GetWalletUseCase {
     private walletRepository: IProviderWalletRepository
   ) {}
 
-  async execute(serviceProviderId: string): Promise<IProviderWallet| null> {
-    return   await this.walletRepository.findByProviderId(new Types.ObjectId(serviceProviderId));
+  async execute(serviceProviderId: string,limit:number,skip:number,pagination:Boolean): Promise<IProviderWallet| null> {
+    return   await this.walletRepository.findProviderWalletWithPaginatedTransactions(new Types.ObjectId(serviceProviderId),limit,skip);
 
   }
 }

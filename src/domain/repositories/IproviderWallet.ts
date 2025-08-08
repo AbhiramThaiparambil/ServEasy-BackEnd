@@ -7,6 +7,8 @@ export interface IProviderWalletRepository {
   addTransaction(providerId: Types.ObjectId, transaction: IWalletTransaction): Promise<IProviderWallet>;
   
   findByProviderId(providerId: Types.ObjectId): Promise<IProviderWallet | null>;
+    findProviderWalletWithPaginatedTransactions(providerId: Types.ObjectId,limit:number,skip:number): Promise<IProviderWallet | null>;
+
   findAll(): Promise<IProviderWallet[]>;
 
 //   findByProviderIdSorted(providerId: string): Promise<IWalletTransaction[]>;
