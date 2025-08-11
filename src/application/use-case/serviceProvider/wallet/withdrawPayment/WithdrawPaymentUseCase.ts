@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe"
-import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWallet"
+import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository"
 import { REPOSITORY_TOKENS } from "../../../../../utils/constants/tokens"
 import {IWithdrawPaymentUseCase} from "./IWithdrawPaymentUseCase"
 import { Types } from "mongoose"

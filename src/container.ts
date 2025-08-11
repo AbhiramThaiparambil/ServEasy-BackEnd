@@ -29,7 +29,7 @@ import { ISlotRepository } from './domain/repositories/ISlotRepository';
 import { SlotRepository } from './infrastructure/repositories/SlotRepository';
 import { SocketService } from './services/socket/SocketService';
 import { ProviderWalletRepository } from './infrastructure/repositories/providerWalletRepository';
-import { IProviderWalletRepository } from './domain/repositories/IproviderWallet';
+import { IProviderWalletRepository } from './domain/repositories/IproviderWalletRepository';
 import { ICouponRepository } from './domain/repositories/IcouponRepository';
 import { CouponRepository } from './infrastructure/repositories/couponRepository';
 import { ICreateCouponUseCase } from './application/use-case/coupon/createCoupon/ICreateCouponUseCase';
@@ -47,10 +47,12 @@ import { ApplyCouponToBookingUseCase } from './application/use-case/bookService/
 import { IApplyCouponToBookingUseCase } from './application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
 import { IRemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/IRemoveCoupon';
 import { RemoveCouponToBookingUseCase } from './application/use-case/bookService/coupons/RemoveCoupon';
-import { GetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWallet/getWalletUseCase';
+import { GetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWallet/GetWalletUseCase';
 import { IGetWalletUseCase } from './application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
 import { IWithdrawPaymentUseCase } from './application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase';
 import { WithdrawPaymentUseCase } from './application/use-case/serviceProvider/wallet/withdrawPayment/WithdrawPaymentUseCase';
+import { IGetAllProvidersWalletsUseCase } from './application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
+import { GetAllProvidersWallets } from './application/use-case/admin/wallet/getWallet/GetAllProvidersWallets.usecase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -133,3 +135,10 @@ container.register<IWithdrawPaymentUseCase>(USE_CASE_TOKENS.WithdrawPaymentUseCa
 
   useClass: WithdrawPaymentUseCase,}
 )
+
+container.register<IGetAllProvidersWalletsUseCase>(USE_CASE_TOKENS.GetAllProvidersWallets,{useClass:GetAllProvidersWallets})
+
+
+
+ 
+

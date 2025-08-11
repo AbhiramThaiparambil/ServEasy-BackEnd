@@ -1,5 +1,5 @@
 import { IWalletUseCase } from './IWalletUseCase';
-import { IProviderWalletRepository } from '../../../../domain/repositories/IproviderWallet'; 
+import { IProviderWalletRepository } from '../../../../domain/repositories/IproviderWalletRepository'; 
 import { inject, injectable } from 'tsyringe';
 import { IProviderWallet, IWalletTransaction } from '../../../../domain/entities/IproviderWallet';
 import { Types } from 'mongoose';
