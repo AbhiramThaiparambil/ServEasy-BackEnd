@@ -29,6 +29,7 @@ import { IFindAllActiveCouponsUseCase } from '../../application/use-case/coupon/
 import { IFindAllCouponsUseCase } from '../../application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
 import { IMakeCouponInactiveUseCase } from '../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
 import { IToggleShowInBannerUseCase } from '../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
+import { IGetAllProvidersWalletsUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
 
 @injectable()
 export class AdminController {
@@ -73,6 +74,7 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.FindAllCouponsUseCase) private findAllCouponsUseCase:IFindAllCouponsUseCase,
     @inject(USE_CASE_TOKENS.MakeCouponInactiveUseCase) private makeActiveInActiveCouponUseCase:IMakeCouponInactiveUseCase,
     @inject(USE_CASE_TOKENS.CouponshowInBanner) private showInBannerUseCase :IToggleShowInBannerUseCase,
+    @inject(USE_CASE_TOKENS.GetAllProvidersWallets) private getWallet:IGetAllProvidersWalletsUseCase
 ) {}
 
   async signIn(req: Request, res: Response) {
@@ -695,6 +697,23 @@ public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error("Error toggling coupon banner status:", error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+  }
+}
+
+
+public async getAllWallets (req:Request,res:Response):Promise<void>{
+  try{
+          const limit = parseInt(req.query.limit as string) || 10;
+      const page = parseInt(req.query.page as string) || 0;
+      const skip = page * limit;
+    const data=await this.getWallet.execute(skip,limit)
+    console.log(data)
+      res.status(HttpStatus.OK).json({data})
+       
+
+
+  }catch{
+
   }
 }
 

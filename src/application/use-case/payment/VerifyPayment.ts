@@ -4,7 +4,7 @@ import { RazorpayService } from '../../../services/razorpayService';
 import { ServiceRepository } from '../../../infrastructure/repositories/ServiceRepositorie';
 import { ServiceBookingRepository } from '../../../infrastructure/repositories/ServiceBookingRepository';
 import { ServiceProviderRepository } from '../../../infrastructure/repositories/ServiceProviderRepository';
-import { IProviderWalletRepository } from '../../../domain/repositories/IproviderWallet';
+import { IProviderWalletRepository } from '../../../domain/repositories/IproviderWalletRepository';
 import { IWalletTransaction } from '../../../domain/entities/IproviderWallet';
 import { REPOSITORY_TOKENS } from '../../../utils/constants/tokens';
 @injectable()

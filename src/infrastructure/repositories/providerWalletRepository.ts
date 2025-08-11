@@ -1,7 +1,8 @@
 import { Types } from "mongoose";
 import { IProviderWallet, IWalletTransaction } from "../../domain/entities/IproviderWallet";
-import { IProviderWalletRepository } from "../../domain/repositories/IproviderWallet";
+import { IProviderWalletRepository } from "../../domain/repositories/IproviderWalletRepository";
 import { ProviderWalletModel } from "../models/providerWallet";
+import { IProviderWalletView } from "../../utils/types/dto/IProviderWalletView";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
 
@@ -63,6 +64,9 @@ async addTransaction(serviceProviderId: Types.ObjectId, transaction: IWalletTran
 
   return result[0] || null;
 }
+findAll(): Promise<IProviderWallet[]> {
+  return ProviderWalletModel.find()
+}
 // async findByProviderIdSorted(providerId: string | Types.ObjectId): Promise<IWalletTransaction[]> {
 //     const walletDoc = await ProviderWalletModel.findOne({ providerId }).lean();
 
@@ -83,10 +87,102 @@ async addTransaction(serviceProviderId: Types.ObjectId, transaction: IWalletTran
 //     return sorted;
 //   }
 
-  async findAll(): Promise<IProviderWallet[]> {
-    return ProviderWalletModel.find();
-  }
+//   async findAll(): Promise<IProviderWallet[]> {
 
+//     // return ProviderWalletModel.find()
+//     return ProviderWalletModel.aggregate([
+//   // Add a field for the most recent transaction date in each wallet
+//   {
+//     $addFields: {
+//       lastTransactionDate: {
+//         $max: "$transactions.date"
+//       }
+//     }
+//   },
+//   // Sort wallets based on the latest transaction date (descending)
+//   {
+//     $sort: { lastTransactionDate: -1 }
+//   }
+// ]);
+//   }
+
+
+
+async findPaginatedProviderWallets(skip: number, limit: number): Promise<IProviderWalletView[]> {
+  const data = await ProviderWalletModel.aggregate([
+    {
+      $addFields: {
+        lastTransactionDate: { $max: "$transactions.date" }
+      }
+    },
+    { $sort: { lastTransactionDate: -1 } },
+
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "serviceProviderId",
+        foreignField: "_id",
+        as: "serviceProvider"
+      }
+    },
+    { $unwind: "$serviceProvider" },
+
+    {
+      $addFields: {
+        pending: {
+          $anyElementTrue: {
+            $map: {
+              input: "$transactions",
+              as: "txn",
+              in: {
+                $and: [
+                  { $eq: ["$$txn.type", "debit"] },
+                  { $eq: ["$$txn.status", "pending"] }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    {
+      $project: {
+        _id: 0,
+        profileImage: "$serviceProvider.profileImage",
+        serviceProviderName: "$serviceProvider.serviceProviderName",
+        serviceProviderEmail: "$serviceProvider.serviceProviderEmail",
+        serviceProviderPhone: "$serviceProvider.serviceProviderPhone",
+        description: "$serviceProvider.description",
+        experience: "$serviceProvider.experience",
+        wallet: {
+          balance: "$balance",
+          pending: "$pending" 
+        }
+      }
+    },
+
+    { $skip: skip },
+    { $limit: limit }
+  ]);
+
+  return data;
+}
+
+
+  
+
+  // {  _id: '6842b93c7b8517522821206d',
+  //     profileImage: 'https://randomuser.me/api/portraits/men/32.jpg',
+  //     serviceProviderName: 'Arjun Kumar',
+  //     serviceProviderEmail: 'arjun.kumar@example.com',
+  //     serviceProviderPhone: '+91 9876543210',
+  //     description: 'Experienced electrician specializing in home wiring and appliance repair.',
+  //     experience: '5 years',
+  //     wallet: { balance: 4500 },
+  //   }
+
+  
 // async findAllSorted(): Promise<IWalletTransaction[]> {
 //   const wallets = await ProviderWalletModel.find();
 //   const allTx: IWalletTransaction[] = wallets.flatMap(w =>
@@ -118,6 +214,11 @@ async addTransaction(serviceProviderId: Types.ObjectId, transaction: IWalletTran
   //     .filter(tx => tx.type === 'credit')
   //     .reduce((sum, tx) => sum + tx.amount, 0);
   // }
+
+
+
+
+
 
   
 }
