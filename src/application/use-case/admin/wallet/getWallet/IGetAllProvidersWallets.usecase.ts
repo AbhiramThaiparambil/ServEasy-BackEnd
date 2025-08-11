@@ -1,4 +1,6 @@
+import { IProviderWalletView } from "../../../../../utils/types/dto/IProviderWalletView";
+
 export interface IGetAllProvidersWalletsUseCase{
 
-    execute():Promise<void>
+    execute(skip:number,limit:number):Promise<IProviderWalletView[]>
 }
