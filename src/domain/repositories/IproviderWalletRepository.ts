@@ -22,6 +22,31 @@ export interface IProviderWalletRepository {
   findPaginatedProviderWallets(skip: number, limit: number): Promise<IProviderWalletView[]>;
   findProviderWalletByid(id: string): Promise<IProviderWalletDetailsView>;
 
+  updateTransactionStatus(
+    walletId: string,
+    transactionId: string,
+    newStatus: 'success' | 'rejected'
+  ): Promise<boolean>;
+
+  findByTransactionId(walletId: string, transactionId: string): Promise<IWalletTransaction | null>;
+
+  updateTransactionRejectionReason(
+    walletId: string,
+    transactionId: string,
+    rejectionReason: string
+  ): Promise<boolean>;
+
+  rejectWithdrawAndRevertBalance(
+    walletId: string,
+    transaction: IWalletTransaction,
+    rejectionReason: string
+  ): Promise<boolean>;
+
+  addTransactionWithWalletId(
+    walletId: Types.ObjectId,
+    transaction: IWalletTransaction
+  ): Promise<IProviderWallet>;
+
   //   findByProviderIdSorted(providerId: string): Promise<IWalletTransaction[]>;
   //   findAllSorted(): Promise<IWalletTransaction[]>;
 

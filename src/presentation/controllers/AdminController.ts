@@ -25,13 +25,12 @@ import fs from 'fs';
 import { setAuthCookies } from '../../utils/setAuthCookies';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { ICreateCouponUseCase } from '../../application/use-case/coupon/createCoupon/ICreateCouponUseCase';
-import { IFindAllActiveCouponsUseCase } from '../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCouponsUseCase';
 import { IFindAllCouponsUseCase } from '../../application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
 import { IMakeCouponInactiveUseCase } from '../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
 import { IToggleShowInBannerUseCase } from '../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
 import { IGetAllProvidersWalletsUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
-import { tryCatch } from 'bullmq';
 import { IGetProviderWalletUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetProviderWalletById.usecase';
+import { IWithdrawFromProviderWalletUseCase } from '../../application/use-case/admin/wallet/IWithdrawFromProviderWallet.usecase';
 
 @injectable()
 export class AdminController {
@@ -82,7 +81,9 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.GetAllProvidersWallets)
     private getWalletUseCase: IGetAllProvidersWalletsUseCase,
     @inject(USE_CASE_TOKENS.GetProviderWalletByIdUseCase)
-    private getWalletByIdUseCase: IGetProviderWalletUseCase
+    private getWalletByIdUseCase: IGetProviderWalletUseCase,
+    @inject(USE_CASE_TOKENS.WithdrawFromProviderWalletUseCase)
+    private withDrawProviderWallet: IWithdrawFromProviderWalletUseCase
   ) {}
 
   async signIn(req: Request, res: Response) {
@@ -718,14 +719,43 @@ export class AdminController {
 
   public async getWalletById(req: Request, res: Response): Promise<void> {
     try {
-      const {id}=req.params
+      const { id } = req.params;
 
-      if(!id){
-        res.status(HttpStatus.BAD_REQUEST).json({message:"provider Id is missing" })
-      return;
+      if (!id) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'provider Id is missing' });
+        return;
       }
-     const data=await this.getWalletByIdUseCase.execute(id);
-     res.status(HttpStatus.OK).json(data)
+      const data = await this.getWalletByIdUseCase.execute(id);
+      res.status(HttpStatus.OK).json(data);
     } catch {}
+  }
+
+  async withdrawFromWallet(req: Request, res: Response): Promise<void> {
+    try {
+      const { transactionId, newStatus,reason} = req.body;
+      const { walletId } = req.params;
+
+      if (!walletId || !transactionId || !newStatus) {
+        res.status(400).json({ success: false, message: 'Missing required fields' });
+        return;
+      }
+
+      const success = await this.withDrawProviderWallet.execute({
+         walletId,
+        transactionId,
+        newStatus,
+        reason
+      });
+
+      if (!success) {
+        res.status(404).json({ success: false, message: 'Transaction not found or not updated' });
+        return;
+      }
+
+      res.status(200).json({ success: true, message: 'Transaction status updated successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    }
   }
 }
