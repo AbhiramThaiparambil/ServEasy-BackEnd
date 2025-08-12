@@ -3,6 +3,7 @@ import { IProviderWallet, IWalletTransaction } from "../../domain/entities/Iprov
 import { IProviderWalletRepository } from "../../domain/repositories/IproviderWalletRepository";
 import { ProviderWalletModel } from "../models/providerWallet";
 import { IProviderWalletView } from "../../utils/types/dto/IProviderWalletView";
+import { IProviderWalletDetailsView } from "../../utils/types/dto/IProviderWalletDetailsView";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
 
@@ -148,7 +149,7 @@ async findPaginatedProviderWallets(skip: number, limit: number): Promise<IProvid
 
     {
       $project: {
-        _id: 0,
+        _id: 1,
         profileImage: "$serviceProvider.profileImage",
         serviceProviderName: "$serviceProvider.serviceProviderName",
         serviceProviderEmail: "$serviceProvider.serviceProviderEmail",
@@ -169,6 +170,124 @@ async findPaginatedProviderWallets(skip: number, limit: number): Promise<IProvid
   return data;
 }
 
+
+
+
+
+
+
+async findProviderWalletByid(id: string): Promise<IProviderWalletDetailsView > {
+  const data = await ProviderWalletModel.aggregate([
+    {
+      $match: { _id: new Types.ObjectId(id) }
+    },
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "serviceProviderId",
+        foreignField: "_id",
+        as: "serviceProvider"
+      }
+    },
+    { $unwind: "$serviceProvider" },
+
+    // Sort transactions by date DESC
+    {
+      $addFields: {
+        transactions: {
+          $sortArray: { input: "$transactions", sortBy: { date: -1 } }
+        }
+      }
+    },
+
+    // Separate credit and debit transactions
+    {
+      $addFields: {
+        creditTransactions: {
+          $filter: {
+            input: "$transactions",
+            as: "t",
+            cond: { $eq: ["$$t.type", "credit"] }
+          }
+        },
+        debitTransactions: {
+          $filter: {
+            input: "$transactions",
+            as: "t",
+            cond: { $eq: ["$$t.type", "debit"] }
+          }
+        }
+      }
+    },
+
+    // Calculate totals
+    {
+      $addFields: {
+        totalPendingDebit: {
+          $sum: {
+            $map: {
+              input: {
+                $filter: {
+                  input: "$transactions",
+                  as: "t",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$t.type", "debit"] },
+                      { $ne: ["$$t.status", "success"] }
+                    ]
+                  }
+                }
+              },
+              as: "pendingDebit",
+              in: "$$pendingDebit.amount"
+            }
+          }
+        },
+        totalSuccessDebit: {
+          $sum: {
+            $map: {
+              input: {
+                $filter: {
+                  input: "$transactions",
+                  as: "t",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$t.type", "debit"] },
+                      { $eq: ["$$t.status", "success"] }
+                    ]
+                  }
+                }
+              },
+              as: "successDebit",
+              in: "$$successDebit.amount"
+            }
+          }
+        }
+      }
+    },
+
+    // Final projection
+    {
+      $project: {
+        _id: 1,
+        balance: 1,
+        creditTransactions: 1,
+        debitTransactions: 1,
+        totalPendingDebit: 1,
+        totalSuccessDebit: 1,
+        "serviceProvider.profileImage": 1,
+        "serviceProvider.serviceProviderName": 1,
+        "serviceProvider.serviceProviderEmail": 1,
+        "serviceProvider.serviceProviderPhone": 1,
+        "serviceProvider.description": 1,
+        "serviceProvider.experience": 1,
+        "serviceProvider.bankDetails": 1
+      }
+    }
+  ]);
+
+  return data[0]??null
+}
 
   
 

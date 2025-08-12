@@ -30,6 +30,8 @@ import { IFindAllCouponsUseCase } from '../../application/use-case/coupon/findAl
 import { IMakeCouponInactiveUseCase } from '../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
 import { IToggleShowInBannerUseCase } from '../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
 import { IGetAllProvidersWalletsUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
+import { tryCatch } from 'bullmq';
+import { IGetProviderWalletUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetProviderWalletById.usecase';
 
 @injectable()
 export class AdminController {
@@ -71,11 +73,17 @@ export class AdminController {
     @inject(DeleteService)
     private deleteServiceUseCase: DeleteService,
     @inject(USE_CASE_TOKENS.CreateCouponUseCase) private createCouponUseCase: ICreateCouponUseCase,
-    @inject(USE_CASE_TOKENS.FindAllCouponsUseCase) private findAllCouponsUseCase:IFindAllCouponsUseCase,
-    @inject(USE_CASE_TOKENS.MakeCouponInactiveUseCase) private makeActiveInActiveCouponUseCase:IMakeCouponInactiveUseCase,
-    @inject(USE_CASE_TOKENS.CouponshowInBanner) private showInBannerUseCase :IToggleShowInBannerUseCase,
-    @inject(USE_CASE_TOKENS.GetAllProvidersWallets) private getWallet:IGetAllProvidersWalletsUseCase
-) {}
+    @inject(USE_CASE_TOKENS.FindAllCouponsUseCase)
+    private findAllCouponsUseCase: IFindAllCouponsUseCase,
+    @inject(USE_CASE_TOKENS.MakeCouponInactiveUseCase)
+    private makeActiveInActiveCouponUseCase: IMakeCouponInactiveUseCase,
+    @inject(USE_CASE_TOKENS.CouponshowInBanner)
+    private showInBannerUseCase: IToggleShowInBannerUseCase,
+    @inject(USE_CASE_TOKENS.GetAllProvidersWallets)
+    private getWalletUseCase: IGetAllProvidersWalletsUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderWalletByIdUseCase)
+    private getWalletByIdUseCase: IGetProviderWalletUseCase
+  ) {}
 
   async signIn(req: Request, res: Response) {
     try {
@@ -353,7 +361,6 @@ export class AdminController {
     }
   }
 
-  
   async getAllServices(req: Request, res: Response): Promise<void> {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -629,92 +636,96 @@ export class AdminController {
     return;
   }
 
-
   public async createCoupon(req: Request, res: Response) {
     try {
       const { data } = req.body;
-      console.log(data)
+      console.log(data);
       if (!data) {
         res.status(HttpStatus.BAD_REQUEST);
-        return
+        return;
       }
 
-      const resdata=await this.createCouponUseCase.execute(data);
- console.log(resdata)
+      const resdata = await this.createCouponUseCase.execute(data);
+      console.log(resdata);
       res.status(HttpStatus.CREATED);
       return;
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 
   public async getAllCoupon(req: Request, res: Response) {
     try {
-     
-
-      const coupons=await this.findAllCouponsUseCase.execute()
+      const coupons = await this.findAllCouponsUseCase.execute();
       res.status(HttpStatus.CREATED).json(coupons);
       return;
     } catch (e) {
-      console.log(e)
-     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-
+      console.log(e);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
   }
-public async activeInActiveCoupons(req: Request, res: Response): Promise<void> {
-  try {
-    const id = req.params.id;
-    const action: boolean = req.body.action;
-   if(!id){
-    res.status(HttpStatus.BAD_REQUEST)
-    return
-   }
-
-    await this.makeActiveInActiveCouponUseCase.execute(id,action);
-
-    res.status(HttpStatus.OK).json({ message: `Coupon ${action ? 'activated' : 'deactivated'} successfully` });
-  } catch (error) {
-    console.error("Error toggling coupon status:", error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
-  }
-}
-
-public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
-  try {
-    const id = req.params.id;
-    const action: boolean = req.body.action;
-
-    if (!id) {
-       res.status(HttpStatus.BAD_REQUEST).json({ message: "Coupon ID is required" });
-    return
+  public async activeInActiveCoupons(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id;
+      const action: boolean = req.body.action;
+      if (!id) {
+        res.status(HttpStatus.BAD_REQUEST);
+        return;
       }
 
-    await this.showInBannerUseCase.execute(id, action);
+      await this.makeActiveInActiveCouponUseCase.execute(id, action);
 
-    res
-      .status(HttpStatus.OK)
-      .json({ message: `Coupon ${action ? "shown in" : "removed from"} banner successfully` });
-  } catch (error) {
-    console.error("Error toggling coupon banner status:", error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+      res
+        .status(HttpStatus.OK)
+        .json({ message: `Coupon ${action ? 'activated' : 'deactivated'} successfully` });
+    } catch (error) {
+      console.error('Error toggling coupon status:', error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' });
+    }
   }
-}
 
+  public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id;
+      const action: boolean = req.body.action;
 
-public async getAllWallets (req:Request,res:Response):Promise<void>{
-  try{
-          const limit = parseInt(req.query.limit as string) || 10;
+      if (!id) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Coupon ID is required' });
+        return;
+      }
+
+      await this.showInBannerUseCase.execute(id, action);
+
+      res
+        .status(HttpStatus.OK)
+        .json({ message: `Coupon ${action ? 'shown in' : 'removed from'} banner successfully` });
+    } catch (error) {
+      console.error('Error toggling coupon banner status:', error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' });
+    }
+  }
+
+  public async getAllWallets(req: Request, res: Response): Promise<void> {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-    const data=await this.getWallet.execute(skip,limit)
-    console.log(data)
-      res.status(HttpStatus.OK).json({data})
-       
-
-
-  }catch{
-
+      const data = await this.getWalletUseCase.execute(skip, limit);
+      console.log(data);
+      res.status(HttpStatus.OK).json({ data });
+    } catch {}
   }
-}
 
+  public async getWalletById(req: Request, res: Response): Promise<void> {
+    try {
+      const {id}=req.params
+
+      if(!id){
+        res.status(HttpStatus.BAD_REQUEST).json({message:"provider Id is missing" })
+      return;
+      }
+     const data=await this.getWalletByIdUseCase.execute(id);
+     res.status(HttpStatus.OK).json(data)
+    } catch {}
+  }
 }

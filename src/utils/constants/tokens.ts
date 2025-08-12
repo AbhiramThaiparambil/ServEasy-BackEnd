@@ -9,7 +9,8 @@ export const USE_CASE_TOKENS = {
   GetWalletUseCase:"IGetWalletUseCase",
   WithdrawPaymentUseCase: "IWithdrawPaymentUseCase",
   conformWithdrawPaymentUseCase: "IConformWithdrawPaymentUseCase",
-  GetAllProvidersWallets:"IGetAllProvidersWallets"
+  GetAllProvidersWallets:"IGetAllProvidersWallets",
+  GetProviderWalletByIdUseCase:"IGetProviderWalletUseCase"
 };
 
 export const REPOSITORY_TOKENS = {

@@ -53,6 +53,8 @@ import { IWithdrawPaymentUseCase } from './application/use-case/serviceProvider/
 import { WithdrawPaymentUseCase } from './application/use-case/serviceProvider/wallet/withdrawPayment/WithdrawPaymentUseCase';
 import { IGetAllProvidersWalletsUseCase } from './application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
 import { GetAllProvidersWallets } from './application/use-case/admin/wallet/getWallet/GetAllProvidersWallets.usecase';
+import { GetProviderWalletUseCase } from './application/use-case/admin/wallet/getWallet/GetProviderWalletById.usecase';
+import { IGetProviderWalletUseCase } from './application/use-case/admin/wallet/getWallet/IGetProviderWalletById.usecase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -138,7 +140,7 @@ container.register<IWithdrawPaymentUseCase>(USE_CASE_TOKENS.WithdrawPaymentUseCa
 
 container.register<IGetAllProvidersWalletsUseCase>(USE_CASE_TOKENS.GetAllProvidersWallets,{useClass:GetAllProvidersWallets})
 
-
+container.register<IGetProviderWalletUseCase>(USE_CASE_TOKENS.GetProviderWalletByIdUseCase,{useClass:GetProviderWalletUseCase})
 
  
 
