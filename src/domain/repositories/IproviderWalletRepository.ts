@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { IProviderWallet, IWalletTransaction } from '../entities/IproviderWallet';
 import { IProviderWalletView } from '../../utils/types/dto/IProviderWalletView';
+import { IProviderWalletDetailsView } from '../../utils/types/dto/IProviderWalletDetailsView';
 
 // interface/db/IProviderWalletRepository.ts
 export interface IProviderWalletRepository {
@@ -19,6 +20,7 @@ export interface IProviderWalletRepository {
 
   findAll(): Promise<IProviderWallet[]>;
   findPaginatedProviderWallets(skip: number, limit: number): Promise<IProviderWalletView[]>;
+  findProviderWalletByid(id: string): Promise<IProviderWalletDetailsView>;
 
   //   findByProviderIdSorted(providerId: string): Promise<IWalletTransaction[]>;
   //   findAllSorted(): Promise<IWalletTransaction[]>;

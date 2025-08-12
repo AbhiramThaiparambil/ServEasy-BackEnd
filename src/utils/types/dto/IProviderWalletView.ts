@@ -1,4 +1,5 @@
 export interface IProviderWalletView {
+ _id:string;
   profileImage: string;
   serviceProviderName: string;
   serviceProviderEmail: string;

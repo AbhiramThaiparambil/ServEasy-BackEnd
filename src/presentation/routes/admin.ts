@@ -90,5 +90,5 @@ router.get('/coupons',(req, res) => adminController.getAllCoupon(req, res))
 router.patch('/coupons/:id/deactivate',(req, res) => adminController.activeInActiveCoupons(req, res))
 router.patch('/coupons/:id/banner',(req, res) => adminController.showCouponsInBanner(req, res))
 router.get('/wallets',(req, res) => adminController.getAllWallets(req, res))
-router.get('wallets:/id')
+router.get('/wallets/:id', (req, res) => adminController.getWalletById(req, res));
 export default router;
