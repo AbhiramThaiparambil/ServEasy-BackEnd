@@ -1,9 +1,12 @@
-import { inject, injectable } from "tsyringe";
-import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
-import { REPOSITORY_TOKENS } from "../../../../../utils/constants/tokens";
-import { IWithdrawPaymentUseCase } from "./IWithdrawPaymentUseCase";
-import { Types } from "mongoose";
-import { IProviderWallet, IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
+import { inject, injectable } from 'tsyringe';
+import { IProviderWalletRepository } from '../../../../../domain/repositories/IproviderWalletRepository';
+import { REPOSITORY_TOKENS } from '../../../../../utils/constants/tokens';
+import { IWithdrawPaymentUseCase } from './IWithdrawPaymentUseCase';
+import { Types } from 'mongoose';
+import {
+  IProviderWallet,
+  IWalletTransaction,
+} from '../../../../../domain/entities/IproviderWallet';
 
 @injectable()
 export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
@@ -19,17 +22,17 @@ export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
     const wallet = await this.walletRepository.findByProviderId(serviceProviderId);
 
     if (!wallet) {
-      throw new Error("Wallet not found");
+      throw new Error('Wallet not found');
     }
 
     if (wallet.balance < amount) {
-      throw new Error("Debit amount greater than balance");
+      throw new Error('Debit amount greater than balance');
     }
 
     const transaction: IWalletTransaction = {
       amount,
-      type: "debit",
-      status: "pending",
+      type: 'debit',
+      status: 'pending',
       date: new Date(),
     };
 

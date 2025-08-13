@@ -40,7 +40,8 @@ export class ServiceProviderController {
     private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
     @inject(USE_CASE_TOKENS.GetWalletUseCase)
     private getWalletUseCase: IGetWalletUseCase,
-    @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase) private withdrawPaymentUseCase: IWithdrawPaymentUseCase,
+    @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase)
+    private withdrawPaymentUseCase: IWithdrawPaymentUseCase
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -298,22 +299,25 @@ export class ServiceProviderController {
   async getWallet(req: Request, res: Response) {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
-      console.log(req.query)
-                const limit = parseInt(req.query.limit as string) || 10;
-          const page = parseInt(req.query.page as string) || 0;
-           const skip = page * limit;
-const pagination = req.query.pagination === 'true';
+      console.log(req.query);
+      const limit = parseInt(req.query.limit as string) || 10;
+      const page = parseInt(req.query.skip as string) || 0;
+      const skip = page * limit;
 
- 
-
-      const wallet = await this.getWalletUseCase.execute(serviceProviderId,limit,skip,pagination);
-
-      res.status(HttpStatus.OK).json({ success: true, data: wallet });
+      const data= await this.getWalletUseCase.execute(
+        serviceProviderId,
+        limit,
+        skip,
+        
+      );
+if(!data){
+res.status(HttpStatus.BAD_REQUEST)
+}
+      res.status(HttpStatus.OK).json({ success: true, data: data?.wallet,count:data?.count });
     } catch (error: any) {
       res.status(HttpStatus.OK).json({ success: false, message: error.message });
     }
   }
-
 
   withdrawPayment = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -321,15 +325,16 @@ const pagination = req.query.pagination === 'true';
       const { amount } = req.body;
 
       if (!amount || !serviceProviderId) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Amount and Service Provider ID are required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: 'Amount and Service Provider ID are required' });
         return;
       }
-      const result = await this.withdrawPaymentUseCase.execute(serviceProviderId, amount)
-
+      const result = await this.withdrawPaymentUseCase.execute(serviceProviderId, amount);
 
       res.status(HttpStatus.OK).json({ success: true, data: result });
     } catch (error: any) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
     }
-  }
-  }
+  };
+}

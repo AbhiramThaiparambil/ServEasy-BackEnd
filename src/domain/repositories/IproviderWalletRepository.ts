@@ -46,6 +46,7 @@ export interface IProviderWalletRepository {
     walletId: Types.ObjectId,
     transaction: IWalletTransaction
   ): Promise<IProviderWallet>;
+   findCountOfTransactions(serviceProviderId: string): Promise<number> 
 
   //   findByProviderIdSorted(providerId: string): Promise<IWalletTransaction[]>;
   //   findAllSorted(): Promise<IWalletTransaction[]>;
