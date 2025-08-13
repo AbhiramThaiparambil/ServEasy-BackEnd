@@ -76,7 +76,7 @@ container.register<ISlotRepository>('ISlotRepository', {
   useClass: SlotRepository,
 });
 
-container.register<ISubscriptionPlanRepository>('ISubscriptionPlanRepository', {
+container.register<ISubscriptionPlanRepository>(REPOSITORY_TOKENS.SubscriptionRepository, {
   useClass: SubscriptionPlanRepository,
 });
 
@@ -136,19 +136,23 @@ container.register<IRemoveCouponToBookingUseCase>(USE_CASE_TOKENS.RemoveCouponTo
   useClass: RemoveCouponToBookingUseCase,
 });
 
-
 container.register<IGetWalletUseCase>(USE_CASE_TOKENS.GetWalletUseCase, {
   useClass: GetWalletUseCase,
 });
 
 container.register<IWithdrawPaymentUseCase>(USE_CASE_TOKENS.WithdrawPaymentUseCase, {
+  useClass: WithdrawPaymentUseCase,
+});
 
-  useClass: WithdrawPaymentUseCase,}
-)
+container.register<IGetAllProvidersWalletsUseCase>(USE_CASE_TOKENS.GetAllProvidersWallets, {
+  useClass: GetAllProvidersWallets,
+});
 
-container.register<IGetAllProvidersWalletsUseCase>(USE_CASE_TOKENS.GetAllProvidersWallets,{useClass:GetAllProvidersWallets})
+container.register<IGetProviderWalletUseCase>(USE_CASE_TOKENS.GetProviderWalletByIdUseCase, {
+  useClass: GetProviderWalletUseCase,
+});
 
-container.register<IGetProviderWalletUseCase>(USE_CASE_TOKENS.GetProviderWalletByIdUseCase,{useClass:GetProviderWalletUseCase})
-
- container.register<IWithdrawFromProviderWalletUseCase>(USE_CASE_TOKENS.WithdrawFromProviderWalletUseCase,{useClass:WithdrawFromProviderWalletUseCase})
-
+container.register<IWithdrawFromProviderWalletUseCase>(
+  USE_CASE_TOKENS.WithdrawFromProviderWalletUseCase,
+  { useClass: WithdrawFromProviderWalletUseCase }
+);

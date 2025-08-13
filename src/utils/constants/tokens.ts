@@ -17,6 +17,7 @@ export const USE_CASE_TOKENS = {
 export const REPOSITORY_TOKENS = {
   WalletRepository: 'IWalletRepository',
   CouponRepository: 'ICouponRepository',
+  SubscriptionRepository:'ISubscriptionPlanRepository'
 };
 
 export const SERVICE_TOKENS = {

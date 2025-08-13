@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export interface ISubscriptionPlan {
   _id?: Types.ObjectId;
-  name: string; // e.g., "Premium"
+  name: string; 
   price: number;
   validityDays: number; 
   features: string[]; 
