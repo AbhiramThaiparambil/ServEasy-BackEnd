@@ -55,76 +55,52 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
 
   async findProviderWalletWithPaginatedTransactions(
     serviceProviderId: Types.ObjectId,
-    limit?: number,
-    skip?: number
+    limit = 10,
+    skip = 0
   ): Promise<IProviderWallet | null> {
     const result = await ProviderWalletModel.aggregate([
       { $match: { serviceProviderId } },
+
+      {
+        $addFields: {
+          transactions: {
+            $sortArray: { input: '$transactions', sortBy: { date: -1 } },
+          },
+        },
+      },
+
+      {
+        $addFields: {
+          transactions: {
+            $slice: ['$transactions', skip, limit],
+          },
+        },
+      },
+
       {
         $project: {
           serviceProviderId: 1,
           balance: 1,
-          transactions: {
-            $slice: [
-              {
-                $reverseArray: {
-                  $sortArray: {
-                    input: '$transactions',
-                    sortBy: { date: -1 },
-                  },
-                },
-              },
-              skip,
-              limit,
-            ],
-          },
+          transactions: 1,
         },
       },
     ]);
 
     return result[0] || null;
   }
+
+  async findCountOfTransactions(serviceProviderId: string): Promise<number> {
+    const result = await ProviderWalletModel.aggregate([
+      { $match: { serviceProviderId: new Types.ObjectId(serviceProviderId) } },
+      { $project: { count: { $size: '$transactions' } } },
+    ]);
+    return result[0]?.count || 0;
+  }
+
   findAll(): Promise<IProviderWallet[]> {
     return ProviderWalletModel.find();
   }
-  // async findByProviderIdSorted(providerId: string | Types.ObjectId): Promise<IWalletTransaction[]> {
-  //     const walletDoc = await ProviderWalletModel.findOne({ providerId }).lean();
 
-  //     if (!walletDoc || !walletDoc.transactions) return [];
-
-  //     const sorted = walletDoc.transactions
-  //       .filter(tx => tx.date)
-  //       .map(tx => ({
-  //         type: tx.type,
-  //         amount: tx.amount,
-  //         status: tx.status ?? 'none',
-  //         refBookingId: new Types.ObjectId(tx.refBookingId),
-  //         note: tx.note ?? '',
-  //         date: new Date(tx.date),
-  //       }))
-  //       .sort((a, b) => b.date.getTime() - a.date.getTime());
-
-  //     return sorted;
-  //   }
-
-  //   async findAll(): Promise<IProviderWallet[]> {
-
-  //     // return ProviderWalletModel.find()
-  //     return ProviderWalletModel.aggregate([
-  //   // Add a field for the most recent transaction date in each wallet
-  //   {
-  //     $addFields: {
-  //       lastTransactionDate: {
-  //         $max: "$transactions.date"
-  //       }
-  //     }
-  //   },
-  //   // Sort wallets based on the latest transaction date (descending)
-  //   {
-  //     $sort: { lastTransactionDate: -1 }
-  //   }
-  // ]);
-  //   }
 
   async findPaginatedProviderWallets(skip: number, limit: number): Promise<IProviderWalletView[]> {
     const data = await ProviderWalletModel.aggregate([
@@ -233,7 +209,7 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
 
     const revertTransaction: IWalletTransaction = {
       amount: transaction.amount,
-      type: 'credit', // IMPORTANT: credit, not debit
+      type: 'credit', 
       status: 'success',
       date: new Date(),
     };
@@ -261,7 +237,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       },
       { $unwind: '$serviceProvider' },
 
-      // Sort transactions by date DESC
       {
         $addFields: {
           transactions: {
@@ -270,7 +245,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // Separate credit and debit transactions
       {
         $addFields: {
           creditTransactions: {
@@ -404,45 +378,5 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     }
   }
 
-  // {  _id: '6842b93c7b8517522821206d',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/32.jpg',
-  //     serviceProviderName: 'Arjun Kumar',
-  //     serviceProviderEmail: 'arjun.kumar@example.com',
-  //     serviceProviderPhone: '+91 9876543210',
-  //     description: 'Experienced electrician specializing in home wiring and appliance repair.',
-  //     experience: '5 years',
-  //     wallet: { balance: 4500 },
-  //   }
-
-  // async findAllSorted(): Promise<IWalletTransaction[]> {
-  //   const wallets = await ProviderWalletModel.find();
-  //   const allTx: IWalletTransaction[] = wallets.flatMap(w =>
-  //     w.transactions.map(t => t.toObject())
-  //   );
-  //   return allTx.sort((a, b) => b.date.getTime() - a.date.getTime());
-  // }
-
-  // async findPendingWithdrawals(): Promise<IWalletTransaction[]> {
-  //   const wallets = await ProviderWalletModel.find();
-  //   return wallets.flatMap(w =>
-  //     w.transactions.filter(tx => tx.type === 'debit' && tx.status === 'pending')
-  //   ).sort((a, b) => b.date.getTime() - a.date.getTime());
-  // }
-
-  // async findDebitTransactionsByProvider(providerId: string): Promise<IWalletTransaction[]> {
-  //   const wallet = await ProviderWalletModel.findOne({ providerId });
-  //   if (!wallet) return [];
-  //   return wallet.transactions
-  //     .filter(tx => tx.type === 'debit')
-  //     .sort((a, b) => b.date.getTime() - a.date.getTime());
-  // }
-
-  // async getTotalCreditsByProvider(providerId: string): Promise<number> {
-  //   const wallet = await ProviderWalletModel.findOne({ providerId });
-  //   if (!wallet) return 0;
-
-  //   return wallet.transactions
-  //     .filter(tx => tx.type === 'credit')
-  //     .reduce((sum, tx) => sum + tx.amount, 0);
-  // }
+ 
 }
