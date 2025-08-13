@@ -57,6 +57,8 @@ import { GetProviderWalletUseCase } from './application/use-case/admin/wallet/ge
 import { IGetProviderWalletUseCase } from './application/use-case/admin/wallet/getWallet/IGetProviderWalletById.usecase';
 import { IWithdrawFromProviderWalletUseCase } from './application/use-case/admin/wallet/IWithdrawFromProviderWallet.usecase';
 import { WithdrawFromProviderWalletUseCase } from './application/use-case/admin/wallet/WithdrawFromProviderWallet.usecase';
+import { ISubscriptionPlanRepository } from './domain/repositories/ISubscriptionPlanRepository';
+import { SubscriptionPlanRepository } from './infrastructure/repositories/SubscriptionPlanRepository';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -72,6 +74,10 @@ container.register<ICategoryRepository>('ICategoryRepository', {
 });
 container.register<ISlotRepository>('ISlotRepository', {
   useClass: SlotRepository,
+});
+
+container.register<ISubscriptionPlanRepository>('ISubscriptionPlanRepository', {
+  useClass: SubscriptionPlanRepository,
 });
 
 container.register<IProviderWalletRepository>(REPOSITORY_TOKENS.WalletRepository, {
