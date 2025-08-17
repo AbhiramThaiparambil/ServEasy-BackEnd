@@ -33,7 +33,13 @@ router.get('/availability/:serviceProviderId', (req, res) =>
   serviceController.getAvailability(req, res)
 );
 
-router.get('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) => serviceController.getWallet(req, res) );
-router.post('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) => serviceController.withdrawPayment(req, res) );
-
+router.get('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) =>
+  serviceController.getWallet(req, res)
+);
+router.post('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) =>
+  serviceController.withdrawPayment(req, res)
+);
+router.get('/subscription-plans', (req, res) =>
+  serviceController.getAvailableSubscriptionPlans(req, res)
+);
 export default router;

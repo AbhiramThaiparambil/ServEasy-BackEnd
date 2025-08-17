@@ -15,6 +15,7 @@ import { setAuthCookies } from '../../utils/setAuthCookies';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
 import { IWithdrawPaymentUseCase } from '../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase';
+import { IGetSubscriptionPlansUseCase } from '../../application/use-case/subscription/IGetSubscriptionPlansUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -41,7 +42,9 @@ export class ServiceProviderController {
     @inject(USE_CASE_TOKENS.GetWalletUseCase)
     private getWalletUseCase: IGetWalletUseCase,
     @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase)
-    private withdrawPaymentUseCase: IWithdrawPaymentUseCase
+    private withdrawPaymentUseCase: IWithdrawPaymentUseCase,
+      @inject(USE_CASE_TOKENS.GetSubscriptionPlansUseCase)
+    private getSubscriptionPlansUseCase: IGetSubscriptionPlansUseCase
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -337,4 +340,15 @@ res.status(HttpStatus.BAD_REQUEST)
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
     }
   };
+
+
+    async getAvailableSubscriptionPlans(req: Request, res: Response): Promise<void> {
+    try {
+      const plans = await this.getSubscriptionPlansUseCase.execute();
+      res.status(HttpStatus.OK).json(plans);
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Error fetching subscription plans", error });
+    }
+  }
+
 }
