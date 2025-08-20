@@ -10,3 +10,4 @@ export interface ISubscriptionPlan {
   payoutSpeedDays: number;
   description?: string;
 }
+     

@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { IServiceProvider, IServiceProviderRegistration } from '../entities/IServiceProvider';
 import { ISubscription } from '../entities/ISubscription';
+import { IFindSubscriptionsResult, ISubscriptionWithPlan } from '../../utils/types/dto/ISubscriptionWithPlan';
 export interface IServiceProviderRepository {
   create(ServiceProvider: IServiceProviderRegistration): Promise<IServiceProvider>;
   findByEmail(email: string): Promise<IServiceProvider | null>;
@@ -22,4 +23,8 @@ export interface IServiceProviderRepository {
     providerId: string,
     subscription: ISubscription
   ): Promise<IServiceProvider | null>;
+
+   findSubscriptions(providerId: string):Promise<IFindSubscriptionsResult|null>
+ findSubscriptionIsActiveOrNot(providerId: string):Promise<{ isActive: boolean }
+>
 }

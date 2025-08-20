@@ -29,4 +29,8 @@ export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
     const result = await SubscriptionPlanModel.findByIdAndDelete(id);
     return !!result;
   }
+
+
+
+  
 }
