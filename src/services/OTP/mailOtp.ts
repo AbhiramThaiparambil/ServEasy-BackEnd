@@ -13,7 +13,7 @@ export class EmailOtpService {
     this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_SERVICE_HOST as string,
       port: Number(process.env.EMAIL_SERVICE_PORT),
-      secure: process.env.EMAIL_SERVICE_SECURE === "true", // true for port 465, false for other ports
+      secure: process.env.EMAIL_SERVICE_SECURE === "true", 
       auth: {
         user: process.env.EMAIL_SERVICE_EMAIL as string,
         pass: process.env.EMAIL_SERVICE_PASSWORD,

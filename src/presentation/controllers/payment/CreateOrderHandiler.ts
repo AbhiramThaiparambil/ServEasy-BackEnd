@@ -4,9 +4,9 @@ import { CreateOrderUseCase } from "../../../application/use-case/payment/Create
 import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const createOrderHandler = async (req: Request, res: Response) => {
-  const { serviceid } = req.body;
-
-  if (!serviceid) {
+  const { serviceId } = req.body;
+      console.log(req.body)
+  if (!serviceId) {
     res.status(HttpStatus.BAD_REQUEST);
     res.json({ success: false, message: "Missing or invalid service ID" });
     return;
@@ -16,7 +16,7 @@ export const createOrderHandler = async (req: Request, res: Response) => {
 
   try {
     const createOrder = container.resolve(CreateOrderUseCase);
-    const result = await createOrder.execute(serviceid);
+    const result = await createOrder.execute(serviceId);
 
     if (!result || result.success === false) {
       res.status(HttpStatus.BAD_REQUEST);

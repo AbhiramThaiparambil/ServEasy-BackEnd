@@ -55,14 +55,13 @@ export class RazorpayService {
 
 
 
-  async createOrder(payment: IPayment, linkedAccountId: string) {
-    const providerShare = Math.round(payment.total-payment.convenienceFee)
+  async createOrder(payment:number, userId: string) {
 
     const order = await this.razorpay.orders.create({
-      amount: payment.finalTotal * 100,
+      amount: payment * 100,
       currency: "INR",
       payment_capture: true,
-      receipt: `receipt_${Date.now()}`,
+      receipt: userId,
       // transfers: [
       //   {
       //     account: linkedAccountId, 

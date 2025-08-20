@@ -61,6 +61,10 @@ import { ISubscriptionPlanRepository } from './domain/repositories/ISubscription
 import { SubscriptionPlanRepository } from './infrastructure/repositories/SubscriptionPlanRepository';
 import { IGetSubscriptionPlansUseCase } from './application/use-case/subscription/IGetSubscriptionPlansUseCase';
 import { GetSubscriptionPlansUseCase } from './application/use-case/subscription/GetSubscriptionPlansUseCase';
+import { ICreatePaymentSubscriptionOrderUseCase } from './application/use-case/subscription/payment/ICreatePaymentSubscriptionOrderUseCase';
+import { CreatePaymentSubscriptionOrderUseCase } from './application/use-case/subscription/payment/CreatePaymentSubscriptionOrderUseCase';
+import { IVerifySubscriptionPaymentUseCase } from './application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase';
+import { VerifySubscriptionPaymentUseCase } from './application/use-case/subscription/payment/VerifySubscriptionPaymentUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -162,4 +166,20 @@ container.register<IWithdrawFromProviderWalletUseCase>(
 
 container.register<IGetSubscriptionPlansUseCase>(USE_CASE_TOKENS.GetSubscriptionPlansUseCase,{
   useClass:GetSubscriptionPlansUseCase
+})
+
+
+
+container.register<ICreatePaymentSubscriptionOrderUseCase>(USE_CASE_TOKENS.CreatePaymentSubscriptionOrderUseCase,{
+  useClass:CreatePaymentSubscriptionOrderUseCase
+})
+
+
+
+container.register<ICreatePaymentSubscriptionOrderUseCase>(USE_CASE_TOKENS.CreatePaymentSubscriptionOrderUseCase,{
+  useClass:CreatePaymentSubscriptionOrderUseCase
+})
+
+container.register<IVerifySubscriptionPaymentUseCase>(USE_CASE_TOKENS.VerifySubscriptionPaymentUseCase,{
+  useClass:VerifySubscriptionPaymentUseCase
 })

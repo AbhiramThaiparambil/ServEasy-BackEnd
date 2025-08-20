@@ -12,7 +12,10 @@ export const USE_CASE_TOKENS = {
   GetAllProvidersWallets:"IGetAllProvidersWallets",
   GetProviderWalletByIdUseCase:"IGetProviderWalletUseCase",
   WithdrawFromProviderWalletUseCase:"IWithdrawFromProviderWalletUseCase",
-  GetSubscriptionPlansUseCase:"IGetSubscriptionPlansUseCase"
+  GetSubscriptionPlansUseCase:"IGetSubscriptionPlansUseCase",
+  CreatePaymentSubscriptionOrderUseCase:"ICreatePaymentSubscriptionOrderUseCase",
+  VerifySubscriptionPaymentUseCase:"IVerifySubscriptionPaymentUseCase"
+
 };
 
 export const REPOSITORY_TOKENS = {
