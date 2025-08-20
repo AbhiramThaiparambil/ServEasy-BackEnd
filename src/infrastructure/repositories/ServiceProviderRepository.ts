@@ -6,9 +6,10 @@ import {
   IServiceProviderRegistration,
   IUpdateProfile,
 } from '../../domain/entities/IServiceProvider';
-import ServiceProviderModel from '../models/ServiceProviderModel'; 
+import ServiceProviderModel from '../models/ServiceProviderModel';
 import mongoose from 'mongoose';
 import { ISubscription } from '../../domain/entities/ISubscription';
+import { IFindSubscriptionsResult, ISubscriptionWithPlan } from '../../utils/types/dto/ISubscriptionWithPlan';
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
@@ -57,8 +58,99 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     return await ServiceProviderModel.countDocuments();
   }
 
-  async findByUserID(userId: string): Promise<IServiceProvider | null> {
-    return await ServiceProviderModel.findOne({ userId: userId });
+async findByUserID(userId: string): Promise<(IServiceProvider & { isProServiceProvider: boolean }) | null> {
+  const provider = await ServiceProviderModel.findOne({ userId });
+
+  if (!provider) return null;
+
+  const now = new Date();
+  const activeSubscription = (provider.subscriptions ?? []).find(
+    (sub) =>
+      sub.status === "active" &&
+      sub.startDate <= now &&
+      sub.endDate >= now
+  );
+
+  return {
+    ...provider.toObject(),
+    isProServiceProvider: !!activeSubscription,
+  };
+}
+
+
+  async findSubscriptionIsActiveOrNot(providerId: string): Promise<{ isActive: boolean }> {
+    const provider = await ServiceProviderModel.findOne(
+      {
+        _id: providerId,
+        subscriptions: {
+          $elemMatch: {
+            startDate: { $lte: new Date() },
+            endDate: { $gte: new Date() },
+            status: 'active',
+          },
+        },
+      },
+      { 'subscriptions.$': 1 }
+    );
+
+    if (!provider || provider.subscriptions?.length === 0) {
+      return { isActive: false };
+    }
+
+    return { isActive: true };
+  }
+
+ 
+    async  findSubscriptions(providerId: string):Promise<IFindSubscriptionsResult|null>{ 
+
+    const now = new Date();
+
+    const result = await ServiceProviderModel.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(providerId) } },
+      { $unwind: '$subscriptions' },
+      {
+        $lookup: {
+          from: 'subscriptionplans',
+          localField: 'subscriptions.planId',
+          foreignField: '_id',
+          as: 'planDetails',
+        },
+      },
+      { $unwind: '$planDetails' },
+      {
+        $project: {
+          _id: '$subscriptions._id',
+          startDate: '$subscriptions.startDate',
+          endDate: '$subscriptions.endDate',
+          status: '$subscriptions.status',
+          paymentId: '$subscriptions.paymentId',
+          name: '$planDetails.name',
+          price: '$planDetails.price',
+          validityDays: '$planDetails.validityDays',
+          leftDays: {
+            $ceil: {
+              $divide: [{ $subtract: ['$subscriptions.endDate', now] }, 1000 * 60 * 60 * 24],
+            },
+          },
+        },
+      },
+    ]);
+
+    // Separate active and expired
+    const activeSubscription = result.find(
+      sub =>
+        sub.status === 'active' && new Date(sub.startDate) <= now && new Date(sub.endDate) >= now
+    );
+
+    const expiredSubscriptions = result.filter(
+      sub =>
+        !(sub.status === 'active' && new Date(sub.startDate) <= now && new Date(sub.endDate) >= now)
+    );
+
+    return {
+      activeSubscription: activeSubscription || null,
+      expiredSubscriptions,
+    };
   }
 
   async blockService(ProviderId: string): Promise<boolean> {
@@ -108,25 +200,22 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     return true;
   }
 
-  async addSubscription  (
-    providerId: string,
-    subscription:ISubscription
-  ) {
+  async addSubscription(providerId: string, subscription: ISubscription) {
     return await ServiceProviderModel.findByIdAndUpdate(
       providerId,
       {
         $push: {
-         subscriptions: {   
-          planId: subscription.planId,
-          startDate: subscription.startDate,
-          endDate: subscription.endDate,
-          status: 'active',
-          paymentId: subscription.paymentId,
-          createdAt: new Date(),
-        },
+          subscriptions: {
+            planId: subscription.planId,
+            startDate: subscription.startDate,
+            endDate: subscription.endDate,
+            status: 'active',
+            paymentId: subscription.paymentId,
+            createdAt: new Date(),
+          },
         },
       },
-      { new: true } 
+      { new: true }
     );
-  };
+  }
 }
