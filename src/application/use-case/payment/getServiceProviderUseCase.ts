@@ -3,7 +3,6 @@ import { Types } from "mongoose";
 import { RazorpayService } from "../../../services/razorpayService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
 
 @injectable()
 export class GetPaymentInfoServiceProviderUseCase {
@@ -12,8 +11,7 @@ export class GetPaymentInfoServiceProviderUseCase {
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
-    @inject(ServiceProviderRepository)
-    private serviceProviderRepository: ServiceProviderRepository
+    
   ) {}
 
   async serviceProviderInfo(id: string) {

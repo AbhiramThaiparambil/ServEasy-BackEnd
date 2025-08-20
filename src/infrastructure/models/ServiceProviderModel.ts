@@ -1,68 +1,78 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { IBankDetails, IServiceProvider } from "../../domain/entities/IServiceProvider";
+import mongoose, { Schema, Document } from 'mongoose';
+import { IBankDetails, IServiceProvider } from '../../domain/entities/IServiceProvider';
+import { ISubscription } from '../../domain/entities/ISubscription';
 
 interface ISkill {
-    name: string;
-    level: string;
+  name: string;
+  level: string;
 }
 const locationSchema = new Schema({
-    address: { type: String, required: true },
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-  });
-
-const SkillSchema = new Schema<ISkill>({
-    name: { type: String, required: true },
-    level: { type: String, required: true },
+  address: { type: String, required: true },
+  latitude: { type: Number, required: true },
+  longitude: { type: Number, required: true },
 });
 
-const BankDetailsSchema = new Schema<IBankDetails>(
-  {
-    accountHolderName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    accountNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    ifscCode: {
-      type: String,
-      required: true,
-      
-    },
-  })
+const SkillSchema = new Schema<ISkill>({
+  name: { type: String, required: true },
+  level: { type: String, required: true },
+});
+
+const BankDetailsSchema = new Schema<IBankDetails>({
+  accountHolderName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  accountNumber: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  ifscCode: {
+    type: String,
+    required: true,
+  },
+});
+
+const SubscriptionSchema = new Schema<ISubscription>({
+  planId: { type: String, required: true },
+
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  status: { type: String, enum: ['active', 'expired'], default: 'active' },
+  paymentId: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
 
 const ServiceProviderSchema = new Schema<IServiceProvider>(
-    {  
-        serviceProviderName: { type: String, required: true },
-        serviceProviderEmail: { type: String, required: true },
-        serviceProviderPhone: { type: String, required: true },
-        description: { type: String, required: true },
-        socialMedia: { type: String },
-        services: { type: [String], required: true },
-        skills: { type: [SkillSchema], required: true }, 
-        location: locationSchema,
-        experience: { type: Number, required: true },
-        profileImage: { type: String },
-        document: { type: [String] },
-        isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: "pending" },
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        isBlocked:{type:Boolean,default:false},
-       bankDetails:{ type: BankDetailsSchema, required: true }
-    },
-    {
-        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
-    }
+  {
+    serviceProviderName: { type: String, required: true },
+    serviceProviderEmail: { type: String, required: true },
+    serviceProviderPhone: { type: String, required: true },
+    description: { type: String, required: true },
+    socialMedia: { type: String },
+    services: { type: [String], required: true },
+    skills: { type: [SkillSchema], required: true },
+    location: locationSchema,
+    experience: { type: Number, required: true },
+    profileImage: { type: String },
+    document: { type: [String] },
+    isVerified: { type: String, enum: ['verified', 'pending', 'rejected'], default: 'pending' },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    isBlocked: { type: Boolean, default: false },
+    bankDetails: { type: BankDetailsSchema, required: true },
+    subscriptions: [SubscriptionSchema],
+  },
+  {
+    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  }
 );
 
-ServiceProviderSchema.index({userId:1})
+ServiceProviderSchema.index({ userId: 1 });
 
 const ServiceProviderModel = mongoose.model<IServiceProvider>(
-    "ServiceProvider",
-    ServiceProviderSchema
+  'ServiceProvider',
+  ServiceProviderSchema
 );
 
 export default ServiceProviderModel;

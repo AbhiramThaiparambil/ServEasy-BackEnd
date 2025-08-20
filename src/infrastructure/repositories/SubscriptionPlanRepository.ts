@@ -2,6 +2,7 @@ import { injectable } from "tsyringe";
 import { ISubscriptionPlan } from "../../domain/entities/ISubscriptionPlan";
 import { SubscriptionPlanModel } from "../models/SubscriptionPlanModel";
 import { ISubscriptionPlanRepository } from "../../domain/repositories/ISubscriptionPlanRepository";
+import { Types } from "mongoose";
 
 @injectable()
 export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
@@ -12,8 +13,9 @@ export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
   }
 
   async findSubscriptionPlanById(id: string): Promise<ISubscriptionPlan | null> {
-    return await SubscriptionPlanModel.findById(id);
-  }
+    return await SubscriptionPlanModel.findById(new Types.ObjectId(id));
+
+}
 
   async findAllSubscriptionPlans(): Promise<ISubscriptionPlan[]> {
     return await SubscriptionPlanModel.find();

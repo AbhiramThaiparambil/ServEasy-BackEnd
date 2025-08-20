@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { ISubscription } from './ISubscription';
 export interface ISkill {
     name: string;
     level: string; 
@@ -18,6 +19,7 @@ export interface IServiceProvider {
     serviceProviderName: string;
     serviceProviderEmail: string;
     serviceProviderPhone: string;
+     subscriptions?: ISubscription[];
     experience: number;
     location: string;
     services: string[];

@@ -3,10 +3,10 @@ import { container } from 'tsyringe';
 import { VerifyPaymentUseCase } from '../../../application/use-case/payment/VerifyPayment';
 import { HttpStatus } from '../../../constants/HttpStatus';
 export const verifyPaymentHandler = async (req: Request, res: Response) => {
-  const { serviceid, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
+  const { serviceId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+     console.log(req.body)
   // Input validation
-  if (!serviceid || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+  if (!serviceId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
       message: 'Missing required payment verification fields',
@@ -16,7 +16,7 @@ export const verifyPaymentHandler = async (req: Request, res: Response) => {
   try {
     const verifyPaymentUseCase = container.resolve(VerifyPaymentUseCase);
     const result = await verifyPaymentUseCase.execute(
-      serviceid,
+      serviceId,
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature
