@@ -22,6 +22,7 @@ import chatRouter from './presentation/routes/chat';
 import http from 'http';
 import morganMiddleware from './utils/logger';
 import { SocketService } from './services/socket/SocketService';
+import serviceProviderSubscriptionRouter from './presentation/routes/ServiceProviderSubscriptionRoute';
 const app = express();
 const server = http.createServer(app);
 app.use(cookieparser());
@@ -45,8 +46,9 @@ app.use('/location', locationRouter);
 
 app.use('/', authRouter);
 app.use('/', userRoutes);
-app.use('/service-providers', serviceProviderRoute);
 app.use('/google', googleRouter);
+app.use('/service-providers', serviceProviderRoute);
+app.use('/service-providers', serviceProviderSubscriptionRouter);
 app.use('/admin', adminRoute);
 app.use('/service', serviceRouter);
 app.use('/payment', paymentRouter);

@@ -23,7 +23,9 @@ export const REPOSITORY_TOKENS = {
   CouponRepository: 'ICouponRepository',
   SubscriptionRepository:'ISubscriptionPlanRepository'
 };
-
 export const SERVICE_TOKENS = {
   MailService: 'IMailService',
+  GoogleGenAIService: 'IGoogleGenAIService'
 };
+
+
