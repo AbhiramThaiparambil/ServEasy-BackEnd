@@ -36,7 +36,7 @@ import { ICreateCouponUseCase } from './application/use-case/coupon/createCoupon
 import { IFindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase';
 import { CreateCouponUseCase } from './application/use-case/coupon/createCoupon/CreateCouponUseCase';
 import { FindAllCouponsUseCase } from './application/use-case/coupon/findAllCoupons/FindAllCouponsUseCase';
-import { REPOSITORY_TOKENS, USE_CASE_TOKENS } from './utils/constants/tokens';
+import { REPOSITORY_TOKENS, SERVICE_TOKENS, USE_CASE_TOKENS } from './utils/constants/tokens';
 import { MakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/MakeCouponInactiveUseCase';
 import { IMakeCouponInactiveUseCase } from './application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase';
 import { IToggleShowInBannerUseCase } from './application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase';
@@ -65,6 +65,8 @@ import { ICreatePaymentSubscriptionOrderUseCase } from './application/use-case/s
 import { CreatePaymentSubscriptionOrderUseCase } from './application/use-case/subscription/payment/CreatePaymentSubscriptionOrderUseCase';
 import { IVerifySubscriptionPaymentUseCase } from './application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase';
 import { VerifySubscriptionPaymentUseCase } from './application/use-case/subscription/payment/VerifySubscriptionPaymentUseCase';
+import { GoogleGenAIService } from './services/aiAssistant/googleGenAIService';
+import { IGoogleGenAIService } from './services/aiAssistant/IgoogleGenAIService';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -108,11 +110,15 @@ container.register('LocationService', { useClass: LocationService });
 container.register('ServiceRepository', ServiceRepository);
 container.register('ServiceBookingRepository', ServiceBookingRepository);
 container.register('RazorpayService', RazorpayService);
+
+
 container.register('ReviewRepository', { useClass: ReviewRepository });
 container.register('NotificationRepository', { useClass: NotificationRepository });
 container.registerSingleton<IChatRepository>('ChatRepository', ChatRepository);
 container.register('SiteSettingRepository', SiteSettingRepository);
 console.log('All dependencies registered successfully.');
+
+
 
 container.register<ICreateCouponUseCase>(USE_CASE_TOKENS.CreateCouponUseCase, {
   useClass: CreateCouponUseCase,
@@ -183,3 +189,9 @@ container.register<ICreatePaymentSubscriptionOrderUseCase>(USE_CASE_TOKENS.Creat
 container.register<IVerifySubscriptionPaymentUseCase>(USE_CASE_TOKENS.VerifySubscriptionPaymentUseCase,{
   useClass:VerifySubscriptionPaymentUseCase
 })
+
+
+
+// services
+container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
+, { useClass: GoogleGenAIService });
