@@ -67,6 +67,10 @@ import { IVerifySubscriptionPaymentUseCase } from './application/use-case/subscr
 import { VerifySubscriptionPaymentUseCase } from './application/use-case/subscription/payment/VerifySubscriptionPaymentUseCase';
 import { GoogleGenAIService } from './services/aiAssistant/googleGenAIService';
 import { IGoogleGenAIService } from './services/aiAssistant/IgoogleGenAIService';
+import { IAiAssistanceRepository } from './domain/repositories/IAiAssistanceRepository';
+import { aiAssistanceRepository } from './infrastructure/repositories/AiAssistanceRepository';
+import { ICreateAiChatUseCase } from './application/use-case/premiumFeatures/aiAssistance/ICreateAiChatUseCase';
+import { CreateAiChatUseCase } from './application/use-case/premiumFeatures/aiAssistance/CreateAiChatUseCasets';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -84,9 +88,15 @@ container.register<ISlotRepository>('ISlotRepository', {
   useClass: SlotRepository,
 });
 
+// repository 
 container.register<ISubscriptionPlanRepository>(REPOSITORY_TOKENS.SubscriptionRepository, {
   useClass: SubscriptionPlanRepository,
 });
+
+container.register<IAiAssistanceRepository>(REPOSITORY_TOKENS.AiAssistanceRepository, {
+  useClass: aiAssistanceRepository,
+});
+
 
 container.register<IProviderWalletRepository>(REPOSITORY_TOKENS.WalletRepository, {
   useClass: ProviderWalletRepository,
@@ -189,6 +199,11 @@ container.register<ICreatePaymentSubscriptionOrderUseCase>(USE_CASE_TOKENS.Creat
 container.register<IVerifySubscriptionPaymentUseCase>(USE_CASE_TOKENS.VerifySubscriptionPaymentUseCase,{
   useClass:VerifySubscriptionPaymentUseCase
 })
+
+container.register<ICreateAiChatUseCase>(USE_CASE_TOKENS.CreateAiChatUseCase,{
+  useClass:CreateAiChatUseCase
+})
+
 
 
 
