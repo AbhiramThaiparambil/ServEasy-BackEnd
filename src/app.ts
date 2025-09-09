@@ -54,6 +54,7 @@ app.use('/service', serviceRouter);
 app.use('/payment', paymentRouter);
 app.use('/chat', chatRouter);
 dbConnect().catch(e => console.log(e));
+
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof Error) {
     console.error(err.message);
