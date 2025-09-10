@@ -15,6 +15,11 @@ serviceProviderSubscriptionRouter.post(
 );
 
 
+serviceProviderSubscriptionRouter.get("/ai-assistance/handleGetChatByChatId/:chatId",
+  (req, res,) => serviceProviderSubscriptionController.handleGetChatByChatId(req, res,))
+
+
+serviceProviderSubscriptionRouter.get('')
 
 
 

@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 import { ICreateAiChatUseCase } from './ICreateAiChatUseCase';
-import { REPOSITORY_TOKENS, SERVICE_TOKENS } from '../../../../utils/constants/tokens';
-import { IGoogleGenAIService } from '../../../../services/aiAssistant/IgoogleGenAIService';
-import { IAiAssistanceRepository } from '../../../../domain/repositories/IAiAssistanceRepository';
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from '../../../../../utils/constants/tokens';
+import { IGoogleGenAIService } from '../../../../../services/aiAssistant/IgoogleGenAIService';
+import { IAiAssistanceRepository } from '../../../../../domain/repositories/IAiAssistanceRepository';
 import { Types } from 'mongoose';
-import { IAiAssistanceMessage } from '../../../../domain/entities/IAiAssistance';
-import { AiChatResponse } from '../../../../utils/types/dto/IAiChatResponse';
+import { IAiAssistanceMessage } from '../../../../../domain/entities/IAiAssistance';
+import { AiChatResponse } from '../../../../../utils/types/dto/IAiChatResponse';
 @injectable()
 export class CreateAiChatUseCase implements ICreateAiChatUseCase {
   constructor(
@@ -19,18 +19,18 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
     activeChatId?: string
   ): Promise<AiChatResponse | void> {
     try {
-  const newMessage: IAiAssistanceMessage = {
+     console.log(activeChatId +"   _________________________")
+
+
+      const newMessage: IAiAssistanceMessage = {
         content: prompt,
         createdAt: new Date(),
         role: 'user',
       };
-      
 
-      if(!activeChatId){
-
-
-      }
-    
+      // if (!activeChatId) {
+      //   return
+      // }
 
       const savedUserMessage = await this.aiAssistance.addMessage(
         new Types.ObjectId(serviceProviderId),
@@ -52,8 +52,7 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
         activeChatId ? activeChatId : savedUserMessage?.id
       );
 
-      console.log(savedChat)
-
+      console.log(savedChat);
 
       return { aiResponse: response.text, chatId: savedUserMessage?.id, title: savedChat?.title };
     } catch (error) {
