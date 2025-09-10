@@ -35,13 +35,10 @@ export class aiAssistanceRepository implements IAiAssistanceRepository {
       
       const session = await AiAssistanceChatSessionModel.findById(new Types.ObjectId(chatId));
       if (!session) {
-          const data= await this.createSession(serviceProviderId, message);
-          console.log(data);
-          console.log('---------==========--------=====-chat id -========-=');
-        return data  
+          return  await this.createSession(serviceProviderId, message);
     }
     } else {
-      await this.createSession(serviceProviderId, message);
+       return await this.createSession(serviceProviderId, message);
     }
 
     return await AiAssistanceChatSessionModel.findOneAndUpdate(
