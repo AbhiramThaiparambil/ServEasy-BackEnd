@@ -10,7 +10,9 @@ export interface IAiAssistanceMessage {
 
 
 export interface IAiAssistanceChatSession {
-  id?: string;
+  _id?: string;
+    id?: string;
+
   serviceProviderId: Types.ObjectId;
   userId: Types.ObjectId;
   title: string;
@@ -19,3 +21,5 @@ export interface IAiAssistanceChatSession {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type IAiAssistanceChatInfo = Pick<IAiAssistanceChatSession,"id"|"title">

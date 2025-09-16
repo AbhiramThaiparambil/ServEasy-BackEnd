@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { IAiAssistanceChatSession, IAiAssistanceMessage } from '../entities/IAiAssistance';
+import { IAiAssistanceChatInfo, IAiAssistanceChatSession, IAiAssistanceMessage } from '../entities/IAiAssistance';
 export interface IAiAssistanceRepository {
   createSession(
     serviceProviderId: Types.ObjectId,
@@ -11,6 +11,7 @@ export interface IAiAssistanceRepository {
     message: IAiAssistanceMessage,
     chatId?:string,
   ): Promise<IAiAssistanceChatSession | null>;
-  //   findByServiceProvider(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatSession[]>;
+    findByProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatSession[]|[]>;
+    getChatsInfoByServiceProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatInfo[]|[]>;
   //   endSession(chatId: Types.ObjectId): Promise<boolean>;
 }
