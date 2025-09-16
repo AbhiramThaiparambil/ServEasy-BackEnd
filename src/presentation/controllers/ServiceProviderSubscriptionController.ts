@@ -8,12 +8,15 @@ import { title } from 'process';
 import { ConversationWithParticipantsListInstance } from 'twilio/lib/rest/conversations/v1/conversationWithParticipants';
 import { IGetAIChatByIdUseCase } from '../../application/use-case/premiumFeatures/aiAssistance/getById/IGetAIChatByIdUseCase';
 import { tryCatch } from 'bullmq';
+import { IGetProviderAIChatsUseCase } from '../../application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsUseCase';
 @injectable()
 export class ServiceProviderSubscriptionController {
   constructor(
     @inject(USE_CASE_TOKENS.CreateAiChatUseCase) private createAiChatUseCase: ICreateAiChatUseCase,
     @inject(USE_CASE_TOKENS.GetAIChatByIdUseCase)
-    private getAIChatByIdUseCase: IGetAIChatByIdUseCase
+    private getAIChatByIdUseCase: IGetAIChatByIdUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderAIChatsUseCase)
+    private getProviderChats: IGetProviderAIChatsUseCase
   ) {}
 
   async handleChatRequest(req: Request, res: Response): Promise<any> {
@@ -40,6 +43,8 @@ export class ServiceProviderSubscriptionController {
       message,
       activeChatId
     );
+    console.log(response)
+    console.log("----------------------------====-------------===----------===--------")
     if (!response) {
       res.status(HttpStatus.BAD_REQUEST).json({
         error: 'Message is required and must be a non-empty string',
@@ -47,7 +52,7 @@ export class ServiceProviderSubscriptionController {
       return;
     }
 
- 
+console.warn(response.chatId+"chat is chat id chat id chat id chat id")
 
     res.status(HttpStatus.OK).json({
       id: response.chatId,
@@ -79,14 +84,23 @@ export class ServiceProviderSubscriptionController {
     }
   }
 
-async getServiceProviderChats(req:Request,res:Response):Promise<void>{
-  try{
-            
-  }catch(e){
+  async getServiceProviderChatsHandler(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = req.params.providerId;
 
+      if (!providerId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ error: 'serviceProvider id is required' });
+        return;
+      }
+
+      const data = await this.getProviderChats.execute(providerId);
+
+
+      if (!data) {
+        res.status(HttpStatus.NOT_FOUND).json({ error: 'Chat not found' });
+        return;
+      }
+      res.status(HttpStatus.OK).json(data);
+    } catch (e) {}
   }
-
-
-}
-
 }

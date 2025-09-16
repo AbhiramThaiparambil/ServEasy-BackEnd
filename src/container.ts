@@ -73,6 +73,8 @@ import { ICreateAiChatUseCase } from './application/use-case/premiumFeatures/aiA
 import { CreateAiChatUseCase } from './application/use-case/premiumFeatures/aiAssistance/create/CreateAiChatUseCasets';
 import { IGetAIChatByIdUseCase } from './application/use-case/premiumFeatures/aiAssistance/getById/IGetAIChatByIdUseCase';
 import { GetAIChatByIdUseCase } from './application/use-case/premiumFeatures/aiAssistance/getById/GetAIChatByIdUseCase';
+import { IGetProviderAIChatsUseCase } from './application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsUseCase';
+import { GetProviderAIChatsUseCase } from './application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/GetProviderAIChatsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -210,6 +212,9 @@ container.register<IGetAIChatByIdUseCase>(USE_CASE_TOKENS.GetAIChatByIdUseCase,{
   useClass:GetAIChatByIdUseCase
 })
 
+container.register<IGetProviderAIChatsUseCase>(USE_CASE_TOKENS.GetProviderAIChatsUseCase,{
+  useClass:GetProviderAIChatsUseCase
+})
 
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService

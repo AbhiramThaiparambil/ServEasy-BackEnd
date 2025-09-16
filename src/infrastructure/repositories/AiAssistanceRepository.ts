@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import { injectable } from 'tsyringe';
 import { IAiAssistanceRepository } from '../../domain/repositories/IAiAssistanceRepository';
 import {
+  IAiAssistanceChatInfo,
   IAiAssistanceChatSession,
   IAiAssistanceMessage,
 } from '../../domain/entities/IAiAssistance';
@@ -65,4 +66,18 @@ export class aiAssistanceRepository implements IAiAssistanceRepository {
   //     message: IAiAssistanceChatSession["messages"][0]
   //   ): Promise<IAiAssistanceChatSession | null>;
   //   endSession(chatId: Types.ObjectId): Promise<boolean>;
+
+
+async findByProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatSession[] | []> {
+    
+    return await AiAssistanceChatSessionModel.find({serviceProviderId}).sort({createdAt:-1})
+
+}
+
+async getChatsInfoByServiceProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatInfo[] | []> {
+      return await AiAssistanceChatSessionModel.aggregate([{$match:{serviceProviderId}},{$sort:{createdAt:-1}},{ $project: {  title: 1, _id: 1 } }])
+
+
+}
+
 }

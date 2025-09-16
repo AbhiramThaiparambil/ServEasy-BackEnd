@@ -17,6 +17,7 @@ export const USE_CASE_TOKENS = {
   VerifySubscriptionPaymentUseCase: 'IVerifySubscriptionPaymentUseCase',
   CreateAiChatUseCase: 'ICreateAiChatUseCase',
   GetAIChatByIdUseCase: 'IGetAIChatByIdUseCase',
+  GetProviderAIChatsUseCase: 'IGetProviderAIChatsUseCase',
 };
 
 export const REPOSITORY_TOKENS = {

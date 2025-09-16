@@ -3,7 +3,7 @@ import { IAiAssistanceChatSession } from '../../../../../domain/entities/IAiAssi
 import { IGetAIChatByIdUseCase } from './IGetAIChatByIdUseCase';
 import { REPOSITORY_TOKENS } from '../../../../../utils/constants/tokens';
 import { IAiAssistanceRepository } from '../../../../../domain/repositories/IAiAssistanceRepository';
-import { Types } from 'mongoose';
+import { isValidObjectId, Types } from 'mongoose';
 
 @injectable()
 export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
@@ -14,6 +14,13 @@ export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
 
   async execute(id: string): Promise<IAiAssistanceChatSession | null> {
     try {
+        
+ if(!isValidObjectId(id)){
+        console.error(` ${id} is not valid objectId`,);
+        return null
+
+      }
+
       const objectId = new Types.ObjectId(id);
       return await this.aiAssistance.findById(objectId);
     } catch (error) {
