@@ -7,7 +7,7 @@ import {
   IUpdateProfile,
 } from '../../domain/entities/IServiceProvider';
 import ServiceProviderModel from '../models/ServiceProviderModel';
-import mongoose from 'mongoose';
+import mongoose, { isValidObjectId } from 'mongoose';
 import { ISubscription } from '../../domain/entities/ISubscription';
 import { IFindSubscriptionsResult, ISubscriptionWithPlan } from '../../utils/types/dto/ISubscriptionWithPlan';
 
@@ -209,7 +209,7 @@ async findByUserID(userId: string): Promise<(IServiceProvider & { isProServicePr
             planId: subscription.planId,
             startDate: subscription.startDate,
             endDate: subscription.endDate,
-            status: 'active',
+            status: subscription.status,
             paymentId: subscription.paymentId,
             createdAt: new Date(),
           },
@@ -218,4 +218,78 @@ async findByUserID(userId: string): Promise<(IServiceProvider & { isProServicePr
       { new: true }
     );
   }
+
+
+ async expireSubscriptions(): Promise<number> {
+  const today = new Date();
+
+  const result = await ServiceProviderModel.updateMany(
+    {
+      subscriptions: { $exists: true, $ne: [] }, // must have subscriptions
+      "subscriptions.status": "active", // only active ones
+      "subscriptions.endDate": { $lt: today } // expired already
+    },
+    {
+      $set: { "subscriptions.$[elem].status": "inactive" }
+    },
+    {
+      arrayFilters: [
+        {
+          "elem.status": "active",
+          "elem.endDate": { $lt: today }
+        }
+      ]
+    }
+  );
+
+  return result.modifiedCount; 
+}
+
+ async findLatestActiveSubscription(
+  providerIdString: string
+): Promise<ISubscription | null> {
+  if (!isValidObjectId(providerIdString)) {
+    console.error("Invalid serviceProviderId:", providerIdString);
+    return null;
+  }
+
+  const providerId = new mongoose.Types.ObjectId(providerIdString);
+
+  const provider = await ServiceProviderModel.findOne(
+    {
+      _id: providerId,
+      subscriptions: {
+        $elemMatch: {
+          startDate: { $lte: new Date() },
+          endDate: { $gte: new Date() },
+          status: 'active',
+        },
+      },
+    },
+    { subscriptions: 1 }
+  );
+
+  if (!provider || !provider.subscriptions) {
+    return null;
+  }
+
+  const activeSubs = provider.subscriptions.filter(
+    (s) =>
+      s.status === 'active' &&
+      s.startDate <= new Date() &&
+      s.endDate >= new Date()
+  );
+
+  if (activeSubs.length === 0) {
+    return null;
+  }
+
+  // pick the one with the latest endDate
+  return activeSubs.reduce((latest, sub) =>
+    sub.endDate > latest.endDate ? sub : latest
+  );
+}
+
+
+
 }

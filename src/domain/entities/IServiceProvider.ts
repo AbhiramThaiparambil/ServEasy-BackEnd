@@ -6,7 +6,7 @@ export interface ISkill {
 }
 
 
-
+` `
 export interface IBankDetails {
   accountHolderName: string;
   accountNumber: string;

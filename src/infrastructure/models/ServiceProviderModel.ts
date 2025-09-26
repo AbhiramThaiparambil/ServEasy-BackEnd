@@ -39,7 +39,7 @@ const SubscriptionSchema = new Schema<ISubscription>({
 
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  status: { type: String, enum: ['active', 'expired'], default: 'active' },
+  status: { type: String, enum: ['active', 'expired',"pending"] ,default: 'pending' },
   paymentId: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });

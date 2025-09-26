@@ -2,16 +2,18 @@ import { injectable, inject } from "tsyringe";
 import { ServiceProviderRepository} from "../../../../infrastructure/repositories/ServiceProviderRepository";
 import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
+import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 
 
 @injectable()
 export class GetServiceProvider {
   constructor(
-    @inject(ServiceProviderRepository) private serviceProviderRepository: IServiceProviderRepository,
+    @inject(REPOSITORY_TOKENS.ServiceProviderRepository) private serviceProviderRepository: IServiceProviderRepository,
   ) {}
 
   async execute(userId:string,):Promise<IServiceProvider>{
      const result = await this.serviceProviderRepository.findByUserID(userId)
+     console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴')
       console.log(result);
      if(!result){
         throw new Error('service providr not exist')
