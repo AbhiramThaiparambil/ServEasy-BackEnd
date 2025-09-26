@@ -75,11 +75,13 @@ import { IGetAIChatByIdUseCase } from './application/use-case/premiumFeatures/ai
 import { GetAIChatByIdUseCase } from './application/use-case/premiumFeatures/aiAssistance/getById/GetAIChatByIdUseCase';
 import { IGetProviderAIChatsUseCase } from './application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsUseCase';
 import { GetProviderAIChatsUseCase } from './application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/GetProviderAIChatsUseCase';
+import { ManageServiceProviderSubscriptionsUseCase } from './application/use-case/subscription/ManageServiceProviderSubscriptionsUseCase';
+import { IManageServiceProviderSubscriptionsUseCase } from './application/use-case/subscription/IManageServiceProviderSubscriptionsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
 });
-container.register<IServiceProviderRepository>('IServiceProviderRepository', {
+container.register<IServiceProviderRepository>(REPOSITORY_TOKENS.ServiceProviderRepository, {
   useClass: ServiceProviderRepository,
 });
 container.register(RegisterServiceProviderUseCase, {
@@ -216,6 +218,14 @@ container.register<IGetProviderAIChatsUseCase>(USE_CASE_TOKENS.GetProviderAIChat
   useClass:GetProviderAIChatsUseCase
 })
 
+
+container.register<IManageServiceProviderSubscriptionsUseCase>(USE_CASE_TOKENS.ManageServiceProviderSubscriptionsUseCase,{
+  useClass:ManageServiceProviderSubscriptionsUseCase
+})
+
+
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });
+
+

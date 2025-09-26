@@ -23,6 +23,9 @@ import http from 'http';
 import morganMiddleware from './utils/logger';
 import { SocketService } from './services/socket/SocketService';
 import serviceProviderSubscriptionRouter from './presentation/routes/ServiceProviderSubscriptionRoute';
+import { SubscriptionCheckJob } from './services/jobs/cron/SubscriptionCheckJob';
+import { REPOSITORY_TOKENS } from './utils/constants/tokens';
+import { ISubscriptionPlanRepository } from './domain/repositories/ISubscriptionPlanRepository';
 const app = express();
 const server = http.createServer(app);
 app.use(cookieparser());
@@ -39,9 +42,30 @@ app.use(
   })
 );
 
+
+
+
+
 const socketService = container.resolve(SocketService);
 socketService.initialize(server);
+   const subscriptionCheckJob=container.resolve(SubscriptionCheckJob)
+ subscriptionCheckJob.schedule()
 
+//  const plan:ISubscriptionPlanRepository = container.resolve(REPOSITORY_TOKENS.SubscriptionRepository)
+//   plan.createSubscriptionPlan({
+//   "name": "Premium Plan",
+//   "price": 999,
+//   "validityDays": 30,
+//   "features": [
+//     "Unlimited profile visibility",
+//     "Priority support",
+//     "Advanced analytics",
+//     "Featured listing"
+//   ],
+//   "adLimitPerMonth": 50,
+//   "payoutSpeedDays": 3,
+//   "description": "Best for businesses who want maximum exposure and faster payouts.",
+// })
 app.use('/location', locationRouter);
 
 app.use('/', authRouter);

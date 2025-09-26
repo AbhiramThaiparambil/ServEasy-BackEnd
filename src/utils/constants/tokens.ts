@@ -1,3 +1,4 @@
+
 export const USE_CASE_TOKENS = {
   CreateCouponUseCase: 'ICreateCouponUseCase',
   FindAllCouponsUseCase: 'IFindAllCouponsUseCase',
@@ -18,6 +19,7 @@ export const USE_CASE_TOKENS = {
   CreateAiChatUseCase: 'ICreateAiChatUseCase',
   GetAIChatByIdUseCase: 'IGetAIChatByIdUseCase',
   GetProviderAIChatsUseCase: 'IGetProviderAIChatsUseCase',
+  ManageServiceProviderSubscriptionsUseCase:"IManageServiceProviderSubscriptionsUseCase"
 };
 
 export const REPOSITORY_TOKENS = {
@@ -25,6 +27,7 @@ export const REPOSITORY_TOKENS = {
   CouponRepository: 'ICouponRepository',
   SubscriptionRepository: 'ISubscriptionPlanRepository',
   AiAssistanceRepository: 'IAiAssistanceRepository',
+  ServiceProviderRepository:"IServiceProviderRepository"
 };
 export const SERVICE_TOKENS = {
   MailService: 'IMailService',
