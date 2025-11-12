@@ -292,4 +292,44 @@ async findByUserID(userId: string): Promise<(IServiceProvider & { isProServicePr
 
 
 
+
+async findLatestSubscription(providerIdString: string): Promise<ISubscription | null> {
+  if (!isValidObjectId(providerIdString)) {
+    console.error("Invalid serviceProviderId:", providerIdString);
+    return null;
+  }
+
+  const providerId = new mongoose.Types.ObjectId(providerIdString);
+
+  const [result] = await ServiceProviderModel.aggregate([
+    { $match: { _id: providerId } },
+    {
+      $project: {
+        latestSubscription: {
+          $first: {
+            $filter: {
+              input: {
+                $sortArray: {
+                  input: "$subscriptions",
+                  sortBy: { endDate: -1 } 
+                }
+              },
+              as: "sub",
+              cond: {
+                $in: ["$$sub.status", ["active", "pending"]] 
+              }
+            }
+          }
+        }
+      }
+    }
+  ]);
+
+  return result?.latestSubscription || null;
+}
+
+
+
+
+
 }

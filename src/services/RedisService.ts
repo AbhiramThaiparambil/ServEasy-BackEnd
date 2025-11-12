@@ -2,8 +2,13 @@ import { injectable } from 'tsyringe';
 import Redis from 'ioredis';
 import { config } from 'dotenv';
 import { User } from '../domain/entities/IUser';
+
 config();
+
 @injectable()
+
+
+
 export class RedisService {
   private client!: Redis;
   constructor() {
@@ -14,9 +19,9 @@ export class RedisService {
     this.client = new Redis(redisUrl);
 
     this.client.on('error', err => {
-      console.log('redis Error ');
+      console.error('Redis Error ------');
 
-      console.log(err);
+      console.error(err);
     });
   }
 

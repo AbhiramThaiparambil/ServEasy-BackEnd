@@ -83,7 +83,7 @@ container.register<IUserRepository>('UserRepository', {
 });
 container.register<IServiceProviderRepository>(REPOSITORY_TOKENS.ServiceProviderRepository, {
   useClass: ServiceProviderRepository,
-});
+});-
 container.register(RegisterServiceProviderUseCase, {
   useClass: RegisterServiceProviderUseCase,
 });

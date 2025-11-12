@@ -32,4 +32,6 @@ export interface IServiceProviderRepository {
   expireSubscriptions(): Promise<number>;
 
   findLatestActiveSubscription(providerId: string): Promise<ISubscription | null>;
+  findLatestSubscription(providerId: string): Promise<ISubscription | null>;
+
 }

@@ -26,6 +26,7 @@ import serviceProviderSubscriptionRouter from './presentation/routes/ServiceProv
 import { SubscriptionCheckJob } from './services/jobs/cron/SubscriptionCheckJob';
 import { REPOSITORY_TOKENS } from './utils/constants/tokens';
 import { ISubscriptionPlanRepository } from './domain/repositories/ISubscriptionPlanRepository';
+
 const app = express();
 const server = http.createServer(app);
 app.use(cookieparser());
