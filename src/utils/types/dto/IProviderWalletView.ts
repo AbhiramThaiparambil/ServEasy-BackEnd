@@ -7,6 +7,7 @@ export interface IProviderWalletView {
   description: string;
   experience: string;
   pending:boolean;
+  isSubscribedProvider:boolean
   wallet: {
     balance: number;
   };
