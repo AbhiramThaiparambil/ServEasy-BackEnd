@@ -38,6 +38,7 @@ export interface IProviderWalletDetailsView {
   totalPendingDebit: number;
   totalSuccessDebit: number;
   serviceProvider: IServiceProviderBasicInfo;
+  isSubscribedProvider:boolean
 }
 
 
