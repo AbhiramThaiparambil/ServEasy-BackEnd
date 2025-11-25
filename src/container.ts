@@ -77,6 +77,13 @@ import { IGetProviderAIChatsUseCase } from './application/use-case/premiumFeatur
 import { GetProviderAIChatsUseCase } from './application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/GetProviderAIChatsUseCase';
 import { ManageServiceProviderSubscriptionsUseCase } from './application/use-case/subscription/ManageServiceProviderSubscriptionsUseCase';
 import { IManageServiceProviderSubscriptionsUseCase } from './application/use-case/subscription/IManageServiceProviderSubscriptionsUseCase';
+import { connect } from 'http2';
+import { IGetAllSubscriptionPlansUseCase } from './application/use-case/admin/subscriptionManagement/IGetAllSubscriptionPlansUseCase';
+import { GetAllSubscriptionPlansUseCase } from './application/use-case/admin/subscriptionManagement/GetAllSubscriptionPlansUseCase';
+import { ICreateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/ICreateSubscriptionPlanUseCase';
+import { CreateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/CreateSubscriptionPlanUseCase';
+import { IUpdateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/IUpdateSubscriptionPlanUseCase';
+import { UpdateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/UpdateSubscriptionPlanUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -223,7 +230,19 @@ container.register<IManageServiceProviderSubscriptionsUseCase>(USE_CASE_TOKENS.M
   useClass:ManageServiceProviderSubscriptionsUseCase
 })
 
+container.register<IGetAllSubscriptionPlansUseCase>(USE_CASE_TOKENS.GetAllSubscriptionPlansUseCase,{
+  useClass:GetAllSubscriptionPlansUseCase
+})
 
+
+container.register<ICreateSubscriptionPlanUseCase>(USE_CASE_TOKENS.CreateSubscriptionPlanUseCase,{
+  useClass:CreateSubscriptionPlanUseCase
+})
+
+
+container.register<IUpdateSubscriptionPlanUseCase>(USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase,{
+  useClass:UpdateSubscriptionPlanUseCase
+})
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });

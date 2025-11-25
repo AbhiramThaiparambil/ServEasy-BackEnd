@@ -19,15 +19,21 @@ export const USE_CASE_TOKENS = {
   CreateAiChatUseCase: 'ICreateAiChatUseCase',
   GetAIChatByIdUseCase: 'IGetAIChatByIdUseCase',
   GetProviderAIChatsUseCase: 'IGetProviderAIChatsUseCase',
-  ManageServiceProviderSubscriptionsUseCase:"IManageServiceProviderSubscriptionsUseCase"
+  ManageServiceProviderSubscriptionsUseCase:"IManageServiceProviderSubscriptionsUseCase",
+  GetAllSubscriptionPlansUseCase:"IGetAllSubscriptionPlansUseCase",
+  CreateSubscriptionPlanUseCase:"ICreateSubscriptionPlanUseCase",
+  UpdateSubscriptionPlanUseCase:"IUpdateSubscriptionPlanUseCase"
 };
+
 
 export const REPOSITORY_TOKENS = {
   WalletRepository: 'IWalletRepository',
   CouponRepository: 'ICouponRepository',
   SubscriptionRepository: 'ISubscriptionPlanRepository',
   AiAssistanceRepository: 'IAiAssistanceRepository',
-  ServiceProviderRepository:"IServiceProviderRepository"
+  ServiceProviderRepository:"IServiceProviderRepository",
+
+
 };
 export const SERVICE_TOKENS = {
   MailService: 'IMailService',
