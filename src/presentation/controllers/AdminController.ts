@@ -31,6 +31,9 @@ import { IToggleShowInBannerUseCase } from '../../application/use-case/coupon/to
 import { IGetAllProvidersWalletsUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetAllProvidersWallets.usecase';
 import { IGetProviderWalletUseCase } from '../../application/use-case/admin/wallet/getWallet/IGetProviderWalletById.usecase';
 import { IWithdrawFromProviderWalletUseCase } from '../../application/use-case/admin/wallet/IWithdrawFromProviderWallet.usecase';
+import { IGetAllSubscriptionPlansUseCase } from '../../application/use-case/admin/subscriptionManagement/IGetAllSubscriptionPlansUseCase';
+import { ICreateSubscriptionPlanUseCase } from '../../application/use-case/admin/subscriptionManagement/ICreateSubscriptionPlanUseCase';
+import { IUpdateSubscriptionPlanUseCase } from '../../application/use-case/admin/subscriptionManagement/IUpdateSubscriptionPlanUseCase';
 
 @injectable()
 export class AdminController {
@@ -83,7 +86,12 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.GetProviderWalletByIdUseCase)
     private getWalletByIdUseCase: IGetProviderWalletUseCase,
     @inject(USE_CASE_TOKENS.WithdrawFromProviderWalletUseCase)
-    private withDrawProviderWallet: IWithdrawFromProviderWalletUseCase
+    private withDrawProviderWallet: IWithdrawFromProviderWalletUseCase,
+    @inject(USE_CASE_TOKENS.GetAllSubscriptionPlansUseCase) private getAllSubscriptionPlans:IGetAllSubscriptionPlansUseCase,
+        @inject(USE_CASE_TOKENS.CreateSubscriptionPlanUseCase) private createSubscriptionPlan:ICreateSubscriptionPlanUseCase,
+
+        @inject(USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase) private updateSubscriptionPlan:IUpdateSubscriptionPlanUseCase
+
   ) {}
 
   async signIn(req: Request, res: Response) {
@@ -758,4 +766,135 @@ export class AdminController {
       res.status(500).json({ success: false, message: 'Internal server error' });
     }
   }
+
+async getAllSubscriptions(req: Request, res: Response): Promise<void> {
+  try {
+    const subscriptions = await this.getAllSubscriptionPlans.execute();
+
+    if (!subscriptions || subscriptions.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: 'No subscription plans found',
+        data: [],
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Subscriptions fetched successfully',
+      data: subscriptions,
+    });
+  } catch (error) {
+    console.error('Error fetching subscriptions:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+}
+
+async createSubscription(req: Request, res: Response): Promise<void> {
+  try {
+    const {
+      name,
+      price,
+      validityDays,
+      features,
+      adLimitPerMonth,
+      payoutSpeedDays,
+      description,
+    } = req.body;
+
+    if (!name || !price || !validityDays) {
+      res.status(400).json({
+        success: false,
+        message: 'Required fields are missing',
+      });
+      return;
+    }
+
+    const newPlan = await this.createSubscriptionPlan.execute({
+      name,
+      price,
+      validityDays,
+      features: features || [],
+      adLimitPerMonth: adLimitPerMonth || 0,
+      payoutSpeedDays: payoutSpeedDays || 0,
+      description: description || '',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Subscription created successfully',
+      data: newPlan,
+    });
+  } catch (error) {
+    console.error('Create subscription error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+}
+
+
+async updateSubscription(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    const {
+      name,
+      price,
+      validityDays,
+      features,
+      adLimitPerMonth,
+      payoutSpeedDays,
+      description,
+    } = req.body;
+
+    if (!id) {
+      res.status(400).json({
+        success: false,
+        message: 'Subscription ID is required',
+      });
+      return;
+    }
+
+    const updatedPlan = await this.updateSubscriptionPlan.execute(id, {
+      name,
+      price,
+      validityDays,
+      features,
+      adLimitPerMonth,
+      payoutSpeedDays,
+      description,
+    });
+
+    if (!updatedPlan) {
+      res.status(404).json({
+        success: false,
+        message: 'Subscription plan not found',
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Subscription updated successfully',
+      data: updatedPlan,
+    });
+  } catch (error) {
+    console.error('Update subscription error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+}
+
+
 }
