@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { ISlot } from './ISlot';
 
-export interface Location {
+export interface ILocation {
   type: "Point";
   coordinates: [number, number];
   address: string;
