@@ -42,4 +42,15 @@ router.post('/wallet', authMiddleware('User'), serviceProviderAuth, (req, res) =
 router.get('/subscription-plans', (req, res) =>
   serviceController.getAvailableSubscriptionPlans(req, res)
 );
+
+router.post('/ads',authMiddleware('User'), serviceProviderAuth, (req, res) =>
+  serviceController.createAd(req, res));
+
+router.put('/ads/:adId', (req, res) =>
+  serviceController.editAd(req, res));
+
+router.get('/ads/provider/:providerId', (req, res) =>
+  serviceController.getProviderAds(req, res));
+
+
 export default router;

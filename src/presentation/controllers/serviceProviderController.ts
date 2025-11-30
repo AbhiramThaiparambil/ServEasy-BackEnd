@@ -16,6 +16,9 @@ import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IGetWalletUseCase } from '../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase';
 import { IWithdrawPaymentUseCase } from '../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase';
 import { IGetSubscriptionPlansUseCase } from '../../application/use-case/subscription/IGetSubscriptionPlansUseCase';
+import { IEditAdUseCase } from '../../application/use-case/ads-useCase/IEditAdUseCase';
+import { ICreateAdUseCase } from '../../application/use-case/ads-useCase/ICreateAdUseCase';
+import { IGetProviderAdsUseCase } from '../../application/use-case/ads-useCase/IGetProviderAdsUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -44,7 +47,12 @@ export class ServiceProviderController {
     @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase)
     private withdrawPaymentUseCase: IWithdrawPaymentUseCase,
       @inject(USE_CASE_TOKENS.GetSubscriptionPlansUseCase)
-    private getSubscriptionPlansUseCase: IGetSubscriptionPlansUseCase
+    private getSubscriptionPlansUseCase: IGetSubscriptionPlansUseCase,
+    @inject(  USE_CASE_TOKENS.EditAdUseCase) private editAdUseCase:IEditAdUseCase,
+        @inject(  USE_CASE_TOKENS.CreateAdUseCase) private createAdUseCase:ICreateAdUseCase,
+                @inject(  USE_CASE_TOKENS.EditAdUseCase) private getProviderAdsUseCase:IGetProviderAdsUseCase,
+
+
   ) {}
 
   async getPaymentInfoForChartServiceProvider(req: Request, res: Response): Promise<void> {
@@ -350,5 +358,65 @@ res.status(HttpStatus.BAD_REQUEST)
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Error fetching subscription plans", error });
     }
   }
+
+async createAd(req: Request, res: Response): Promise<void> {
+  try {
+    console.log('09090909090909090909090909090909')
+        console.log(req.body)
+
+            console.log('09090909090909090909090909090909')
+
+
+    const serviceProviderId = res.locals.serviceProvider_id;
+
+    const adData = req.body.data;
+
+
+    console.log(req.body+"--formData")
+    const createdAd = await this.createAdUseCase.execute({...adData,providerId:serviceProviderId});
+
+    res.status(HttpStatus.CREATED).json(createdAd);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Error creating ad",
+      error
+    });
+  }
+}
+
+
+async editAd(req: Request, res: Response): Promise<void> {
+  try {
+    const { adId } = req.params;
+    const updateData = req.body;
+    console.log(updateData)
+    console.log(req.body)
+    
+    const updatedAd = await this.editAdUseCase.execute(adId, updateData);
+
+    res.status(HttpStatus.OK).json(updatedAd);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Error updating ad",
+      error
+    });
+  }
+}
+
+async getProviderAds(req: Request, res: Response): Promise<void> {
+  try {
+    const { providerId } = req.params;
+
+    const ads = await this.getProviderAdsUseCase.execute(providerId);
+
+    res.status(HttpStatus.OK).json(ads);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Error fetching provider ads",
+      error
+    });
+  }
+}
+
 
 }

@@ -58,4 +58,7 @@ export class CloudinaryService {
     async uploadChatImage(img_url: string): Promise<string> {
     return this.uploadImage(img_url, "/servEasy-chatImages");
   }
+    async uploadAdImage(img_url: string): Promise<string> {
+    return this.uploadImage(img_url, "/servEasy-adImages");
+  }
 }

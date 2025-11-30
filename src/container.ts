@@ -84,6 +84,12 @@ import { ICreateSubscriptionPlanUseCase } from './application/use-case/admin/sub
 import { CreateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/CreateSubscriptionPlanUseCase';
 import { IUpdateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/IUpdateSubscriptionPlanUseCase';
 import { UpdateSubscriptionPlanUseCase } from './application/use-case/admin/subscriptionManagement/UpdateSubscriptionPlanUseCase';
+import { AdRepository } from './infrastructure/repositories/AdRepository';
+import { IEditAdUseCase } from './application/use-case/ads-useCase/IEditAdUseCase';
+import { EditAdUseCase } from './application/use-case/ads-useCase/EditAdUseCase';
+import { ICreateAdUseCase } from './application/use-case/ads-useCase/ICreateAdUseCase';
+import { CreateAdUseCase } from './application/use-case/ads-useCase/CreateAdUseCase';
+import { IGetProviderAdsUseCase } from './application/use-case/ads-useCase/IGetProviderAdsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -139,6 +145,12 @@ container.register('ReviewRepository', { useClass: ReviewRepository });
 container.register('NotificationRepository', { useClass: NotificationRepository });
 container.registerSingleton<IChatRepository>('ChatRepository', ChatRepository);
 container.register('SiteSettingRepository', SiteSettingRepository);
+
+
+
+container.register(REPOSITORY_TOKENS.AdRepository, AdRepository);
+
+
 console.log('All dependencies registered successfully.');
 
 
@@ -243,6 +255,20 @@ container.register<ICreateSubscriptionPlanUseCase>(USE_CASE_TOKENS.CreateSubscri
 container.register<IUpdateSubscriptionPlanUseCase>(USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase,{
   useClass:UpdateSubscriptionPlanUseCase
 })
+
+// ADS
+
+container.register<IEditAdUseCase>(USE_CASE_TOKENS.EditAdUseCase,{
+  useClass:EditAdUseCase
+})
+container.register<ICreateAdUseCase>(USE_CASE_TOKENS.CreateAdUseCase,{
+  useClass:CreateAdUseCase
+})
+// container.register<IGetProviderAdsUseCase>(USE_CASE_TOKENS.GetProviderAdsUseCase,{
+//   useClass:GetProviderAdsUseCase
+// })
+
+
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });

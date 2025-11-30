@@ -22,7 +22,11 @@ export const USE_CASE_TOKENS = {
   ManageServiceProviderSubscriptionsUseCase:"IManageServiceProviderSubscriptionsUseCase",
   GetAllSubscriptionPlansUseCase:"IGetAllSubscriptionPlansUseCase",
   CreateSubscriptionPlanUseCase:"ICreateSubscriptionPlanUseCase",
-  UpdateSubscriptionPlanUseCase:"IUpdateSubscriptionPlanUseCase"
+  UpdateSubscriptionPlanUseCase:"IUpdateSubscriptionPlanUseCase",
+  GetProviderAdsUseCase:"IGetProviderAdsUseCase",
+EditAdUseCase:"IEditAdUseCase",
+CreateAdUseCase:"ICreateAdUseCase",
+
 };
 
 
@@ -32,10 +36,12 @@ export const REPOSITORY_TOKENS = {
   SubscriptionRepository: 'ISubscriptionPlanRepository',
   AiAssistanceRepository: 'IAiAssistanceRepository',
   ServiceProviderRepository:"IServiceProviderRepository",
+  AdRepository:"IAdRepository"
 
 
 };
 export const SERVICE_TOKENS = {
   MailService: 'IMailService',
   GoogleGenAIService: 'IGoogleGenAIService',
+  CloudinaryService:"CloudinaryService"
 };

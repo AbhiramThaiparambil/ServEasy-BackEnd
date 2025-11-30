@@ -25,15 +25,12 @@ const AdSchema = new Schema(
         default: 'Point',
       },
       coordinates: { type: [Number] },
+      address :{type:String}
     },
 
     radiusKm: { type: Number },
 
-    planType: {
-      type: String,
-      enum: ['basic', 'pro', 'premium'],
-      default: 'basic',
-    },
+  
 
     startDate: { type: Date },
     endDate: { type: Date },
@@ -43,8 +40,8 @@ const AdSchema = new Schema(
 
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected', 'blocked', 'expired'],
-      default: 'pending',
+      enum: ["active" ,"block" ,"expired"],
+      default: 'active',
     },
   },
   { timestamps: true }
