@@ -90,6 +90,7 @@ import { EditAdUseCase } from './application/use-case/ads-useCase/EditAdUseCase'
 import { ICreateAdUseCase } from './application/use-case/ads-useCase/ICreateAdUseCase';
 import { CreateAdUseCase } from './application/use-case/ads-useCase/CreateAdUseCase';
 import { IGetProviderAdsUseCase } from './application/use-case/ads-useCase/IGetProviderAdsUseCase';
+import { GetProviderAdsUseCase } from './application/use-case/ads-useCase/GetProviderAdsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -264,9 +265,9 @@ container.register<IEditAdUseCase>(USE_CASE_TOKENS.EditAdUseCase,{
 container.register<ICreateAdUseCase>(USE_CASE_TOKENS.CreateAdUseCase,{
   useClass:CreateAdUseCase
 })
-// container.register<IGetProviderAdsUseCase>(USE_CASE_TOKENS.GetProviderAdsUseCase,{
-//   useClass:GetProviderAdsUseCase
-// })
+container.register<IGetProviderAdsUseCase>(USE_CASE_TOKENS.GetProviderAdsUseCase,{
+  useClass:GetProviderAdsUseCase
+})
 
 
 // services

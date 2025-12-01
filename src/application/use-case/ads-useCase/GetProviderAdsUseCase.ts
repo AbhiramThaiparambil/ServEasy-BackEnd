@@ -10,6 +10,8 @@ export class GetProviderAdsUseCase implements IGetProviderAdsUseCase {
   ) {}
 
   async execute(providerId: string): Promise<IAdDTO[]> {
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log(providerId)
     return await this.adRepository.getAdsByProvider(providerId);
   }
 }

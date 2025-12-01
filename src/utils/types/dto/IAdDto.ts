@@ -18,4 +18,6 @@ export interface IAdDTO {
   targetLocation?: ILocationDTO | null; 
   createdAt: Date;
   updatedAt: Date;
+    status?: "active" |"block" |"expired"
+
 }

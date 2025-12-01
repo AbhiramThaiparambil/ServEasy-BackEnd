@@ -24,7 +24,13 @@ export class AdRepository implements IAdRepository {
   async getAdsByProvider(providerId: string): Promise<IAdDTO[] | []> {
     try {
       const id= new Types.ObjectId(providerId)
+          console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+
       console.log(await AdModel.find({providerId: id }).sort({ createdAt: -1 }))
+          console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+
       return await AdModel.find({providerId: id }).sort({ createdAt: -1 });
        
 

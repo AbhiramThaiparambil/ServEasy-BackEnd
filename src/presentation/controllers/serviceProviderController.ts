@@ -50,7 +50,7 @@ export class ServiceProviderController {
     private getSubscriptionPlansUseCase: IGetSubscriptionPlansUseCase,
     @inject(  USE_CASE_TOKENS.EditAdUseCase) private editAdUseCase:IEditAdUseCase,
         @inject(  USE_CASE_TOKENS.CreateAdUseCase) private createAdUseCase:ICreateAdUseCase,
-                @inject(  USE_CASE_TOKENS.EditAdUseCase) private getProviderAdsUseCase:IGetProviderAdsUseCase,
+                @inject(  USE_CASE_TOKENS.GetProviderAdsUseCase) private getProviderAdsUseCase:IGetProviderAdsUseCase,
 
 
   ) {}
@@ -406,7 +406,9 @@ async editAd(req: Request, res: Response): Promise<void> {
 async getProviderAds(req: Request, res: Response): Promise<void> {
   try {
     const { providerId } = req.params;
-
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+console.log(req.params)
     const ads = await this.getProviderAdsUseCase.execute(providerId);
 
     res.status(HttpStatus.OK).json(ads);
