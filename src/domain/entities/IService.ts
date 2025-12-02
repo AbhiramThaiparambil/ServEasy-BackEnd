@@ -13,6 +13,7 @@ export interface Review {
 }
 
 export interface IService {
+  _id?:Types.ObjectId
   serviceName: string;
   description: string;
   serviceType: string;

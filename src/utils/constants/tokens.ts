@@ -26,11 +26,13 @@ export const USE_CASE_TOKENS = {
   GetProviderAdsUseCase:"IGetProviderAdsUseCase",
 EditAdUseCase:"IEditAdUseCase",
 CreateAdUseCase:"ICreateAdUseCase",
+GetServiceNamesUseCase:"IGetServiceNamesUseCase"
 
 };
 
 
 export const REPOSITORY_TOKENS = {
+  ServiceRepository:"ServiceRepository",
   WalletRepository: 'IWalletRepository',
   CouponRepository: 'ICouponRepository',
   SubscriptionRepository: 'ISubscriptionPlanRepository',

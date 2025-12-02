@@ -19,6 +19,7 @@ import { IGetSubscriptionPlansUseCase } from '../../application/use-case/subscri
 import { IEditAdUseCase } from '../../application/use-case/ads-useCase/IEditAdUseCase';
 import { ICreateAdUseCase } from '../../application/use-case/ads-useCase/ICreateAdUseCase';
 import { IGetProviderAdsUseCase } from '../../application/use-case/ads-useCase/IGetProviderAdsUseCase';
+import { IGetServiceNamesUseCase } from '../../application/use-case/admin/service-management/IGetServiceNamesUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -51,7 +52,7 @@ export class ServiceProviderController {
     @inject(  USE_CASE_TOKENS.EditAdUseCase) private editAdUseCase:IEditAdUseCase,
         @inject(  USE_CASE_TOKENS.CreateAdUseCase) private createAdUseCase:ICreateAdUseCase,
                 @inject(  USE_CASE_TOKENS.GetProviderAdsUseCase) private getProviderAdsUseCase:IGetProviderAdsUseCase,
-
+@inject(USE_CASE_TOKENS.GetServiceNamesUseCase)private getServiceNamesUseCase:IGetServiceNamesUseCase
 
   ) {}
 
@@ -389,11 +390,14 @@ async editAd(req: Request, res: Response): Promise<void> {
   try {
     const { adId } = req.params;
     const updateData = req.body;
+    console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
     console.log(updateData)
+        console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
+
     console.log(req.body)
     
     const updatedAd = await this.editAdUseCase.execute(adId, updateData);
-
+         
     res.status(HttpStatus.OK).json(updatedAd);
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -406,8 +410,7 @@ async editAd(req: Request, res: Response): Promise<void> {
 async getProviderAds(req: Request, res: Response): Promise<void> {
   try {
     const { providerId } = req.params;
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+
 console.log(req.params)
     const ads = await this.getProviderAdsUseCase.execute(providerId);
 
@@ -420,5 +423,30 @@ console.log(req.params)
   }
 }
 
+
+ async getServiceNames(req: Request, res: Response): Promise<void> {
+    try {
+      const { providerId } = req.params;
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+
+      const result = await this.getServiceNamesUseCase.execute(providerId);
+      console.log(result)
+      res.status(200).json({
+        success: true,
+        data: result
+      });
+
+      return;
+    } catch (error) {
+      
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong"
+      });
+
+      return;
+    }
+  }
 
 }

@@ -91,6 +91,9 @@ import { ICreateAdUseCase } from './application/use-case/ads-useCase/ICreateAdUs
 import { CreateAdUseCase } from './application/use-case/ads-useCase/CreateAdUseCase';
 import { IGetProviderAdsUseCase } from './application/use-case/ads-useCase/IGetProviderAdsUseCase';
 import { GetProviderAdsUseCase } from './application/use-case/ads-useCase/GetProviderAdsUseCase';
+import { IServiceRepository } from './domain/repositories/IServiceRepository';
+import { IGetServiceNamesUseCase } from './application/use-case/admin/service-management/IGetServiceNamesUseCase';
+import { GetServiceNamesUseCase } from './application/use-case/admin/service-management/GetServiceNamesUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -137,7 +140,12 @@ container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register('SmsOtpService', SmsOtpService);
 container.register('RedisService', RedisService);
 container.register('LocationService', { useClass: LocationService });
-container.register('ServiceRepository', ServiceRepository);
+
+
+container.register<IServiceRepository>(REPOSITORY_TOKENS.ServiceRepository, ServiceRepository);
+
+
+
 container.register('ServiceBookingRepository', ServiceBookingRepository);
 container.register('RazorpayService', RazorpayService);
 
@@ -270,6 +278,10 @@ container.register<IGetProviderAdsUseCase>(USE_CASE_TOKENS.GetProviderAdsUseCase
 })
 
 
+
+container.register<IGetServiceNamesUseCase>(USE_CASE_TOKENS.GetServiceNamesUseCase,{
+  useClass:GetServiceNamesUseCase
+})
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });

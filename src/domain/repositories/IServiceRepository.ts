@@ -18,5 +18,8 @@ export interface IServiceRepository {
   unblockService(serviceId: string): Promise<boolean>;
   updateService(id: string, newData: IService): Promise<IService | null>;
   findAllActiveServices(): Promise<IService[]>;
+   findAllServiceProviderId(
+      serviceProviderId: Types.ObjectId | string
+    ): Promise<IService[]>
   findOnlineServicesWithSlot():Promise<IOnlineService[]|[]>
 }

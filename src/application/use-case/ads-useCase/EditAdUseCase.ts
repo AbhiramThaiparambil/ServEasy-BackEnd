@@ -14,3 +14,5 @@ export class EditAdUseCase implements IEditAdUseCase {
     return await this.adRepository.updateAd(adId, data);
   }
 }
+
+

@@ -53,4 +53,6 @@ router.get('/ads/provider/:providerId', (req, res) =>
   serviceController.getProviderAds(req, res));
 
 
+router.get("/providers/:providerId/services/names",(req, res) =>
+  serviceController.getServiceNames(req, res))
 export default router;
