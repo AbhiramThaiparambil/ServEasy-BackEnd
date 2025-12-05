@@ -34,6 +34,8 @@ import { IWithdrawFromProviderWalletUseCase } from '../../application/use-case/a
 import { IGetAllSubscriptionPlansUseCase } from '../../application/use-case/admin/subscriptionManagement/IGetAllSubscriptionPlansUseCase';
 import { ICreateSubscriptionPlanUseCase } from '../../application/use-case/admin/subscriptionManagement/ICreateSubscriptionPlanUseCase';
 import { IUpdateSubscriptionPlanUseCase } from '../../application/use-case/admin/subscriptionManagement/IUpdateSubscriptionPlanUseCase';
+import { IAdminGetAdsUseCase } from '../../application/use-case/admin/ads/IAdminGetAdsUseCase';
+import { IChangeAdStatusUseCase } from '../../application/use-case/admin/ads/IChangeAdStatusUseCase';
 
 @injectable()
 export class AdminController {
@@ -90,7 +92,10 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.GetAllSubscriptionPlansUseCase) private getAllSubscriptionPlans:IGetAllSubscriptionPlansUseCase,
         @inject(USE_CASE_TOKENS.CreateSubscriptionPlanUseCase) private createSubscriptionPlan:ICreateSubscriptionPlanUseCase,
 
-        @inject(USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase) private updateSubscriptionPlan:IUpdateSubscriptionPlanUseCase
+        @inject(USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase) private updateSubscriptionPlan:IUpdateSubscriptionPlanUseCase,
+        @inject(USE_CASE_TOKENS.AdminGetAdsUseCase) private getAdsUseCase:IAdminGetAdsUseCase,
+        @inject (USE_CASE_TOKENS.ChangeAdStatusUseCase) private changeAdStatusUseCase:IChangeAdStatusUseCase
+
 
   ) {}
 
@@ -895,6 +900,66 @@ async updateSubscription(req: Request, res: Response): Promise<void> {
     });
   }
 }
+
+
+async getAds(req: Request, res: Response): Promise<void> {
+  try {
+    // const { providerId } = req.params;
+
+    const limit = parseInt(req.query.limit as string) || 10;
+      const page = parseInt(req.query.page as string) || 0;
+      const skip = page * limit;
+      const data = await this.getAdsUseCase.execute(skip,limit);
+          console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
+        console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
+
+      console.log(data)
+
+
+
+      res.status(HttpStatus.OK).json(data);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Error fetching provider ads",
+      error
+    });
+  }
+}
+
+async changeAdStatus(req: Request, res: Response): Promise<void> {
+  try {
+           console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    const { adId } = req.params;
+    const { status } = req.body; // expecting { status: "active" | "block" }
+ console.log('called')
+    if (!adId || !status) {
+      res.status(400).json({ message: "adId and status are required" });
+      return;
+    }
+
+    const updated = await this.changeAdStatusUseCase.execute(adId, status);
+
+    if (!updated) {
+      res.status(404).json({ message: "Ad not found or status unchanged" });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Ad status updated successfully",
+      status
+    });
+
+  } catch (error) {
+    console.error("Error changing ad status:", error);
+
+    res.status(500).json({
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : error
+    });
+  }
+}
+
 
 
 }

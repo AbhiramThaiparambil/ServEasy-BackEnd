@@ -4,6 +4,7 @@ import { IAd } from "../../domain/entities/IAd";
 import { AdModel } from "../models/AdModel";
 import { IAdDTO } from "../../utils/types/dto/IAdDto";
 import { Types } from "mongoose";
+import { IAdminAd, IAdStatus } from "../../utils/types/dto/IAdAdminDto";
 
 @injectable()
 export class AdRepository implements IAdRepository {
@@ -20,6 +21,80 @@ export class AdRepository implements IAdRepository {
       throw e;
     }
   }
+
+
+  async getAllAds(skip: number, limit: number): Promise<IAdminAd[]> {
+    const ads = await AdModel.aggregate([
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+
+      {
+        $lookup: {
+          from: "serviceproviders",    
+          localField: "providerId",
+          foreignField: "_id",
+          as: "provider"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$provider",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+
+      {
+        $project: {
+          _id: 1,
+          serviceId: 1,
+          providerId: 1,
+
+          serviceProviderName: "$provider.fullName",
+          profileImage: "$provider.profileImage",
+
+          caption: 1,
+          description: 1,
+          image: 1,
+
+          targetLocation: 1,
+          radiusKm: 1,
+
+          startDate: 1,
+          endDate: 1,
+
+          views: 1,
+          clicks: 1,
+          status: 1,
+
+          createdAt: 1,
+          updatedAt: 1
+        }
+      }
+    ]);
+
+    return ads as IAdminAd[];
+  }
+
+async getTotalAdCount(): Promise<number> {
+  return AdModel.countDocuments();
+}
+
+
+async changeAdStatus(id: string, status: IAdStatus): Promise<boolean> {
+  const adId = new Types.ObjectId(id);
+
+  const result = await AdModel.updateOne(
+    { _id: adId },
+    { $set: { status } }
+  );
+
+  return result.modifiedCount > 0;
+}
+
+
+
 
   async getAdsByProvider(providerId: string): Promise<IAdDTO[] | []> {
     try {

@@ -26,7 +26,9 @@ export const USE_CASE_TOKENS = {
   GetProviderAdsUseCase:"IGetProviderAdsUseCase",
 EditAdUseCase:"IEditAdUseCase",
 CreateAdUseCase:"ICreateAdUseCase",
-GetServiceNamesUseCase:"IGetServiceNamesUseCase"
+GetServiceNamesUseCase:"IGetServiceNamesUseCase",
+AdminGetAdsUseCase:"IAdminGetAdsUseCase",
+ChangeAdStatusUseCase:"IChangeAdStatusUseCase"
 
 };
 

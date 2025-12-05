@@ -94,6 +94,10 @@ import { GetProviderAdsUseCase } from './application/use-case/ads-useCase/GetPro
 import { IServiceRepository } from './domain/repositories/IServiceRepository';
 import { IGetServiceNamesUseCase } from './application/use-case/admin/service-management/IGetServiceNamesUseCase';
 import { GetServiceNamesUseCase } from './application/use-case/admin/service-management/GetServiceNamesUseCase';
+import { IAdminGetAdsUseCase } from './application/use-case/admin/ads/IAdminGetAdsUseCase';
+import { AdminGetAdsUseCase } from './application/use-case/admin/ads/AdminGetAdsUseCase';
+import { IChangeAdStatusUseCase } from './application/use-case/admin/ads/IChangeAdStatusUseCase';
+import { ChangeAdStatusUseCase } from './application/use-case/admin/ads/ChangeAdStatusUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -278,10 +282,18 @@ container.register<IGetProviderAdsUseCase>(USE_CASE_TOKENS.GetProviderAdsUseCase
 })
 
 
+container.register <IAdminGetAdsUseCase> (USE_CASE_TOKENS.AdminGetAdsUseCase,{
+  useClass:AdminGetAdsUseCase
+})
+
 
 container.register<IGetServiceNamesUseCase>(USE_CASE_TOKENS.GetServiceNamesUseCase,{
   useClass:GetServiceNamesUseCase
 })
+container.register<IChangeAdStatusUseCase>(USE_CASE_TOKENS.ChangeAdStatusUseCase,{
+  useClass:ChangeAdStatusUseCase
+})
+
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });

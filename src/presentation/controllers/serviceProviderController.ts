@@ -390,9 +390,7 @@ async editAd(req: Request, res: Response): Promise<void> {
   try {
     const { adId } = req.params;
     const updateData = req.body;
-    console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
-    console.log(updateData)
-        console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶")
+
 
     console.log(req.body)
     
@@ -427,9 +425,7 @@ console.log(req.params)
  async getServiceNames(req: Request, res: Response): Promise<void> {
     try {
       const { providerId } = req.params;
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
-
+   
       const result = await this.getServiceNamesUseCase.execute(providerId);
       console.log(result)
       res.status(200).json({

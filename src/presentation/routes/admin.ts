@@ -119,4 +119,10 @@ router
 
   router.patch("/subscriptions/:id",(req, res) => adminController.updateSubscription(req, res));
 
+router.get("/ads",(req,res)=>adminController.getAds(req,res));
+
+
+router.patch("/ads/:adId/:status", (req,res)=>adminController.changeAdStatus(req,res));
+
+
 export default router;
