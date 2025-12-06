@@ -11,6 +11,7 @@ export class ChangeAdStatusUseCase implements IChangeAdStatusUseCase {
   ) {}
 
   async execute(id: string, status: IAdStatus): Promise<boolean> {
+    console.log('useCase')
     return await this.adRepository.changeAdStatus(id, status);
   }
 }

@@ -122,7 +122,7 @@ router
 router.get("/ads",(req,res)=>adminController.getAds(req,res));
 
 
-router.patch("/ads/:adId/:status", (req,res)=>adminController.changeAdStatus(req,res));
+router.patch("/ads/:adId/", (req,res)=>adminController.changeAdStatus(req,res));
 
 
 export default router;

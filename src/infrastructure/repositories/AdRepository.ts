@@ -51,7 +51,7 @@ export class AdRepository implements IAdRepository {
           serviceId: 1,
           providerId: 1,
 
-          serviceProviderName: "$provider.fullName",
+          serviceProviderName: "$provider.serviceProviderName",
           profileImage: "$provider.profileImage",
 
           caption: 1,
@@ -83,7 +83,8 @@ async getTotalAdCount(): Promise<number> {
 
 
 async changeAdStatus(id: string, status: IAdStatus): Promise<boolean> {
-  const adId = new Types.ObjectId(id);
+ try {
+   const adId = new Types.ObjectId(id);
 
   const result = await AdModel.updateOne(
     { _id: adId },
@@ -91,6 +92,10 @@ async changeAdStatus(id: string, status: IAdStatus): Promise<boolean> {
   );
 
   return result.modifiedCount > 0;
+ } catch (error) {
+   console.log(error)
+  return false
+ }
 }
 
 

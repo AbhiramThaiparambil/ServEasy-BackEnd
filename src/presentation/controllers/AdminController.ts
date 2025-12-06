@@ -937,6 +937,7 @@ async changeAdStatus(req: Request, res: Response): Promise<void> {
       res.status(400).json({ message: "adId and status are required" });
       return;
     }
+ console.log('called')
 
     const updated = await this.changeAdStatusUseCase.execute(adId, status);
 
