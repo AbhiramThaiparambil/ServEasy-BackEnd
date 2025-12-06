@@ -9,8 +9,9 @@ export class GetProviderAdsUseCase implements IGetProviderAdsUseCase {
     @inject("IAdRepository") private adRepository: IAdRepository
   ) {}
 
-  async execute(providerId: string): Promise<IAdDTO[]> {
-    console.log(providerId)
-    return await this.adRepository.getAdsByProvider(providerId);
+  async execute(providerId: string,skip?:number,limit?:number): Promise<{ads:IAdDTO[]|[],count:number}> {
+    const ads= await this.adRepository.getAdsByProvider(providerId,skip,limit);
+    const count=await this.adRepository.getTotalProviderAdCount(providerId);
+  return {ads,count}
   }
 }

@@ -81,6 +81,12 @@ async getTotalAdCount(): Promise<number> {
   return AdModel.countDocuments();
 }
 
+async getTotalProviderAdCount(id:string): Promise<number> {
+  const _id= new Types.ObjectId(id)
+ 
+  return AdModel.find({providerId:_id}).countDocuments()
+}
+
 
 async changeAdStatus(id: string, status: IAdStatus): Promise<boolean> {
  try {
@@ -101,24 +107,25 @@ async changeAdStatus(id: string, status: IAdStatus): Promise<boolean> {
 
 
 
-  async getAdsByProvider(providerId: string): Promise<IAdDTO[] | []> {
-    try {
-      const id= new Types.ObjectId(providerId)
-          console.log("😍😍😍😍😍😍😍😍😍😍😍")
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+async getAdsByProvider(
+  providerId: string,
+  skip: number = 0,
+  limit: number = 10
+): Promise<IAdDTO[]> {
+  try {
+    const id = new Types.ObjectId(providerId);
 
-      console.log(await AdModel.find({providerId: id }).sort({ createdAt: -1 }))
-          console.log("😍😍😍😍😍😍😍😍😍😍😍")
-    console.log("😍😍😍😍😍😍😍😍😍😍😍")
+    return await AdModel.find({ providerId: id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-      return await AdModel.find({providerId: id }).sort({ createdAt: -1 });
-       
-
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
+}
+
 
   async updateAd(id: string, data: Partial<IAd>): Promise<IAd | null> {
     return await AdModel.findByIdAndUpdate(id, data, { new: true });

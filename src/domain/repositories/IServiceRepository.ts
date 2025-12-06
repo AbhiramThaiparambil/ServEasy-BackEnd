@@ -5,7 +5,7 @@ export interface IServiceRepository {
   create(service: IService): Promise<IService>;
   findById(serviceId: Types.ObjectId): Promise<IService | null>;
   findAllServiceProviderId(
-    serviceProviderId: Types.ObjectId | string
+    serviceProviderId: Types.ObjectId | string,
   ): Promise<IService[]>;
 
   findAll(): Promise<IService[]>;

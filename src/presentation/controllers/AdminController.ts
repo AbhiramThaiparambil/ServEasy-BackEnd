@@ -904,7 +904,6 @@ async updateSubscription(req: Request, res: Response): Promise<void> {
 
 async getAds(req: Request, res: Response): Promise<void> {
   try {
-    // const { providerId } = req.params;
 
     const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;

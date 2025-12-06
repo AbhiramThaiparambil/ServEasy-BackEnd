@@ -20,6 +20,7 @@ import { IEditAdUseCase } from '../../application/use-case/ads-useCase/IEditAdUs
 import { ICreateAdUseCase } from '../../application/use-case/ads-useCase/ICreateAdUseCase';
 import { IGetProviderAdsUseCase } from '../../application/use-case/ads-useCase/IGetProviderAdsUseCase';
 import { IGetServiceNamesUseCase } from '../../application/use-case/admin/service-management/IGetServiceNamesUseCase';
+import { IChangeAdStatusUseCase } from '../../application/use-case/admin/ads/IChangeAdStatusUseCase';
 
 @injectable()
 export class ServiceProviderController {
@@ -52,7 +53,9 @@ export class ServiceProviderController {
     @inject(  USE_CASE_TOKENS.EditAdUseCase) private editAdUseCase:IEditAdUseCase,
         @inject(  USE_CASE_TOKENS.CreateAdUseCase) private createAdUseCase:ICreateAdUseCase,
                 @inject(  USE_CASE_TOKENS.GetProviderAdsUseCase) private getProviderAdsUseCase:IGetProviderAdsUseCase,
-@inject(USE_CASE_TOKENS.GetServiceNamesUseCase)private getServiceNamesUseCase:IGetServiceNamesUseCase
+@inject(USE_CASE_TOKENS.GetServiceNamesUseCase)private getServiceNamesUseCase:IGetServiceNamesUseCase,
+        @inject (USE_CASE_TOKENS.ChangeAdStatusUseCase) private changeAdStatusUseCase:IChangeAdStatusUseCase
+
 
   ) {}
 
@@ -408,11 +411,12 @@ async editAd(req: Request, res: Response): Promise<void> {
 async getProviderAds(req: Request, res: Response): Promise<void> {
   try {
     const { providerId } = req.params;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const page = parseInt(req.query.page as string) || 0;
+      const skip = page * limit;
+    const data = await this.getProviderAdsUseCase.execute(providerId,skip,limit);
 
-console.log(req.params)
-    const ads = await this.getProviderAdsUseCase.execute(providerId);
-
-    res.status(HttpStatus.OK).json(ads);
+    res.status(HttpStatus.OK).json(data);
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: "Error fetching provider ads",
@@ -422,10 +426,42 @@ console.log(req.params)
 }
 
 
+async changeAdStatus(req: Request, res: Response): Promise<void> {
+  try {
+    const { adId } = req.params;
+    const { status } = req.body; 
+    if (!adId || !status) {
+      res.status(400).json({ message: "adId and status are required" });
+      return;
+    }
+
+    const updated = await this.changeAdStatusUseCase.execute(adId, status);
+
+    if (!updated) {
+      res.status(404).json({ message: "Ad not found or status unchanged" });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Ad status updated successfully",
+      status
+    });
+
+  } catch (error) {
+    console.error("Error changing ad status:", error);
+
+    res.status(500).json({
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : error
+    });
+  }
+}
+
+
  async getServiceNames(req: Request, res: Response): Promise<void> {
     try {
       const { providerId } = req.params;
-   
+  
       const result = await this.getServiceNamesUseCase.execute(providerId);
       console.log(result)
       res.status(200).json({

@@ -6,10 +6,11 @@ export interface IAdRepository {
   createAd(data: IAd): Promise<IAd|null>;
   updateAd(id: string, data: Partial<IAd>): Promise<IAd | null>;
   getAdById(id: string): Promise<IAd | null>;
-  getAdsByProvider(providerId: string): Promise<IAdDTO[]>;
+  getAdsByProvider(providerId: string,skip?:number,limit?:number): Promise<IAdDTO[]>;
   getAllAds(skip: number, limit: number): Promise<IAdminAd[]>;
  getTotalAdCount(): Promise<number> ;
 changeAdStatus(id: string, status: IAdStatus): Promise<boolean> 
+ getTotalProviderAdCount(id:string): Promise<number> ;
 
   blockAd(id: string): Promise<boolean>;
   unblockAd(id: string): Promise<boolean>;

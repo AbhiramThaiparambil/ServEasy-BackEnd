@@ -12,7 +12,7 @@ export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
     private serviceRepo: IServiceRepository
   ) {}
 
-  async execute(providerId: string): Promise<IServiceNameDTO[]> {
+  async execute(providerId: string,): Promise<IServiceNameDTO[]> {
   try {
       const services = await this.serviceRepo.findAllServiceProviderId(new Types.ObjectId(providerId));
 

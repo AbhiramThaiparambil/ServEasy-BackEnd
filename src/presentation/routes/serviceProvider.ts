@@ -55,4 +55,7 @@ router.get('/ads/provider/:providerId', (req, res) =>
 
 router.get("/providers/:providerId/services/names",(req, res) =>
   serviceController.getServiceNames(req, res))
+
+router.patch("/ads/:adId/", (req,res)=>serviceController.changeAdStatus(req,res));
+
 export default router;
