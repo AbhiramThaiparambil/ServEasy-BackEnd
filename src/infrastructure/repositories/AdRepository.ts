@@ -146,7 +146,6 @@ async findRecommendedAds(
   if (category) match.category = category;
   if (providerId) match.providerId = providerId;
 
-  // 📌 Define coords correctly
   let coords: [number, number] | null = null;
   if (lat !== undefined && lng !== undefined) {
     coords = [lng, lat];
@@ -154,7 +153,6 @@ async findRecommendedAds(
 
   const ads = await AdModel.aggregate([
 
-    // 1️⃣ GEO FILTER (only when coords exist)
     ...(coords
       ? [{
           $geoNear: {
@@ -167,16 +165,12 @@ async findRecommendedAds(
       : []
     ),
 
-    // 2️⃣ ACTIVE + DATE FILTER
     { $match: match },
 
-    // 3️⃣ FEATURED SORT
     { $sort: { boostScore: -1, createdAt: -1 } },
 
-    // 4️⃣ RANDOMIZER
     { $sample: { size: count } },
 
-    // ⭐ 5️⃣ LOOKUP SERVICE PROVIDER DETAILS
     {
       $lookup: {
         from: "serviceproviders",
@@ -186,7 +180,6 @@ async findRecommendedAds(
       }
     },
 
-    // 6️⃣ Unwind provider
     {
       $unwind: {
         path: "$provider",
@@ -194,7 +187,6 @@ async findRecommendedAds(
       }
     },
 
-    // ⭐ 7️⃣ PROJECT INTO DTO FORMAT
     {
       $project: {
         _id: { $toString: "$_id" },
@@ -210,7 +202,6 @@ async findRecommendedAds(
       }
     },
 
-    // 8️⃣ LIMIT as final safety
     { $limit: count }
 
   ]);
@@ -218,6 +209,22 @@ async findRecommendedAds(
   return ads as IRecommendedAdDTO[];
 }
 
+
+async expireExpiredAds(): Promise<number> {
+  const now = new Date();
+
+  const result = await AdModel.updateMany(
+    {
+      status: "active",
+      endDate: { $lt: now }
+    },
+    {
+      $set: { status: "expired" }
+    }
+  );
+
+  return result.modifiedCount ?? 0;
+}
 
 
   async updateAd(id: string, data: Partial<IAd>): Promise<IAd | null> {

@@ -17,7 +17,7 @@ export interface IAdRepository {
   changeAdStatus(id: string, status: IAdStatus): Promise<boolean>;
   getTotalProviderAdCount(id: string): Promise<number>;
   findRecommendedAds(params: IGetRecommendedAdsRequestDTO): Promise<IRecommendedAdDTO[]>;
-
+ expireExpiredAds(): Promise<number>;
   blockAd(id: string): Promise<boolean>;
   unblockAd(id: string): Promise<boolean>;
   expireAd(id: string): Promise<boolean>;

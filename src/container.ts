@@ -100,6 +100,8 @@ import { IChangeAdStatusUseCase } from './application/use-case/admin/ads/IChange
 import { ChangeAdStatusUseCase } from './application/use-case/admin/ads/ChangeAdStatusUseCase';
 import { IRecommendAdsUseCase } from './application/use-case/User/Ads/IRecommendAdsUseCase';
 import { RecommendAdsUseCase } from './application/use-case/User/Ads/RecommendAdsUseCase';
+import { IExpireAdsUseCase } from './application/use-case/admin/ads/ExpireAdsUseCase';
+import { ExpireAdsUseCase } from './application/use-case/admin/ads/IExpireAdsUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -303,6 +305,15 @@ container.register<IRecommendAdsUseCase>(USE_CASE_TOKENS.RecommendAdsUseCase,{
   useClass:RecommendAdsUseCase
 
 })
+
+
+
+
+container.register<IExpireAdsUseCase>(USE_CASE_TOKENS.ExpireAdsUseCase,{
+  useClass:ExpireAdsUseCase
+
+})
+
 // services
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService
 , { useClass: GoogleGenAIService });
