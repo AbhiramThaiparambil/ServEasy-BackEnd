@@ -5,6 +5,7 @@ import { AdModel } from "../models/AdModel";
 import { IAdDTO } from "../../utils/types/dto/IAdDto";
 import { Types } from "mongoose";
 import { IAdminAd, IAdStatus } from "../../utils/types/dto/IAdAdminDto";
+import { IGetRecommendedAdsRequestDTO, IRecommendedAdDTO } from "../../utils/types/dto/IRecommendAdsDTO";
 
 @injectable()
 export class AdRepository implements IAdRepository {
@@ -125,6 +126,98 @@ async getAdsByProvider(
     throw error;
   }
 }
+
+
+
+async findRecommendedAds(
+  params: IGetRecommendedAdsRequestDTO
+): Promise<IRecommendedAdDTO[]> {
+
+  const { count = 1, category, providerId, lat, lng, radius = 10000 } = params;
+
+  const now = new Date();
+
+  const match: any = {
+    status: "active",
+    startDate: { $lte: now },
+    endDate: { $gte: now },
+  };
+
+  if (category) match.category = category;
+  if (providerId) match.providerId = providerId;
+
+  // 📌 Define coords correctly
+  let coords: [number, number] | null = null;
+  if (lat !== undefined && lng !== undefined) {
+    coords = [lng, lat];
+  }
+
+  const ads = await AdModel.aggregate([
+
+    // 1️⃣ GEO FILTER (only when coords exist)
+    ...(coords
+      ? [{
+          $geoNear: {
+            near: coords,
+            distanceField: "distance",
+            maxDistance: radius * 1000,
+            spherical: true,
+          }
+        }]
+      : []
+    ),
+
+    // 2️⃣ ACTIVE + DATE FILTER
+    { $match: match },
+
+    // 3️⃣ FEATURED SORT
+    { $sort: { boostScore: -1, createdAt: -1 } },
+
+    // 4️⃣ RANDOMIZER
+    { $sample: { size: count } },
+
+    // ⭐ 5️⃣ LOOKUP SERVICE PROVIDER DETAILS
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "providerId",
+        foreignField: "_id",
+        as: "provider",
+      }
+    },
+
+    // 6️⃣ Unwind provider
+    {
+      $unwind: {
+        path: "$provider",
+        preserveNullAndEmptyArrays: true,
+      }
+    },
+
+    // ⭐ 7️⃣ PROJECT INTO DTO FORMAT
+    {
+      $project: {
+        _id: { $toString: "$_id" },
+        serviceId: { $toString: "$serviceId" },
+        providerId: { $toString: "$providerId" },
+
+        serviceProviderName: "$provider.name",
+        profileImage: "$provider.profileImage",
+
+        caption: 1,
+        description: 1,
+        image: 1,
+      }
+    },
+
+    // 8️⃣ LIMIT as final safety
+    { $limit: count }
+
+  ]);
+
+  return ads as IRecommendedAdDTO[];
+}
+
 
 
   async updateAd(id: string, data: Partial<IAd>): Promise<IAd | null> {

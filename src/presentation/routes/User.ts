@@ -67,6 +67,7 @@ userRouter.patch(
 userRouter.delete('/notification/:id', authMiddleware('User'), userController.deleteNotification);
 userRouter.get('/banners/active', userController.getSiteBanners);
 userRouter.get('/themes', userController.getSiteThemes);
+userRouter.get( "/ads/recommend",userController.getRecommendedAds);
 
 // userRouter.get('/services/active-names',userController.getActiveServiceNames)
 

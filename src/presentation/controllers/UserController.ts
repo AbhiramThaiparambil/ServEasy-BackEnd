@@ -26,6 +26,7 @@ import { GetServiceProviderInfoUseCase } from '../../application/use-case/User/g
 import { UserSiteSettings } from '../../application/use-case/siteSetting/UserSiteSettingsUseCase';
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IFindFeaturedCouponsUseCase } from '../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
+import { IRecommendAdsUseCase } from '../../application/use-case/User/Ads/IRecommendAdsUseCase';
 
 @injectable()
 export class UserController {
@@ -57,7 +58,11 @@ export class UserController {
     @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
 
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
-    private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase
+    private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase,
+
+    @inject(    USE_CASE_TOKENS.RecommendAdsUseCase)
+    private recommendAdsUseCase: IRecommendAdsUseCase,
+
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -870,4 +875,29 @@ export class UserController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' });
     }
   };
+
+
+
+      public getRecommendedAds  = async (req: Request, res: Response): Promise<void>=> {
+    try {
+      const ads = await this.recommendAdsUseCase.execute({
+        count: req.query.count ? Number(req.query.count) : 1,
+        category: req.query.category as string | undefined,
+        providerId: req.query.providerId as string | undefined,
+        lat: req.query.lat ? Number(req.query.lat) : undefined,
+        lng: req.query.lng ? Number(req.query.lng) : undefined,
+        radius: req.query.radius ? Number(req.query.radius) : undefined,
+      });
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        count: ads.length,
+        ads,
+      });
+      ;
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+      ;
+    }
+  }
 }

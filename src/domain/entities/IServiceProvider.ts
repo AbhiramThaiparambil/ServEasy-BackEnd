@@ -11,6 +11,7 @@ export interface IBankDetails {
   accountNumber: string;
   ifscCode: string;
 }
+   
 
 export interface IServiceProvider {
     _id?:mongoose.Schema.Types.ObjectId;

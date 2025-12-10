@@ -426,6 +426,7 @@ async getProviderAds(req: Request, res: Response): Promise<void> {
 }
 
 
+
 async changeAdStatus(req: Request, res: Response): Promise<void> {
   try {
     const { adId } = req.params;

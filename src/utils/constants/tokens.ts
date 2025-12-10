@@ -28,7 +28,8 @@ EditAdUseCase:"IEditAdUseCase",
 CreateAdUseCase:"ICreateAdUseCase",
 GetServiceNamesUseCase:"IGetServiceNamesUseCase",
 AdminGetAdsUseCase:"IAdminGetAdsUseCase",
-ChangeAdStatusUseCase:"IChangeAdStatusUseCase"
+ChangeAdStatusUseCase:"IChangeAdStatusUseCase",
+RecommendAdsUseCase:"IRecommendAdsUseCase"
 
 };
 
