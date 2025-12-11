@@ -1,7 +1,7 @@
 import { IUserRepository } from '../../../../domain/repositories/IuserRepository';
 import { User } from '../../../../domain/entities/IUser';
 import { inject, injectable } from 'tsyringe';
-import { EmailOtpService } from '../../../../services/OTP/mailOtp';
+import { EmailService } from '../../../../services/mailService/MailService'; 
 import { Otpservice } from '../../../../services/OTP/OtpService';
 import { SmsOtpService } from '../../../../services/OTP/phoneOtp';
 import bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ import { RedisService } from '../../../../services/RedisService';
 export class RegisterUser {
   constructor(
     @inject('UserRepository') private userRepository: IUserRepository,
-    @inject('EmailOtpService') private emailOtp: EmailOtpService,
+    @inject('EmailOtpService') private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject('SmsOtpService') private smsOtp: SmsOtpService,
     @inject('RedisService') private redisService: RedisService
@@ -21,7 +21,7 @@ export class RegisterUser {
     const otp = this.otpService.generateOtp();
     this.otpService.saveOtp(email, otp);
 
-    await this.emailOtp.sendEmail(email, otp);
+    await this.emailOtp.sendOtpEmail(email, otp);
   }
 
   async sendSmsOtp(phone: string): Promise<void> {

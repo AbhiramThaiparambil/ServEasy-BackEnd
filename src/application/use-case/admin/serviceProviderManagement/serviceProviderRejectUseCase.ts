@@ -3,19 +3,19 @@
 import { inject, injectable } from "tsyringe";
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository"; 
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository"; 
-import { EmailOtpService } from "../../../../services/OTP/mailOtp";
+import { EmailService } from "../../../../services/mailService/MailService";
 
 @injectable()
 export class ServiceProviderRejectVerify {
   constructor(
-        @inject("EmailOtpService") private email: EmailOtpService,
+        @inject("EmailOtpService") private email: EmailService,
     
     @inject(ServiceProviderRepository) private serviceProviderRepository: IServiceProviderRepository
   ) {}
   async rejectServiceProvider(userid:string,reason:string){
    const serviceProvider= await this.serviceProviderRepository.update(userid,{isVerified:'rejected'})
    if(serviceProvider){
-    this.email.sendEmail(serviceProvider?.serviceProviderEmail,reason)
+    this.email.sendProviderRejectedEmail(serviceProvider?.serviceProviderEmail,"",reason)
 
    }
    return serviceProvider

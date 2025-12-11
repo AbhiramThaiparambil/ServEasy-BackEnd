@@ -4,7 +4,7 @@ import { MongoUserRepository } from "../../../infrastructure/repositories/UserRe
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { Otpservice } from "../../../services/OTP/OtpService";
 import { SmsOtpService } from "../../../services/OTP/phoneOtp";
-import { EmailOtpService } from "../../../services/OTP/mailOtp";
+import { EmailService } from "../../../services/mailService/MailService"; 
 
 
 
@@ -13,7 +13,7 @@ export class UserProfileUpdate {
   constructor(
     @inject("CloudinaryService") private cloudinaryService: CloudinaryService,
     @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("EmailOtpService") private emailOtp: EmailOtpService,
+    @inject("EmailOtpService") private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService 
   ) {}
@@ -52,7 +52,7 @@ export class UserProfileUpdate {
   
       const otp = this.otpService.generateOtp();
       this.otpService.saveOtp(email, otp);
-      await this.emailOtp.sendEmail(email, otp);
+      await this.emailOtp.sendOtpEmail(email, otp);
   
       return { successMessage: `OTP sent successfully to ${email}`, auth: email }; // Included auth
     } catch (error) {
@@ -72,7 +72,7 @@ export class UserProfileUpdate {
       this.otpService.saveOtp(phone, otp);
       await this.smsOtp.SendOtp(phone, otp);
   
-      return { successMessage: `OTP sent successfully to ${phone}`, auth: phone }; // Included auth
+      return { successMessage: `OTP sent successfully to ${phone}`, auth: phone }; 
     } catch (error) {
       console.error("Error in sendSmsOtp:", error);
       return { errorMessage: "Failed to send OTP. Please try again." };

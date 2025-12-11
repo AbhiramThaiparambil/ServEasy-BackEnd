@@ -5,7 +5,7 @@ import { IServiceProviderRepository } from './domain/repositories/IserviceProvid
 import { ICategoryRepository } from './domain/repositories/IcategoryRepository';
 import { IUserRepository } from './domain/repositories/IuserRepository';
 import { container } from 'tsyringe';
-import { EmailOtpService } from './services/OTP/mailOtp';
+import { EmailService } from './services/mailService/MailService';
 import { Otpservice } from './services/OTP/OtpService';
 import { RegisterUser } from './application/use-case/User/auth/RegisterUser';
 import { RedisService } from './services/RedisService';
@@ -139,7 +139,7 @@ container.register<ICouponRepository>(REPOSITORY_TOKENS.CouponRepository, {
   useClass: CouponRepository,
 });
 
-container.registerSingleton('EmailOtpService', EmailOtpService);
+container.registerSingleton('EmailOtpService', EmailService);
 container.registerSingleton('OtpService', Otpservice);
 container.register(ResendOtp, { useClass: ResendOtp });
 container.register(RegisterUser, { useClass: RegisterUser });

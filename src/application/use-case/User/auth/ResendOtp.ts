@@ -1,12 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { Otpservice } from "../../../../services/OTP/OtpService";
 import { SmsOtpService } from "../../../../services/OTP/phoneOtp";
-import { EmailOtpService } from "../../../../services/OTP/mailOtp";
+import { EmailService } from "../../../../services/mailService/MailService";
 
 @injectable()
 export class ResendOtp {
   constructor(
-    @inject("EmailOtpService") private emailOtp: EmailOtpService,
+    @inject("EmailOtpService") private emailOtp: EmailService,
     @inject("SmsOtpService") private smsOtp: SmsOtpService,
     @inject(Otpservice) private otpService: Otpservice
   ) {}
@@ -15,7 +15,7 @@ export class ResendOtp {
     const otp = this.otpService.generateOtp();
     this.otpService.saveOtp(email, otp);
 
-    await this.emailOtp.sendEmail(email, otp);
+    await this.emailOtp.sendOtpEmail(email, otp);
     return `otp send to ${email} successFully`;
   }
 

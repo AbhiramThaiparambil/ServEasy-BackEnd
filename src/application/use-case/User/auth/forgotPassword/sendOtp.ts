@@ -1,6 +1,6 @@
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { EmailOtpService } from "../../../../../services/OTP/mailOtp";
+import { EmailService } from "../../../../../services/mailService/MailService";
 import { Otpservice } from "../../../../../services/OTP/OtpService";
 import { SmsOtpService } from "../../../../../services/OTP/phoneOtp";
 
@@ -8,7 +8,7 @@ import { SmsOtpService } from "../../../../../services/OTP/phoneOtp";
 export class SendOtp {
   constructor(
     @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("EmailOtpService") private emailOtp: EmailOtpService,
+    @inject("EmailOtpService") private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService
   ) {}
@@ -20,7 +20,7 @@ export class SendOtp {
 
       const otp = this.otpService.generateOtp();
       this.otpService.saveOtp(email, otp);
-      await this.emailOtp.sendEmail(email, otp);
+      await this.emailOtp.sendOtpEmail(email, otp);
 
       return { successMessage: `OTP sent successfully to ${email}` };
     } catch (error) {
