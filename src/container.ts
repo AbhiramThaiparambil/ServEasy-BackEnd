@@ -294,6 +294,7 @@ container.register <IAdminGetAdsUseCase> (USE_CASE_TOKENS.AdminGetAdsUseCase,{
 container.register<IGetServiceNamesUseCase>(USE_CASE_TOKENS.GetServiceNamesUseCase,{
   useClass:GetServiceNamesUseCase
 })
+
 container.register<IChangeAdStatusUseCase>(USE_CASE_TOKENS.ChangeAdStatusUseCase,{
   useClass:ChangeAdStatusUseCase
 })
