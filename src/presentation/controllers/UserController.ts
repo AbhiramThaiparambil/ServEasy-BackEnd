@@ -27,6 +27,7 @@ import { UserSiteSettings } from '../../application/use-case/siteSetting/UserSit
 import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
 import { IFindFeaturedCouponsUseCase } from '../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
 import { IRecommendAdsUseCase } from '../../application/use-case/User/Ads/IRecommendAdsUseCase';
+import { IIncreaseAdClicksUseCase } from '../../application/use-case/User/Ads/IIncreaseAdClicksUseCase';
 
 @injectable()
 export class UserController {
@@ -62,6 +63,9 @@ export class UserController {
 
     @inject(    USE_CASE_TOKENS.RecommendAdsUseCase)
     private recommendAdsUseCase: IRecommendAdsUseCase,
+    
+        @inject(  USE_CASE_TOKENS.IncreaseAdClicksUseCase)
+    private increaseAdClicksUseCase: IIncreaseAdClicksUseCase,
 
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
@@ -900,4 +904,22 @@ export class UserController {
       ;
     }
   }
+
+
+   public increaseClicks = async(req: Request, res: Response)=> {
+  try {
+    const { adId } = req.params;
+
+    const result = await this.increaseAdClicksUseCase.execute(adId);
+
+     res.status(200).json({
+      success: true,
+      message: "Clicks updated",
+      clicks: result
+    });
+  } catch (err) {
+     res.status(500).json({ success: false, message: err });
+  }
+}
+
 }

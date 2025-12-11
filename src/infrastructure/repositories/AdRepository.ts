@@ -249,4 +249,16 @@ async expireExpiredAds(): Promise<number> {
     const result = await AdModel.updateOne({ _id: id }, { status: "expired" });
     return result.modifiedCount > 0;
   }
+
+async incrementClicks(adId: string): Promise<number> {
+  const updated = await AdModel.findByIdAndUpdate(
+    adId,
+    { $inc: { clicks: 1 } },
+    { new: true }
+  );
+
+  return updated?.clicks ?? 0;
+}
+
+
 }

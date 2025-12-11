@@ -102,6 +102,8 @@ import { IRecommendAdsUseCase } from './application/use-case/User/Ads/IRecommend
 import { RecommendAdsUseCase } from './application/use-case/User/Ads/RecommendAdsUseCase';
 import { IExpireAdsUseCase } from './application/use-case/admin/ads/ExpireAdsUseCase';
 import { ExpireAdsUseCase } from './application/use-case/admin/ads/IExpireAdsUseCase';
+import { IIncreaseAdClicksUseCase } from './application/use-case/User/Ads/IIncreaseAdClicksUseCase';
+import { IncreaseAdClicksUseCase } from './application/use-case/User/Ads/IncreaseAdClicksUseCase';
 
 container.register<IUserRepository>('UserRepository', {
   useClass: MongoUserRepository,
@@ -312,6 +314,13 @@ container.register<IRecommendAdsUseCase>(USE_CASE_TOKENS.RecommendAdsUseCase,{
 
 container.register<IExpireAdsUseCase>(USE_CASE_TOKENS.ExpireAdsUseCase,{
   useClass:ExpireAdsUseCase
+
+})
+
+
+
+container.register<IIncreaseAdClicksUseCase>(USE_CASE_TOKENS.IncreaseAdClicksUseCase,{
+  useClass:IncreaseAdClicksUseCase
 
 })
 

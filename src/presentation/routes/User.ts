@@ -70,6 +70,7 @@ userRouter.get('/themes', userController.getSiteThemes);
 userRouter.get( "/ads/recommend",userController.getRecommendedAds);
 
 // userRouter.get('/services/active-names',userController.getActiveServiceNames)
+userRouter.patch("/ads/:adId/click",userController.increaseClicks)
 
 userRouter.get('/coupons/featured',userController.findFeatureCoupons)
 export default userRouter;

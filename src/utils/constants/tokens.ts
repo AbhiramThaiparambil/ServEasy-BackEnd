@@ -30,7 +30,8 @@ GetServiceNamesUseCase:"IGetServiceNamesUseCase",
 AdminGetAdsUseCase:"IAdminGetAdsUseCase",
 ChangeAdStatusUseCase:"IChangeAdStatusUseCase",
 RecommendAdsUseCase:"IRecommendAdsUseCase",
-ExpireAdsUseCase:"IExpireAdsUseCase"
+ExpireAdsUseCase:"IExpireAdsUseCase",
+IncreaseAdClicksUseCase:"IIncreaseAdClicksUseCase"
 
 };
 

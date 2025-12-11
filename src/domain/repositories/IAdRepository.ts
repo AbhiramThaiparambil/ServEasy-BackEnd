@@ -21,5 +21,6 @@ export interface IAdRepository {
   blockAd(id: string): Promise<boolean>;
   unblockAd(id: string): Promise<boolean>;
   expireAd(id: string): Promise<boolean>;
+  incrementClicks(adId: string): Promise<number>
 }
  
