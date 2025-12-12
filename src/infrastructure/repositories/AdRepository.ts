@@ -16,8 +16,6 @@ export class AdRepository implements IAdRepository {
     try {
       console.log("===========================");
 
-      console.log(data);
-      console.log("===========================");
       const ad = await AdModel.create(data);
       return ad.toObject() as IAd;
     } catch (e) {
