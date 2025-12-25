@@ -1,59 +1,59 @@
 import { injectable, inject } from "tsyringe";
+import mongoose from "mongoose";
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
-import mongoose from "mongoose";
+import { IGetBookedServicesUseCase } from "./IGetBookedServicesUseCase";
+
 @injectable()
-export class GetBookService {
+export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
   constructor(
-    @inject(ServiceRepository) private serviceRepository: ServiceRepository,
+    @inject(ServiceRepository)
+    private serviceRepository: ServiceRepository,
+
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
-  async UserBookedServices(
-    uId: mongoose.Types.ObjectId,
+  async getUserBookedServices(
+    userId: mongoose.Types.ObjectId,
     skip: number,
     limit: number
   ) {
-    const userId = new mongoose.Types.ObjectId(uId);
+    const uId = new mongoose.Types.ObjectId(userId);
 
-    const data =
-      await this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
-        userId,
-        skip,
-        limit
-      );
-
-    return data;
-  }
-
-  async findBookedServiceUserCount(uId: mongoose.Types.ObjectId) {
-    const userId = new mongoose.Types.ObjectId(uId);
-
-    return await this.serviceBookingRepository.findCountBookedServicebyUserId(
-      userId
+    return this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
+      uId,
+      skip,
+      limit
     );
   }
 
-  async ServiceProviderBookedServices(
-    sId: mongoose.Types.ObjectId,
+  async getUserBookedServiceCount(
+    userId: mongoose.Types.ObjectId
+  ): Promise<number> {
+    const uId = new mongoose.Types.ObjectId(userId);
+
+    return this.serviceBookingRepository.findCountBookedServicebyUserId(uId);
+  }
+
+  async getServiceProviderBookedServices(
+    serviceProviderId: mongoose.Types.ObjectId,
     skip: number,
     limit: number
   ) {
-    const serviceProviderId = new mongoose.Types.ObjectId(sId);
+    const sId = new mongoose.Types.ObjectId(serviceProviderId);
 
-    const service =
+    const services =
       await this.serviceBookingRepository.findBookedServicesAndServiceByServiceProviderId(
-        serviceProviderId,
+        sId,
         skip,
         limit
       );
 
     const count = await this.serviceBookingRepository.findCountBookedService(
-      serviceProviderId
+      sId
     );
-    console.log(count + "        jhklhjkhkjhkjhhk");
 
-    return { service, count };
+    return { services, count };
   }
 }

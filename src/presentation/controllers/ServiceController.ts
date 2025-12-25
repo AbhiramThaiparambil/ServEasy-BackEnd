@@ -2,22 +2,23 @@ import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import { GetAllActiveService } from "../../application/use-case/User/getAllService";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus";
+// import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { DeleteSlotUseCase } from "../../application/use-case/admin/slot/DeleteSlotUseCase";
-import { promises } from "dns";
 import { CreateSlotUseCase } from "../../application/use-case/admin/slot/CreateSlotUseCase";
 import { GetServiceSlot } from "../../application/use-case/admin/slot/getSlot";
 import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IApplyCouponToBookingUseCase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IRemoveCoupon";
+import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBookingUseCase";
 
 @injectable()
 export class ServiceController {
   constructor(
     @inject(GetAllActiveService)
     private getAllActiveService: GetAllActiveService,
-    @inject(UpdateServiceStatus)
-    private updateServiceStatus: UpdateServiceStatus,
+    @inject("ICancelBookingUseCase")
+    private cancelBookingUseCase: ICancelBookingUseCase,
     @inject(DeleteSlotUseCase) private deleteSlotUseCase: DeleteSlotUseCase,
     @inject(CreateSlotUseCase) private createSlot: CreateSlotUseCase,
     @inject(GetServiceSlot) private getServiceSlot: GetServiceSlot,
@@ -39,7 +40,7 @@ export class ServiceController {
         return;
       }
 
-      const result = await this.updateServiceStatus.bookingCancel(
+      const result = await this.cancelBookingUseCase.execute(
         id,
         "cancelled",
         cancellationReason

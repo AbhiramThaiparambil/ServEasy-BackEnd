@@ -1,4 +1,3 @@
-
 import { singleton } from "tsyringe";
 import { Server, Socket } from "socket.io";
 import { Server as HTTPServer } from "http";
@@ -7,7 +6,11 @@ import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
 // import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
 import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
-import { IChatNotification, ISystemNotification, IVideoCallNotification } from "../../domain/entities/INotification";
+import {
+  IChatNotification,
+  ISystemNotification,
+  IVideoCallNotification,
+} from "../../domain/entities/INotification";
 import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
 @singleton()
 export class SocketService {
@@ -29,9 +32,11 @@ export class SocketService {
     this.io.on("connection", (socket: Socket) => {
       console.log(`User connected: ${socket.id}`);
 
-      new ChatHandler(this.io,this.saveMessageUseCase,this).register(socket);
-      new NotificationHandler(this.notificationUseCase, this.io).register(socket);
-      new VideoCallHandler(this.io,this).register(socket);
+      new ChatHandler(this.io, this.saveMessageUseCase, this).register(socket);
+      new NotificationHandler(this.notificationUseCase, this.io).register(
+        socket
+      );
+      new VideoCallHandler(this.io, this).register(socket);
 
       socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
@@ -40,38 +45,36 @@ export class SocketService {
   }
 
   // Add this method here
-  public sendNotificationToUser(userId: string, notification: IVideoCallNotification|IChatNotification|ISystemNotification) {
+  public sendNotificationToUser(
+    userId: string,
+    notification:
+      | IVideoCallNotification
+      | IChatNotification
+      | ISystemNotification
+  ) {
     console.log("----------------------------------------------------");
     console.log("----------------------------------------------------");
     console.log("----------------------------------------------------");
     console.log("----------------------------------------------------");
 
     console.log(notification);
-     console.log("----------------------------------------------------");
-     console.log(userId);
+    console.log("----------------------------------------------------");
+    console.log(userId);
 
-
-     
     if (!this.io) {
-      console.error("SocketService has not been initialized with an HTTP server yet.");
+      console.error(
+        "SocketService has not been initialized with an HTTP server yet."
+      );
       return;
     }
     this.io.to(userId).emit("receive_notification", notification);
 
+    if (notification.type === "chat") {
+      const content = `${notification.senderName} sent you a message: "${notification.content}"`;
 
-     
-    if(notification.type==="chat"){
-        
-        const content = `${notification.senderName} sent you a message: "${notification.content}"`;
-
-        // this.notificationUseCase.create(content, userId);
-
-    }else if(notification.type==="notfication"){
-
-        this.notificationUseCase.create(notification.content, userId);
+      // this.notificationUseCase.create(content, userId);
+    } else if (notification.type === "notification") {
+      this.notificationUseCase.create(notification.content, userId);
     }
-
   }
-
-
 }

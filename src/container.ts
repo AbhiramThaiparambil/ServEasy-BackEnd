@@ -108,6 +108,22 @@ import { IExpireAdsUseCase } from "./application/use-case/admin/ads/ExpireAdsUse
 import { ExpireAdsUseCase } from "./application/use-case/admin/ads/IExpireAdsUseCase";
 import { IIncreaseAdClicksUseCase } from "./application/use-case/User/Ads/IIncreaseAdClicksUseCase";
 import { IncreaseAdClicksUseCase } from "./application/use-case/User/Ads/IncreaseAdClicksUseCase";
+import { IUpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { UpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
+import { IConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/IConfirmBookingUseCase";
+import { ConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/ConfirmBookingUseCase";
+import { ICancelBookingUseCase } from "./application/use-case/booking/cancelBooking/ICancelBookingUseCase";
+import { CancelBookingUseCase } from "./application/use-case/booking/cancelBooking/CancelBookingUseCase";
+import { IRequestPaymentUseCase } from "./application/use-case/booking/requestPayment/IRequestPaymentUseCase";
+import { RequestPaymentUseCase } from "./application/use-case/booking/requestPayment/RequestPaymentUseCase";
+import { ICreateOnlineBookingUseCase } from "./application/use-case/booking/createOnlineBooking/ICreateOnlineBookingUseCase";
+import { CreateOnlineBookingUseCase } from "./application/use-case/booking/createOnlineBooking/CreateOnlineBookingUseCase";
+import { CreateBookingUseCase } from "./application/use-case/booking/createBooking/CreateBookingUseCase";
+import { ICreateBookingUseCase } from "./application/use-case/booking/createBooking/ICreateBookingUseCase";
+import { GetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/GetBookedServicesUseCase";
+import { IGetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
+import { IGetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
+import { GetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchBookings/GetBookedServiceByIdUseCase";
 
 container.register<IUserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -387,3 +403,61 @@ container.register<IIncreaseAdClicksUseCase>(
 container.register<IGoogleGenAIService>(SERVICE_TOKENS.GoogleGenAIService, {
   useClass: GoogleGenAIService,
 });
+
+// bookings
+
+container.register<IUpdateBookingStatusUseCase>(
+  USE_CASE_TOKENS.UpdateBookingStatusUseCase,
+  {
+    useClass: UpdateBookingStatusUseCase,
+  }
+);
+
+container.register<IConfirmBookingUseCase>(
+  USE_CASE_TOKENS.ConfirmBookingUseCase,
+  {
+    useClass: ConfirmBookingUseCase,
+  }
+);
+
+container.register<ICancelBookingUseCase>(
+  USE_CASE_TOKENS.CancelBookingUseCase,
+  {
+    useClass: CancelBookingUseCase,
+  }
+);
+
+container.register<IRequestPaymentUseCase>(
+  USE_CASE_TOKENS.RequestPaymentUseCase,
+  {
+    useClass: RequestPaymentUseCase,
+  }
+);
+
+container.register<ICreateBookingUseCase>(
+  USE_CASE_TOKENS.CreateBookingUseCase,
+  {
+    useClass: CreateBookingUseCase,
+  }
+);
+
+container.register<ICreateOnlineBookingUseCase>(
+  USE_CASE_TOKENS.CreateOnlineBookingUseCase,
+  {
+    useClass: CreateOnlineBookingUseCase,
+  }
+);
+
+container.register<IGetBookedServicesUseCase>(
+  USE_CASE_TOKENS.GetBookedServicesUseCase,
+  {
+    useClass: GetBookedServicesUseCase,
+  }
+);
+
+container.register<IGetBookedServiceByIdUseCase>(
+  USE_CASE_TOKENS.GetBookedServiceByIdUseCase,
+  {
+    useClass: GetBookedServiceByIdUseCase,
+  }
+);

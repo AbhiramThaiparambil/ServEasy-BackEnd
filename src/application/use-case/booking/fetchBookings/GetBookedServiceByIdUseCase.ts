@@ -1,40 +1,55 @@
 import { injectable, inject } from "tsyringe";
-
 import mongoose from "mongoose";
+
 import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
 import { ReviewRepository } from "../../../../infrastructure/repositories/ReviewRepository";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IGetBookedServiceByIdUseCase } from "./IGetBookedServiceByIdUseCase";
 
 @injectable()
-export class GetBookSingleService {
+export class GetBookedServiceByIdUseCase
+  implements IGetBookedServiceByIdUseCase
+{
   constructor(
-    @inject(ServiceRepository) private serviceRepository: ServiceRepository,
+    @inject(ServiceRepository)
+    private serviceRepository: ServiceRepository,
+
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
+
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: ServiceProviderRepository,
-    @inject(ReviewRepository) private reviewRepository: ReviewRepository,
-    @inject("UserRepository") private userRepository: IUserRepository
+
+    @inject(ReviewRepository)
+    private reviewRepository: ReviewRepository,
+
+    @inject("UserRepository")
+    private userRepository: IUserRepository
   ) {}
 
-  async userBookedService(serviceBookedId: mongoose.Types.ObjectId) {
-    const bookedServiceId = new mongoose.Types.ObjectId(serviceBookedId);
-
+  private async getBookedServiceOrThrow(bookingId: mongoose.Types.ObjectId) {
     const bookedService =
-      await this.serviceBookingRepository.findBookedServiceById(
-        bookedServiceId
-      );
-    if (!bookedService) throw new Error("Booked service not found");
+      await this.serviceBookingRepository.findBookedServiceById(bookingId);
 
-    const serviceProvider = await this.serviceProviderRepository.findById(
-      bookedService.serviceProviderId
-    );
-    const service = await this.serviceRepository.findById(
-      bookedService.serviceId
-    );
-    const review = await this.reviewRepository.findByBookingId(bookedServiceId);
+    if (!bookedService) {
+      throw new Error("Booked service not found");
+    }
+
+    return bookedService;
+  }
+
+  async getForUser(bookingId: mongoose.Types.ObjectId) {
+    const id = new mongoose.Types.ObjectId(bookingId);
+
+    const bookedService = await this.getBookedServiceOrThrow(id);
+
+    const [serviceProvider, service, review] = await Promise.all([
+      this.serviceProviderRepository.findById(bookedService.serviceProviderId),
+      this.serviceRepository.findById(bookedService.serviceId),
+      this.reviewRepository.findByBookingId(id),
+    ]);
 
     return {
       bookedService,
@@ -44,23 +59,18 @@ export class GetBookSingleService {
     };
   }
 
-  async ServiceProviderBookedService(serviceBookedId: mongoose.Types.ObjectId) {
-    const bookedServiceId = new mongoose.Types.ObjectId(serviceBookedId);
+  async getForServiceProvider(bookingId: mongoose.Types.ObjectId) {
+    const id = new mongoose.Types.ObjectId(bookingId);
 
-    const bookedService =
-      await this.serviceBookingRepository.findBookedServiceById(
-        bookedServiceId
-      );
-    if (!bookedService) throw new Error("Booked service not found");
+    const bookedService = await this.getBookedServiceOrThrow(id);
 
-    const serviceProvider = await this.serviceProviderRepository.findById(
-      bookedService.serviceProviderId
-    );
-    const service = await this.serviceRepository.findById(
-      bookedService.serviceId
-    );
-    const user = await this.userRepository.findById(bookedService.userId + "");
-    const review = await this.reviewRepository.findByBookingId(bookedServiceId);
+    const [serviceProvider, service, user, review] = await Promise.all([
+      this.serviceProviderRepository.findById(bookedService.serviceProviderId),
+      this.serviceRepository.findById(bookedService.serviceId),
+      this.userRepository.findById(bookedService.userId.toString()),
+      this.reviewRepository.findByBookingId(id),
+    ]);
+
     return {
       bookedService,
       serviceProvider,
