@@ -1,33 +1,33 @@
-import { Request, Response } from 'express';
-import { injectable, inject } from 'tsyringe';
-import { GetUserProfileUseCase } from '../../application/use-case/User/GetProfile';
-import { TokenService } from '../../services/auth/TokenService';
-import { HttpStatus } from '../../constants/HttpStatus';
-import { UserProfileUpdate } from '../../application/use-case/User/updateProfile';
+import { Request, Response } from "express";
+import { injectable, inject } from "tsyringe";
+import { GetUserProfileUseCase } from "../../application/use-case/User/GetProfile";
+import { TokenService } from "../../services/auth/TokenService";
+import { HttpStatus } from "../../constants/HttpStatus";
+import { UserProfileUpdate } from "../../application/use-case/User/updateProfile";
 
-import { RegisterUser } from '../../application/use-case/User/auth/RegisterUser';
-import { setAuthCookies } from '../../utils/setAuthCookies';
-import { SignIn } from '../../application/use-case/User/auth/SignIn';
-import { VerifyOtp } from '../../application/use-case/User/auth/VerifyOtp';
-import { ResendOtp } from '../../application/use-case/User/auth/ResendOtp';
-import { SendOtp } from '../../application/use-case/User/auth/forgotPassword/sendOtp';
-import { ForgotVerifyOtp } from '../../application/use-case/User/auth/forgotPassword/forgotVerifyOtp';
-import { NotificationUseCase } from '../../application/use-case/notification/NotificationUseCase ';
-import { ResetPassword } from '../../application/use-case/User/auth/forgotPassword/resetPassword';
-import { ProfileUpdateOtp } from '../../application/use-case/User/profileUpdateOtp';
-import { GetServics } from '../../application/use-case/User/GetServics';
-import { GetAllActiveService } from '../../application/use-case/User/getAllService';
-import { GetAddress } from '../../application/use-case/User/Address/GetAddress';
-import { AddNewAddress } from '../../application/use-case/User/Address/AddNewAddress';
-import { EditAddress } from '../../application/use-case/User/Address/EditAddress';
-import { DeleteAddress } from '../../application/use-case/User/Address/DeleteAddress';
-import { AddReviewUseCase } from '../../application/use-case/bookService/AddReviewUseCase';
-import { GetServiceProviderInfoUseCase } from '../../application/use-case/User/getServiceProviderInfoUseCase';
-import { UserSiteSettings } from '../../application/use-case/siteSetting/UserSiteSettingsUseCase';
-import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
-import { IFindFeaturedCouponsUseCase } from '../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase';
-import { IRecommendAdsUseCase } from '../../application/use-case/User/Ads/IRecommendAdsUseCase';
-import { IIncreaseAdClicksUseCase } from '../../application/use-case/User/Ads/IIncreaseAdClicksUseCase';
+import { RegisterUser } from "../../application/use-case/User/auth/RegisterUser";
+import { setAuthCookies } from "../../utils/setAuthCookies";
+import { SignIn } from "../../application/use-case/User/auth/SignIn";
+import { VerifyOtp } from "../../application/use-case/User/auth/VerifyOtp";
+import { ResendOtp } from "../../application/use-case/User/auth/ResendOtp";
+import { SendOtp } from "../../application/use-case/User/auth/forgotPassword/sendOtp";
+import { ForgotVerifyOtp } from "../../application/use-case/User/auth/forgotPassword/forgotVerifyOtp";
+import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
+import { ResetPassword } from "../../application/use-case/User/auth/forgotPassword/resetPassword";
+import { ProfileUpdateOtp } from "../../application/use-case/User/profileUpdateOtp";
+import { GetServics } from "../../application/use-case/User/GetServics";
+import { GetAllActiveService } from "../../application/use-case/User/getAllService";
+import { GetAddress } from "../../application/use-case/User/Address/GetAddress";
+import { AddNewAddress } from "../../application/use-case/User/Address/AddNewAddress";
+import { EditAddress } from "../../application/use-case/User/Address/EditAddress";
+import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAddress";
+import { AddReviewUseCase } from "../../application/use-case/review/AddReviewUseCase";
+import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
+import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
+import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase";
+import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
+import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";
 
 @injectable()
 export class UserController {
@@ -61,26 +61,29 @@ export class UserController {
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
     private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase,
 
-    @inject(    USE_CASE_TOKENS.RecommendAdsUseCase)
+    @inject(USE_CASE_TOKENS.RecommendAdsUseCase)
     private recommendAdsUseCase: IRecommendAdsUseCase,
-    
-        @inject(  USE_CASE_TOKENS.IncreaseAdClicksUseCase)
-    private increaseAdClicksUseCase: IIncreaseAdClicksUseCase,
 
+    @inject(USE_CASE_TOKENS.IncreaseAdClicksUseCase)
+    private increaseAdClicksUseCase: IIncreaseAdClicksUseCase
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
       if (!userId) {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'User not found' });
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "User not found" });
         return;
       }
 
-      const notification = await this.notificationUseCase.getNotification(userId);
+      const notification = await this.notificationUseCase.getNotification(
+        userId
+      );
       res.status(HttpStatus.OK).json(notification);
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
@@ -90,45 +93,65 @@ export class UserController {
       const { id } = req.params;
 
       if (!userId || !id) {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'User not found or missing ID' });
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: "User not found or missing ID" });
         return;
       }
 
-      if (id === 'deleteAll') {
+      if (id === "deleteAll") {
         await this.notificationUseCase.delteAllNotification(userId);
-        res.status(HttpStatus.OK).json({ message: 'All notifications deleted' });
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "All notifications deleted" });
       } else {
         await this.notificationUseCase.deleteSingleNotification(id);
-        res.status(HttpStatus.OK).json({ message: 'Notification deleted' });
+        res.status(HttpStatus.OK).json({ message: "Notification deleted" });
       }
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-  markAsReadNotification = async (req: Request, res: Response): Promise<void> => {
+  markAsReadNotification = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Notification ID is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Notification ID is required" });
         return;
       }
 
       await this.notificationUseCase.markAsRead(id);
-      res.status(HttpStatus.OK).json({ message: 'Notification marked as read' });
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "Notification marked as read" });
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-  registerUserController = async (req: Request, res: Response): Promise<void> => {
+  registerUserController = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const { userName, email, password, phone } = req.body;
 
       if (!userName || !password) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Username and password are required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Username and password are required" });
         return;
       }
 
@@ -147,31 +170,37 @@ export class UserController {
       } else if (email) {
         data.email = email;
       } else {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Either phone or email is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Either phone or email is required" });
         return;
       }
 
       const result = await this.registerUser.execute(data);
 
       if (result.user) {
-        const regInfo = result.user.phone ? result.user.phone : result.user.email;
+        const regInfo = result.user.phone
+          ? result.user.phone
+          : result.user.email;
         const message = result.user.phone
-          ? 'OTP sent to phone'
-          : 'Your account has been successfully created';
+          ? "OTP sent to phone"
+          : "Your account has been successfully created";
 
         res.status(HttpStatus.CREATED).json({ message, regInfo });
       } else if (result.errorMessage) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: result.errorMessage });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: result.errorMessage });
       }
     } catch (error: unknown) {
-      let errorMessage = '';
+      let errorMessage = "";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      console.error('Registration error:', errorMessage);
+      console.error("Registration error:", errorMessage);
       res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: errorMessage || 'An unexpected error occurred' });
+        .json({ message: errorMessage || "An unexpected error occurred" });
     }
   };
 
@@ -179,56 +208,74 @@ export class UserController {
     const { method } = req.params;
 
     try {
-      if (method === 'email') {
+      if (method === "email") {
         const { email, password } = req.body;
 
         if (!email || !password) {
-          res.status(HttpStatus.BAD_REQUEST).json({ error: 'Email and password are required' });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ error: "Email and password are required" });
           return;
         }
 
-        const result = await this.signInUseCase.signInWithEmail(email, password);
+        const result = await this.signInUseCase.signInWithEmail(
+          email,
+          password
+        );
 
         if (result?.errorMessage) {
-          res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
+          res
+            .status(HttpStatus.UNAUTHORIZED)
+            .json({ error: result.errorMessage });
           return;
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res, 'refreshToken', result.refreshToken);
+          setAuthCookies(res, "refreshToken", result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
         return;
       }
 
-      if (method === 'phone') {
+      if (method === "phone") {
         const { phone, password } = req.body;
 
         if (!phone || !password) {
-          res.status(HttpStatus.BAD_REQUEST).json({ error: 'Phone and password are required' });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ error: "Phone and password are required" });
           return;
         }
 
-        const result = await this.signInUseCase.signInWithPhone(phone, password);
+        const result = await this.signInUseCase.signInWithPhone(
+          phone,
+          password
+        );
 
         if (result?.errorMessage) {
-          res.status(HttpStatus.UNAUTHORIZED).json({ error: result.errorMessage });
+          res
+            .status(HttpStatus.UNAUTHORIZED)
+            .json({ error: result.errorMessage });
           return;
         }
 
         if (result?.refreshToken) {
-          setAuthCookies(res, 'refreshToken', result.refreshToken);
+          setAuthCookies(res, "refreshToken", result.refreshToken);
         }
 
         res.status(HttpStatus.OK).json({ accessToken: result?.accessToken });
         return;
       }
 
-      res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid login method' });
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ error: "Invalid login method" });
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
     }
   };
 
@@ -240,17 +287,21 @@ export class UserController {
       console.log(result);
 
       if (result.success) {
-        setAuthCookies(res, 'refreshToken', result.refreshToken);
+        setAuthCookies(res, "refreshToken", result.refreshToken);
 
         res
           .status(HttpStatus.OK)
           .json({ message: result.success, accessToken: result.accessToken });
       } else if (result.errorMessage) {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ errorMessage: result.errorMessage });
       }
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   };
 
@@ -266,15 +317,22 @@ export class UserController {
         res.status(HttpStatus.OK).json({ message: result });
         return;
       } else {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: 'Email or phone is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ errorMessage: "Email or phone is required" });
       }
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   };
 
-  userProfileController = async (req: Request, res: Response): Promise<void> => {
+  userProfileController = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       if (req.params.id) {
         const user = await this.getUserProfileUseCase.execute(req.params.id);
@@ -287,23 +345,27 @@ export class UserController {
 
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Unauthorized: No token provided' });
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: "Unauthorized: No token provided" });
         return;
       }
 
-      const token = authHeader.split(' ')[1];
+      const token = authHeader.split(" ")[1];
       const decoded = await this.tokenService.verifyAccessToken(token);
 
       if (!decoded || !decoded.userId) {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'User not found' });
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "User not found" });
         return;
       }
 
       const user = await this.getUserProfileUseCase.execute(decoded.userId);
       res.status(HttpStatus.OK).json({ user });
     } catch (error) {
-      console.error('Error in userProfile:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error in userProfile:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
@@ -312,7 +374,9 @@ export class UserController {
       const { email, phone } = req.body;
 
       if (!email && !phone) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Email or phone number is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Email or phone number is required" });
         return;
       }
 
@@ -323,7 +387,9 @@ export class UserController {
           return;
         }
         if (message.errorMessage) {
-          res.status(HttpStatus.BAD_REQUEST).json({ message: message.errorMessage });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: message.errorMessage });
           return;
         }
       }
@@ -335,15 +401,17 @@ export class UserController {
           return;
         }
         if (message.errorMessage) {
-          res.status(HttpStatus.BAD_REQUEST).json({ message: message.errorMessage });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: message.errorMessage });
           return;
         }
       }
     } catch (error) {
-      console.error('sendOtp error:', error);
+      console.error("sendOtp error:", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Something went wrong. Please try again later.' });
+        .json({ message: "Something went wrong. Please try again later." });
     }
   };
 
@@ -352,22 +420,28 @@ export class UserController {
       const { otp, key } = req.body;
 
       if (!otp || !key) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'OTP and key are required.' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "OTP and key are required." });
         return;
       }
 
       const result = await this.forgotVerifyOtpUseCase.execute(otp, key);
 
       if (result === true) {
-        res.status(HttpStatus.OK).json({ message: 'OTP verified successfully.' });
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "OTP verified successfully." });
       } else {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'OTP expired or invalid.' });
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: "OTP expired or invalid." });
       }
     } catch (error) {
-      console.error('Error in verifyOtp:', error);
+      console.error("Error in verifyOtp:", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Something went wrong. Please try again later.' });
+        .json({ message: "Something went wrong. Please try again later." });
     }
   };
 
@@ -376,47 +450,63 @@ export class UserController {
       const { password, email, phone } = req.body;
 
       if (!password) {
-        res.status(HttpStatus.BAD_REQUEST).json({ Message: 'Password is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ Message: "Password is required" });
         return;
       }
 
       if (!email && !phone) {
-        res.status(HttpStatus.BAD_REQUEST).json({ Message: 'Email or phone is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ Message: "Email or phone is required" });
         return;
       }
 
       let result;
 
       if (email) {
-        result = await this.resetPasswordUseCase.resetPasswordEmail(password, email);
+        result = await this.resetPasswordUseCase.resetPasswordEmail(
+          password,
+          email
+        );
       } else {
-        result = await this.resetPasswordUseCase.resetPasswordPhone(password, phone);
+        result = await this.resetPasswordUseCase.resetPasswordPhone(
+          password,
+          phone
+        );
       }
 
       res.status(HttpStatus.OK).json({ Message: result });
     } catch (error) {
-      console.error('Error in resetPassword:', error);
+      console.error("Error in resetPassword:", error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        Message: 'Something went wrong. Please try again later.',
+        Message: "Something went wrong. Please try again later.",
       });
     }
   }
 
   userProfileUpdateController = async (req: Request, res: Response) => {
     try {
-      console.log('Request Body:', req.body);
-      console.log('User ID:', req.params.userid);
+      console.log("Request Body:", req.body);
+      console.log("User ID:", req.params.userid);
 
       const { newEmail, newPhone, newUserName, NewProfileImage } = req.body;
       const userId = req.params.userid;
 
       if (!userId) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'User ID is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "User ID is required" });
         return;
       }
 
       if (newUserName || NewProfileImage) {
-        await this.userProfileUpdate.updateProfile(userId, newUserName, NewProfileImage);
+        await this.userProfileUpdate.updateProfile(
+          userId,
+          newUserName,
+          NewProfileImage
+        );
       }
 
       let otpResponse;
@@ -424,7 +514,9 @@ export class UserController {
       if (newEmail) {
         otpResponse = await this.userProfileUpdate.sendEmailOtp(newEmail);
         if (otpResponse.errorMessage) {
-          res.status(HttpStatus.BAD_REQUEST).json({ message: otpResponse.errorMessage });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: otpResponse.errorMessage });
           return;
         }
         res.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).json({
@@ -437,7 +529,9 @@ export class UserController {
       if (newPhone) {
         otpResponse = await this.userProfileUpdate.sendSmsOtp(newPhone);
         if (otpResponse.errorMessage) {
-          res.status(HttpStatus.BAD_REQUEST).json({ message: otpResponse.errorMessage });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: otpResponse.errorMessage });
           return;
         }
         res.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).json({
@@ -447,12 +541,16 @@ export class UserController {
         return;
       }
 
-      res.status(HttpStatus.OK).json({ message: 'Profile updated successfully' });
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "Profile updated successfully" });
 
       return;
     } catch (error) {
-      console.error('Error updating profile:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      console.error("Error updating profile:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
       return;
     }
   };
@@ -466,38 +564,46 @@ export class UserController {
       if (result.success) {
         res.status(HttpStatus.OK).json({ message: result.success });
       } else if (result.errorMessage) {
-        res.status(HttpStatus.BAD_REQUEST).json({ errorMessage: result.errorMessage });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ errorMessage: result.errorMessage });
       } else {
         res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ errorMessage: 'Internal server error' });
+          .json({ errorMessage: "Internal server error" });
       }
     } catch (error) {
-      console.error('Error in profileUpdateOtp:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: 'Internal server error' });
+      console.error("Error in profileUpdateOtp:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ errorMessage: "Internal server error" });
     }
   };
 
   logoutUserController = async (req: Request, res: Response) => {
     try {
-      res.clearCookie('refreshToken', {
+      res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
       });
 
       if (req.cookies.serviceProviderToken) {
-        res.clearCookie('serviceProviderToken', {
+        res.clearCookie("serviceProviderToken", {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
         });
       }
 
-      res.status(HttpStatus.OK).json({ message: 'User logged out successfully' });
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "User logged out successfully" });
     } catch (error) {
-      console.error('Logout error:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Logout error:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
@@ -507,21 +613,25 @@ export class UserController {
       console.log(id);
 
       if (!id) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Service ID is required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Service ID is required" });
         return;
       }
 
       const data = await this.getServics.execute(id);
 
       if (!data.services) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'Service not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
         return;
       }
 
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.error('Error fetching service:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error fetching service:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
@@ -537,14 +647,14 @@ export class UserController {
       } else {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-          res.status(401).json({ message: 'Unauthorized: No token provided' });
+          res.status(401).json({ message: "Unauthorized: No token provided" });
           return;
         }
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.split(" ")[1];
         const decoded = await this.tokenService.verifyAccessToken(token);
 
         if (!decoded || !decoded.userId) {
-          res.status(401).json({ message: 'User not found' });
+          res.status(401).json({ message: "User not found" });
           return;
         }
 
@@ -553,12 +663,17 @@ export class UserController {
         res.status(200).json({ user });
       }
     } catch (error) {
-      console.error('Error in userProfile:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error in userProfile:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-  public getActiveServices = async (req: Request, res: Response): Promise<void> => {
+  public getActiveServices = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
       const cursor = req.query.cursor as string | null;
@@ -573,18 +688,21 @@ export class UserController {
     } catch (e) {
       console.error(e);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'An error occurred while fetching services.',
+        message: "An error occurred while fetching services.",
       });
       return;
     }
   };
 
-  public getActiveNearbyServices = async (req: Request, res: Response): Promise<void> => {
+  public getActiveNearbyServices = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const filters = req.query.filters as {
         category?: string;
         experience?: string;
-        priceSort?: 'gtToLow' | 'lowTogt';
+        priceSort?: "gtToLow" | "lowTogt";
         searchQuery?: string;
       };
       const { limit = 10, cursor = null } = req.query;
@@ -595,7 +713,9 @@ export class UserController {
       const latitude = Number(req.query.latitude);
       const parsedFilters = {
         category: filters?.category,
-        experience: filters?.experience ? parseInt(filters.experience) : undefined,
+        experience: filters?.experience
+          ? parseInt(filters.experience)
+          : undefined,
         priceSort: filters?.priceSort,
         searchQuery: filters?.searchQuery,
       };
@@ -626,7 +746,7 @@ export class UserController {
     } catch (e) {
       console.error(e);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'An error occurred while fetching services.',
+        message: "An error occurred while fetching services.",
       });
       return;
     }
@@ -694,10 +814,10 @@ export class UserController {
     try {
       const userId = res.locals.user?.userId;
 
-      console.log('User ID:', userId);
+      console.log("User ID:", userId);
 
       if (!userId) {
-        res.status(401).json({ message: 'Unauthorized: User ID missing' });
+        res.status(401).json({ message: "Unauthorized: User ID missing" });
         return;
       }
 
@@ -706,8 +826,8 @@ export class UserController {
       res.status(200).json({ allAddress });
       return;
     } catch (error: any) {
-      console.error('Error fetching address:', error.message || error);
-      res.status(500).json({ message: 'Failed to fetch address' });
+      console.error("Error fetching address:", error.message || error);
+      res.status(500).json({ message: "Failed to fetch address" });
       return;
     }
   };
@@ -720,54 +840,54 @@ export class UserController {
       console.log(userId, address);
 
       if (!userId) {
-        res.status(401).json({ message: 'Unauthorized: User ID missing' });
+        res.status(401).json({ message: "Unauthorized: User ID missing" });
         return;
       }
 
       if (!address) {
-        res.status(400).json({ message: 'Address is required' });
+        res.status(400).json({ message: "Address is required" });
         return;
       }
 
       const result = await this.addNewAddressUseCase.execute(userId, address);
       console.log(result);
 
-      res.status(200).json({ message: 'Address added successfully' });
+      res.status(200).json({ message: "Address added successfully" });
       return;
     } catch (error) {
-      console.error('Error adding new address:', error);
-      res.status(500).json({ message: 'Failed to add new address' });
+      console.error("Error adding new address:", error);
+      res.status(500).json({ message: "Failed to add new address" });
       return;
     }
   };
 
   public editAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('-9-0-0-0-0-0-0-0-0');
+      console.log("-9-0-0-0-0-0-0-0-0");
       console.log(req.body);
 
       const { address } = req.body;
       const userId = res.locals.user?.userId;
 
-      console.log('User ID:', userId, 'Updated Address:', address);
+      console.log("User ID:", userId, "Updated Address:", address);
 
       if (!userId) {
-        res.status(401).json({ message: 'Unauthorized: User ID missing' });
+        res.status(401).json({ message: "Unauthorized: User ID missing" });
         return;
       }
 
       if (!address) {
-        res.status(400).json({ message: 'Updated address data is required' });
+        res.status(400).json({ message: "Updated address data is required" });
         return;
       }
 
       await this.editAddressUseCase.execute(userId, address);
 
-      res.status(200).json({ message: 'Address updated successfully' });
+      res.status(200).json({ message: "Address updated successfully" });
       return;
     } catch (error) {
-      console.error('Error updating address:', error);
-      res.status(500).json({ message: 'Failed to update address' });
+      console.error("Error updating address:", error);
+      res.status(500).json({ message: "Failed to update address" });
       return;
     }
   };
@@ -777,71 +897,90 @@ export class UserController {
       const { id } = req.params;
       const userId = res.locals.user?.userId;
 
-      console.log('User ID:', userId, 'Address ID:', id);
+      console.log("User ID:", userId, "Address ID:", id);
 
       if (!userId) {
-        res.status(401).json({ message: 'Unauthorized: User ID missing' });
+        res.status(401).json({ message: "Unauthorized: User ID missing" });
         return;
       }
 
       if (!id) {
-        res.status(400).json({ message: 'Address ID is required' });
+        res.status(400).json({ message: "Address ID is required" });
         return;
       }
 
       await this.deleteAddressUseCase.execute(userId, id);
 
-      res.status(200).json({ message: 'Address deleted successfully' });
+      res.status(200).json({ message: "Address deleted successfully" });
       return;
     } catch (error) {
-      console.error('Error deleting address:', error);
-      res.status(500).json({ message: 'Failed to delete address' });
+      console.error("Error deleting address:", error);
+      res.status(500).json({ message: "Failed to delete address" });
       return;
     }
   };
 
   public addReview = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('Adding review with body:', req.body);
+      console.log("Adding review with body:", req.body);
       const { bookedServiceId, serviceId, rating, comment, userId } = req.body;
 
       if (!bookedServiceId || !serviceId || rating === undefined) {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'bookedServiceId, serviceId, and rating are required.',
+          message: "bookedServiceId, serviceId, and rating are required.",
         });
         return;
       }
 
-      if (comment && typeof comment !== 'string') {
+      if (comment && typeof comment !== "string") {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Comment must be a string.',
+          message: "Comment must be a string.",
         });
         return;
       }
 
-      await this.addReviewUseCase.execute(bookedServiceId, serviceId, rating, comment, userId);
+      await this.addReviewUseCase.execute(
+        bookedServiceId,
+        serviceId,
+        rating,
+        comment,
+        userId
+      );
 
-      res.status(HttpStatus.CREATED).json({ message: 'Review added successfully!' });
+      res
+        .status(HttpStatus.CREATED)
+        .json({ message: "Review added successfully!" });
     } catch (error) {
-      console.error('Error adding review:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to add review.' });
+      console.error("Error adding review:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to add review." });
     }
   };
 
-  public getServiceProviderInfoChat = async (req: Request, res: Response): Promise<void> => {
+  public getServiceProviderInfoChat = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getServiceProviderInfoUseCase.execute(req.params.id);
+        const user = await this.getServiceProviderInfoUseCase.execute(
+          req.params.id
+        );
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.serviceProviderName,
         });
         return;
       }
-      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Service provider ID is required' });
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "Service provider ID is required" });
     } catch (error) {
-      console.error('Error in getServiceProviderInfoChat:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error in getServiceProviderInfoChat:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
@@ -852,37 +991,50 @@ export class UserController {
       res.status(HttpStatus.OK).json({ themes });
       return;
     } catch (error) {
-      console.error('Error in getServiceProviderInfoChat:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error in getServiceProviderInfoChat:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
-  public getSiteBanners = async (req: Request, res: Response): Promise<void> => {
+  public getSiteBanners = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const banners = await this.userSiteSettings.getBanners();
 
       res.status(HttpStatus.OK).json(banners);
       return;
     } catch (error) {
-      console.error('Error in getServiceProviderInfoChat:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error in getServiceProviderInfoChat:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   };
 
-  public findFeatureCoupons = async (req: Request, res: Response): Promise<void> => {
+  public findFeatureCoupons = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const skip = Number(req.query.skip) || 0;
 
       const data = await this.findFeatureCouponsUseCase.execute(skip);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.error('Error fetching featured coupons:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' });
+      console.error("Error fetching featured coupons:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Something went wrong" });
     }
   };
 
-
-
-      public getRecommendedAds  = async (req: Request, res: Response): Promise<void>=> {
+  public getRecommendedAds = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const ads = await this.recommendAdsUseCase.execute({
         count: req.query.count ? Number(req.query.count) : 1,
@@ -898,28 +1050,24 @@ export class UserController {
         count: ads.length,
         ads,
       });
-      ;
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
-      ;
     }
-  }
+  };
 
+  public increaseClicks = async (req: Request, res: Response) => {
+    try {
+      const { adId } = req.params;
 
-   public increaseClicks = async(req: Request, res: Response)=> {
-  try {
-    const { adId } = req.params;
+      const result = await this.increaseAdClicksUseCase.execute(adId);
 
-    const result = await this.increaseAdClicksUseCase.execute(adId);
-
-     res.status(200).json({
-      success: true,
-      message: "Clicks updated",
-      clicks: result
-    });
-  } catch (err) {
-     res.status(500).json({ success: false, message: err });
-  }
-}
-
+      res.status(200).json({
+        success: true,
+        message: "Clicks updated",
+        clicks: result,
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err });
+    }
+  };
 }

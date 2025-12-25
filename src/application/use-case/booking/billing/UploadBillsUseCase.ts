@@ -1,13 +1,14 @@
 import { injectable, inject } from "tsyringe";
-import { CloudinaryService } from "../../../services/cloudinary/cloudinary";
-import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
+import { CloudinaryService } from "../../../../services/cloudinary/cloudinary";
+import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
 
 @injectable()
 export class UploadBills {
   constructor(
     @inject("CloudinaryService") private cloudinaryService: CloudinaryService,
-    @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository
+    @inject(ServiceBookingRepository)
+    private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
   async execute(id: string, images: string[]): Promise<void> {

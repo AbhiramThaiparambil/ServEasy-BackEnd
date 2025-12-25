@@ -16,10 +16,10 @@ export class AddReviewUseCase {
     serviceId: string,
     rating: number,
     comment: string,
-    userId:string
+    userId: string
   ): Promise<void> {
     const review = await this.reviewRepository.create({
-      userId: new Types.ObjectId(userId), 
+      userId: new Types.ObjectId(userId),
       bookingId: new Types.ObjectId(bookedServiceId),
       serviceId: new Types.ObjectId(serviceId),
       rating,
@@ -27,8 +27,8 @@ export class AddReviewUseCase {
     });
 
     if (!review || !review._id) {
-        throw new Error("Failed to create review");
-      }
+      throw new Error("Failed to create review");
+    }
 
     await this.serviceBookingRepository.updateReviewId(
       new Types.ObjectId(bookedServiceId),

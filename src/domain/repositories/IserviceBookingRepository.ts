@@ -1,10 +1,19 @@
-import { Schema, Types } from 'mongoose';
-import { IBookedServiceWithDetails, IServiceBooking } from '../entities/IServiceBooking';
+import { Schema, Types } from "mongoose";
+import {
+  IBookedServiceWithDetails,
+  IServiceBooking,
+} from "../entities/IServiceBooking";
 export interface IServiceBookingRepository {
-  findBookedServicesByUserId(userId: Types.ObjectId): Promise<IServiceBooking[]>;
-  findServicesByProviderId(serviceProviderId: Types.ObjectId): Promise<IServiceBooking[]>;
-  createServiceBooking(serviceBookingData: IServiceBooking): Promise<IServiceBooking>;
-  findById(serviceId:string):Promise<IServiceBooking|null>
+  findBookedServicesByUserId(
+    userId: Types.ObjectId
+  ): Promise<IServiceBooking[]>;
+  findServicesByProviderId(
+    serviceProviderId: Types.ObjectId
+  ): Promise<IServiceBooking[]>;
+  createServiceBooking(
+    serviceBookingData: IServiceBooking
+  ): Promise<IServiceBooking>;
+  findById(serviceId: string): Promise<IServiceBooking | null>;
   updateServiceStatus(
     serviceBookingId: Types.ObjectId,
     serviceStatus: string
@@ -43,10 +52,22 @@ export interface IServiceBookingRepository {
     estimatedServiceTime: string
   ): Promise<boolean>;
 
-  addBookingHistory(bookingId: Types.ObjectId, action: string, message: string): Promise<void>;
+  addBookingHistory(
+    bookingId: Types.ObjectId,
+    action: string,
+    message: string
+  ): Promise<void>;
 
   findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null>;
-  update(bookingId: string, data: Partial<IServiceBooking>): Promise<IServiceBooking | null>;
-removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking>
+  update(
+    bookingId: string,
+    data: Partial<IServiceBooking>
+  ): Promise<IServiceBooking | null>;
+  removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking>;
+  countActiveServices(providerId: Types.ObjectId): Promise<number>;
 
+  hasActiveBooking(
+    userId: Types.ObjectId,
+    serviceId: Types.ObjectId
+  ): Promise<boolean>;
 }

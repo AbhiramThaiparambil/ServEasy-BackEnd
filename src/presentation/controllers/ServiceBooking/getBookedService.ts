@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { BookService } from "../../../application/use-case/bookService/bookService";
-import { GetBookService } from "../../../application/use-case/bookService/fetchBookedService";
+import { BookService } from "../../../application/use-case/booking/createBooking/CreateBookingUseCase";
+import { GetBookService } from "../../../application/use-case/booking/fetchBookings/GetBookedServicesUseCase";
 import { HttpStatus } from "../../../constants/HttpStatus";
 
 export const GetbookServiceHandler = async (
@@ -15,7 +15,7 @@ export const GetbookServiceHandler = async (
     if (req.query.count) {
       const count = await bookService.findBookedServiceUserCount(userId);
 
-      res.status(HttpStatus.OK).json({count});
+      res.status(HttpStatus.OK).json({ count });
       return;
     }
 

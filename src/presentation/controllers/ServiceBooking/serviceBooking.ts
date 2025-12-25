@@ -1,29 +1,61 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { BookService } from "../../../application/use-case/bookService/bookService";
 import { HttpStatus } from "../../../constants/HttpStatus";
 import { log } from "console";
+import { BookService } from "../../../application/use-case/booking/createBooking/CreateBookingUseCase";
 
-export const bookServiceHandler = async (req: Request, res: Response): Promise<void> => {
+export const bookServiceHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    log("bookServiceHandler called with body:",);
-    const { address, serviceId, isOnline,preferredServiceTime,liveLocation,slotId } = req.body;
+    log("bookServiceHandler called with body:");
+    const {
+      address,
+      serviceId,
+      isOnline,
+      preferredServiceTime,
+      liveLocation,
+      slotId,
+    } = req.body;
     const userId = res.locals.user?.userId;
-                console.log(userId+"userId",serviceId+"serviceId",isOnline+"isOnline",address+"address");
+    console.log(
+      userId + "userId",
+      serviceId + "serviceId",
+      isOnline + "isOnline",
+      address + "address"
+    );
 
     if (!userId || !serviceId || (!isOnline && !address)) {
       res.status(HttpStatus.BAD_REQUEST).json({
-        error: "Bad Request: Missing required fields (serviceId, address or userId)",
+        error:
+          "Bad Request: Missing required fields (serviceId, address or userId)",
       });
       return;
     }
 
-    
-
     const bookService = container.resolve(BookService);
     const bookedService = isOnline
-      ? await bookService.bookOnlineService(userId, serviceId,preferredServiceTime,slotId)
-      : await bookService.execute(userId, serviceId, address,preferredServiceTime,liveLocation);
+      ? await bookService.bookOnlineService(
+          userId,
+          serviceId,
+          preferredServiceTime,
+          slotId
+        )
+      : await bookService.execute(
+          userId,
+          serviceId,
+          address,
+          preferredServiceTime,
+          liveLocation
+        );
+
+    if (!bookService) {
+      res.status(HttpStatus.CONFLICT).json({
+        success: false,
+        message: "Service provider is not available. Please try again later.",
+      });
+    }
 
     res.status(HttpStatus.CREATED).json({
       message: "Service booked successfully",
