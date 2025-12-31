@@ -47,6 +47,7 @@ export class BookingController {
       console.log("hey");
       const { serviceId, address, preferredServiceTime, liveLocation } =
         req.body;
+      console.log(serviceId, address, preferredServiceTime, liveLocation);
 
       const booking = await this.createBookingUseCase.execute(
         userId,
@@ -218,13 +219,13 @@ export class BookingController {
 
   async getUserBookedServices(req: Request, res: Response) {
     try {
+      console.log("hello");
       const userId = new mongoose.Types.ObjectId(res.locals.user.userId);
-
       if (req.query.count) {
         const count =
           await this.getBookedServicesUseCase.getUserBookedServiceCount(userId);
-
         res.status(HttpStatus.OK).json({ count });
+        return;
       }
 
       const limit = Number(req.query.limit ?? 10);
@@ -238,9 +239,7 @@ export class BookingController {
           limit
         );
 
-      res.status(HttpStatus.OK).json({
-        services,
-      });
+      res.status(HttpStatus.OK).json({ services });
     } catch (error) {
       console.error("Error in getUserBookedServices:", error);
 

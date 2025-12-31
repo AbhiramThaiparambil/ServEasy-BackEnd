@@ -45,8 +45,8 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       await this.serviceBookingRepository.countActiveServices(
         service.serviceProviderId
       );
-
-    if (activeServices > 2) {
+    console.log(activeServices);
+    if (activeServices >= 2) {
       throw new Error("Service provider is busy");
     }
 

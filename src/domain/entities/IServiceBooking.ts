@@ -25,7 +25,7 @@ export interface IServiceBooking {
   serviceBills?: string[];
   isOnlineService?: boolean;
   reviewId?: ObjectId;
-  preferredSlot?: IPreferredServiceDateTime;
+  preferredSlot: IPreferredServiceDateTime;
   liveLocation?: IliveLocation;
   serviceSlot?: IServiceSlot;
   bookingHistory?: IServiceBookingHistory[];

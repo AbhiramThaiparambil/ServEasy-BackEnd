@@ -111,6 +111,57 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       throw e;
     }
   }
+  // async findBookedServicesAndServiceByServiceProviderId(
+  //   ServiceProviderId: Types.ObjectId,
+  //   skip: number,
+  //   limit: number
+  // ): Promise<any> {
+  //   try {
+  //     const bookedServices = await ServiceBooking.aggregate([
+  //       {
+  //         $match: { serviceProviderId: ServiceProviderId },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "services",
+  //           localField: "serviceId",
+  //           foreignField: "_id",
+  //           as: "serviceDetails",
+  //         },
+  //       },
+  //       {
+  //         $unwind: "$serviceDetails",
+  //       },
+  //       {
+  //         $project: {
+  //           _id: 1,
+  //           serviceBookedAddress: "$address",
+  //           serviceStatus: 1,
+  //           paymentType: 1,
+  //           serviceName: "$serviceDetails.serviceName",
+  //           serviceType: "$serviceDetails.serviceType",
+  //           serviceImage: "$serviceDetails.serviceImage",
+  //           bookedTime: 1,
+  //         },
+  //       },
+  //       {
+  //         $sort: { bookedTime: -1 },
+  //       },
+  //       {
+  //         $skip: skip,
+  //       },
+  //       {
+  //         $limit: limit,
+  //       },
+  //     ]);
+
+  //     return bookedServices;
+  //   } catch (e) {
+  //     console.error("Error fetching booked services:", e);
+  //     throw e;
+  //   }
+  // }
+
   async findBookedServicesAndServiceByServiceProviderId(
     ServiceProviderId: Types.ObjectId,
     skip: number,
@@ -129,9 +180,46 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             as: "serviceDetails",
           },
         },
+        { $unwind: "$serviceDetails" },
+
+        // ⭐ ADD PRIORITY FIELD
         {
-          $unwind: "$serviceDetails",
+          $addFields: {
+            statusPriority: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $in: [
+                        "$serviceStatus",
+                        ["pending", "confirmed", "in-progress"],
+                      ],
+                    },
+                    then: 1, // highest priority
+                  },
+                  {
+                    case: { $eq: ["$serviceStatus", "completed"] },
+                    then: 2,
+                  },
+                  {
+                    case: { $eq: ["$serviceStatus", "cancelled"] },
+                    then: 3,
+                  },
+                ],
+                default: 4,
+              },
+            },
+          },
         },
+
+        // ⭐ SORT: priority first, then date
+        {
+          $sort: {
+            statusPriority: 1,
+            bookedTime: -1,
+          },
+        },
+
         {
           $project: {
             _id: 1,
@@ -142,17 +230,13 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             serviceType: "$serviceDetails.serviceType",
             serviceImage: "$serviceDetails.serviceImage",
             bookedTime: 1,
+            estimatedServiceTime: 1,
+            preferredSlot: 1,
           },
         },
-        {
-          $sort: { bookedTime: -1 },
-        },
-        {
-          $skip: skip,
-        },
-        {
-          $limit: limit,
-        },
+
+        { $skip: skip },
+        { $limit: limit },
       ]);
 
       return bookedServices;
