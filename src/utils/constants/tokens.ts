@@ -41,6 +41,11 @@ export const USE_CASE_TOKENS = {
   CreateOnlineBookingUseCase: "ICreateOnlineBookingUseCase",
   GetBookedServicesUseCase: "IGetBookedServicesUseCase",
   GetBookedServiceByIdUseCase: "IGetBookedServiceByIdUseCase",
+  CleanupSlotsBeforeTodayUseCase: "ICleanupSlotsBeforeTodayUseCase",
+  MarkSlotAsBookedUseCase: "IMarkSlotAsBookedUseCase",
+  GetSlotUseCase: "IGetSlotUseCase",
+  DeleteSlotUseCase: "IDeleteSlotUseCase",
+  CreateSlotUseCase: "ICreateSlotUseCase",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -51,6 +56,7 @@ export const REPOSITORY_TOKENS = {
   AiAssistanceRepository: "IAiAssistanceRepository",
   ServiceProviderRepository: "IServiceProviderRepository",
   AdRepository: "IAdRepository",
+  SlotRepository: "ISlotRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",

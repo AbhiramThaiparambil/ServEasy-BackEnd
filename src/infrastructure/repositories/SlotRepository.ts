@@ -1,29 +1,29 @@
-import { Types } from 'mongoose';
-import { ISlot } from '../../domain/entities/ISlot';
-import { ISlotRepository } from '../../domain/repositories/ISlotRepository';
-import { SlotModel } from '../models/SlotModel';
-import { injectable } from 'tsyringe';
+import { Types } from "mongoose";
+import { ISlot } from "../../domain/entities/ISlot";
+import { ISlotRepository } from "../../domain/repositories/ISlotRepository";
+import { SlotModel } from "../models/SlotModel";
+import { injectable } from "tsyringe";
 
 @injectable()
 export class SlotRepository implements ISlotRepository {
- async createSlot(slot: ISlot): Promise<ISlot> {
-  const slotToSave = {
-    ...slot,
-    serviceId: new Types.ObjectId(slot.serviceId),
-  };
+  async createSlot(slot: ISlot): Promise<ISlot> {
+    const slotToSave = {
+      ...slot,
+      serviceId: new Types.ObjectId(slot.serviceId),
+    };
 
-  const created = new SlotModel(slotToSave);
-  const saved = await created.save();
+    const created = new SlotModel(slotToSave);
+    const saved = await created.save();
 
-  return {
-    _id: saved._id.toString(),
-    serviceId: saved.serviceId,
-    startTime: saved.startTime,
-    endTime: saved.endTime,
-    booked: saved.booked,
-    createdAt: saved.createdAt,
-  };
-}
+    return {
+      _id: saved._id.toString(),
+      serviceId: saved.serviceId,
+      startTime: saved.startTime,
+      endTime: saved.endTime,
+      booked: saved.booked,
+      createdAt: saved.createdAt,
+    };
+  }
 
   async deleteSlotById(id: string): Promise<boolean> {
     const result = await SlotModel.findByIdAndDelete(id);
@@ -65,10 +65,40 @@ export class SlotRepository implements ISlotRepository {
   }
 
   async getSlotByServiceId(serviceId: string): Promise<ISlot[] | []> {
-      return await SlotModel.find({serviceId})
-
+    return await SlotModel.find({ serviceId });
   }
-  async getSlotByServiceIdLearn(serviceId: string,): Promise<any[] | []> {
-return await SlotModel.find({serviceId}).lean()
+  async getSlotByServiceIdLearn(serviceId: string): Promise<ISlot[] | []> {
+    return await SlotModel.find({ serviceId }).lean();
+  }
+
+  async getActiveSlotsByServiceId(serviceId: string): Promise<ISlot[]> {
+    const now = new Date();
+
+    return SlotModel.find({
+      serviceId: new Types.ObjectId(serviceId),
+      startTime: { $gt: now },
+      booked: false,
+    })
+      .sort({ startTime: 1 })
+      .lean();
+  }
+
+  async cleanupOldSlots(): Promise<number> {
+    const result = await SlotModel.deleteMany({
+      $expr: {
+        $lt: [
+          "$startTime",
+          {
+            $dateTrunc: {
+              date: "$$NOW",
+              unit: "day",
+              timezone: "Asia/Kolkata",
+            },
+          },
+        ],
+      },
+    });
+
+    return result.deletedCount ?? 0;
   }
 }

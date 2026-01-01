@@ -124,6 +124,11 @@ import { GetBookedServicesUseCase } from "./application/use-case/booking/fetchBo
 import { IGetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
 import { IGetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
 import { GetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchBookings/GetBookedServiceByIdUseCase";
+import { CleanupSlotsBeforeTodayUseCase } from "./application/use-case/admin/slot/CleanupSlotsBeforeTodayUseCase";
+import { MarkSlotAsBookedUseCase } from "./application/use-case/admin/slot/MarkSlotAsBookedUseCase";
+import { DeleteSlotUseCase } from "./application/use-case/admin/slot/DeleteSlotUseCase";
+import { CreateSlotUseCase } from "./application/use-case/admin/slot/CreateSlotUseCase";
+import { GetSlotUseCase } from "./application/use-case/admin/slot/GetSlotUseCase";
 
 container.register<IUserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -461,3 +466,27 @@ container.register<IGetBookedServiceByIdUseCase>(
     useClass: GetBookedServiceByIdUseCase,
   }
 );
+
+container.register(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase, {
+  useClass: CleanupSlotsBeforeTodayUseCase,
+});
+
+container.register(USE_CASE_TOKENS.MarkSlotAsBookedUseCase, {
+  useClass: MarkSlotAsBookedUseCase,
+});
+
+container.register(USE_CASE_TOKENS.GetSlotUseCase, {
+  useClass: GetSlotUseCase,
+});
+
+container.register(USE_CASE_TOKENS.DeleteSlotUseCase, {
+  useClass: DeleteSlotUseCase,
+});
+
+container.register(USE_CASE_TOKENS.CreateSlotUseCase, {
+  useClass: CreateSlotUseCase,
+});
+
+container.register(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase, {
+  useClass: CleanupSlotsBeforeTodayUseCase,
+});

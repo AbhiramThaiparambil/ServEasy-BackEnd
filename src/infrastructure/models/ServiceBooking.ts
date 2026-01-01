@@ -61,12 +61,11 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
       lng: { type: Number },
     },
     preferredSlot: {
-      date: { type: Date, required: true },
+      date: { type: Date },
 
       time: {
         type: String,
         enum: ["morning", "afternoon", "anyTime"],
-        required: true,
       },
     },
     serviceSlot: {

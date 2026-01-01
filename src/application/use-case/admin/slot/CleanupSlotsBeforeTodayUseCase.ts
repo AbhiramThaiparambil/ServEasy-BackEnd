@@ -1,16 +1,20 @@
+// application/usecases/slot/CleanupSlotsBeforeTodayUseCase.ts
+
 import { injectable, inject } from "tsyringe";
+import { ICleanupSlotsBeforeTodayUseCase } from "./ICleanupSlotsBeforeTodayUseCase";
 import { ISlotRepository } from "../../../../domain/repositories/ISlotRepository";
-import { ISlot } from "../../../../domain/entities/ISlot";
 import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
-export class MarkSlotAsBookedUseCase {
+export class CleanupSlotsBeforeTodayUseCase
+  implements ICleanupSlotsBeforeTodayUseCase
+{
   constructor(
     @inject(REPOSITORY_TOKENS.SlotRepository)
     private slotRepository: ISlotRepository
   ) {}
 
-  async execute(id: string): Promise<ISlot | null> {
-    return await this.slotRepository.markSlotAsBooked(id);
+  async execute(): Promise<number> {
+    return await this.slotRepository.cleanupOldSlots();
   }
 }

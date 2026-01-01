@@ -48,6 +48,13 @@ router.post(
   bookingController.createBooking.bind(bookingController)
 );
 
+router.post(
+  "/book-online",
+  authMiddleware("User"),
+  checkUserBlocked,
+  bookingController.createOnlineBooking.bind(bookingController)
+);
+
 router.get(
   "/bookings",
   authMiddleware("User"),
@@ -63,7 +70,7 @@ router.get(
   bookingController.getBookedServicesForProvider.bind(bookingController)
 );
 
-router.get("/online-services/with-slots", (req, res) =>
+router.get("/online-services/with-slots/:serviceId", (req, res) =>
   serviceController.getOnlineServiceWithSlotHandler(req, res)
 );
 

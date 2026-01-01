@@ -3,14 +3,14 @@ import { injectable, inject } from "tsyringe";
 import { GetAllActiveService } from "../../application/use-case/User/getAllService";
 import { HttpStatus } from "../../constants/HttpStatus";
 // import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
-import { DeleteSlotUseCase } from "../../application/use-case/admin/slot/DeleteSlotUseCase";
-import { CreateSlotUseCase } from "../../application/use-case/admin/slot/CreateSlotUseCase";
-import { GetServiceSlot } from "../../application/use-case/admin/slot/getSlot";
 import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IApplyCouponToBookingUseCase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IRemoveCoupon";
 import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBookingUseCase";
+import { IDeleteSlotUseCase } from "../../application/use-case/admin/slot/IDeleteSlotUseCase";
+import { ICreateSlotUseCase } from "../../application/use-case/admin/slot/ICreateSlotUseCase";
+import { IGetSlotUseCase } from "../../application/use-case/admin/slot/IGetSlotUseCase";
 
 @injectable()
 export class ServiceController {
@@ -19,9 +19,14 @@ export class ServiceController {
     private getAllActiveService: GetAllActiveService,
     @inject("ICancelBookingUseCase")
     private cancelBookingUseCase: ICancelBookingUseCase,
-    @inject(DeleteSlotUseCase) private deleteSlotUseCase: DeleteSlotUseCase,
-    @inject(CreateSlotUseCase) private createSlot: CreateSlotUseCase,
-    @inject(GetServiceSlot) private getServiceSlot: GetServiceSlot,
+    @inject(USE_CASE_TOKENS.DeleteSlotUseCase)
+    private deleteSlotUseCase: IDeleteSlotUseCase,
+
+    @inject(USE_CASE_TOKENS.CreateSlotUseCase)
+    private createSlotUseCase: ICreateSlotUseCase,
+
+    @inject(USE_CASE_TOKENS.GetSlotUseCase)
+    private getServiceSlotUseCase: IGetSlotUseCase,
     @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
     private applyCouponUseCase: IApplyCouponToBookingUseCase,
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
@@ -63,7 +68,17 @@ export class ServiceController {
     res: Response
   ): Promise<void> {
     try {
-      const data = await this.getAllActiveService.getOnlineServicesWithSlot();
+      const { serviceId } = req.params;
+
+      if (!serviceId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "serviceId is required" });
+        return;
+      }
+      const data = await this.getAllActiveService.getOnlineServicesWithSlot(
+        serviceId
+      );
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching online services with slots:", error);
@@ -80,7 +95,7 @@ export class ServiceController {
     try {
       const id = req.params.id;
 
-      const data = await this.getServiceSlot.execute(id);
+      const data = await this.getServiceSlotUseCase.execute(id);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching online services with slots:", error);
@@ -117,7 +132,7 @@ export class ServiceController {
   async createSlotHandler(req: Request, res: Response): Promise<void> {
     try {
       const { serviceId, startTime, endTime } = req.body;
-
+      console.log(startTime, endTime);
       if (!serviceId || !startTime || !endTime) {
         res.status(HttpStatus.BAD_REQUEST).json({
           message: "Missing required fields: serviceId, startTime, endTime",
@@ -125,7 +140,7 @@ export class ServiceController {
         return;
       }
 
-      const slot = await this.createSlot!.execute({
+      const slot = await this.createSlotUseCase!.execute({
         serviceId,
         startTime,
         endTime,

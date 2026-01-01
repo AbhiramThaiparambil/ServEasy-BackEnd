@@ -25,7 +25,7 @@ export interface IServiceBooking {
   serviceBills?: string[];
   isOnlineService?: boolean;
   reviewId?: ObjectId;
-  preferredSlot: IPreferredServiceDateTime;
+  preferredSlot?: IPreferredServiceDateTime;
   liveLocation?: IliveLocation;
   serviceSlot?: IServiceSlot;
   bookingHistory?: IServiceBookingHistory[];
@@ -41,8 +41,8 @@ export interface ICouponApplied {
 
 export interface IServiceSlot {
   date: Date;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 export interface IServiceBookingHistory {

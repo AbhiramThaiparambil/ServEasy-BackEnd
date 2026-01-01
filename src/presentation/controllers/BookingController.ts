@@ -38,9 +38,6 @@ export class BookingController {
     private getBookedServiceByIdUseCase: IGetBookedServiceByIdUseCase
   ) {}
 
-  /**
-   * OFFLINE SERVICE BOOKING
-   */
   async createBooking(req: Request, res: Response) {
     try {
       const userId = res.locals.user?.userId;
@@ -71,19 +68,15 @@ export class BookingController {
     }
   }
 
-  /**
-   * ONLINE (SLOT-BASED) SERVICE BOOKING
-   */
   async createOnlineBooking(req: Request, res: Response) {
     try {
       const userId = res.locals.user?.userId;
 
-      const { serviceId, preferredServiceTime, slotId } = req.body;
+      const { serviceId, slotId } = req.body;
 
       const booking = await this.createOnlineBookingUseCase.execute(
         userId,
         new mongoose.Types.ObjectId(serviceId),
-        preferredServiceTime,
         slotId
       );
 

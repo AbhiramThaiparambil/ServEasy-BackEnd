@@ -26,7 +26,6 @@ export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
   async execute(
     userId: mongoose.Types.ObjectId,
     serviceId: mongoose.Types.ObjectId,
-    preferredServiceTime: IPreferredServiceDateTime,
     slotId: string
   ): Promise<IServiceBooking> {
     const service = await this.serviceRepository.findById(serviceId);
@@ -60,7 +59,7 @@ export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
       paymentStatus: "pending",
       bookedTime: new Date(),
       isOnlineService: true,
-      preferredSlot: preferredServiceTime,
+
       serviceSlot,
       payment: {
         serviceCost: 0,

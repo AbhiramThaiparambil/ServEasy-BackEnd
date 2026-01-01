@@ -8,50 +8,44 @@ export class GetAllActiveService {
     @inject("UserRepository") private userRepository: IUserRepository
   ) {}
 
-async getNearByservices(
-  userLongitude: number|null,
-  userLatitude: number|null,
-   filters?: {
-    category?: string;
-    experience?: number;
-    priceSort?: "gtToLow" | "lowTogt";
-    searchQuery?: string;
-  },
-  limit: number = 10,
-  cursor: string | null = null
-) {
-  try {
-    const allFilterServices = await this.serviceRepository.findNearestServicesFilter(
-      userLongitude,
-      userLatitude,
-      filters,
-      limit,
-      cursor
-    );
+  async getNearByservices(
+    userLongitude: number | null,
+    userLatitude: number | null,
+    filters?: {
+      category?: string;
+      experience?: number;
+      priceSort?: "gtToLow" | "lowTogt";
+      searchQuery?: string;
+    },
+    limit: number = 10,
+    cursor: string | null = null
+  ) {
+    try {
+      const allFilterServices =
+        await this.serviceRepository.findNearestServicesFilter(
+          userLongitude,
+          userLatitude,
+          filters,
+          limit,
+          cursor
+        );
 
-    
+      console.log(allFilterServices);
 
-    console.log(allFilterServices);
-    
-    const categories = await this.serviceRepository.findActiveServiceCategories();
+      const categories =
+        await this.serviceRepository.findActiveServiceCategories();
 
-   const activeServiceNames=await this.serviceRepository.getActiveServiceNames()
+      const activeServiceNames =
+        await this.serviceRepository.getActiveServiceNames();
 
-    return { allFilterServices, categories,activeServiceNames};
-  } catch (error) {
-    console.error("Error fetching services:", error);
-    throw new Error("Failed to fetch services");
+      return { allFilterServices, categories, activeServiceNames };
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      throw new Error("Failed to fetch services");
+    }
   }
-}
 
-
-  async execute({
-    limit,
-    cursor,
-  }: {
-    limit: number;
-    cursor?: string | null;
-  }) {
+  async execute({ limit, cursor }: { limit: number; cursor?: string | null }) {
     try {
       const categories =
         await this.serviceRepository.findActiveServiceCategories();
@@ -66,13 +60,12 @@ async getNearByservices(
     }
   }
 
-  async getOnlineServicesWithSlot(){
-    const data = await this.serviceRepository.findOnlineServicesWithSlot()
+  async getOnlineServicesWithSlot(serviceId: string) {
+    const data = await this.serviceRepository.findSingleOnlineServicesWithSlot(
+      serviceId
+    );
 
-    console.log(data)
-    return data
+    console.log(data);
+    return data;
   }
-
-
 }
-

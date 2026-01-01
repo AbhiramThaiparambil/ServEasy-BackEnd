@@ -182,7 +182,6 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         },
         { $unwind: "$serviceDetails" },
 
-        // ⭐ ADD PRIORITY FIELD
         {
           $addFields: {
             statusPriority: {
@@ -195,7 +194,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
                         ["pending", "confirmed", "in-progress"],
                       ],
                     },
-                    then: 1, // highest priority
+                    then: 1,
                   },
                   {
                     case: { $eq: ["$serviceStatus", "completed"] },
@@ -212,7 +211,6 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           },
         },
 
-        // ⭐ SORT: priority first, then date
         {
           $sort: {
             statusPriority: 1,
