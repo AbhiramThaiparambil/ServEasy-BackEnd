@@ -767,4 +767,25 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
     return result.length > 0;
   }
+
+  async rescheduleOnlineService(
+    bookingId: Types.ObjectId,
+    date: Date,
+    startTime: Date,
+    endTime: Date
+  ): Promise<IServiceBooking | null> {
+    const booking = await ServiceBooking.findById(bookingId);
+
+    if (!booking) {
+      return null;
+    }
+
+    booking.serviceSlot = {
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+    };
+
+    return await booking.save();
+  }
 }

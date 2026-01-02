@@ -70,4 +70,12 @@ export interface IServiceBookingRepository {
     userId: Types.ObjectId,
     serviceId: Types.ObjectId
   ): Promise<boolean>;
+
+  rescheduleOnlineService(
+    bookingId: Types.ObjectId,
+
+    date: Date,
+    startTime: Date,
+    endTime: Date
+  ): Promise<IServiceBooking | null>;
 }

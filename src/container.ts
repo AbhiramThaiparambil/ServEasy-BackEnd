@@ -129,6 +129,9 @@ import { MarkSlotAsBookedUseCase } from "./application/use-case/admin/slot/MarkS
 import { DeleteSlotUseCase } from "./application/use-case/admin/slot/DeleteSlotUseCase";
 import { CreateSlotUseCase } from "./application/use-case/admin/slot/CreateSlotUseCase";
 import { GetSlotUseCase } from "./application/use-case/admin/slot/GetSlotUseCase";
+import { IServiceBookingRepository } from "./domain/repositories/IserviceBookingRepository";
+import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/createOnlineBooking/RescheduleOnlineServiceUseCase";
+import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/createOnlineBooking/IRescheduleOnlineServiceUseCase";
 
 container.register<IUserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -193,6 +196,15 @@ container.register<IServiceRepository>(
 );
 
 container.register("ServiceBookingRepository", ServiceBookingRepository);
+
+ServiceBookingRepository;
+container.register<IServiceBookingRepository>(
+  REPOSITORY_TOKENS.ServiceBookingRepository,
+  {
+    useClass: ServiceBookingRepository,
+  }
+);
+
 container.register("RazorpayService", RazorpayService);
 
 container.register("ReviewRepository", { useClass: ReviewRepository });
@@ -490,3 +502,10 @@ container.register(USE_CASE_TOKENS.CreateSlotUseCase, {
 container.register(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase, {
   useClass: CleanupSlotsBeforeTodayUseCase,
 });
+
+container.register<IRescheduleOnlineServiceSlotUseCase>(
+  USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase,
+  {
+    useClass: RescheduleOnlineServiceSlotUseCase,
+  }
+);

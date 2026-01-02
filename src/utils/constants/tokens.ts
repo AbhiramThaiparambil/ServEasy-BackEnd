@@ -46,6 +46,7 @@ export const USE_CASE_TOKENS = {
   GetSlotUseCase: "IGetSlotUseCase",
   DeleteSlotUseCase: "IDeleteSlotUseCase",
   CreateSlotUseCase: "ICreateSlotUseCase",
+  RescheduleOnlineServiceSlotUseCase: "IRescheduleOnlineServiceSlotUseCase",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -57,6 +58,7 @@ export const REPOSITORY_TOKENS = {
   ServiceProviderRepository: "IServiceProviderRepository",
   AdRepository: "IAdRepository",
   SlotRepository: "ISlotRepository",
+  ServiceBookingRepository: "IServiceBookingRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",

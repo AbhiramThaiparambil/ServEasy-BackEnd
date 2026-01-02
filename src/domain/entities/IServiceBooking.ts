@@ -14,7 +14,7 @@ export interface IServiceBooking {
     | "completed"
     | "cancelled"
     | "confirmed";
-  paymentType?: "cash" | "card" | "online" | "pending";
+  paymentType?: "cash" | "card" | "online" | "pending" | "wallet";
   paymentStatus: "pending" | "paid" | "failed" | "completed";
   userId: ObjectId;
   estimatedServiceTime?: Date;

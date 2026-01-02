@@ -11,6 +11,7 @@ import { IRequestPaymentUseCase } from "../../application/use-case/booking/reque
 import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
 import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
+import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/createOnlineBooking/IRescheduleOnlineServiceUseCase";
 
 @injectable()
 export class BookingController {
@@ -35,7 +36,9 @@ export class BookingController {
     private getBookedServicesUseCase: IGetBookedServicesUseCase,
 
     @inject(USE_CASE_TOKENS.GetBookedServiceByIdUseCase)
-    private getBookedServiceByIdUseCase: IGetBookedServiceByIdUseCase
+    private getBookedServiceByIdUseCase: IGetBookedServiceByIdUseCase,
+    @inject(USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase)
+    private rescheduleOnlineServiceSlotUseCase: IRescheduleOnlineServiceSlotUseCase
   ) {}
 
   async createBooking(req: Request, res: Response) {
@@ -148,6 +151,34 @@ export class BookingController {
         data,
       });
     } catch (error) {
+      res.status(HttpStatus.CONFLICT).json({
+        error: (error as Error).message,
+      });
+    }
+  }
+
+  async RescheduleOnlineService(req: Request, res: Response) {
+    try {
+      const { bookingId, date, startTime, endTime } = req.body;
+
+      if (!bookingId || !date || !startTime || !endTime) {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          error: "Missing required fields",
+        });
+      }
+      const data = await this.rescheduleOnlineServiceSlotUseCase.execute(
+        bookingId,
+        date,
+        startTime,
+        endTime
+      );
+
+      res.status(HttpStatus.OK).json({
+        message: "Booking confirmed successfully",
+        data,
+      });
+    } catch (error) {
+      console.log(error);
       res.status(HttpStatus.CONFLICT).json({
         error: (error as Error).message,
       });

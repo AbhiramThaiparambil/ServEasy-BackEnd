@@ -125,4 +125,10 @@ router.get(
   "/bookings:id",
   bookingController.getBookedServiceDetailsForUser.bind(bookingController)
 );
+
+router.patch(
+  "/online-bookings/:bookingId/reschedule",
+  bookingController.RescheduleOnlineService.bind(bookingController)
+);
+
 export default router;

@@ -36,13 +36,13 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
     paymentType: {
       type: String,
       default: "pending",
-      enum: ["cash", "card", "online", "pending"],
+      enum: ["cash", "card", "online", "pending", "wallet"],
       required: true,
     },
     paymentStatus: {
       type: String,
       default: "pending",
-      enum: ["pending", "paid", "failed", "pending"],
+      enum: ["pending", "paid", "failed", "pending", "completed"],
       required: true,
     },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
