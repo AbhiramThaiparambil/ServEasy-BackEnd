@@ -23,8 +23,7 @@ userRouter.post("/forgot-password", userController.sendOtpController);
 userRouter.post("/forgot-password/verify-otp", userController.forgotVerifyOtp);
 userRouter.post(
   "/forgot-password/reset",
-  authMiddleware("User"),
-  checkUserBlocked,
+
   userController.resetPassword
 );
 userRouter.put(

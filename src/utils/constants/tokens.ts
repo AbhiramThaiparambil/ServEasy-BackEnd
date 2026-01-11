@@ -47,6 +47,10 @@ export const USE_CASE_TOKENS = {
   DeleteSlotUseCase: "IDeleteSlotUseCase",
   CreateSlotUseCase: "ICreateSlotUseCase",
   RescheduleOnlineServiceSlotUseCase: "IRescheduleOnlineServiceSlotUseCase",
+  GetServiceProviderRegistrationDetailsUseCase:
+    "IGetServiceProviderRegistrationDetailsUseCase",
+  GetServiceProviderStatusUseCase: "IGetServiceProviderStatusUseCase",
+  ReapplyServiceProviderUseCase: "IReapplyServiceProviderUseCase",
 };
 
 export const REPOSITORY_TOKENS = {

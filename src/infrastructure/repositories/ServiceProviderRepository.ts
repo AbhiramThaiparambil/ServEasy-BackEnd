@@ -7,12 +7,13 @@ import {
   IUpdateProfile,
 } from "../../domain/entities/IServiceProvider";
 import ServiceProviderModel from "../models/ServiceProviderModel";
-import mongoose, { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId, ObjectId } from "mongoose";
 import { ISubscription } from "../../domain/entities/ISubscription";
 import {
   IFindSubscriptionsResult,
   ISubscriptionWithPlan,
 } from "../../utils/types/dto/ISubscriptionWithPlan";
+import { Types } from "mongoose";
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
@@ -117,7 +118,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     const now = new Date();
 
     const result = await ServiceProviderModel.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(providerId) } },
+      { $match: { _id: new Types.ObjectId(providerId) } },
       { $unwind: "$subscriptions" },
       {
         $lookup: {
@@ -343,5 +344,70 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     ]);
 
     return result?.latestSubscription || null;
+  }
+
+  async findRegistrationDetailsByUserId(userId: string) {
+    return await ServiceProviderModel.findOne({
+      userId: new Types.ObjectId(userId),
+    })
+      .select(
+        `
+        serviceProviderName
+        serviceProviderPhone
+        serviceProviderEmail
+        experience
+        serviceMode
+        services
+        skills
+        description
+        location
+        profileImage
+        documentImg
+        documentImg2
+        bankDetails
+        SocialMedia
+        isVerified
+        document
+        `
+      )
+      .lean();
+  }
+
+  async findStatusByUserId(
+    userId: string
+  ): Promise<{ isVerified: "pending" | "verified" | "rejected" } | null> {
+    const provider = await ServiceProviderModel.findOne({ userId })
+      .select("isVerified")
+      .lean<{ isVerified?: "pending" | "verified" | "rejected" }>();
+
+    if (!provider || !provider.isVerified) {
+      return null;
+    }
+
+    return {
+      isVerified: provider.isVerified,
+    };
+  }
+
+  async updateRegistration(
+    serviceProviderId: ObjectId,
+    data: Partial<IServiceProvider>
+  ): Promise<IServiceProvider> {
+    const updatedProvider = await ServiceProviderModel.findByIdAndUpdate(
+      serviceProviderId,
+      {
+        $set: data,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedProvider) {
+      throw new Error("Service provider not found");
+    }
+
+    return updatedProvider;
   }
 }

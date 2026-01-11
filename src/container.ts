@@ -132,6 +132,12 @@ import { GetSlotUseCase } from "./application/use-case/admin/slot/GetSlotUseCase
 import { IServiceBookingRepository } from "./domain/repositories/IserviceBookingRepository";
 import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/createOnlineBooking/RescheduleOnlineServiceUseCase";
 import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/createOnlineBooking/IRescheduleOnlineServiceUseCase";
+import { IGetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
+import { GetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/GetServiceProviderRegistrationDetailsUseCase";
+import { IGetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
+import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
+import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
 container.register<IUserRepository>("UserRepository", {
   useClass: MongoUserRepository,
@@ -507,5 +513,26 @@ container.register<IRescheduleOnlineServiceSlotUseCase>(
   USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase,
   {
     useClass: RescheduleOnlineServiceSlotUseCase,
+  }
+);
+
+container.register<IGetServiceProviderRegistrationDetailsUseCase>(
+  USE_CASE_TOKENS.GetServiceProviderRegistrationDetailsUseCase,
+  {
+    useClass: GetServiceProviderRegistrationDetailsUseCase,
+  }
+);
+
+container.register<IGetServiceProviderStatusUseCase>(
+  USE_CASE_TOKENS.GetServiceProviderStatusUseCase,
+  {
+    useClass: GetServiceProviderStatusUseCase,
+  }
+);
+
+container.register<IReapplyServiceProviderUseCase>(
+  USE_CASE_TOKENS.ReapplyServiceProviderUseCase,
+  {
+    useClass: ReapplyServiceProviderUseCase,
   }
 );

@@ -1,9 +1,10 @@
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
+import { IBankDetails } from "./IServiceProvider";
 
 export interface IWalletTransaction {
-  type: 'credit' | 'debit';
+  type: "credit" | "debit";
   amount: number;
-  status?: 'none' | 'pending' | 'success' | 'rejected';
+  status?: "none" | "pending" | "success" | "rejected";
   refBookingId?: Types.ObjectId | null;
   note?: string | null;
   date?: Date;
@@ -15,4 +16,5 @@ export interface IProviderWallet {
   serviceProviderId: string | Types.ObjectId;
   balance: number;
   transactions: IWalletTransaction[];
+  bankDetails?: IBankDetails;
 }

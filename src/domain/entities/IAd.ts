@@ -9,19 +9,16 @@ export interface IAd {
 
   caption: string;
   description: string;
-  image: string|null;
+  image: string | null;
 
-  targetLocation?: ILocation|null;
+  targetLocation?: ILocation | null;
 
   radiusKm?: number;
 
-
-  // Stats
   views?: number;
   clicks?: number;
 
-  // Status
-  status?: "active" |"block" |"expired"
+  status?: "active" | "block" | "expired";
   startDate?: Date;
   endDate?: Date;
 
