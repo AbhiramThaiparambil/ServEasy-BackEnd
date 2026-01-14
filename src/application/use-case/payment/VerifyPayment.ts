@@ -6,11 +6,11 @@ import { ServiceBookingRepository } from "../../../infrastructure/repositories/S
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
 import { IProviderWalletRepository } from "../../../domain/repositories/IproviderWalletRepository";
 import { IWalletTransaction } from "../../../domain/entities/IproviderWallet";
-import { REPOSITORY_TOKENS } from "../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../utils/constants/tokens";
 @injectable()
 export class VerifyPaymentUseCase {
   constructor(
-    @inject(RazorpayService) private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService) private razorpayService: RazorpayService,
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,

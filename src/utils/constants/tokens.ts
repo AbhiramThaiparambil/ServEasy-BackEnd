@@ -71,4 +71,5 @@ export const SERVICE_TOKENS = {
   CloudinaryService: "CloudinaryService",
   TokenService: "ITokenService",
   RedisService: "IRedisService",
+  RazorpayService: "RazorpayService",
 };

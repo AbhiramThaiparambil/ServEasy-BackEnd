@@ -15,7 +15,8 @@ export class CreatePaymentSubscriptionOrderUseCase
   implements ICreatePaymentSubscriptionOrderUseCase
 {
   constructor(
-    @inject("RazorpayService") private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService)
+    private razorpayService: RazorpayService,
     @inject(REPOSITORY_TOKENS.SubscriptionRepository)
     private subscriptionPlanRepository: ISubscriptionPlanRepository,
     @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService

@@ -219,7 +219,7 @@ container.register<IServiceBookingRepository>(
   }
 );
 
-container.register("RazorpayService", RazorpayService);
+container.register(SERVICE_TOKENS.RazorpayService, RazorpayService);
 
 container.register("ReviewRepository", { useClass: ReviewRepository });
 container.register("NotificationRepository", {

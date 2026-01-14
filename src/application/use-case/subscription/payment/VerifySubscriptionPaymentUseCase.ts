@@ -11,14 +11,14 @@ import {
   ISubscriptionStatus,
 } from "../../../../domain/entities/ISubscription";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
 export class VerifySubscriptionPaymentUseCase
   implements IVerifySubscriptionPaymentUseCase
 {
   constructor(
-    @inject("RazorpayService") private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService) private razorpayService: RazorpayService,
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,
 

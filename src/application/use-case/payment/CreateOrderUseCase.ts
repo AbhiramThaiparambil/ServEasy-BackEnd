@@ -54,7 +54,8 @@ import { IRedisService } from "../../../services/redis/IRedisService";
 @injectable()
 export class CreateOrderUseCase {
   constructor(
-    @inject(RazorpayService) private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService)
+    private razorpayService: RazorpayService,
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
