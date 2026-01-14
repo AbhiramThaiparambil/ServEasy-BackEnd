@@ -10,9 +10,8 @@ export class CleanupExpiredSlotsJob {
     @inject(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase)
     private cleanupSlotsUseCase: ICleanupSlotsBeforeTodayUseCase
   ) {
-    // Optional immediate run (disabled by default)
     // (async () => {
-    //   console.log("⏰ Running slot cleanup (startup run)");
+    //   console.log("Running slot cleanup (startup run)");
     //   await this.cleanupSlotsUseCase.execute();
     // })();
   }

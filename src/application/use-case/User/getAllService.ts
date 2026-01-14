@@ -1,11 +1,13 @@
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { inject, injectable } from "tsyringe";
+import { REPOSITORY_TOKENS } from "../../../utils/constants/tokens";
 @injectable()
 export class GetAllActiveService {
   constructor(
     @inject("ServiceRepository") private serviceRepository: ServiceRepository,
-    @inject("UserRepository") private userRepository: IUserRepository
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository
   ) {}
 
   async getNearByservices(

@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 import { container } from "tsyringe";
 import { UserController } from "../controllers/UserController";
-import { checkUserBlocked } from "../../Middlewares/checkUserBlocked";
-import { clickLimiter } from "../../Middlewares/clickLimiter";
+import { checkUserBlocked } from "../Middlewares/checkUserBlocked";
+import { clickLimiter } from "../Middlewares/clickLimiter";
 const userController = container.resolve(UserController);
 const userRouter = Router();
 

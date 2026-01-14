@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRegistration } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { CloudinaryService } from "../../../../services/cloudinary/cloudinary";
+import { CloudinaryService } from "../../../../services/cloudinary/Cloudinary";
 import { ISkill } from "../../../../domain/entities/IServiceProvider";
 
 @injectable()

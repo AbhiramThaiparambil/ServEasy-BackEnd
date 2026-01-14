@@ -1,10 +1,10 @@
 import express from "express";
 import { container } from "tsyringe";
 
-import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 
 import { ServiceProviderController } from "../controllers/serviceProviderController";
-import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
+import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 
 const serviceController = container.resolve(ServiceProviderController);
 const router = express.Router();

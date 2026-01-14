@@ -1,17 +1,20 @@
-
-
-
-import { inject, injectable } from 'tsyringe';
-import { IServiceProviderRepository } from '../../../domain/repositories/IserviceProviderRepository';
-import { IUserRepository } from '../../../domain/repositories/IuserRepository';
-import { TokenService } from '../../../services/auth/TokenService';
+import { inject, injectable } from "tsyringe";
+import { IServiceProviderRepository } from "../../../domain/repositories/IserviceProviderRepository";
+import { IUserRepository } from "../../../domain/repositories/IuserRepository";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../utils/constants/tokens";
+import { ITokenService } from "../../../services/token/ITokenService";
 
 @injectable()
 export class VerifyServiceProvider {
   constructor(
-    @inject("IServiceProviderRepository") private serviceProviderRepository: IServiceProviderRepository,
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("TokenService") private tokenService: TokenService
+    @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
+    private serviceProviderRepository: IServiceProviderRepository,
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
   ) {}
 
   async execute(userId: string): Promise<string | false> {
@@ -21,13 +24,17 @@ export class VerifyServiceProvider {
       if (!userData) {
         throw new Error("User not found");
       }
-        
- 
+
       if (userData.serviceProvider) {
-        const serviceProvider = await this.serviceProviderRepository.findById(userData.serviceProvider.toString());
-        
-        if (serviceProvider&&serviceProvider._id) {
-          return this.tokenService.generateRefreshToken(serviceProvider._id.toString(),"serviceProvider");
+        const serviceProvider = await this.serviceProviderRepository.findById(
+          userData.serviceProvider.toString()
+        );
+
+        if (serviceProvider && serviceProvider._id) {
+          return this.tokenService.generateRefreshToken(
+            serviceProvider._id.toString(),
+            "serviceProvider"
+          );
         }
       }
 

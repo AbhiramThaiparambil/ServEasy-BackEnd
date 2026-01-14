@@ -8,7 +8,7 @@ import {
   SERVICE_TOKENS,
 } from "../../../utils/constants/tokens";
 import { Types } from "mongoose";
-import { CloudinaryService } from "../../../services/cloudinary/cloudinary";
+import { CloudinaryService } from "../../../services/cloudinary/Cloudinary";
 
 @injectable()
 export class CreateAdUseCase implements ICreateAdUseCase {

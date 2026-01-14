@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { Otpservice } from "../../../../../services/OTP/OtpService";
+import { Otpservice } from "../../../../../services/otp/OtpService";
 
 @injectable()
 export class ForgotVerifyOtp {

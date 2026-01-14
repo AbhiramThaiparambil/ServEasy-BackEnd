@@ -2,11 +2,13 @@ import { IUserRepository } from "../../../../../domain/repositories/IuserReposit
 import { User } from "../../../../../domain/entities/IUser";
 import { inject, injectable } from "tsyringe";
 import bcrypt from "bcrypt";
+import { REPOSITORY_TOKENS } from "../../../../../utils/constants/tokens";
 
 @injectable()
 export class ResetPassword {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository
   ) {}
 
   async resetPasswordEmail(
@@ -20,8 +22,9 @@ export class ResetPassword {
     }
 
     if (user.password) {
-      const hashedPassword =
-        await this.userRepository.HashPassword(newPassword);
+      const hashedPassword = await this.userRepository.HashPassword(
+        newPassword
+      );
 
       const res = await this.userRepository.updatePassword(
         user._id,
@@ -45,8 +48,9 @@ export class ResetPassword {
     }
 
     if (user.password) {
-      const hashedPassword =
-        await this.userRepository.HashPassword(newPassword);
+      const hashedPassword = await this.userRepository.HashPassword(
+        newPassword
+      );
 
       const res = await this.userRepository.updatePassword(
         user._id,

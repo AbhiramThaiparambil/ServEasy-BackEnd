@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import { Otpservice } from "../../../../services/OTP/OtpService";
-import { SmsOtpService } from "../../../../services/OTP/phoneOtp";
+import { Otpservice } from "../../../../services/otp/OtpService";
+import { SmsOtpService } from "../../../../services/otp/phoneOtp";
 import { EmailService } from "../../../../services/mailService/MailService";
 
 @injectable()
@@ -23,6 +23,6 @@ export class ResendOtp {
     const otp = this.otpService.generateOtp();
     this.otpService.saveOtp(phone, otp);
     await this.smsOtp.SendOtp(phone, otp);
-    return `otp send to ${phone} successFully`
+    return `otp send to ${phone} successFully`;
   }
 }

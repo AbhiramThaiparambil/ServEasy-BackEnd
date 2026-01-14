@@ -1,20 +1,22 @@
-import { IUserRepository } from '../../../../domain/repositories/IuserRepository';
-import { User } from '../../../../domain/entities/IUser';
-import { inject, injectable } from 'tsyringe';
-import { EmailService } from '../../../../services/mailService/MailService'; 
-import { Otpservice } from '../../../../services/OTP/OtpService';
-import { SmsOtpService } from '../../../../services/OTP/phoneOtp';
-import bcrypt from 'bcrypt';
-import { RedisService } from '../../../../services/RedisService';
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
+import { User } from "../../../../domain/entities/IUser";
+import { inject, injectable } from "tsyringe";
+import { EmailService } from "../../../../services/mailService/MailService";
+import { Otpservice } from "../../../../services/otp/OtpService";
+import { SmsOtpService } from "../../../../services/otp/phoneOtp";
+import bcrypt from "bcrypt";
+import { RedisService } from "../../../../services/redisService";
+import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
 export class RegisterUser {
   constructor(
-    @inject('UserRepository') private userRepository: IUserRepository,
-    @inject('EmailOtpService') private emailOtp: EmailService,
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
+    @inject("EmailOtpService") private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
-    @inject('SmsOtpService') private smsOtp: SmsOtpService,
-    @inject('RedisService') private redisService: RedisService
+    @inject("SmsOtpService") private smsOtp: SmsOtpService,
+    @inject("RedisService") private redisService: RedisService
   ) {}
 
   async sendEmailOtp(email: string): Promise<void> {
@@ -30,23 +32,28 @@ export class RegisterUser {
     await this.smsOtp.SendOtp(phone, otp);
   }
 
-  async execute(userData: { userName: string; email?: string; phone?: string; password: string }) {
+  async execute(userData: {
+    userName: string;
+    email?: string;
+    phone?: string;
+    password: string;
+  }) {
     const { userName, email, phone, password } = userData;
     if (email) {
       delete userData?.phone;
 
       const isExist = await this.userRepository.findByEmail(email);
       if (isExist) {
-        console.log('email is allready exist');
+        console.log("email is allready exist");
 
-        return { errorMessage: 'email is allready exist' };
+        return { errorMessage: "email is allready exist" };
       }
     } else if (phone) {
       delete userData?.email;
 
       const isExist = await this.userRepository.findByPhone(phone);
       if (isExist) {
-        return { errorMessage: 'phone number  allready exist' };
+        return { errorMessage: "phone number  allready exist" };
       }
     }
     const hashedPassword = await bcrypt.hash(userData?.password, 10);

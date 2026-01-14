@@ -1,84 +1,76 @@
-import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
-import express from "express";
-import dotenv from "dotenv";
-import "./container";
-import userRoutes from "./presentation/routes/User";
+import "dotenv/config";
+
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import http from "http";
+import { container } from "tsyringe";
+import "./container";
 import dbConnect from "./infrastructure/database/db";
 import authRouter from "./presentation/routes/authRoutes";
-import serviceProviderRoute from "./presentation/routes/serviceProvider";
-import adminRoute from "./presentation/routes/admin";
-dotenv.config();
-import cookieparser from "cookie-parser";
+import userRoutes from "./presentation/routes/User";
 import googleRouter from "./presentation/routes/google";
 import locationRouter from "./presentation/routes/location";
+import serviceProviderRoute from "./presentation/routes/serviceProvider";
+import serviceProviderSubscriptionRouter from "./presentation/routes/ServiceProviderSubscriptionRoute";
+import adminRoute from "./presentation/routes/admin";
 import serviceRouter from "./presentation/routes/service";
-import morgan from "morgan";
 import paymentRouter from "./presentation/routes/payment";
-
-import { container } from "tsyringe";
 import chatRouter from "./presentation/routes/chat";
-import http from "http";
 import morganMiddleware from "./utils/logger";
 import { SocketService } from "./services/socket/SocketService";
-import serviceProviderSubscriptionRouter from "./presentation/routes/ServiceProviderSubscriptionRoute";
 import { SubscriptionCheckJob } from "./services/jobs/cron/SubscriptionCheckJob";
 import { AdsExpireJob } from "./services/jobs/cron/AdsExpireJob";
 import { CleanupExpiredSlotsJob } from "./services/jobs/cron/CleanupExpiredSlotsJob";
+import { errorMiddleware } from "./presentation/Middlewares/errorMiddleware";
 
 const app = express();
 const server = http.createServer(app);
-app.use(cookieparser());
+
+app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morganMiddleware);
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-const socketService = container.resolve(SocketService);
-socketService.initialize(server);
+container.resolve(SocketService).initialize(server);
 
-const subscriptionCheckJob = container.resolve(SubscriptionCheckJob);
-subscriptionCheckJob.schedule();
-
-const adsExpireJob = container.resolve(AdsExpireJob);
-adsExpireJob.start();
-const cleanupExpiredSlotsJob = container.resolve(CleanupExpiredSlotsJob);
-cleanupExpiredSlotsJob.schedule();
-
-app.use("/location", locationRouter);
+container.resolve(SubscriptionCheckJob).schedule();
+container.resolve(AdsExpireJob).start();
+container.resolve(CleanupExpiredSlotsJob).schedule();
 
 app.use("/", authRouter);
 app.use("/", userRoutes);
 app.use("/google", googleRouter);
+app.use("/location", locationRouter);
 app.use("/service-providers", serviceProviderRoute);
 app.use("/service-providers", serviceProviderSubscriptionRouter);
 app.use("/admin", adminRoute);
 app.use("/service", serviceRouter);
 app.use("/payment", paymentRouter);
 app.use("/chat", chatRouter);
-dbConnect().catch((e) => console.log(e));
 
-app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof Error) {
-    console.error(err.message);
-    res.status(500).json({ message: err.message });
-    return;
-  }
+app.use(errorMiddleware);
 
-  console.error("Unknown error:", err);
-  res.status(500).json({ message: "Internal Server Error" });
-  return;
-});
-const PORT = process.env.PORT || 5001;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+dbConnect()
+  .then(() => {
+    const PORT = process.env.PORT || 5001;
+    server.listen(PORT, () => {
+      console.log(` Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("DB connection failed", err);
+    process.exit(1);
+  });

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import { GetUserProfileUseCase } from "../../application/use-case/User/GetProfile";
-import { TokenService } from "../../services/auth/TokenService";
+import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { UserProfileUpdate } from "../../application/use-case/User/updateProfile";
 
@@ -24,10 +24,11 @@ import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAdd
 import { AddReviewUseCase } from "../../application/use-case/review/AddReviewUseCase";
 import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
-import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../utils/constants/tokens";
 import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase";
 import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";
+import { ITokenService } from "../../services/token/ITokenService";
 
 @injectable()
 export class UserController {
@@ -38,7 +39,7 @@ export class UserController {
     @inject(SignIn) private signInUseCase: SignIn,
     @inject(VerifyOtp) private verifyOtpUseCase: VerifyOtp,
     @inject(ResendOtp) private resendOtpUseCase: ResendOtp,
-    @inject(TokenService) private tokenService: TokenService,
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
     @inject(GetUserProfileUseCase)
     private getUserProfileUseCase: GetUserProfileUseCase,
     @inject(SendOtp) private sendOtpUseCase: SendOtp,

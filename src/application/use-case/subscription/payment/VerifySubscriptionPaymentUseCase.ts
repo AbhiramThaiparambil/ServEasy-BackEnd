@@ -2,7 +2,7 @@ import {
   IVerifySubscriptionPaymentUseCase,
   VerifyPaymentDTO,
 } from "./IVerifySubscriptionPaymentUseCase";
-import { RazorpayService } from "../../../../services/razorpayService";
+import { RazorpayService } from "../../../../services/payment/RazorpayService";
 import { inject, injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";

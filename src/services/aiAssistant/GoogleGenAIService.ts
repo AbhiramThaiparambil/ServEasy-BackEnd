@@ -1,7 +1,7 @@
-import { config } from 'dotenv';
-import { GoogleGenAI } from '@google/genai';
-import { injectable } from 'tsyringe';
-import { IGoogleGenAIService } from './IgoogleGenAIService';
+import { config } from "dotenv";
+import { GoogleGenAI } from "@google/genai";
+import { injectable } from "tsyringe";
+import { IGoogleGenAIService } from "./IGoogleGenAIService";
 config();
 
 @injectable()
@@ -16,14 +16,14 @@ export class GoogleGenAIService implements IGoogleGenAIService {
   async generateResponse(prompt: string): Promise<any> {
     try {
       const response = await this.ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: "gemini-2.5-flash",
         contents: prompt,
       });
 
-      console.log('GoogleGenAIService response:', response.text);
+      console.log("GoogleGenAIService response:", response.text);
       return response;
     } catch (err) {
-      console.error('GoogleGenAIService error:', err);
+      console.error("GoogleGenAIService error:", err);
       throw err;
     }
   }

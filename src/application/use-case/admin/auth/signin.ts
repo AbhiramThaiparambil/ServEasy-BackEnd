@@ -1,24 +1,43 @@
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { TokenService } from "../../../../services/auth/TokenService";
+import { TokenService } from "../../../../services/token/TokenService";
 import { IAdminSignin } from "./IAdminSignin";
 import { IAuthResponse } from "../../../../domain/entities/IAuthResponse";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../utils/constants/tokens";
+import { ITokenService } from "../../../../services/token/ITokenService";
+``;
 
 @injectable()
-export class  Signin implements IAdminSignin {
+export class Signin implements IAdminSignin {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("TokenService") private tokenService: TokenService
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
   ) {}
 
-  async signByEmail(email: string, password: string):Promise<IAuthResponse|null>{
+  async signByEmail(
+    email: string,
+    password: string
+  ): Promise<IAuthResponse | null> {
     const user = await this.userRepository.findByEmail(email);
     if (user && user.isAdmin) {
-      const isMatch = await this.userRepository.comparePassword(password, user.password);
+      const isMatch = await this.userRepository.comparePassword(
+        password,
+        user.password
+      );
       if (isMatch) {
-        if(!user._id)return null
-        const accessToken =  this.tokenService.generateAccessToken(user._id.toString(),"adminId");
-        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString(),"adminId");
+        if (!user._id) return null;
+        const accessToken = this.tokenService.generateAccessToken(
+          user._id.toString(),
+          "adminId"
+        );
+        const refreshToken = await this.tokenService.generateRefreshToken(
+          user._id.toString(),
+          "adminId"
+        );
 
         return { accessToken, refreshToken, user };
       }
@@ -26,14 +45,26 @@ export class  Signin implements IAdminSignin {
     return null;
   }
 
-  async signByPhone(phone: string, password: string):Promise<IAuthResponse|null> {
+  async signByPhone(
+    phone: string,
+    password: string
+  ): Promise<IAuthResponse | null> {
     const user = await this.userRepository.findByPhone(phone);
     if (user && user.isAdmin) {
-      const isMatch = await this.userRepository.comparePassword(password, user.password);
+      const isMatch = await this.userRepository.comparePassword(
+        password,
+        user.password
+      );
       if (isMatch) {
-        if(!user._id)return null
-        const accessToken = this.tokenService.generateAccessToken(user._id.toString(),"adminId");
-        const refreshToken = await this.tokenService.generateRefreshToken(user._id.toString(),"adminId");
+        if (!user._id) return null;
+        const accessToken = this.tokenService.generateAccessToken(
+          user._id.toString(),
+          "adminId"
+        );
+        const refreshToken = await this.tokenService.generateRefreshToken(
+          user._id.toString(),
+          "adminId"
+        );
 
         return { accessToken, refreshToken, user };
       }

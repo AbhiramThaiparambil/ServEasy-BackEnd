@@ -1,15 +1,17 @@
-import { inject, injectable } from 'tsyringe';
-import { CloudinaryService } from '../../../services/cloudinary/cloudinary';
+import { inject, injectable } from "tsyringe";
+import { CloudinaryService } from "../../../services/cloudinary/Cloudinary";
 @injectable()
 export class UploadImageUseCase {
-  constructor(@inject('CloudinaryService') private cloudinaryService: CloudinaryService) {}
+  constructor(
+    @inject("CloudinaryService") private cloudinaryService: CloudinaryService
+  ) {}
   async uploadImage(img: string): Promise<string> {
     try {
       const result = await this.cloudinaryService.uploadChatImage(img);
       return result;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      throw new Error('Failed to upload image');
+      console.error("Error uploading image:", error);
+      throw new Error("Failed to upload image");
     }
   }
 }

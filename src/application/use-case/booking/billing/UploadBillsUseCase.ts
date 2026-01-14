@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { CloudinaryService } from "../../../../services/cloudinary/cloudinary";
+import { CloudinaryService } from "../../../../services/cloudinary/Cloudinary";
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
 

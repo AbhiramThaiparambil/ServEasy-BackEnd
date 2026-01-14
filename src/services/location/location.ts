@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "dotenv";
 import { injectable } from "tsyringe";
-config()
+config();
 @injectable()
 export class LocationService {
   private locationUrl = "https://us1.locationiq.com/v1/search.php";
@@ -33,22 +33,23 @@ export class LocationService {
     }
   }
 
-
   async getAutoSuggestions(query: string) {
     try {
-  
       if (!this.locationIqApiKey) {
         throw new Error("LocationIQ API key is not defined");
       }
 
-      const response = await axios.get("https://us1.locationiq.com/v1/autocomplete.php", {
-        params: {
-          key: this.locationIqApiKey,
-          q: query,
-          limit: 5,
-          format: "json",
-        },
-      });
+      const response = await axios.get(
+        "https://us1.locationiq.com/v1/autocomplete.php",
+        {
+          params: {
+            key: this.locationIqApiKey,
+            q: query,
+            limit: 5,
+            format: "json",
+          },
+        }
+      );
 
       const suggestions = response.data.map((item: any) => ({
         address: item.display_name,
@@ -58,10 +59,12 @@ export class LocationService {
 
       console.log("Auto-suggestions:", suggestions);
 
-      return suggestions; // ✅ Added return statement
-
+      return suggestions;
     } catch (error: any) {
-      console.error("Error in getAutoSuggestions:", error?.response?.data || error.message || error);
+      console.error(
+        "Error in getAutoSuggestions:",
+        error?.response?.data || error.message || error
+      );
       throw new Error(error?.message || "Failed to fetch auto suggestions");
     }
   }

@@ -3,7 +3,11 @@ import { OAuth2Client } from "google-auth-library";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { User } from "../../../../domain/entities/IUser";
 import { config } from "dotenv";
-import { TokenService } from "../../../../services/auth/TokenService";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../utils/constants/tokens";
+import { ITokenService } from "../../../../services/token/ITokenService";
 config();
 
 @injectable()
@@ -11,8 +15,9 @@ export class GoogleAuthUseCase {
   private client: OAuth2Client;
 
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("TokenService") private tokenService: TokenService
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
   ) {
     this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
@@ -45,11 +50,10 @@ export class GoogleAuthUseCase {
           await this.userRepository.updateUser(user);
         }
       } else {
-        
         const newUser: User = {
           isVerified: email_verified || false,
           password: sub,
-          userName: name || email.split("@")[0], 
+          userName: name || email.split("@")[0],
           email,
           googleId: sub,
           profileImage: picture || "",
@@ -57,17 +61,20 @@ export class GoogleAuthUseCase {
 
         user = await this.userRepository.create(newUser);
       }
-          
-      if(user){
-        const accessToken=this.tokenService.generateAccessToken(user._id+"","userId")
-        const refreshToken=this.tokenService.generateRefreshToken(user._id="","userId")
-        return {accessToken,refreshToken}
-      }else{
-        throw new Error('use Auth failed')
-      }
-      
 
-     
+      if (user) {
+        const accessToken = this.tokenService.generateAccessToken(
+          user._id + "",
+          "userId"
+        );
+        const refreshToken = this.tokenService.generateRefreshToken(
+          (user._id = ""),
+          "userId"
+        );
+        return { accessToken, refreshToken };
+      } else {
+        throw new Error("use Auth failed");
+      }
     } catch (error) {
       console.error("Google Auth Error:", error);
       throw new Error("Google Authentication Failed");

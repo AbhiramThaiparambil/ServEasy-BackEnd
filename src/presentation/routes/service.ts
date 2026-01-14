@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { addNewService } from "../controllers/service/addnewService";
 import { getServices } from "../controllers/service/getServices";
-import { serviceProviderAuth } from "../../Middlewares/serviceProviderMiddleware";
+import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
-import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 import { uploadBillsHandler } from "../controllers/ServiceBooking/uploadBills";
 import { ServiceController } from "../controllers/ServiceController";
 import { container } from "tsyringe";
-import { checkUserBlocked } from "../../Middlewares/checkUserBlocked";
+import { checkUserBlocked } from "../Middlewares/checkUserBlocked";
 import { BookingController } from "../controllers/BookingController";
 const bookingController = container.resolve(BookingController);
 const serviceController = container.resolve(ServiceController);

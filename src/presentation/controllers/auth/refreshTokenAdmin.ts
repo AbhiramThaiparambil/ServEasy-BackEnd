@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { TokenService } from "../../../services/auth/TokenService";
+import { TokenService } from "../../../services/token/TokenService";
 import { container } from "tsyringe";
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
 
 export const refreshTokenAdmin = async (req: Request, res: Response) => {
   const adminTokenData = req.cookies.adminToken;
-      console.log('hey hey hey ');
-      
+  console.log("hey hey hey ");
+
   if (!adminTokenData) {
     res.status(401).json({ error: "Refresh token is missing" });
     return;
@@ -17,13 +17,13 @@ export const refreshTokenAdmin = async (req: Request, res: Response) => {
     const userRepo = container.resolve(MongoUserRepository);
     const decoded = tokenService.verifyRefreshToken(adminTokenData);
     console.log(decoded);
-    
+
     if (!decoded) {
       res.status(401).json({ error: "Refresh token is missing" });
       return;
     }
     console.log(decoded.adminId);
-     
+
     const user = await userRepo.findById(decoded.adminId);
 
     if (!user || !user.isAdmin) {
@@ -32,10 +32,10 @@ export const refreshTokenAdmin = async (req: Request, res: Response) => {
     }
 
     const newAccessToken = await tokenService.generateAccessToken(
-      user._id + "","adminId"
+      user._id + "",
+      "adminId"
     );
-   
-   
+
     res.json({ adminToken: newAccessToken });
     return;
   } catch (error) {

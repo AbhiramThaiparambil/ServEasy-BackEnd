@@ -1,20 +1,25 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { injectable } from "tsyringe";
 import dotenv from "dotenv";
+import { ITokenService } from "./ITokenService";
 
 dotenv.config();
 
 @injectable()
-export class TokenService {
+export class TokenService implements ITokenService {
   private accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
   private refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
 
-  generateAccessToken(userId: string,role:string): string {
-    return jwt.sign({ [role]:userId }, this.accessTokenSecret, { expiresIn: "15m" });
+  generateAccessToken(userId: string, role: string): string {
+    return jwt.sign({ [role]: userId }, this.accessTokenSecret, {
+      expiresIn: "15m",
+    });
   }
 
-  generateRefreshToken(userId: string,role:string): string {
-    return jwt.sign({ [role]:userId }, this.refreshTokenSecret, { expiresIn: "7d" });
+  generateRefreshToken(userId: string, role: string): string {
+    return jwt.sign({ [role]: userId }, this.refreshTokenSecret, {
+      expiresIn: "7d",
+    });
   }
 
   verifyAccessToken(token: string): JwtPayload | null {

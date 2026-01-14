@@ -44,7 +44,6 @@ export class SocketService {
     });
   }
 
-  // Add this method here
   public sendNotificationToUser(
     userId: string,
     notification:

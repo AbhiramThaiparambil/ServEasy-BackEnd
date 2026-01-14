@@ -42,21 +42,23 @@
 //   }
 // }
 
-import { inject, injectable } from 'tsyringe';
-import { Types } from 'mongoose';
-import { RazorpayService } from '../../../services/razorpayService';
-import { ServiceRepository } from '../../../infrastructure/repositories/ServiceRepositorie';
-import { ServiceBookingRepository } from '../../../infrastructure/repositories/ServiceBookingRepository';
-import { ServiceProviderRepository } from '../../../infrastructure/repositories/ServiceProviderRepository';
-import { RedisService } from '../../../services/RedisService';
+import { inject, injectable } from "tsyringe";
+import { Types } from "mongoose";
+import { RazorpayService } from "../../../services/payment/RazorpayService";
+import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
+import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
+import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
+import { RedisService } from "../../../services/redisService";
 
 @injectable()
 export class CreateOrderUseCase {
   constructor(
     @inject(RazorpayService) private razorpayService: RazorpayService,
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
-    @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository,
-    @inject(ServiceProviderRepository) private serviceProviderRepository: ServiceProviderRepository,
+    @inject(ServiceBookingRepository)
+    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(ServiceProviderRepository)
+    private serviceProviderRepository: ServiceProviderRepository,
     @inject(RedisService) private RedisService: RedisService
   ) {}
 
@@ -67,22 +69,30 @@ export class CreateOrderUseCase {
     const lockAcquired = await this.RedisService.setLock(lockKey, ttl);
 
     if (!lockAcquired) {
-      return { success: false, message: 'We’re processing your order. Please wait...' };
+      return {
+        success: false,
+        message: "We’re processing your order. Please wait...",
+      };
     }
 
     try {
       const serviceObjId = new Types.ObjectId(id);
-      const service = await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+      const service = await this.serviceBookingRepository.findBookedServiceById(
+        serviceObjId
+      );
 
       if (!service || !service.payment) {
-        return { success: false, message: 'Service or payment not found' };
+        return { success: false, message: "Service or payment not found" };
       }
 
       const serviceProvider = await this.serviceProviderRepository.findById(
         service.serviceProviderId
       );
       if (!serviceProvider) {
-        return { success: false, message: 'Service provider payment details not found' };
+        return {
+          success: false,
+          message: "Service provider payment details not found",
+        };
       }
 
       const order = await this.razorpayService.createOrder(
@@ -92,8 +102,8 @@ export class CreateOrderUseCase {
 
       return { success: true, order };
     } catch (error: any) {
-      console.error('CreateOrderUseCase Error:', error);
-      return { success: false, message: 'Failed to create order' };
+      console.error("CreateOrderUseCase Error:", error);
+      return { success: false, message: "Failed to create order" };
     }
   }
 }

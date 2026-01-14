@@ -7,6 +7,7 @@ import { ServiceProviderRepository } from "../../../../infrastructure/repositori
 import { ReviewRepository } from "../../../../infrastructure/repositories/ReviewRepository";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { IGetBookedServiceByIdUseCase } from "./IGetBookedServiceByIdUseCase";
+import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
 export class GetBookedServiceByIdUseCase
@@ -25,7 +26,7 @@ export class GetBookedServiceByIdUseCase
     @inject(ReviewRepository)
     private reviewRepository: ReviewRepository,
 
-    @inject("UserRepository")
+    @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository
   ) {}
 

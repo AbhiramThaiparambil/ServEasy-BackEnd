@@ -2,16 +2,14 @@
 
 import { Request, Response } from "express";
 
-import { TokenService } from "../../../services/auth/TokenService";
+import { TokenService } from "../../../services/token/TokenService";
 import { container } from "tsyringe";
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
-
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-
     res.status(401).json({ error: "Refresh token is missing" });
     return;
   }
@@ -34,9 +32,9 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     }
 
     const newAccessToken = await tokenService.generateAccessToken(
-      user._id + "","userId"
+      user._id + "",
+      "userId"
     );
-
 
     res.json({ accessToken: newAccessToken });
     return;

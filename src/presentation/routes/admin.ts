@@ -1,6 +1,6 @@
 import express, { Request, Response, Router } from "express";
 
-import { authMiddleware } from "../../Middlewares/authMiddleware";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 import { container } from "tsyringe";
 import { AdminController } from "../controllers/AdminController";
 const router = express.Router();
@@ -115,14 +115,16 @@ router.patch("/wallets/:walletId", (req, res) =>
 router
   .route("/subscriptions")
   .get((req, res) => adminController.getAllSubscriptions(req, res))
-  .post((req, res) => adminController.createSubscription(req, res))
+  .post((req, res) => adminController.createSubscription(req, res));
 
-  router.patch("/subscriptions/:id",(req, res) => adminController.updateSubscription(req, res));
+router.patch("/subscriptions/:id", (req, res) =>
+  adminController.updateSubscription(req, res)
+);
 
-router.get("/ads",(req,res)=>adminController.getAds(req,res));
+router.get("/ads", (req, res) => adminController.getAds(req, res));
 
-
-router.patch("/ads/:adId/", (req,res)=>adminController.changeAdStatus(req,res));
-
+router.patch("/ads/:adId/", (req, res) =>
+  adminController.changeAdStatus(req, res)
+);
 
 export default router;

@@ -6,19 +6,19 @@ import { ICategoryRepository } from "./domain/repositories/IcategoryRepository";
 import { IUserRepository } from "./domain/repositories/IuserRepository";
 import { container } from "tsyringe";
 import { EmailService } from "./services/mailService/MailService";
-import { Otpservice } from "./services/OTP/OtpService";
+import { Otpservice } from "./services/otp/OtpService";
 import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
-import { RedisService } from "./services/RedisService";
-import { SmsOtpService } from "./services/OTP/phoneOtp";
+import { RedisService } from "./services/redisService";
+import { SmsOtpService } from "./services/otp/phoneOtp";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
-import { TokenService } from "./services/auth/TokenService";
-import { CloudinaryService } from "./services/cloudinary/cloudinary";
+import { TokenService } from "./services/token/TokenService";
+import { CloudinaryService } from "./services/cloudinary/Cloudinary";
 import { RegisterServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { LocationService } from "./services/location/location";
 import { ServiceRepository } from "./infrastructure/repositories/ServiceRepositorie";
 import { CategoryRepository } from "./infrastructure/repositories/categoryRepository";
 import { ServiceBookingRepository } from "./infrastructure/repositories/ServiceBookingRepository";
-import { RazorpayService } from "./services/razorpayService";
+import { RazorpayService } from "./services/payment/RazorpayService";
 import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
@@ -69,8 +69,8 @@ import { ICreatePaymentSubscriptionOrderUseCase } from "./application/use-case/s
 import { CreatePaymentSubscriptionOrderUseCase } from "./application/use-case/subscription/payment/CreatePaymentSubscriptionOrderUseCase";
 import { IVerifySubscriptionPaymentUseCase } from "./application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase";
 import { VerifySubscriptionPaymentUseCase } from "./application/use-case/subscription/payment/VerifySubscriptionPaymentUseCase";
-import { GoogleGenAIService } from "./services/aiAssistant/googleGenAIService";
-import { IGoogleGenAIService } from "./services/aiAssistant/IgoogleGenAIService";
+import { GoogleGenAIService } from "./services/aiAssistant/GoogleGenAIService";
+import { IGoogleGenAIService } from "./services/aiAssistant/IGoogleGenAIService";
 import { IAiAssistanceRepository } from "./domain/repositories/IAiAssistanceRepository";
 import { aiAssistanceRepository } from "./infrastructure/repositories/AiAssistanceRepository";
 import { ICreateAiChatUseCase } from "./application/use-case/premiumFeatures/aiAssistance/create/ICreateAiChatUseCase";
@@ -138,8 +138,9 @@ import { IGetServiceProviderStatusUseCase } from "./application/use-case/service
 import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
 import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
+import { ITokenService } from "./services/token/ITokenService";
 
-container.register<IUserRepository>("UserRepository", {
+container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
 });
 container.register<IServiceProviderRepository>(
@@ -188,7 +189,10 @@ container.registerSingleton("EmailOtpService", EmailService);
 container.registerSingleton("OtpService", Otpservice);
 container.register(ResendOtp, { useClass: ResendOtp });
 container.register(RegisterUser, { useClass: RegisterUser });
-container.register<TokenService>("TokenService", { useClass: TokenService });
+container.register<ITokenService>(SERVICE_TOKENS.TokenService, {
+  useClass: TokenService,
+});
+
 container.registerSingleton("CloudinaryService", CloudinaryService);
 container.registerSingleton("SocketService", SocketService);
 container.register(VerifyOtp, { useClass: VerifyOtp });

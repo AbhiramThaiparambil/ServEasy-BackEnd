@@ -1,22 +1,27 @@
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { EmailService } from "../../../../../services/mailService/MailService";
-import { Otpservice } from "../../../../../services/OTP/OtpService";
-import { SmsOtpService } from "../../../../../services/OTP/phoneOtp";
+import { Otpservice } from "../../../../../services/otp/OtpService";
+import { SmsOtpService } from "../../../../../services/otp/phoneOtp";
+import { REPOSITORY_TOKENS } from "../../../../../utils/constants/tokens";
 
 @injectable()
 export class SendOtp {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
     @inject("EmailOtpService") private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService
   ) {}
 
-  async sendEmailOtp(email: string): Promise<{ successMessage?: string; errorMessage?: string }> {
+  async sendEmailOtp(
+    email: string
+  ): Promise<{ successMessage?: string; errorMessage?: string }> {
     try {
       const user = await this.userRepository.findByEmail(email);
-      if (!user) return { errorMessage: "User does not exist. Please sign in." };
+      if (!user)
+        return { errorMessage: "User does not exist. Please sign in." };
 
       const otp = this.otpService.generateOtp();
       this.otpService.saveOtp(email, otp);
@@ -29,10 +34,13 @@ export class SendOtp {
     }
   }
 
-  async sendSmsOtp(phone: string): Promise<{ successMessage?: string; errorMessage?: string }> {
+  async sendSmsOtp(
+    phone: string
+  ): Promise<{ successMessage?: string; errorMessage?: string }> {
     try {
-      const user = await this.userRepository.findByPhone(phone); 
-      if (!user) return { errorMessage: "User does not exist. Please sign in." };
+      const user = await this.userRepository.findByPhone(phone);
+      if (!user)
+        return { errorMessage: "User does not exist. Please sign in." };
 
       const otp = this.otpService.generateOtp();
       this.otpService.saveOtp(phone, otp);

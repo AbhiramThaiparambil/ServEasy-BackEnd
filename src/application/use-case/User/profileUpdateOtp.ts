@@ -1,11 +1,13 @@
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { Otpservice } from "../../../services/OTP/OtpService";
+import { Otpservice } from "../../../services/otp/OtpService";
+import { REPOSITORY_TOKENS } from "../../../utils/constants/tokens";
 
 @injectable()
 export class ProfileUpdateOtp {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
     @inject("OtpService") private otpService: Otpservice
   ) {}
 

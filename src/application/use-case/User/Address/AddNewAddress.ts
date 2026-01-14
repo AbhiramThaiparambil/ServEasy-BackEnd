@@ -2,10 +2,12 @@ import { IUserRepository } from "../../../../domain/repositories/IuserRepository
 import { inject, injectable } from "tsyringe";
 import { IAddress } from "../../../../domain/entities/IAddress";
 import { ObjectId } from "mongodb";
+import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 @injectable()
 export class AddNewAddress {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository
   ) {}
 
   async execute(userId: string, newAddress: IAddress): Promise<boolean> {
@@ -13,7 +15,6 @@ export class AddNewAddress {
 
     if (!user) throw new Error("User does not exist");
     newAddress._id = new ObjectId();
- 
 
     user.address = user.address ? [...user.address, newAddress] : [newAddress];
 
@@ -25,6 +26,3 @@ export class AddNewAddress {
     return true;
   }
 }
-
-
-

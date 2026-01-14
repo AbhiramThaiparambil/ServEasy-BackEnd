@@ -1,32 +1,29 @@
-import { injectable } from 'tsyringe';
-import Redis from 'ioredis';
-import { config } from 'dotenv';
-import { User } from '../domain/entities/IUser';
+import { injectable } from "tsyringe";
+import Redis from "ioredis";
+import { config } from "dotenv";
+import { User } from "../domain/entities/IUser";
 
 config();
 
 @injectable()
-
-
-
 export class RedisService {
   private client!: Redis;
   constructor() {
     const redisUrl = process.env.REDIS_URL;
     if (!redisUrl) {
-      throw new Error('"REDIS_URL is not defined in the environment variables"');
+      throw new Error(
+        '"REDIS_URL is not defined in the environment variables"'
+      );
     }
     this.client = new Redis(redisUrl);
 
-    this.client.on('error', err => {
-      console.error('Redis Error ------');
-
+    this.client.on("error", (err) => {
       console.error(err);
     });
   }
 
   async set(key: string, otp: string, expiry: number): Promise<void> {
-    const res = await this.client.set(key, otp, 'EX', expiry);
+    const res = await this.client.set(key, otp, "EX", expiry);
   }
 
   async get(key: string): Promise<string | null> {
@@ -38,8 +35,8 @@ export class RedisService {
   }
 
   async setLock(key: string, ttlSeconds: number): Promise<boolean> {
-    const result = await this.client.set(key, 'locked', 'EX', ttlSeconds, 'NX');
-    return result === 'OK';
+    const result = await this.client.set(key, "locked", "EX", ttlSeconds, "NX");
+    return result === "OK";
   }
 
   async releaseLock(key: string): Promise<void> {
@@ -54,7 +51,7 @@ export class RedisService {
   async saveUser(userKey: string, user: User): Promise<void> {
     const ttlSeconds = 60 * 2;
     const userData = JSON.stringify(user);
-    await this.client.set(userKey, userData, 'EX', ttlSeconds);
+    await this.client.set(userKey, userData, "EX", ttlSeconds);
   }
 
   async getUser(userKey: string): Promise<User | null> {

@@ -956,10 +956,9 @@ export class ServiceRepository implements IServiceRepository {
     limit: number = 10,
     cursor?: string | null
   ) {
-    const maxDistanceInMeters = 5000;
+    const maxDistanceInMeters = 20000;
     const pipeline: any[] = [];
 
-    // 1. Sorting logic (consistent direction)
     let sortDirection: 1 | -1 = 1;
     let sortStage: Record<string, 1 | -1> = { _id: 1 };
 

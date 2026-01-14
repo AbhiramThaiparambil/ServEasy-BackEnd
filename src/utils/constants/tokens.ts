@@ -63,9 +63,11 @@ export const REPOSITORY_TOKENS = {
   AdRepository: "IAdRepository",
   SlotRepository: "ISlotRepository",
   ServiceBookingRepository: "IServiceBookingRepository",
+  UserRepository: "IUserRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
   GoogleGenAIService: "IGoogleGenAIService",
   CloudinaryService: "CloudinaryService",
+  TokenService: "ITokenService",
 };
