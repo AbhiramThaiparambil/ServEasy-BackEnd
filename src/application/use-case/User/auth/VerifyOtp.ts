@@ -2,19 +2,19 @@ import { IUserRepository } from "../../../../domain/repositories/IuserRepository
 import { inject, injectable } from "tsyringe";
 import { Otpservice } from "../../../../services/otp/OtpService";
 import { IUser } from "../../../../domain/entities/IUser";
-import { RedisService } from "../../../../services/redis/RedisService";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
 } from "../../../../utils/constants/tokens";
 import { ITokenService } from "../../../../services/token/ITokenService";
+import { IRedisService } from "../../../../services/redis/IRedisService";
 @injectable()
 export class VerifyOtp {
   constructor(
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
     @inject(Otpservice) private otpSErvice: Otpservice,
-    @inject("RedisService") private redisService: RedisService,
+    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService,
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
   ) {}
 

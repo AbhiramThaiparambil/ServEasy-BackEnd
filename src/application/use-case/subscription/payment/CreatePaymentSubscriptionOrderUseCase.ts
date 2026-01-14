@@ -3,8 +3,12 @@ import { RazorpayService } from "../../../../services/payment/RazorpayService";
 import { PaymentOrder } from "./ICreatePaymentSubscriptionOrderUseCase";
 import { injectable, inject } from "tsyringe";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../utils/constants/tokens";
 import { RedisService } from "../../../../services/redis/RedisService";
+import { IRedisService } from "../../../../services/redis/IRedisService";
 
 @injectable()
 export class CreatePaymentSubscriptionOrderUseCase
@@ -14,7 +18,7 @@ export class CreatePaymentSubscriptionOrderUseCase
     @inject("RazorpayService") private razorpayService: RazorpayService,
     @inject(REPOSITORY_TOKENS.SubscriptionRepository)
     private subscriptionPlanRepository: ISubscriptionPlanRepository,
-    @inject(RedisService) private redisService: RedisService
+    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
   ) {}
 
   async execute(userId: string, planId: string): Promise<PaymentOrder> {

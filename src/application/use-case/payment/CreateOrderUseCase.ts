@@ -48,7 +48,8 @@ import { RazorpayService } from "../../../services/payment/RazorpayService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
-import { RedisService } from "../../../services/redis/RedisService";
+import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
+import { IRedisService } from "../../../services/redis/IRedisService";
 
 @injectable()
 export class CreateOrderUseCase {
@@ -59,7 +60,7 @@ export class CreateOrderUseCase {
     private serviceBookingRepository: ServiceBookingRepository,
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: ServiceProviderRepository,
-    @inject(RedisService) private RedisService: RedisService
+    @inject(SERVICE_TOKENS.RedisService) private RedisService: IRedisService
   ) {}
 
   async execute(id: string) {

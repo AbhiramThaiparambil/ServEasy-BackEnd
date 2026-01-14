@@ -70,4 +70,5 @@ export const SERVICE_TOKENS = {
   GoogleGenAIService: "IGoogleGenAIService",
   CloudinaryService: "CloudinaryService",
   TokenService: "ITokenService",
+  RedisService: "IRedisService",
 };

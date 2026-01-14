@@ -6,7 +6,11 @@ import { Otpservice } from "../../../../services/otp/OtpService";
 import { SmsOtpService } from "../../../../services/otp/phoneOtp";
 import bcrypt from "bcrypt";
 import { RedisService } from "../../../../services/redis/RedisService";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../utils/constants/tokens";
+import { IRedisService } from "../../../../services/redis/IRedisService";
 
 @injectable()
 export class RegisterUser {
@@ -16,7 +20,7 @@ export class RegisterUser {
     @inject("EmailOtpService") private emailOtp: EmailService,
     @inject(Otpservice) private otpService: Otpservice,
     @inject("SmsOtpService") private smsOtp: SmsOtpService,
-    @inject("RedisService") private redisService: RedisService
+    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
   ) {}
 
   async sendEmailOtp(email: string): Promise<void> {

@@ -2,11 +2,12 @@ import { injectable } from "tsyringe";
 import Redis from "ioredis";
 import { config } from "dotenv";
 import { IUser } from "../../domain/entities/IUser";
+import { IRedisService } from "./IRedisService";
 
 config();
 
 @injectable()
-export class RedisService {
+export class RedisService implements IRedisService {
   private client!: Redis;
   constructor() {
     const redisUrl = process.env.REDIS_URL;

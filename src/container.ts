@@ -139,6 +139,7 @@ import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceP
 import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 import { ITokenService } from "./services/token/ITokenService";
+import { IRedisService } from "./services/redis/IRedisService";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -197,7 +198,10 @@ container.registerSingleton("CloudinaryService", CloudinaryService);
 container.registerSingleton("SocketService", SocketService);
 container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register("SmsOtpService", SmsOtpService);
-container.register("RedisService", RedisService);
+container.register<IRedisService>(SERVICE_TOKENS.RedisService, {
+  useClass: RedisService,
+});
+
 container.register("LocationService", { useClass: LocationService });
 
 container.register<IServiceRepository>(

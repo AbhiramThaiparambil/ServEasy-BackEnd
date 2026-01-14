@@ -1,10 +1,13 @@
 import { inject, injectable, singleton } from "tsyringe";
-import { RedisService } from "../redis/RedisService";
+import { IRedisService } from "../redis/IRedisService";
+import { SERVICE_TOKENS } from "../../utils/constants/tokens";
 @singleton()
 @injectable()
 export class Otpservice {
   private otpStore: Map<string, { otp: string; expiresAt: number }> = new Map();
-  constructor(@inject(RedisService) private redisService: RedisService) {}
+  constructor(
+    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
+  ) {}
 
   generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
