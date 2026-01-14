@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class UpdateUserWithServiceProviderUseCase {

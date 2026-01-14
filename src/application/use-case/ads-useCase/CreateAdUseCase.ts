@@ -3,10 +3,7 @@ import { injectable, inject } from "tsyringe";
 import { IAd } from "../../../domain/entities/IAd";
 import { IAdRepository } from "../../../domain/repositories/IAdRepository";
 import { ICreateAdUseCase } from "./ICreateAdUseCase";
-import {
-  REPOSITORY_TOKENS,
-  SERVICE_TOKENS,
-} from "../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
 import { Types } from "mongoose";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
 

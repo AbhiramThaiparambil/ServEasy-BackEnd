@@ -2,12 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ICreateSubscriptionPlanUseCase } from "./ICreateSubscriptionPlanUseCase";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
 import { ISubscriptionPlan } from "../../../../domain/entities/ISubscriptionPlan";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
-
-
-
-
-
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class CreateSubscriptionPlanUseCase
@@ -19,12 +14,10 @@ export class CreateSubscriptionPlanUseCase
   ) {}
 
   async execute(
-    data: Omit<
-      ISubscriptionPlan,
-      '_id' | 'createdAt' | 'updatedAt'
-    >
-  ): Promise<ISubscriptionPlan |null > {
-    const createdPlan = await this.subscriptionPlanRepository.createSubscriptionPlan(data);
+    data: Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">
+  ): Promise<ISubscriptionPlan | null> {
+    const createdPlan =
+      await this.subscriptionPlanRepository.createSubscriptionPlan(data);
 
     return createdPlan;
   }

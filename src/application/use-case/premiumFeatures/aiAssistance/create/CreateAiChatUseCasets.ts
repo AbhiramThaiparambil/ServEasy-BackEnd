@@ -3,7 +3,7 @@ import { ICreateAiChatUseCase } from "./ICreateAiChatUseCase";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
-} from "../../../../../utils/constants/tokens";
+} from "../../../../../constants/tokens";
 import { IGoogleGenAIService } from "../../../../../services/aiAssistant/IGoogleGenAIService";
 import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiAssistanceRepository";
 import { isValidObjectId, Types } from "mongoose";

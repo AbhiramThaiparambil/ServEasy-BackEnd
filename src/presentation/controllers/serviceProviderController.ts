@@ -12,7 +12,7 @@ import { GetServiceProvider } from "../../application/use-case/serviceProvider/a
 import { ManageAllServiceUseCase } from "../../application/use-case/admin/mangageAllserviceUseCase";
 import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/IGetSubscriptionPlansUseCase";

@@ -22,7 +22,7 @@ import { DeleteService } from "../../application/use-case/admin/category-managem
 import path from "path";
 import fs from "fs";
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { ICreateCouponUseCase } from "../../application/use-case/coupon/createCoupon/ICreateCouponUseCase";
 import { IFindAllCouponsUseCase } from "../../application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase";
 import { IMakeCouponInactiveUseCase } from "../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase";

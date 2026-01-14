@@ -48,7 +48,7 @@ import { RazorpayService } from "../../../services/payment/RazorpayService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
-import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../constants/tokens";
 import { IRedisService } from "../../../services/redis/IRedisService";
 
 @injectable()

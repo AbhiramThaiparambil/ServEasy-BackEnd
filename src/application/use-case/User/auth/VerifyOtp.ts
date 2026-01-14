@@ -5,7 +5,7 @@ import { IUser } from "../../../../domain/entities/IUser";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
-} from "../../../../utils/constants/tokens";
+} from "../../../../constants/tokens";
 import { ITokenService } from "../../../../services/token/ITokenService";
 import { IRedisService } from "../../../../services/redis/IRedisService";
 @injectable()

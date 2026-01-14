@@ -1,27 +1,24 @@
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IRecommendAdsUseCase } from "./IRecommendAdsUseCase";
 import { IAdRepository } from "../../../../domain/repositories/IAdRepository";
 import { IAd } from "../../../../domain/entities/IAd";
-import { IGetRecommendedAdsRequestDTO,IRecommendedAdDTO } from "../../../../utils/types/dto/IRecommendAdsDTO";
+import {
+  IGetRecommendedAdsRequestDTO,
+  IRecommendedAdDTO,
+} from "../../../../utils/types/dto/IRecommendAdsDTO";
 
 @injectable()
-export class RecommendAdsUseCase implements IRecommendAdsUseCase  {
-
+export class RecommendAdsUseCase implements IRecommendAdsUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.AdRepository)
     private adsRepository: IAdRepository
   ) {}
 
-  async execute(data: IGetRecommendedAdsRequestDTO): Promise<IRecommendedAdDTO[]> {
-    const {
-      count = 1,
-      category,
-      providerId,
-      lat,
-      lng,
-      radius = 10000,
-    } = data;
+  async execute(
+    data: IGetRecommendedAdsRequestDTO
+  ): Promise<IRecommendedAdDTO[]> {
+    const { count = 1, category, providerId, lat, lng, radius = 10000 } = data;
 
     return await this.adsRepository.findRecommendedAds({
       count,

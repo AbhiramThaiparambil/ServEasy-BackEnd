@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
 import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class GetServiceProvider {

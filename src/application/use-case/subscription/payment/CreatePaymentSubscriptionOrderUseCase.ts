@@ -6,7 +6,7 @@ import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISu
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
-} from "../../../../utils/constants/tokens";
+} from "../../../../constants/tokens";
 import { RedisService } from "../../../../services/redis/RedisService";
 import { IRedisService } from "../../../../services/redis/IRedisService";
 

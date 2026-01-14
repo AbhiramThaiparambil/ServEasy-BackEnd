@@ -3,10 +3,11 @@ import { injectable } from "tsyringe";
 import { config } from "dotenv";
 import path from "path";
 import { readFileSync } from "fs";
+import { IEmailService } from "./IEmailService";
 config();
 
 @injectable()
-export class EmailService {
+export class EmailService implements IEmailService {
   private transporter!: Transporter;
 
   constructor() {

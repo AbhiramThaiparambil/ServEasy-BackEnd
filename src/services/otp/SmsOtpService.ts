@@ -1,9 +1,9 @@
 import twilio from "twilio";
-import { twilioConfig } from "../../config/twilioConfig";
 import { injectable } from "tsyringe";
+import { ISmsOtpService } from "./ISmsOtpService";
 const clint = twilio();
 @injectable()
-export class SmsOtpService {
+export class SmsOtpService implements ISmsOtpService {
   private client!: twilio.Twilio;
 
   constructor() {

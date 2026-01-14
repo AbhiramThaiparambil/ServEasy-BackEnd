@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { inject, injectable } from "tsyringe";
-import { USE_CASE_TOKENS } from "../../../utils/constants/tokens";
+import { USE_CASE_TOKENS } from "../../../constants/tokens";
 import { IExpireAdsUseCase } from "../../../application/use-case/admin/ads/ExpireAdsUseCase";
 
 @injectable()

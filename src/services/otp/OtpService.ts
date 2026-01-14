@@ -1,10 +1,10 @@
 import { inject, injectable, singleton } from "tsyringe";
 import { IRedisService } from "../redis/IRedisService";
-import { SERVICE_TOKENS } from "../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../constants/tokens";
+import { IOtpService } from "./IOtpService";
 @singleton()
 @injectable()
-export class Otpservice {
-  private otpStore: Map<string, { otp: string; expiresAt: number }> = new Map();
+export class Otpservice implements IOtpService {
   constructor(
     @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
   ) {}

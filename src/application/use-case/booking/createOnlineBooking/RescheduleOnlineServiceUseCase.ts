@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import mongoose, { Types } from "mongoose";
 import dayjs from "dayjs";
 import { IRescheduleOnlineServiceSlotUseCase } from "./IRescheduleOnlineServiceUseCase";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
 import { SocketService } from "../../../../services/socket/SocketService";
 import { IServiceBooking } from "../../../../domain/entities/IServiceBooking";

@@ -1,14 +1,18 @@
 import { inject, injectable } from "tsyringe";
 import { Otpservice } from "../../../../services/otp/OtpService";
-import { SmsOtpService } from "../../../../services/otp/phoneOtp";
+import { SmsOtpService } from "../../../../services/otp/SmsOtpService";
 import { EmailService } from "../../../../services/mailService/MailService";
+import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { IEmailService } from "../../../../services/mailService/IEmailService";
+import { ISmsOtpService } from "../../../../services/otp/ISmsOtpService";
+import { IOtpService } from "../../../../services/otp/IOtpService";
 
 @injectable()
 export class ResendOtp {
   constructor(
-    @inject("EmailOtpService") private emailOtp: EmailService,
-    @inject("SmsOtpService") private smsOtp: SmsOtpService,
-    @inject(Otpservice) private otpService: Otpservice
+    @inject(SERVICE_TOKENS.EmailService) private emailOtp: IEmailService,
+    @inject(SERVICE_TOKENS.SmsOtpService) private smsOtp: ISmsOtpService,
+    @inject(SERVICE_TOKENS.Otpservice) private otpService: IOtpService
   ) {}
 
   async sendEmailOtp(email: string): Promise<string> {

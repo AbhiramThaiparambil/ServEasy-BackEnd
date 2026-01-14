@@ -9,7 +9,7 @@ import { EmailService } from "./services/mailService/MailService";
 import { Otpservice } from "./services/otp/OtpService";
 import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
 import { RedisService } from "./services/redis/RedisService";
-import { SmsOtpService } from "./services/otp/phoneOtp";
+import { SmsOtpService } from "./services/otp/SmsOtpService";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/token/TokenService";
 import { CloudinaryService } from "./services/cloudinary/CloudinaryService";
@@ -40,7 +40,7 @@ import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
   USE_CASE_TOKENS,
-} from "./utils/constants/tokens";
+} from "./constants/tokens";
 import { MakeCouponInactiveUseCase } from "./application/use-case/coupon/makeCouponInactive/MakeCouponInactiveUseCase";
 import { IMakeCouponInactiveUseCase } from "./application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase";
 import { IToggleShowInBannerUseCase } from "./application/use-case/coupon/toggleShowInBanner/IToggleShowInBannerUseCase";
@@ -141,6 +141,9 @@ import { IReapplyServiceProviderUseCase } from "./application/use-case/servicePr
 import { ITokenService } from "./services/token/ITokenService";
 import { IRedisService } from "./services/redis/IRedisService";
 import { ICloudinaryService } from "./services/cloudinary/ICloudinaryService";
+import { ISmsOtpService } from "./services/otp/ISmsOtpService";
+import { IOtpService } from "./services/otp/IOtpService";
+import { IEmailService } from "./services/mailService/IEmailService";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -187,8 +190,12 @@ container.register<ICouponRepository>(REPOSITORY_TOKENS.CouponRepository, {
   useClass: CouponRepository,
 });
 
-container.registerSingleton("EmailOtpService", EmailService);
-container.registerSingleton("OtpService", Otpservice);
+container.registerSingleton<IEmailService>(
+  SERVICE_TOKENS.EmailService,
+  EmailService
+);
+
+container.registerSingleton<IOtpService>(SERVICE_TOKENS.Otpservice, Otpservice);
 container.register(ResendOtp, { useClass: ResendOtp });
 container.register(RegisterUser, { useClass: RegisterUser });
 container.register<ITokenService>(SERVICE_TOKENS.TokenService, {
@@ -200,8 +207,13 @@ container.registerSingleton<ICloudinaryService>(
   CloudinaryService
 );
 container.registerSingleton("SocketService", SocketService);
+
 container.register(VerifyOtp, { useClass: VerifyOtp });
-container.register("SmsOtpService", SmsOtpService);
+
+container.register<ISmsOtpService>(SERVICE_TOKENS.SmsOtpService, {
+  useClass: SmsOtpService,
+});
+
 container.register<IRedisService>(SERVICE_TOKENS.RedisService, {
   useClass: RedisService,
 });

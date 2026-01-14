@@ -2,7 +2,7 @@ import { IUserRepository } from "../../../../domain/repositories/IuserRepository
 import { inject, injectable } from "tsyringe";
 import { IAddress } from "../../../../domain/entities/IAddress";
 import { ObjectId } from "mongodb";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 @injectable()
 export class AddNewAddress {
   constructor(

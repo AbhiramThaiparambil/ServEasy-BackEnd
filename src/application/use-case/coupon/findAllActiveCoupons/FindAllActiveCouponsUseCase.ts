@@ -2,11 +2,15 @@ import { inject, injectable } from "tsyringe";
 import { ICoupon } from "../../../../domain/entities/ICoupon";
 import { ICouponRepository } from "../../../../domain/repositories/IcouponRepository";
 import { IFindAllActiveCouponsUseCase } from "./IFindAllActiveCouponsUseCase";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
-export class FindAllActiveCouponsUseCase implements IFindAllActiveCouponsUseCase {
+export class FindAllActiveCouponsUseCase
+  implements IFindAllActiveCouponsUseCase
+{
   constructor(
-    @inject("ICouponRepository") private couponRepo: ICouponRepository
+    @inject(REPOSITORY_TOKENS.CouponRepository)
+    private couponRepo: ICouponRepository
   ) {}
 
   async execute(): Promise<ICoupon[]> {

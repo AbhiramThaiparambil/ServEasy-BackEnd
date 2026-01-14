@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IAdRepository } from "../../../../domain/repositories/IAdRepository";
 import { IIncreaseAdClicksUseCase } from "./IIncreaseAdClicksUseCase";
 

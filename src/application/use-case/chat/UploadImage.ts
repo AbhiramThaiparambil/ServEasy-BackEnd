@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class UploadImageUseCase {
   constructor(

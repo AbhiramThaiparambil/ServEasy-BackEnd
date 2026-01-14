@@ -4,7 +4,7 @@ import { IServiceProviderRegistration } from "../../../../domain/entities/IServi
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { ISkill } from "../../../../domain/entities/IServiceProvider";
-import { SERVICE_TOKENS } from "../../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class ReapplyServiceProviderUseCase {

@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IService } from "../../../domain/entities/IService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class EditService {
   constructor(

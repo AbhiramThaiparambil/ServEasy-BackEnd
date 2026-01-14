@@ -72,4 +72,7 @@ export const SERVICE_TOKENS = {
   TokenService: "ITokenService",
   RedisService: "IRedisService",
   RazorpayService: "RazorpayService",
+  SmsOtpService: "ISmsOtpService",
+  Otpservice: "IOtpservice",
+  EmailService: "IEmailService",
 };

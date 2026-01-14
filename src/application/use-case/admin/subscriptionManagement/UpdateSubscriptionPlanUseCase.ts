@@ -1,9 +1,8 @@
-import { injectable, inject } from 'tsyringe';
-import { IUpdateSubscriptionPlanUseCase } from './IUpdateSubscriptionPlanUseCase';
-import { ISubscriptionPlan } from '../../../../domain/entities/ISubscriptionPlan';
-import { ISubscriptionPlanRepository } from '../../../../domain/repositories/ISubscriptionPlanRepository';
-import { REPOSITORY_TOKENS } from '../../../../utils/constants/tokens';
-
+import { injectable, inject } from "tsyringe";
+import { IUpdateSubscriptionPlanUseCase } from "./IUpdateSubscriptionPlanUseCase";
+import { ISubscriptionPlan } from "../../../../domain/entities/ISubscriptionPlan";
+import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class UpdateSubscriptionPlanUseCase
@@ -16,16 +15,17 @@ export class UpdateSubscriptionPlanUseCase
 
   async execute(
     id: string,
-    data: Partial<
-      Omit<ISubscriptionPlan, '_id' | 'createdAt' | 'updatedAt'>
-    >
+    data: Partial<Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">>
   ): Promise<ISubscriptionPlan | null> {
-    console.log("++++++++++++++++++++++++++++++++============++++++++++++++++++++++++")
-    console.log(data)
-    const updatedPlan = await this.subscriptionPlanRepository.updateSubscriptionPlanById(
-      id,
-      data
+    console.log(
+      "++++++++++++++++++++++++++++++++============++++++++++++++++++++++++"
     );
+    console.log(data);
+    const updatedPlan =
+      await this.subscriptionPlanRepository.updateSubscriptionPlanById(
+        id,
+        data
+      );
 
     return updatedPlan;
   }

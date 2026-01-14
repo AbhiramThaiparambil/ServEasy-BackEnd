@@ -3,7 +3,7 @@ import { injectable, inject } from "tsyringe";
 import { GetAllActiveService } from "../../application/use-case/User/getAllService";
 import { HttpStatus } from "../../constants/HttpStatus";
 // import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
-import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IApplyCouponToBookingUseCase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IRemoveCoupon";
 import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";

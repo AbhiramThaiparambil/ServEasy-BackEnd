@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { userSanitizer } from "../../../../utils/sanitizers/userSanitizer";
 import { IProviderWalletRepository } from "../../../../domain/repositories/IproviderWalletRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 @injectable()
 export class getAllUsersUseCase {
   constructor(

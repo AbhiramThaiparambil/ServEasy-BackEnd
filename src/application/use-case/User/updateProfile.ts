@@ -3,12 +3,12 @@ import { CloudinaryService } from "../../../services/cloudinary/CloudinaryServic
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { Otpservice } from "../../../services/otp/OtpService";
-import { SmsOtpService } from "../../../services/otp/phoneOtp";
+import { SmsOtpService } from "../../../services/otp/SmsOtpService";
 import { EmailService } from "../../../services/mailService/MailService";
-import {
-  REPOSITORY_TOKENS,
-  SERVICE_TOKENS,
-} from "../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
+import { IOtpService } from "../../../services/otp/IOtpService";
+import { ISmsOtpService } from "../../../services/otp/ISmsOtpService";
+import { IEmailService } from "../../../services/mailService/IEmailService";
 
 @injectable()
 export class UserProfileUpdate {
@@ -17,9 +17,9 @@ export class UserProfileUpdate {
     private cloudinaryService: CloudinaryService,
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
-    @inject("EmailOtpService") private emailOtp: EmailService,
-    @inject(Otpservice) private otpService: Otpservice,
-    @inject("SmsOtpService") private smsOtp: SmsOtpService
+    @inject(SERVICE_TOKENS.EmailService) private emailOtp: IEmailService,
+    @inject(SERVICE_TOKENS.Otpservice) private otpService: IOtpService,
+    @inject(SERVICE_TOKENS.SmsOtpService) private smsOtp: ISmsOtpService
   ) {}
   async updateProfile(
     userId: string,

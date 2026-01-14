@@ -2,12 +2,13 @@ import { injectable, inject } from "tsyringe";
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
-import { SERVICE_TOKENS } from "../../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class UploadBills {
   constructor(
-    @inject(SERVICE_TOKENS.CloudinaryService) private cloudinaryService: CloudinaryService,
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: CloudinaryService,
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository
   ) {}

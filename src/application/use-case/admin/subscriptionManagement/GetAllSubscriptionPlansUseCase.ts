@@ -1,9 +1,8 @@
-import { injectable, inject } from 'tsyringe';
-import { IGetAllSubscriptionPlansUseCase } from './IGetAllSubscriptionPlansUseCase';
-import { ISubscriptionPlanRepository } from '../../../../domain/repositories/ISubscriptionPlanRepository';
-import { ISubscriptionPlan } from '../../../../domain/entities/ISubscriptionPlan';
-import { REPOSITORY_TOKENS } from '../../../../utils/constants/tokens';
-
+import { injectable, inject } from "tsyringe";
+import { IGetAllSubscriptionPlansUseCase } from "./IGetAllSubscriptionPlansUseCase";
+import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
+import { ISubscriptionPlan } from "../../../../domain/entities/ISubscriptionPlan";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class GetAllSubscriptionPlansUseCase
@@ -15,7 +14,8 @@ export class GetAllSubscriptionPlansUseCase
   ) {}
 
   async execute(): Promise<ISubscriptionPlan[]> {
-    const plans = await this.subscriptionPlanRepository.findAllSubscriptionPlans()
+    const plans =
+      await this.subscriptionPlanRepository.findAllSubscriptionPlans();
 
     return plans;
   }

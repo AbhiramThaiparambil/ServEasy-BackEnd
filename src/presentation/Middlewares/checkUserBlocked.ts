@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
 import { MongoUserRepository } from "../../infrastructure/repositories/UserRepositoriey";
-import { REPOSITORY_TOKENS } from "../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../constants/tokens";
 export const checkUserBlocked = async (
   req: Request,
   res: Response,

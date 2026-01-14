@@ -6,7 +6,7 @@ import {
   IFooterBanner,
 } from "../../../domain/entities/ISiteSettings";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
+import { SERVICE_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class AdminSiteSettingsUseCase {
   constructor(

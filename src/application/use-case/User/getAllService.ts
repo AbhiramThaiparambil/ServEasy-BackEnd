@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class GetAllActiveService {
   constructor(

@@ -3,23 +3,24 @@ import { IUser } from "../../../../domain/entities/IUser";
 import { inject, injectable } from "tsyringe";
 import { EmailService } from "../../../../services/mailService/MailService";
 import { Otpservice } from "../../../../services/otp/OtpService";
-import { SmsOtpService } from "../../../../services/otp/phoneOtp";
+import { SmsOtpService } from "../../../../services/otp/SmsOtpService";
 import bcrypt from "bcrypt";
 import { RedisService } from "../../../../services/redis/RedisService";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
-} from "../../../../utils/constants/tokens";
+} from "../../../../constants/tokens";
 import { IRedisService } from "../../../../services/redis/IRedisService";
+import { IEmailService } from "../../../../services/mailService/IEmailService";
 
 @injectable()
 export class RegisterUser {
   constructor(
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
-    @inject("EmailOtpService") private emailOtp: EmailService,
-    @inject(Otpservice) private otpService: Otpservice,
-    @inject("SmsOtpService") private smsOtp: SmsOtpService,
+    @inject(SERVICE_TOKENS.EmailService) private emailOtp: IEmailService,
+    @inject(SERVICE_TOKENS.Otpservice) private otpService: Otpservice,
+    @inject(SERVICE_TOKENS.SmsOtpService) private smsOtp: SmsOtpService,
     @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
   ) {}
 

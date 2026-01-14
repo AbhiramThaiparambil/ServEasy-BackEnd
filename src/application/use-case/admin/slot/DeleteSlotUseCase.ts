@@ -1,7 +1,7 @@
 // src/application/useCases/slot/DeleteSlotUseCase.ts
 import { injectable, inject } from "tsyringe";
 import { ISlotRepository } from "../../../../domain/repositories/ISlotRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IDeleteSlotUseCase } from "./IDeleteSlotUseCase";
 
 @injectable()

@@ -3,7 +3,7 @@ import { IServiceRepository } from "../../../../domain/repositories/IServiceRepo
 import { IServiceNameDTO } from "../../../../utils/types/dto/IServiceNameDTO";
 import { IGetServiceNamesUseCase } from "./IGetServiceNamesUseCase";
 import { Types } from "mongoose";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
@@ -12,17 +12,19 @@ export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
     private serviceRepo: IServiceRepository
   ) {}
 
-  async execute(providerId: string,): Promise<IServiceNameDTO[]> {
-  try {
-      const services = await this.serviceRepo.findAllServiceProviderId(new Types.ObjectId(providerId));
+  async execute(providerId: string): Promise<IServiceNameDTO[]> {
+    try {
+      const services = await this.serviceRepo.findAllServiceProviderId(
+        new Types.ObjectId(providerId)
+      );
 
-    return services.map((service) => ({
-      serviceName: service.serviceName,
-      serviceId: service._id?.toString() 
-    }));
-  } catch (error) {
- console.log(error)
-    throw error
-  }
+      return services.map((service) => ({
+        serviceName: service.serviceName,
+        serviceId: service._id?.toString(),
+      }));
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }

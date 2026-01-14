@@ -1,13 +1,15 @@
-import { inject, injectable } from 'tsyringe';
-import { IProviderWalletRepository } from '../../../../domain/repositories/IproviderWalletRepository';
-import { REPOSITORY_TOKENS } from '../../../../utils/constants/tokens';
-import { IWithdrawFromProviderWallet } from '../../../../utils/types/dto/IWithdrawFromProviderWallet';
-import { IWithdrawFromProviderWalletUseCase } from './IWithdrawFromProviderWallet.usecase';
-import { IWalletTransaction } from '../../../../domain/entities/IproviderWallet';
-import { Types } from 'mongoose';
+import { inject, injectable } from "tsyringe";
+import { IProviderWalletRepository } from "../../../../domain/repositories/IproviderWalletRepository";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IWithdrawFromProviderWallet } from "../../../../utils/types/dto/IWithdrawFromProviderWallet";
+import { IWithdrawFromProviderWalletUseCase } from "./IWithdrawFromProviderWallet.usecase";
+import { IWalletTransaction } from "../../../../domain/entities/IproviderWallet";
+import { Types } from "mongoose";
 
 @injectable()
-export class WithdrawFromProviderWalletUseCase implements IWithdrawFromProviderWalletUseCase {
+export class WithdrawFromProviderWalletUseCase
+  implements IWithdrawFromProviderWalletUseCase
+{
   constructor(
     @inject(REPOSITORY_TOKENS.WalletRepository)
     private walletRepository: IProviderWalletRepository
@@ -50,14 +52,21 @@ export class WithdrawFromProviderWalletUseCase implements IWithdrawFromProviderW
   async execute(data: IWithdrawFromProviderWallet): Promise<boolean> {
     const { walletId, transactionId, newStatus, reason } = data;
 
-    const transaction = await this.walletRepository.findByTransactionId(walletId, transactionId);
-    if (!transaction) throw new Error('Transaction not found');
+    const transaction = await this.walletRepository.findByTransactionId(
+      walletId,
+      transactionId
+    );
+    if (!transaction) throw new Error("Transaction not found");
 
-    if (newStatus === 'rejected') {
+    if (newStatus === "rejected") {
       return this.handleRejection(walletId, transaction, reason);
     }
 
-    return this.walletRepository.updateTransactionStatus(walletId, transactionId, newStatus);
+    return this.walletRepository.updateTransactionStatus(
+      walletId,
+      transactionId,
+      newStatus
+    );
   }
 
   private async handleRejection(
@@ -68,7 +77,7 @@ export class WithdrawFromProviderWalletUseCase implements IWithdrawFromProviderW
     return this.walletRepository.rejectWithdrawAndRevertBalance(
       walletId,
       transaction,
-      reason || ''
+      reason || ""
     );
   }
 }

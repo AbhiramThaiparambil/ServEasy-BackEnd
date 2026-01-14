@@ -8,7 +8,7 @@ import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/
 import { IConfirmBookingUseCase } from "../../application/use-case/booking/confirmBooking/IConfirmBookingUseCase";
 import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBookingUseCase";
 import { IRequestPaymentUseCase } from "../../application/use-case/booking/requestPayment/IRequestPaymentUseCase";
-import { USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/createOnlineBooking/IRescheduleOnlineServiceUseCase";

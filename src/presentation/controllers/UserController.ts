@@ -24,7 +24,7 @@ import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAdd
 import { AddReviewUseCase } from "../../application/use-case/review/AddReviewUseCase";
 import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
-import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase";
 import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";

@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../utils/constants/tokens";
+import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIService";
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";

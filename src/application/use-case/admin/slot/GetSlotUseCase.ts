@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { ISlotRepository } from "../../../../domain/repositories/ISlotRepository";
 import { ISlot } from "../../../../domain/entities/ISlot";
 import { isSlotExpired } from "../../../../utils/isSlotExpired";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IGetSlotUseCase } from "./IGetSlotUseCase";
 
 @injectable()
