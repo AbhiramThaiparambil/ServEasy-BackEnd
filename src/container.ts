@@ -8,7 +8,7 @@ import { container } from "tsyringe";
 import { EmailService } from "./services/mailService/MailService";
 import { Otpservice } from "./services/otp/OtpService";
 import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
-import { RedisService } from "./services/redisService";
+import { RedisService } from "./services/redis/RedisService";
 import { SmsOtpService } from "./services/otp/phoneOtp";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/token/TokenService";

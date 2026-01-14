@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import Redis from "ioredis";
 import { config } from "dotenv";
-import { User } from "../domain/entities/IUser";
+import { IUser } from "../../domain/entities/IUser";
 
 config();
 
@@ -48,15 +48,15 @@ export class RedisService {
     return !!result;
   }
 
-  async saveUser(userKey: string, user: User): Promise<void> {
+  async saveUser(userKey: string, user: IUser): Promise<void> {
     const ttlSeconds = 60 * 2;
     const userData = JSON.stringify(user);
     await this.client.set(userKey, userData, "EX", ttlSeconds);
   }
 
-  async getUser(userKey: string): Promise<User | null> {
+  async getUser(userKey: string): Promise<IUser | null> {
     const data = await this.client.get(userKey);
     if (!data) return null;
-    return JSON.parse(data) as User;
+    return JSON.parse(data) as IUser;
   }
 }

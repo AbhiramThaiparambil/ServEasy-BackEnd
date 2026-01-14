@@ -1,21 +1,21 @@
-import { User } from "../../domain/entities/IUser";
+import { IUser } from "../../domain/entities/IUser";
 import { IUserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";
 import { hash, compare } from "bcrypt";
 @injectable()
 export class MongoUserRepository implements IUserRepository {
-  async create(user: User): Promise<User> {
+  async create(user: IUser): Promise<IUser> {
     const newUser = new UserModel(user);
     await newUser.save();
     return newUser;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<IUser | null> {
     return UserModel.findOne({ email });
   }
 
-  async findByPhone(phone: string): Promise<User | null> {
+  async findByPhone(phone: string): Promise<IUser | null> {
     return UserModel.findOne({ phone });
   }
 
@@ -30,7 +30,7 @@ export class MongoUserRepository implements IUserRepository {
     return await compare(passWord1, password2);
   }
 
-  async updateUser(user: User): Promise<boolean> {
+  async updateUser(user: IUser): Promise<boolean> {
     try {
       const result = await UserModel.findByIdAndUpdate(
         user._id,
@@ -43,7 +43,7 @@ export class MongoUserRepository implements IUserRepository {
       return false;
     }
   }
-  async findById(id: string): Promise<User | null> {
+  async findById(id: string): Promise<IUser | null> {
     return UserModel.findById(id);
   }
 
@@ -65,14 +65,14 @@ export class MongoUserRepository implements IUserRepository {
     }
   }
 
-  async find(): Promise<User[]> {
+  async find(): Promise<IUser[]> {
     return await UserModel.find();
   }
 
-  async updateUserField<K extends keyof User>(
+  async updateUserField<K extends keyof IUser>(
     userId: string,
     field: K,
-    value: User[K]
+    value: IUser[K]
   ): Promise<boolean> {
     try {
       const result = await UserModel.findByIdAndUpdate(
@@ -97,7 +97,7 @@ export class MongoUserRepository implements IUserRepository {
 
   async updateUserBasedId(
     userId: string,
-    updateData: Partial<User>
+    updateData: Partial<IUser>
   ): Promise<boolean> {
     try {
       const updatedUser = await UserModel.findByIdAndUpdate(
@@ -117,13 +117,19 @@ export class MongoUserRepository implements IUserRepository {
   //   user
   // }
 
-  async findUsersSkipLimit(skip: number, limit: number,search:string): Promise<User[]> {
+  async findUsersSkipLimit(
+    skip: number,
+    limit: number,
+    search: string
+  ): Promise<IUser[]> {
     return await UserModel.find({
       $or: [
         { userName: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
-      ]
-    }).skip(skip).limit(limit);
+      ],
+    })
+      .skip(skip)
+      .limit(limit);
   }
 
   async userCount(): Promise<number> {

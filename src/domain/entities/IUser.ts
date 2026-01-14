@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-import {IAddress}from "./IAddress"
+import { IAddress } from "./IAddress";
 
-
-export interface User {
+export interface IUser {
   _id?: string;
   userName: string;
   email?: string;
@@ -14,5 +13,5 @@ export interface User {
   serviceProvider?: mongoose.Schema.Types.ObjectId;
   profileImage?: string;
   isAdmin?: boolean;
-  address?:IAddress[]
+  address?: IAddress[];
 }

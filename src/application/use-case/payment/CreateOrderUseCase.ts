@@ -48,7 +48,7 @@ import { RazorpayService } from "../../../services/payment/RazorpayService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
-import { RedisService } from "../../../services/redisService";
+import { RedisService } from "../../../services/redis/RedisService";
 
 @injectable()
 export class CreateOrderUseCase {

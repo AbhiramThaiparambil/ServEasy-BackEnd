@@ -1,8 +1,8 @@
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { Otpservice } from "../../../../services/otp/OtpService";
-import { User } from "../../../../domain/entities/IUser";
-import { RedisService } from "../../../../services/redisService";
+import { IUser } from "../../../../domain/entities/IUser";
+import { RedisService } from "../../../../services/redis/RedisService";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
@@ -25,7 +25,7 @@ export class VerifyOtp {
     if (!isValidOtp) return { errorMessage: "Invalid or Expired Otp" };
 
     console.log(key);
-    const user: User | null = await this.redisService.getUser(`user:${key}`);
+    const user: IUser | null = await this.redisService.getUser(`user:${key}`);
     console.log("radis saved User", user);
     if (!user)
       return {

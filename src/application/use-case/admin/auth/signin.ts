@@ -1,6 +1,5 @@
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { TokenService } from "../../../../services/token/TokenService";
 import { IAdminSignin } from "./IAdminSignin";
 import { IAuthResponse } from "../../../../domain/entities/IAuthResponse";
 import {

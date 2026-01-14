@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { OAuth2Client } from "google-auth-library";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
-import { User } from "../../../../domain/entities/IUser";
+import { IUser } from "../../../../domain/entities/IUser";
 import { config } from "dotenv";
 import {
   REPOSITORY_TOKENS,
@@ -50,7 +50,7 @@ export class GoogleAuthUseCase {
           await this.userRepository.updateUser(user);
         }
       } else {
-        const newUser: User = {
+        const newUser: IUser = {
           isVerified: email_verified || false,
           password: sub,
           userName: name || email.split("@")[0],

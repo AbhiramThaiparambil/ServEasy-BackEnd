@@ -1,11 +1,11 @@
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
-import { User } from "../../../../domain/entities/IUser";
+import { IUser } from "../../../../domain/entities/IUser";
 import { inject, injectable } from "tsyringe";
 import { EmailService } from "../../../../services/mailService/MailService";
 import { Otpservice } from "../../../../services/otp/OtpService";
 import { SmsOtpService } from "../../../../services/otp/phoneOtp";
 import bcrypt from "bcrypt";
-import { RedisService } from "../../../../services/redisService";
+import { RedisService } from "../../../../services/redis/RedisService";
 import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
@@ -59,7 +59,7 @@ export class RegisterUser {
     const hashedPassword = await bcrypt.hash(userData?.password, 10);
 
     userData.password = hashedPassword;
-    const user: User = {
+    const user: IUser = {
       userName,
       email,
       phone,

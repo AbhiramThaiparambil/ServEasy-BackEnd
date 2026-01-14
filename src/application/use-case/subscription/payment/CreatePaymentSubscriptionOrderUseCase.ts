@@ -4,7 +4,7 @@ import { PaymentOrder } from "./ICreatePaymentSubscriptionOrderUseCase";
 import { injectable, inject } from "tsyringe";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
 import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
-import { RedisService } from "../../../../services/redisService";
+import { RedisService } from "../../../../services/redis/RedisService";
 
 @injectable()
 export class CreatePaymentSubscriptionOrderUseCase
