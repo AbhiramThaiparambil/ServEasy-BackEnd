@@ -1,9 +1,11 @@
 import { inject, injectable } from "tsyringe";
-import { CloudinaryService } from "../../../services/cloudinary/Cloudinary";
+import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
+import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
 @injectable()
 export class UploadImageUseCase {
   constructor(
-    @inject("CloudinaryService") private cloudinaryService: CloudinaryService
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: CloudinaryService
   ) {}
   async uploadImage(img: string): Promise<string> {
     try {

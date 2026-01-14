@@ -4,14 +4,16 @@ import {
   IServiceProviderRegistration,
 } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { CloudinaryService } from "../../../../services/cloudinary/Cloudinary";
+import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
+import { SERVICE_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
 export class RegisterServiceProviderUseCase {
   constructor(
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
-    @inject("CloudinaryService") private cloudinaryService: CloudinaryService // Ensure this matches the registration
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: CloudinaryService // Ensure this matches the registration
   ) {}
 
   async execute(

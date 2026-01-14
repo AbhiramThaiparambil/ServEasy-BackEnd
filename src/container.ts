@@ -12,7 +12,7 @@ import { RedisService } from "./services/redis/RedisService";
 import { SmsOtpService } from "./services/otp/phoneOtp";
 import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/token/TokenService";
-import { CloudinaryService } from "./services/cloudinary/Cloudinary";
+import { CloudinaryService } from "./services/cloudinary/CloudinaryService";
 import { RegisterServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { LocationService } from "./services/location/location";
 import { ServiceRepository } from "./infrastructure/repositories/ServiceRepositorie";
@@ -140,6 +140,7 @@ import { ReapplyServiceProviderUseCase } from "./application/use-case/servicePro
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 import { ITokenService } from "./services/token/ITokenService";
 import { IRedisService } from "./services/redis/IRedisService";
+import { ICloudinaryService } from "./services/cloudinary/ICloudinaryService";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -194,7 +195,10 @@ container.register<ITokenService>(SERVICE_TOKENS.TokenService, {
   useClass: TokenService,
 });
 
-container.registerSingleton("CloudinaryService", CloudinaryService);
+container.registerSingleton<ICloudinaryService>(
+  SERVICE_TOKENS.CloudinaryService,
+  CloudinaryService
+);
 container.registerSingleton("SocketService", SocketService);
 container.register(VerifyOtp, { useClass: VerifyOtp });
 container.register("SmsOtpService", SmsOtpService);

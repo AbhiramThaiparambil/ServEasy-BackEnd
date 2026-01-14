@@ -68,7 +68,7 @@ export const REPOSITORY_TOKENS = {
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
   GoogleGenAIService: "IGoogleGenAIService",
-  CloudinaryService: "CloudinaryService",
+  CloudinaryService: "ICloudinaryService",
   TokenService: "ITokenService",
   RedisService: "IRedisService",
   RazorpayService: "RazorpayService",

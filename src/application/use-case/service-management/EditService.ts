@@ -1,12 +1,14 @@
 import { inject, injectable } from "tsyringe";
 import { IService } from "../../../domain/entities/IService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import { CloudinaryService } from "../../../services/cloudinary/Cloudinary";
+import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
+import { SERVICE_TOKENS } from "../../../utils/constants/tokens";
 @injectable()
 export class EditService {
   constructor(
     @inject("ServiceRepository") private serviceRepository: ServiceRepository,
-    @inject("CloudinaryService") private cloudinaryService: CloudinaryService
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: CloudinaryService
   ) {}
 
   async execute(

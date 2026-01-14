@@ -1,16 +1,20 @@
 import { injectable, inject } from "tsyringe";
-import { CloudinaryService } from "../../../services/cloudinary/Cloudinary";
+import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
 import { MongoUserRepository } from "../../../infrastructure/repositories/UserRepositoriey";
 import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { Otpservice } from "../../../services/otp/OtpService";
 import { SmsOtpService } from "../../../services/otp/phoneOtp";
 import { EmailService } from "../../../services/mailService/MailService";
-import { REPOSITORY_TOKENS } from "../../../utils/constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../utils/constants/tokens";
 
 @injectable()
 export class UserProfileUpdate {
   constructor(
-    @inject("CloudinaryService") private cloudinaryService: CloudinaryService,
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: CloudinaryService,
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
     @inject("EmailOtpService") private emailOtp: EmailService,

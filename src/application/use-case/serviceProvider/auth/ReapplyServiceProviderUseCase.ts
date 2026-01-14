@@ -2,8 +2,9 @@ import { injectable, inject } from "tsyringe";
 import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRegistration } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { CloudinaryService } from "../../../../services/cloudinary/Cloudinary";
+import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { ISkill } from "../../../../domain/entities/IServiceProvider";
+import { SERVICE_TOKENS } from "../../../../utils/constants/tokens";
 
 @injectable()
 export class ReapplyServiceProviderUseCase {
@@ -11,7 +12,7 @@ export class ReapplyServiceProviderUseCase {
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
 
-    @inject("CloudinaryService")
+    @inject(SERVICE_TOKENS.CloudinaryService)
     private cloudinaryService: CloudinaryService
   ) {}
 
