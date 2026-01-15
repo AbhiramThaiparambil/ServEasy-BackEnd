@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { IRemoveCouponToBookingUseCase } from "./IRemoveCoupon";
+import { IRemoveCouponToBookingUseCase } from "../removeCoupon/IRemoveCoupon";
 import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { ICouponRepository } from "../../../../domain/repositories/IcouponRepository";

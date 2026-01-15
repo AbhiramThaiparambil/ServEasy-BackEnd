@@ -49,8 +49,8 @@ import { IFindFeaturedCouponsUseCase } from "./application/use-case/coupon/Featu
 import { FindFeaturedCouponsUseCase } from "./application/use-case/coupon/FeaturedCoupons/FindFeaturedCouponsUseCase";
 import { ApplyCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/ApplyCouponToBookingUseCase";
 import { IApplyCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/IApplyCouponToBookingUseCase";
-import { IRemoveCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/IRemoveCoupon";
-import { RemoveCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/RemoveCoupon";
+import { IRemoveCouponToBookingUseCase } from "./application/use-case/coupon/removeCoupon/IRemoveCoupon";
+import { RemoveCouponToBookingUseCase } from "./application/use-case/coupon/removeCoupon/RemoveCoupon";
 import { GetWalletUseCase } from "./application/use-case/serviceProvider/wallet/getWallet/GetWalletUseCase";
 import { IGetWalletUseCase } from "./application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "./application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";

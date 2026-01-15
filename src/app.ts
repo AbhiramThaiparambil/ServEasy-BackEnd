@@ -21,9 +21,9 @@ import paymentRouter from "./presentation/routes/payment";
 import chatRouter from "./presentation/routes/chat";
 import morganMiddleware from "./utils/logger";
 import { SocketService } from "./services/socket/SocketService";
-import { SubscriptionCheckJob } from "./services/jobs/cron/SubscriptionCheckJob";
-import { AdsExpireJob } from "./services/jobs/cron/AdsExpireJob";
-import { CleanupExpiredSlotsJob } from "./services/jobs/cron/CleanupExpiredSlotsJob";
+import { SubscriptionCheckJob } from "./infrastructure/jobs/cron/SubscriptionCheckJob";
+import { AdsExpireJob } from "./infrastructure/jobs/cron/AdsExpireJob";
+import { CleanupExpiredSlotsJob } from "./infrastructure/jobs/cron/CleanupExpiredSlotsJob";
 import { errorMiddleware } from "./presentation/Middlewares/errorMiddleware";
 
 const app = express();
