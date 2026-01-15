@@ -119,7 +119,7 @@ export class ServiceRepository implements IServiceRepository {
     ]);
   }
 
-  async getServicesWithProviderDetailsCount() {
+  async getServicesWithProviderDetailsCount(): Promise<number> {
     return await ServiceModel.countDocuments();
   }
 

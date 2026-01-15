@@ -96,8 +96,8 @@ import { CreateAdUseCase } from "./application/use-case/ads-useCase/CreateAdUseC
 import { IGetProviderAdsUseCase } from "./application/use-case/ads-useCase/IGetProviderAdsUseCase";
 import { GetProviderAdsUseCase } from "./application/use-case/ads-useCase/GetProviderAdsUseCase";
 import { IServiceRepository } from "./domain/repositories/IServiceRepository";
-import { IGetServiceNamesUseCase } from "./application/use-case/admin/service-management/IGetServiceNamesUseCase";
-import { GetServiceNamesUseCase } from "./application/use-case/admin/service-management/GetServiceNamesUseCase";
+import { IGetServiceNamesUseCase } from "./application/use-case/admin/service-management/getServiceNames/IGetServiceNames.usecase";
+import { GetServiceNamesUseCase } from "./application/use-case/admin/service-management/getServiceNames/GetServiceNames.usecases";
 import { IAdminGetAdsUseCase } from "./application/use-case/admin/ads/IAdminGetAdsUseCase";
 import { AdminGetAdsUseCase } from "./application/use-case/admin/ads/AdminGetAdsUseCase";
 import { IChangeAdStatusUseCase } from "./application/use-case/admin/ads/IChangeAdStatusUseCase";
@@ -157,7 +157,7 @@ container.register<IServiceProviderRepository>(
 -container.register(RegisterServiceProviderUseCase, {
   useClass: RegisterServiceProviderUseCase,
 });
-container.register<ICategoryRepository>("ICategoryRepository", {
+container.register<ICategoryRepository>(REPOSITORY_TOKENS.CategoryRepository, {
   useClass: CategoryRepository,
 });
 container.register<ISlotRepository>("ISlotRepository", {

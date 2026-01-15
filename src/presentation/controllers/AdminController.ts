@@ -4,25 +4,20 @@ import { Signin } from "../../application/use-case/admin/auth/signin";
 import { GetAdminProfileUseCase } from "../../application/use-case/admin/profile";
 import { getAllUsersUseCase } from "../../application/use-case/admin/userManagement/getAllUsersUseCase";
 import { blockUnblockUsersUseCase } from "../../application/use-case/admin/userManagement/blockUnblockUsersUseCase";
-import { getServiceProvidersUseCase } from "../../application/use-case/admin/serviceProviderManagement/getServiceProvidersUsercase";
 import { GetPaymentInfoUseCase } from "../../application/use-case/admin/getPaymentInfoUseCase";
 import { AdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/AdminSiteSettingsUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { ServiceProviderRejectVerify } from "../../application/use-case/admin/serviceProviderManagement/serviceProviderRejectUseCase";
-import { GetAllServics } from "../../application/use-case/admin/service-management/getAllServices";
-import { BlockUnblockSericeAdmin } from "../../application/use-case/admin/service-management/blockUnblock";
-import { BlockUnblockSericeProvider } from "../../application/use-case/admin/serviceProviderManagement/blockUnblockProvider";
-import { AddCategory } from "../../application/use-case/admin/category-management/addCategory";
-import { GetCategory } from "../../application/use-case/admin/category-management/GetCategory";
-import { EditCategory } from "../../application/use-case/admin/category-management/editCategory";
-import { BlockUnblockCategory } from "../../application/use-case/admin/category-management/blockUnblockCategory";
-import { DeleteCategory } from "../../application/use-case/admin/category-management/deleteCategory";
-import { AddService } from "../../application/use-case/admin/category-management/addService";
-import { DeleteService } from "../../application/use-case/admin/category-management/deleteService";
-import path from "path";
+import { BlockUnblockSericeProvider } from "../../application/use-case/admin/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { AddCategory } from "../../application/use-case/admin/category-management/addCategoryy.ts/AddCategory.usecase";
+import { GetCategory } from "../../application/use-case/admin/category-management/getCategory/GetCategory.usecase";
+import { EditCategory } from "../../application/use-case/admin/category-management/editCategory/EditCategory.usecase";
 import fs from "fs";
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+  USE_CASE_TOKENS,
+} from "../../constants/tokens";
 import { ICreateCouponUseCase } from "../../application/use-case/coupon/createCoupon/ICreateCouponUseCase";
 import { IFindAllCouponsUseCase } from "../../application/use-case/coupon/findAllCoupons/IFindAllCouponsUseCase";
 import { IMakeCouponInactiveUseCase } from "../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactiveUseCase";
@@ -36,6 +31,19 @@ import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/admin
 import { IAdminGetAdsUseCase } from "../../application/use-case/admin/ads/IAdminGetAdsUseCase";
 import { IChangeAdStatusUseCase } from "../../application/use-case/admin/ads/IChangeAdStatusUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
+import { IBlockUnblockCategory } from "../../application/use-case/admin/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
+import { IDeleteCategory } from "../../application/use-case/admin/category-management/deleteCategory/IDeleteCategory.usecase";
+import { IBlockUnblockService } from "../../application/use-case/admin/service-management/blockUnblock/IBlockUnblock.usecase";
+import { IGetAllServices } from "../../application/use-case/admin/service-management/getService/IGetAllServices.usecase";
+import { IAddService } from "../../application/use-case/admin/category-management/addService/IAddService.usecase";
+import { userInfo } from "os";
+import { IDeleteService } from "../../application/use-case/admin/category-management/deleteService/IDeleteService.usecase";
+import { getServiceProvidersUseCase } from "../../application/use-case/admin/serviceProviderManagement/getServiceProvider/GetServiceProviders.usecase";
+import { ServiceProviderRejectVerify } from "../../application/use-case/admin/serviceProviderManagement/rejectRequest/serviceProviderReject.usecase";
+import { IAddCategory } from "../../application/use-case/admin/category-management/addCategoryy.ts/IAddCategory.usecase";
+import { IGetCategory } from "../../application/use-case/admin/category-management/getCategory/IGetCategory.usecase";
+import { IEditCategory } from "../../application/use-case/admin/category-management/editCategory/IEditCategory.usecase";
+import path from "path";
 
 @injectable()
 export class AdminController {
@@ -56,26 +64,26 @@ export class AdminController {
     @inject(ServiceProviderRejectVerify)
     private serviceProviderRejectVerify: ServiceProviderRejectVerify,
 
-    @inject(GetAllServics)
-    private getAllServicesUseCase: GetAllServics,
-    @inject(BlockUnblockSericeAdmin)
-    private blockUnblockServiceUseCase: BlockUnblockSericeAdmin,
+    @inject(USE_CASE_TOKENS.GetAllServices)
+    private getAllServicesUseCase: IGetAllServices,
+    @inject(USE_CASE_TOKENS.BlockUnblockService)
+    private blockUnblockServiceUseCase: IBlockUnblockService,
     @inject(BlockUnblockSericeProvider)
     private blockUnblockProviderUseCase: BlockUnblockSericeProvider,
-    @inject(AddCategory)
-    private addCategoryUseCase: AddCategory,
-    @inject(GetCategory)
-    private getCategoryUseCase: GetCategory,
-    @inject(EditCategory)
-    private editCategoryUseCase: EditCategory,
-    @inject(BlockUnblockCategory)
-    private blockUnblockCategoryUseCase: BlockUnblockCategory,
-    @inject(DeleteCategory)
-    private deleteCategoryUseCase: DeleteCategory,
-    @inject(AddService)
-    private addServiceUseCase: AddService,
-    @inject(DeleteService)
-    private deleteServiceUseCase: DeleteService,
+    @inject(USE_CASE_TOKENS.AddCategory)
+    private addCategoryUseCase: IAddCategory,
+    @inject(USE_CASE_TOKENS.GetCategory)
+    private getCategoryUseCase: IGetCategory,
+    @inject(USE_CASE_TOKENS.EditCategory)
+    private editCategoryUseCase: IEditCategory,
+    @inject(USE_CASE_TOKENS.BlockUnblockCategory)
+    private blockUnblockCategoryUseCase: IBlockUnblockCategory,
+    @inject(USE_CASE_TOKENS.DeleteCategory)
+    private deleteCategoryUseCase: IDeleteCategory,
+    @inject(USE_CASE_TOKENS.AddService)
+    private addServiceUseCase: IAddService,
+    @inject(USE_CASE_TOKENS.DeleteService)
+    private deleteServiceUseCase: IDeleteService,
     @inject(USE_CASE_TOKENS.CreateCouponUseCase)
     private createCouponUseCase: ICreateCouponUseCase,
     @inject(USE_CASE_TOKENS.FindAllCouponsUseCase)

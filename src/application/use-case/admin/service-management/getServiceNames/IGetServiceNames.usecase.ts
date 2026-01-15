@@ -1,0 +1,9 @@
+import { IServiceNameDTO } from "../../../../../utils/types/dto/IServiceNameDTO";
+
+export interface IGetServiceNamesUseCase {
+  execute(
+    providerId: string,
+    skip?: number,
+    limit?: number
+  ): Promise<IServiceNameDTO[]>;
+}

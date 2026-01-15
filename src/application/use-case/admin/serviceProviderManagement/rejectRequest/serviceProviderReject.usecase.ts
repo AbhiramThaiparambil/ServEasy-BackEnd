@@ -1,9 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
-import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { EmailService } from "../../../../services/mailService/MailService";
-import { SERVICE_TOKENS } from "../../../../constants/tokens";
-import { IEmailService } from "../../../../services/mailService/IEmailService";
+import { SERVICE_TOKENS } from "../../../../../constants/tokens";
+import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
+import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { IEmailService } from "../../../../../services/mailService/IEmailService";
 
 @injectable()
 export class ServiceProviderRejectVerify {

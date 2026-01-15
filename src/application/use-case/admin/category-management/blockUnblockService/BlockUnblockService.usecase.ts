@@ -1,15 +1,22 @@
 import { inject, injectable } from "tsyringe";
-import { ICategoryRepository } from "../../../../domain/repositories/IcategoryRepository";
+import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { IBlockUnblockCategoryService } from "./IBlockUnblockCategoryService.usecase";
 
 @injectable()
-export class BlockUnblockCategoryService {
+export class BlockUnblockCategoryService
+  implements IBlockUnblockCategoryService
+{
   constructor(
-    @inject("ICategoryRepository") private categoryRepository: ICategoryRepository
+    @inject(REPOSITORY_TOKENS.CategoryRepository)
+    private categoryRepository: ICategoryRepository
   ) {}
 
   async execute(categoryId: string, serviceId: string): Promise<string> {
     try {
-      const category = await this.categoryRepository.getCategoryById(categoryId);
+      const category = await this.categoryRepository.getCategoryById(
+        categoryId
+      );
       if (!category) {
         throw new Error("Category does not exist");
       }
@@ -29,15 +36,17 @@ export class BlockUnblockCategoryService {
       if (!serviceUpdated) {
         throw new Error("Service ID not found in the category");
       }
-    
+
       console.log(category);
-      
-     
+
       await this.categoryRepository.updateCategory(categoryId, category);
 
       return `Service visibility changed successfully`;
     } catch (error: any) {
-      throw new Error(error.message || "An error occurred while updating the service visibility");
+      throw new Error(
+        error.message ||
+          "An error occurred while updating the service visibility"
+      );
     }
   }
 }

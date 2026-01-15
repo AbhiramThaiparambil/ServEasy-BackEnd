@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
-import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
-import { IServiceNameDTO } from "../../../../utils/types/dto/IServiceNameDTO";
-import { IGetServiceNamesUseCase } from "./IGetServiceNamesUseCase";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
+import { IServiceNameDTO } from "../../../../../utils/types/dto/IServiceNameDTO";
 import { Types } from "mongoose";
-import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { IGetServiceNamesUseCase } from "./IGetServiceNames.usecase";
 
 @injectable()
 export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {

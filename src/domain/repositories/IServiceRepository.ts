@@ -5,7 +5,7 @@ export interface IServiceRepository {
   create(service: IService): Promise<IService>;
   findById(serviceId: Types.ObjectId): Promise<IService | null>;
   findAllServiceProviderId(
-    serviceProviderId: Types.ObjectId | string,
+    serviceProviderId: Types.ObjectId | string
   ): Promise<IService[]>;
 
   findAll(): Promise<IService[]>;
@@ -18,8 +18,14 @@ export interface IServiceRepository {
   unblockService(serviceId: string): Promise<boolean>;
   updateService(id: string, newData: IService): Promise<IService | null>;
   findAllActiveServices(): Promise<IService[]>;
-   findAllServiceProviderId(
-      serviceProviderId: Types.ObjectId | string
-    ): Promise<IService[]>
-  findOnlineServicesWithSlot():Promise<IOnlineService[]|[]>
+  findAllServiceProviderId(
+    serviceProviderId: Types.ObjectId | string
+  ): Promise<IService[]>;
+  findOnlineServicesWithSlot(): Promise<IOnlineService[] | []>;
+  getServicesWithProviderDetailsCount(): Promise<number>;
+  getServicesWithProviderDetails(
+    skip: number,
+    limit: number,
+    search: string
+  ): Promise<any>;
 }

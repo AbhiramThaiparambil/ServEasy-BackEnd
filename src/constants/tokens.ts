@@ -51,6 +51,17 @@ export const USE_CASE_TOKENS = {
     "IGetServiceProviderRegistrationDetailsUseCase",
   GetServiceProviderStatusUseCase: "IGetServiceProviderStatusUseCase",
   ReapplyServiceProviderUseCase: "IReapplyServiceProviderUseCase",
+  AddCategory: "IAddCategory",
+  AddService: "IAddService",
+  BlockUnblockCategory: "IBlockUnblockCategory",
+  DeleteService: "IDeleteService",
+  BlockUnblockCategoryService: "IBlockUnblockCategoryService",
+  EditCategory: "IEditCategory",
+  GetCategory: "IGetCategory",
+  IBlockUnblockService: "IBlockUnblockService",
+  DeleteCategory: "IDeleteCategory",
+  BlockUnblockService: "IBlockUnblockService",
+  GetAllServices: "IGetAllServices",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -64,6 +75,7 @@ export const REPOSITORY_TOKENS = {
   SlotRepository: "ISlotRepository",
   ServiceBookingRepository: "IServiceBookingRepository",
   UserRepository: "IUserRepository",
+  CategoryRepository: "ICategoryRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
@@ -75,4 +87,5 @@ export const SERVICE_TOKENS = {
   SmsOtpService: "ISmsOtpService",
   Otpservice: "IOtpservice",
   EmailService: "IEmailService",
+  ServiceRepository: "ServiceRepository",
 };

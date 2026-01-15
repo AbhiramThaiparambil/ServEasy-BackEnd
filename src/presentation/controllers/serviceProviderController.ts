@@ -7,7 +7,7 @@ import { RegisterServiceProviderUseCase } from "../../application/use-case/servi
 import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
 import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
-import { GetCategory } from "../../application/use-case/admin/category-management/GetCategory";
+import { GetCategory } from "../../application/use-case/admin/category-management/getCategory/GetCategory.usecase";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
 import { ManageAllServiceUseCase } from "../../application/use-case/admin/mangageAllserviceUseCase";
 import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";

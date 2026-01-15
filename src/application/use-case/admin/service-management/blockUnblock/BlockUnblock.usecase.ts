@@ -1,17 +1,19 @@
 import { inject, injectable } from "tsyringe";
-import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie"; 
-import { IServiceBlockManager } from "./IServiceBlockManager";
+import { SERVICE_TOKENS } from "../../../../../constants/tokens";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
+import { IBlockUnblockService } from "./IBlockUnblock.usecase";
 
 @injectable()
-export class BlockUnblockSericeAdmin implements IServiceBlockManager {
+export class BlockUnblockSer implements IBlockUnblockService {
   constructor(
-    @inject("ServiceRepository") private serviceRepository: ServiceRepository
+    @inject(SERVICE_TOKENS.ServiceRepository)
+    private serviceRepository: IServiceRepository
   ) {}
 
   async blockService(serviceId: string): Promise<boolean> {
     const res = await this.serviceRepository.blockService(serviceId);
     console.log(res);
-    
+
     return res;
   }
 
