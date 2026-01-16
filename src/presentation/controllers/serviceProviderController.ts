@@ -16,15 +16,16 @@ import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/IGetSubscriptionPlansUseCase";
-import { IEditAdUseCase } from "../../application/use-case/ads-useCase/IEditAdUseCase";
-import { ICreateAdUseCase } from "../../application/use-case/ads-useCase/ICreateAdUseCase";
-import { IGetProviderAdsUseCase } from "../../application/use-case/ads-useCase/IGetProviderAdsUseCase";
-import { IGetServiceNamesUseCase } from "../../application/use-case/admin/service-management/IGetServiceNamesUseCase";
-import { IChangeAdStatusUseCase } from "../../application/use-case/admin/ads/IChangeAdStatusUseCase";
+
 import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
+import { IEditAdUseCase } from "../../application/use-case/ads-useCase/editAd/IEditAd.usecase";
+import { ICreateAdUseCase } from "../../application/use-case/ads-useCase/createAd/ICreateAd.usecase";
+import { IGetProviderAdsUseCase } from "../../application/use-case/ads-useCase/getAd/IGetProviderAds.usecase";
+import { IGetServiceNamesUseCase } from "../../application/use-case/admin/service-management/getServiceNames/IGetServiceNames.usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/admin/ads/changeAdStatus/IChangeAdStatus..usecase";
 
 @injectable()
 export class ServiceProviderController {

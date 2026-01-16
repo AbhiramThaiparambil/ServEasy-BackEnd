@@ -2,9 +2,10 @@ import { inject, injectable } from "tsyringe";
 import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
+import { IBlockUnblockSericeProvider } from "./IBlockUnblockSericeProvider.usecase";
 
 @injectable()
-export class BlockUnblockSericeProvider {
+export class BlockUnblockSericeProvider implements IBlockUnblockSericeProvider {
   constructor(
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,

@@ -58,10 +58,13 @@ export const USE_CASE_TOKENS = {
   BlockUnblockCategoryService: "IBlockUnblockCategoryService",
   EditCategory: "IEditCategory",
   GetCategory: "IGetCategory",
-  IBlockUnblockService: "IBlockUnblockService",
-  DeleteCategory: "IDeleteCategory",
   BlockUnblockService: "IBlockUnblockService",
+  DeleteCategory: "IDeleteCategory",
   GetAllServices: "IGetAllServices",
+  GetAllUsers: "IGetAllUsers",
+  BlockUnblockUsers: "IBlockUnblockUsers",
+  GetServiceProviders: "IGetServiceProviders",
+  BlockUnblockSericeProvider: "IBlockUnblockSericeProvider",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -89,3 +92,8 @@ export const SERVICE_TOKENS = {
   EmailService: "IEmailService",
   ServiceRepository: "ServiceRepository",
 };
+
+// IBlockUnblockUsers
+// BlockUnblockSericeProvider
+// IGetServiceProviders
+// IServiceProviderRejectVerify

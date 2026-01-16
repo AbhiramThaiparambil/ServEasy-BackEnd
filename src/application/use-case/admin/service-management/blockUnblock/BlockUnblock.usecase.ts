@@ -4,7 +4,7 @@ import { IServiceRepository } from "../../../../../domain/repositories/IServiceR
 import { IBlockUnblockService } from "./IBlockUnblock.usecase";
 
 @injectable()
-export class BlockUnblockSer implements IBlockUnblockService {
+export class BlockUnblockService implements IBlockUnblockService {
   constructor(
     @inject(SERVICE_TOKENS.ServiceRepository)
     private serviceRepository: IServiceRepository

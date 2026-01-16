@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UploadBills } from "../../../application/use-case/booking/billing/UploadBillsUseCase";
+import { UploadBills } from "../../../application/use-case/booking/billing/UploadBills.usecase";
 import { container } from "tsyringe";
 import { HttpStatus } from "../../../constants/HttpStatus";
 

@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import mongoose from "mongoose";
-import { ICreateBookingUseCase } from "../../application/use-case/booking/createBooking/ICreateBookingUseCase";
-import { ICreateOnlineBookingUseCase } from "../../application/use-case/booking/createOnlineBooking/ICreateOnlineBookingUseCase";
+import { ICreateBookingUseCase } from "../../application/use-case/booking/createBooking/ICreateBooking.usecase";
+import { ICreateOnlineBookingUseCase } from "../../application/use-case/booking/createOnlineBooking/ICreateOnlineBooking.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
-import { IConfirmBookingUseCase } from "../../application/use-case/booking/confirmBooking/IConfirmBookingUseCase";
-import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBookingUseCase";
+import { IConfirmBookingUseCase } from "../../application/use-case/booking/confirmBooking/IConfirmBooking.usecase";
+import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
 import { IRequestPaymentUseCase } from "../../application/use-case/booking/requestPayment/IRequestPaymentUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
-import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/createOnlineBooking/IRescheduleOnlineServiceUseCase";
+import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 
 @injectable()
 export class BookingController {

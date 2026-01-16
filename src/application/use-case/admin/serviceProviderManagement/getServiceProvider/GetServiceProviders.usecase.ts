@@ -1,10 +1,15 @@
 import { inject, injectable } from "tsyringe";
 import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
-import { serviceProviderSanitizer } from "../../../../../utils/sanitizers/serviceProviderSanitrizer";
+import {
+  SafeServiceProvider,
+  serviceProviderSanitizer,
+} from "../../../../../utils/sanitizers/serviceProviderSanitrizer";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { IGetServiceProviders } from "./IGetServiceProviders.usecase";
+import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 
 @injectable()
-export class getServiceProvidersUseCase {
+export class GetServiceProviders implements IGetServiceProviders {
   constructor(
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository
@@ -14,7 +19,10 @@ export class getServiceProvidersUseCase {
     limit: number,
     search: string,
     serviceProviderVerfication?: boolean
-  ) {
+  ): Promise<{
+    data: SafeServiceProvider[] | IServiceProvider[];
+    count: number;
+  }> {
     const data =
       await this.serviceProviderRepository.findServiceProviderSkipLimit(
         skip,

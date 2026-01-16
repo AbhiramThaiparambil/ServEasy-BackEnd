@@ -25,7 +25,7 @@ import { AddReviewUseCase } from "../../application/use-case/review/AddReviewUse
 import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCouponsUseCase";
+import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
 import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
