@@ -1,31 +1,15 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
-import { GetUserProfileUseCase } from "../../application/use-case/User/GetProfile";
 import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { UserProfileUpdate } from "../../application/use-case/User/updateProfile";
 
-import { RegisterUser } from "../../application/use-case/User/auth/RegisterUser";
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { SignIn } from "../../application/use-case/User/auth/SignIn";
-import { VerifyOtp } from "../../application/use-case/User/auth/VerifyOtp";
-import { ResendOtp } from "../../application/use-case/User/auth/ResendOtp";
-import { SendOtp } from "../../application/use-case/User/auth/forgotPassword/sendOtp";
-import { ForgotVerifyOtp } from "../../application/use-case/User/auth/forgotPassword/forgotVerifyOtp";
-import { ResetPassword } from "../../application/use-case/User/auth/forgotPassword/resetPassword";
-import { ProfileUpdateOtp } from "../../application/use-case/User/profileUpdateOtp";
-import { GetServics } from "../../application/use-case/User/GetServics";
-import { GetAllActiveService } from "../../application/use-case/User/getAllService";
-import { GetAddress } from "../../application/use-case/User/Address/GetAddress";
-import { AddNewAddress } from "../../application/use-case/User/Address/AddNewAddress";
-import { EditAddress } from "../../application/use-case/User/Address/EditAddress";
-import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAddress";
-import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
+import { SignIn } from "../../application/use-case/User/auth/signIn/SignIn.usecase";
+
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
-import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
-import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";
+import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/increaseAdclicks/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
 import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
 import { AddReviewUseCase } from "../../application/use-case/review/addReview/AddReviewUseCase";
@@ -33,6 +17,25 @@ import { IDeleteAllNotificationUseCase } from "../../application/use-case/notifi
 import { IDeleteSingleNotificationUseCase } from "../../application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
 import { IAddReviewUseCase } from "../../application/use-case/review/addReview/IAddReviewUseCase";
+import { IGetAddress } from "../../application/use-case/User/Address/getAddress/IGetAddress.usecase";
+import { IAddNewAddress } from "../../application/use-case/User/Address/addAddress/IAddNewAddress.usecase";
+import { IEditAddress } from "../../application/use-case/User/Address/editAddress/IEditAddress.usecase";
+import { IDeleteAddress } from "../../application/use-case/User/Address/deleteAddress/IDeleteAddress.usecase";
+import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/recommendAds/IRecommendAdsUseCase";
+import { ISignInUseCase } from "../../application/use-case/User/auth/signIn/ISignIn.usecase";
+import { ISignUpUseCase } from "../../application/use-case/User/auth/signUp/ISignUp.usecase";
+import { IVerifyOtpUseCase } from "../../application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
+import { IResendOtp } from "../../application/use-case/User/auth/resendOtp/IResendOtp.usecase";
+import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
+import { IResetPasswordUseCase } from "../../application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
+import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
+import { IGoogleAuthUseCase } from "../../application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
+import { IGetServiceProviderInfoUseCase } from "../../application/use-case/User/service/getProviderInfo/IGetServiceProviderInfoUseCase";
+import { IGetSingleServiceUseCase } from "../../application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
+import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
+import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
+import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
 
 @injectable()
 export class UserController {
@@ -49,29 +52,44 @@ export class UserController {
     @inject(USE_CASE_TOKENS.GetNotificationUseCase)
     private getNotificationUsecase: IGetNotificationUseCase,
 
-    @inject(RegisterUser) private registerUser: RegisterUser,
+    @inject(USE_CASE_TOKENS.SignUpUseCase) private registerUser: ISignUpUseCase,
     @inject(SignIn) private signInUseCase: SignIn,
-    @inject(VerifyOtp) private verifyOtpUseCase: VerifyOtp,
-    @inject(ResendOtp) private resendOtpUseCase: ResendOtp,
+
+    @inject(USE_CASE_TOKENS.VerifyOtpUseCase)
+    private verifyOtpUseCase: IVerifyOtpUseCase,
+
+    @inject(USE_CASE_TOKENS.ResendOtpUseCase)
+    private resendOtpUseCase: IResendOtp,
+
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
-    @inject(GetUserProfileUseCase)
-    private getUserProfileUseCase: GetUserProfileUseCase,
-    @inject(SendOtp) private sendOtpUseCase: SendOtp,
-    @inject(ForgotVerifyOtp) private forgotVerifyOtpUseCase: ForgotVerifyOtp,
-    @inject(ResetPassword) private resetPasswordUseCase: ResetPassword,
-    @inject(UserProfileUpdate) private userProfileUpdate: UserProfileUpdate,
-    @inject(ProfileUpdateOtp) private profileUpdateOtp: ProfileUpdateOtp,
-    @inject(GetServics) private getServics: GetServics,
-    @inject(GetAllActiveService)
-    private getAllActiveService: GetAllActiveService,
-    @inject(GetAddress) private getAddressUseCase: GetAddress,
-    @inject(AddNewAddress) private addNewAddressUseCase: AddNewAddress,
-    @inject(EditAddress) private editAddressUseCase: EditAddress,
-    @inject(DeleteAddress) private deleteAddressUseCase: DeleteAddress,
+    @inject(USE_CASE_TOKENS.GetUserProfileUseCase)
+    private getUserProfileUseCase: IGetUserProfileUseCase,
+    @inject(USE_CASE_TOKENS.SendForgotPasswordOtpUseCase)
+    private sendOtpUseCase: ISendForgotPasswordOtpUseCase,
+    @inject(USE_CASE_TOKENS.VerifyForgotPasswordOtpUseCase)
+    private forgotVerifyOtpUseCase: IVerifyForgotPasswordOtpUseCase,
+    @inject(USE_CASE_TOKENS.ResetPasswordUseCase)
+    private resetPasswordUseCase: IResetPasswordUseCase,
+    @inject(USE_CASE_TOKENS.UserProfileUpdateUseCase)
+    private userProfileUpdate: IUserProfileUpdateUseCase,
+    @inject(USE_CASE_TOKENS.ProfileUpdateOtpUseCase)
+    private profileUpdateOtp: IProfileUpdateOtpUseCase,
+    @inject(USE_CASE_TOKENS.GetSingleServiceUseCase)
+    private getServics: IGetSingleServiceUseCase,
+    @inject(USE_CASE_TOKENS.GetAllActiveServiceUseCase)
+    private getAllActiveService: IGetAllActiveServiceUseCase,
+
+    @inject(USE_CASE_TOKENS.GetAddress) private getAddressUseCase: IGetAddress,
+    @inject(USE_CASE_TOKENS.AddNewAddress)
+    private addNewAddressUseCase: IAddNewAddress,
+    @inject(USE_CASE_TOKENS.EditAddress)
+    private editAddressUseCase: IEditAddress,
+    @inject(USE_CASE_TOKENS.DeleteAddress)
+    private deleteAddressUseCase: IDeleteAddress,
     @inject(USE_CASE_TOKENS.AddReviewUseCase)
     private addReviewUseCase: IAddReviewUseCase,
-    @inject(GetServiceProviderInfoUseCase)
-    private getServiceProviderInfoUseCase: GetServiceProviderInfoUseCase,
+    @inject(USE_CASE_TOKENS.GetServiceProviderInfoUseCase)
+    private getServiceProviderInfoUseCase: IGetServiceProviderInfoUseCase,
     @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
 
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
@@ -81,7 +99,9 @@ export class UserController {
     private recommendAdsUseCase: IRecommendAdsUseCase,
 
     @inject(USE_CASE_TOKENS.IncreaseAdClicksUseCase)
-    private increaseAdClicksUseCase: IIncreaseAdClicksUseCase
+    private increaseAdClicksUseCase: IIncreaseAdClicksUseCase,
+    @inject(USE_CASE_TOKENS.GoogleAuthUseCase)
+    private googleAuthUseCase: IGoogleAuthUseCase,
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -132,7 +152,7 @@ export class UserController {
 
   markAsReadNotification = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const { id } = req.params;
@@ -157,7 +177,7 @@ export class UserController {
 
   registerUserController = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const { userName, email, password, phone } = req.body;
@@ -191,21 +211,19 @@ export class UserController {
       }
 
       const result = await this.registerUser.execute(data);
-
-      if (result.user) {
-        const regInfo = result.user.phone
-          ? result.user.phone
-          : result.user.email;
-        const message = result.user.phone
-          ? "OTP sent to phone"
-          : "Your account has been successfully created";
-
-        res.status(HttpStatus.CREATED).json({ message, regInfo });
-      } else if (result.errorMessage) {
+      if ("errorMessage" in result) {
         res
-          .status(HttpStatus.BAD_REQUEST)
-          .json({ message: result.errorMessage });
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: result.errorMessage });
+        return;
       }
+
+      const regInfo = result.user.phone ? result.user.phone : result.user.email;
+      const message = result.user.phone
+        ? "OTP sent to phone"
+        : "Your account has been successfully created";
+
+      res.status(HttpStatus.CREATED).json({ message, regInfo });
     } catch (error: unknown) {
       let errorMessage = "";
       if (error instanceof Error) {
@@ -215,6 +233,32 @@ export class UserController {
       res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: errorMessage || "An unexpected error occurred" });
+    }
+  };
+
+  googleAuthController = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { googleToken } = req.body;
+
+      if (!googleToken) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Google token is required" });
+        return;
+      }
+
+      const result = await this.googleAuthUseCase.execute(googleToken);
+
+      setAuthCookies(res, "refreshToken", result.refreshToken);
+
+      res.status(HttpStatus.OK).json({
+        accessToken: result.accessToken,
+      });
+    } catch (error) {
+      console.error("Google auth error:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Google authentication failed" });
     }
   };
 
@@ -234,16 +278,15 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithEmail(
           email,
-          password
+          password,
         );
 
-        if (result?.errorMessage) {
+        if ("errorMessage" in result) {
           res
             .status(HttpStatus.UNAUTHORIZED)
             .json({ error: result.errorMessage });
           return;
         }
-
         if (result?.refreshToken) {
           setAuthCookies(res, "refreshToken", result.refreshToken);
         }
@@ -264,10 +307,10 @@ export class UserController {
 
         const result = await this.signInUseCase.signInWithPhone(
           phone,
-          password
+          password,
         );
 
-        if (result?.errorMessage) {
+        if ("errorMessage" in result) {
           res
             .status(HttpStatus.UNAUTHORIZED)
             .json({ error: result.errorMessage });
@@ -300,17 +343,18 @@ export class UserController {
       const result = await this.verifyOtpUseCase.execute(sender, otp);
       console.log(result);
 
-      if (result.success) {
-        setAuthCookies(res, "refreshToken", result.refreshToken);
-
+      if ("errorMessage" in result) {
         res
-          .status(HttpStatus.OK)
-          .json({ message: result.success, accessToken: result.accessToken });
-      } else if (result.errorMessage) {
-        res
-          .status(HttpStatus.BAD_REQUEST)
-          .json({ errorMessage: result.errorMessage });
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: result.errorMessage });
+        return;
       }
+
+      setAuthCookies(res, "refreshToken", result.refreshToken);
+
+      res
+        .status(HttpStatus.OK)
+        .json({ message: result.success, accessToken: result.accessToken });
     } catch (error) {
       console.error(error);
       res
@@ -345,7 +389,7 @@ export class UserController {
 
   userProfileController = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       if (req.params.id) {
@@ -482,12 +526,12 @@ export class UserController {
       if (email) {
         result = await this.resetPasswordUseCase.resetPasswordEmail(
           password,
-          email
+          email,
         );
       } else {
         result = await this.resetPasswordUseCase.resetPasswordPhone(
           password,
-          phone
+          phone,
         );
       }
 
@@ -519,7 +563,7 @@ export class UserController {
         await this.userProfileUpdate.updateProfile(
           userId,
           newUserName,
-          NewProfileImage
+          NewProfileImage,
         );
       }
 
@@ -635,7 +679,7 @@ export class UserController {
 
       const data = await this.getServics.execute(id);
 
-      if (!data.services) {
+      if (!data) {
         res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
         return;
       }
@@ -686,7 +730,7 @@ export class UserController {
 
   public getActiveServices = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const limit = parseInt(req.query.limit as string) || 10;
@@ -710,7 +754,7 @@ export class UserController {
 
   public getActiveNearbyServices = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const filters = req.query.filters as {
@@ -735,24 +779,24 @@ export class UserController {
       };
 
       if (isNaN(longitude) || isNaN(latitude)) {
-        const result = await this.getAllActiveService.getNearByservices(
+        const result = await this.getAllActiveService.getNearByServices(
           null,
           null,
           parsedFilters,
           Number(limit),
-          cursor as string | null
+          cursor as string | null,
         );
         res.status(HttpStatus.OK).json(result);
 
         return;
       }
 
-      const result = await this.getAllActiveService.getNearByservices(
+      const result = await this.getAllActiveService.getNearByServices(
         longitude,
         latitude,
         parsedFilters,
         Number(limit),
-        cursor as string | null
+        cursor as string | null,
       );
 
       res.status(HttpStatus.OK).json(result);
@@ -958,7 +1002,7 @@ export class UserController {
         serviceId,
         rating,
         comment,
-        userId
+        userId,
       );
 
       res
@@ -974,12 +1018,12 @@ export class UserController {
 
   public getServiceProviderInfoChat = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       if (req.params.id) {
         const user = await this.getServiceProviderInfoUseCase.execute(
-          req.params.id
+          req.params.id,
         );
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
@@ -1013,7 +1057,7 @@ export class UserController {
   };
   public getSiteBanners = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const banners = await this.userSiteSettings.getBanners();
@@ -1030,7 +1074,7 @@ export class UserController {
 
   public findFeatureCoupons = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const skip = Number(req.query.skip) || 0;
@@ -1047,7 +1091,7 @@ export class UserController {
 
   public getRecommendedAds = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const ads = await this.recommendAdsUseCase.execute({

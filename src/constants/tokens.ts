@@ -75,6 +75,24 @@ export const USE_CASE_TOKENS = {
   DeleteSingleNotificationUseCase: "IDeleteSingleNotificationUseCase",
   DeleteAllNotificationUseCase: "IDeleteAllNotificationUseCase",
   AddReviewUseCase: "IAddReviewUseCase",
+  DeleteAddress: "IDeleteAddress",
+  AddNewAddress: "IAddNewAddress",
+  EditAddress: "EditAddress",
+  GetAddress: "IGetAddress",
+  ResetPasswordUseCase: "IResetPasswordUseCase",
+  SendForgotPasswordOtpUseCase: "ISendForgotPasswordOtpUseCase",
+  VerifyForgotPasswordOtpUseCase: "IVerifyForgotPasswordOtpUseCase",
+  GoogleAuthUseCase: "IGoogleAuthUseCase",
+  ResendOtpUseCase: "IResendOtp",
+  SignInUseCase: "ISignInUseCase",
+  SignUpUseCase: "ISignUpUseCase",
+  VerifyOtpUseCase: "IVerifyOtpUseCase",
+  GetServiceProviderInfoUseCase: "GetServiceProviderInfoUseCase",
+  GetAllActiveServiceUseCase: "GetAllActiveServiceUseCase",
+  GetSingleServiceUseCase: "GetSingleServiceUseCase",
+  ProfileUpdateOtpUseCase: "ProfileUpdateOtpUseCase",
+  UserProfileUpdateUseCase: "IUserProfileUpdateUseCase",
+  GetUserProfileUseCase: "IGetUserProfileUseCase",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -101,9 +119,9 @@ export const SERVICE_TOKENS = {
   RedisService: "IRedisService",
   RazorpayService: "RazorpayService",
   SmsOtpService: "ISmsOtpService",
-  Otpservice: "IOtpservice",
   EmailService: "IEmailService",
   ServiceRepository: "ServiceRepository",
+  OtpService: "IOtpService",
 };
 
 // IBlockUnblockUsers

@@ -4,6 +4,11 @@ import { IServiceRepository } from "../../domain/repositories/IServiceRepository
 import ServiceModel from "../models/ServiceModel";
 import { injectable } from "tsyringe";
 import { SlotModel } from "../models/SlotModel";
+import {
+  INearbyServicePagination,
+  INearbyServiceResult,
+} from "../../utils/types/dto/INearbyServiceResult";
+import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
 @injectable()
 export class ServiceRepository implements IServiceRepository {
   async create(service: IService): Promise<IService> {
@@ -15,7 +20,7 @@ export class ServiceRepository implements IServiceRepository {
     return await ServiceModel.findById(serviceId);
   }
   async findAllServiceProviderId(
-    serviceProviderId: Types.ObjectId | string
+    serviceProviderId: Types.ObjectId | string,
   ): Promise<IService[]> {
     return await ServiceModel.find({
       serviceProviderId: serviceProviderId,
@@ -28,7 +33,7 @@ export class ServiceRepository implements IServiceRepository {
 
   async update(
     serviceId: Types.ObjectId,
-    service: Partial<IService>
+    service: Partial<IService>,
   ): Promise<IService | null> {
     return await ServiceModel.findByIdAndUpdate(serviceId, service, {
       new: true,
@@ -44,7 +49,7 @@ export class ServiceRepository implements IServiceRepository {
     try {
       const result = await ServiceModel.updateOne(
         { _id: serviceId },
-        { $set: { isActive: false } }
+        { $set: { isActive: false } },
       );
       return result.modifiedCount > 0;
     } catch (error: any) {
@@ -56,7 +61,7 @@ export class ServiceRepository implements IServiceRepository {
     try {
       const result = await ServiceModel.updateOne(
         { _id: serviceId },
-        { $set: { isActive: true } }
+        { $set: { isActive: true } },
       );
       return result.modifiedCount > 0;
     } catch (error) {
@@ -89,7 +94,7 @@ export class ServiceRepository implements IServiceRepository {
   async getServicesWithProviderDetails(
     skip: number,
     limit: number,
-    search: string
+    search: string,
   ) {
     return await ServiceModel.aggregate([
       {
@@ -123,7 +128,9 @@ export class ServiceRepository implements IServiceRepository {
     return await ServiceModel.countDocuments();
   }
 
-  async getSingleServiceWithProviderDetails(serviceId: string) {
+  async getSingleServiceWithProviderDetails(
+    serviceId: string,
+  ): Promise<ISingleServiceWithProvider[]> {
     return await ServiceModel.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(serviceId) },
@@ -236,8 +243,8 @@ export class ServiceRepository implements IServiceRepository {
 
   async findAllActiveServicesUser(
     limit: number,
-    cursor?: string | null
-  ): Promise<{ services: any[]; nextCursor: string | null }> {
+    cursor?: string | null,
+  ): Promise<{ services: INearbyServiceResult[]; nextCursor: string | null }> {
     const matchStage: any = {
       isActive: true,
     };
@@ -470,7 +477,7 @@ export class ServiceRepository implements IServiceRepository {
     category: string,
     serviceProviderId?: Types.ObjectId | string,
     limit: number = 10,
-    cursor?: string | null
+    cursor?: string | null,
   ) {
     const maxDistanceInMeters = 5000;
 
@@ -953,9 +960,9 @@ export class ServiceRepository implements IServiceRepository {
       priceSort?: "gtToLow" | "lowTogt";
       searchQuery?: string;
     },
-    limit: number = 10,
-    cursor?: string | null
-  ) {
+    limit?: number,
+    cursor?: string | null,
+  ): Promise<INearbyServicePagination> {
     const maxDistanceInMeters = 20000;
     const pipeline: any[] = [];
 
@@ -1028,7 +1035,7 @@ export class ServiceRepository implements IServiceRepository {
           path: "$categoryInfo",
           preserveNullAndEmptyArrays: true,
         },
-      }
+      },
     );
 
     if (filters?.category) {
@@ -1051,7 +1058,7 @@ export class ServiceRepository implements IServiceRepository {
           path: "$providerInfo",
           preserveNullAndEmptyArrays: true,
         },
-      }
+      },
     );
 
     if (filters?.experience !== undefined) {
@@ -1103,7 +1110,7 @@ export class ServiceRepository implements IServiceRepository {
     return { services, nextCursor };
   }
 
-  async getActiveServiceNames() {
+  async getActiveServiceNames(): Promise<string[]> {
     return await ServiceModel.distinct("serviceName", { isActive: true });
   }
 
@@ -1661,12 +1668,12 @@ export class ServiceRepository implements IServiceRepository {
   }
 
   async blockAllserviceServiceProvider(
-    serviceProviderId: string
+    serviceProviderId: string,
   ): Promise<boolean> {
     try {
       const result = await ServiceModel.updateMany(
         { serviceProviderId },
-        { $set: { isActive: false } }
+        { $set: { isActive: false } },
       );
 
       return result.modifiedCount > 0;
@@ -1677,12 +1684,12 @@ export class ServiceRepository implements IServiceRepository {
   }
 
   async activateAllServicesByServiceProvider(
-    serviceProviderId: string
+    serviceProviderId: string,
   ): Promise<boolean> {
     try {
       const result = await ServiceModel.updateMany(
         { serviceProviderId },
-        { $set: { isActive: true } }
+        { $set: { isActive: true } },
       );
 
       return result.modifiedCount > 0;
@@ -1709,7 +1716,7 @@ export class ServiceRepository implements IServiceRepository {
   }
 
   async findSingleOnlineServicesWithSlot(
-    serviceId: string
+    serviceId: string,
   ): Promise<IOnlineService[]> {
     return await ServiceModel.aggregate([
       {

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
-import { GetAllActiveService } from "../../application/use-case/User/getAllService";
 import { HttpStatus } from "../../constants/HttpStatus";
 // import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
@@ -11,13 +10,14 @@ import { ICancelBookingUseCase } from "../../application/use-case/booking/cancel
 import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/IDeleteSlot.usecase";
 import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
 import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
 
 @injectable()
 export class ServiceController {
   constructor(
-    @inject(GetAllActiveService)
-    private getAllActiveService: GetAllActiveService,
-    @inject("ICancelBookingUseCase")
+    @inject(USE_CASE_TOKENS.GetAllActiveServiceUseCase)
+    private getAllActiveService: IGetAllActiveServiceUseCase,
+    @inject(USE_CASE_TOKENS.CancelBookingUseCase)
     private cancelBookingUseCase: ICancelBookingUseCase,
     @inject(USE_CASE_TOKENS.DeleteSlotUseCase)
     private deleteSlotUseCase: IDeleteSlotUseCase,
@@ -30,7 +30,7 @@ export class ServiceController {
     @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
     private applyCouponUseCase: IApplyCouponToBookingUseCase,
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
-    private removeCouponUseCase: IRemoveCouponToBookingUseCase
+    private removeCouponUseCase: IRemoveCouponToBookingUseCase,
   ) {}
 
   async cancelUserBooking(req: Request, res: Response): Promise<void> {
@@ -48,7 +48,7 @@ export class ServiceController {
       const result = await this.cancelBookingUseCase.execute(
         id,
         "cancelled",
-        cancellationReason
+        cancellationReason,
       );
 
       res.status(HttpStatus.OK).json({
@@ -65,7 +65,7 @@ export class ServiceController {
 
   async getOnlineServiceWithSlotHandler(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const { serviceId } = req.params;
@@ -76,9 +76,8 @@ export class ServiceController {
           .json({ message: "serviceId is required" });
         return;
       }
-      const data = await this.getAllActiveService.getOnlineServicesWithSlot(
-        serviceId
-      );
+      const data =
+        await this.getAllActiveService.getOnlineServicesWithSlot(serviceId);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching online services with slots:", error);
@@ -90,7 +89,7 @@ export class ServiceController {
 
   async getOnlineServiceSlotsHandler(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const id = req.params.id;

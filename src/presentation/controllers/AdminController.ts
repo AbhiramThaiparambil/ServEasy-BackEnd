@@ -1,16 +1,12 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { GetAdminProfileUseCase } from "../../application/use-case/admin/profile";
-import { GetPaymentInfoUseCase } from "../../application/use-case/admin/getPaymentInfoUseCase";
+import { GetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/getPaymentInfoUseCase";
 import { AdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/AdminSiteSettingsUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 import fs from "fs";
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import {
-  SERVICE_TOKENS,
-  USE_CASE_TOKENS,
-} from "../../constants/tokens";
+import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { ICreateCouponUseCase } from "../../application/use-case/coupon/createCoupon/ICreateCoupon.usecase";
 import { IFindAllCouponsUseCase } from "../../application/use-case/coupon/findAllCoupons/IFindAllCoupons.usecase";
 import { IMakeCouponInactiveUseCase } from "../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactive.usecase";
@@ -26,7 +22,6 @@ import { userInfo } from "os";
 import path from "path";
 
 import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
-import { IAdminSignin } from "../../application/use-case/auth/IAdminSignin.usecase";
 import { IGetAllUsers } from "../../application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
 import { IBlockUnblockUsers } from "../../application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
 import { IGetServiceProviders } from "../../application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
@@ -45,6 +40,8 @@ import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/subs
 import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/createSubscription/ICreateSubscriptionPlan.usecase";
 import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
 import { BlockUnblockSericeProvider } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
+import { GetAdminProfileUseCase } from "../../application/use-case/admin/profile/profile";
 
 @injectable()
 export class AdminController {
@@ -112,7 +109,7 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.AdminGetAdsUseCase)
     private getAdsUseCase: IAdminGetAdsUseCase,
     @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
-    private changeAdStatusUseCase: IChangeAdStatusUseCase
+    private changeAdStatusUseCase: IChangeAdStatusUseCase,
   ) {}
 
   async signIn(req: Request, res: Response) {
@@ -158,7 +155,7 @@ export class AdminController {
       }
 
       const data = await this.getAdminProfileUseCase.execute(
-        res.locals.adminId.adminId
+        res.locals.adminId.adminId,
       );
       res.status(200).json({ data });
       return;
@@ -178,7 +175,7 @@ export class AdminController {
       const { users, count } = await this.getAllUsersUseCase.execute(
         skip,
         limit,
-        search as string
+        search as string,
       );
       res.status(200).json({ users, count });
       return;
@@ -200,7 +197,7 @@ export class AdminController {
         skip,
         limit,
         search as string,
-        verification ? true : false
+        verification ? true : false,
       );
 
       res.status(HttpStatus.OK).json({ data, count });
@@ -225,7 +222,7 @@ export class AdminController {
 
       const paymentData = await this.getPaymentInfoUseCase.execute(
         startDate,
-        endDate
+        endDate,
       );
 
       res.status(200).json({ paymentData });
@@ -242,7 +239,7 @@ export class AdminController {
       console.log("Received request to add site settings:", req.body);
       if (req.body.type === "addBanner") {
         const banner = await this.adminSiteSettingsUseCase.addHomeBanner(
-          req.body
+          req.body,
         );
         res.status(HttpStatus.CREATED).json({ banner });
         return;
@@ -286,7 +283,7 @@ export class AdminController {
 
       if (req.body.type === "deleteFooterBanner") {
         await this.adminSiteSettingsUseCase.deleteFooterBanner(
-          req.body.footerBannerId
+          req.body.footerBannerId,
         );
         res
           .status(HttpStatus.OK)
@@ -321,7 +318,7 @@ export class AdminController {
 
       if (req.body.type === "makeActiveHomeBanner") {
         const banner = await this.adminSiteSettingsUseCase.makeHomeBannerActive(
-          req.body.id
+          req.body.id,
         );
         res.status(HttpStatus.OK).json({ banner });
         return;
@@ -330,7 +327,7 @@ export class AdminController {
       if (req.body.type === "makeActiveFooterBanner") {
         const footerBanner =
           await this.adminSiteSettingsUseCase.makeFooterBannerActive(
-            req.body.id
+            req.body.id,
           );
         res.status(HttpStatus.OK).json({ footerBanner });
         return;
@@ -405,7 +402,7 @@ export class AdminController {
 
       const data = await this.serviceProviderRejectVerify.rejectServiceProvider(
         serviceProviderId,
-        reason
+        reason,
       );
 
       if (data) {
@@ -430,9 +427,10 @@ export class AdminController {
     try {
       const { serviceProviderId } = req.body;
 
-      const data = await this.serviceProviderRejectVerify.verifyServiceProvider(
-        serviceProviderId
-      );
+      const data =
+        await this.serviceProviderRejectVerify.verifyServiceProvider(
+          serviceProviderId,
+        );
 
       if (data) {
         res.status(HttpStatus.OK).json({ data });
@@ -462,7 +460,7 @@ export class AdminController {
       const { allServices, count } = await this.getAllServicesUseCase.execute(
         skip,
         limit,
-        search as string
+        search as string,
       );
 
       res.status(HttpStatus.OK).json({ allServices, count });
@@ -490,9 +488,8 @@ export class AdminController {
       if (action === "Block") {
         result = await this.blockUnblockServiceUseCase.blockService(serviceId);
       } else if (action === "Unblock") {
-        result = await this.blockUnblockServiceUseCase.unblockService(
-          serviceId
-        );
+        result =
+          await this.blockUnblockServiceUseCase.unblockService(serviceId);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -521,7 +518,7 @@ export class AdminController {
   }
   async blockUnblockServiceProvider(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const { providerId, action } = req.body;
@@ -536,13 +533,15 @@ export class AdminController {
       let result: boolean;
 
       if (action === "Block") {
-        result = await this.blockUnblockProviderUseCase.blockServiceProvider(
-          providerId
-        );
+        result =
+          await this.blockUnblockProviderUseCase.blockServiceProvider(
+            providerId,
+          );
       } else if (action === "Unblock") {
-        result = await this.blockUnblockProviderUseCase.unblockServiceProvider(
-          providerId
-        );
+        result =
+          await this.blockUnblockProviderUseCase.unblockServiceProvider(
+            providerId,
+          );
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -564,7 +563,7 @@ export class AdminController {
     } catch (error: any) {
       console.error(
         "AdminController::blockUnblockServiceProvider error",
-        error
+        error,
       );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -629,7 +628,7 @@ export class AdminController {
 
       const data = await this.editCategoryUseCase.execute(
         categoryId,
-        categoryName
+        categoryName,
       );
 
       res
@@ -656,9 +655,8 @@ export class AdminController {
         return;
       }
 
-      const message = await this.blockUnblockCategoryUseCase.execute(
-        categoryId
-      );
+      const message =
+        await this.blockUnblockCategoryUseCase.execute(categoryId);
 
       res.status(HttpStatus.OK).json({ message });
       return;
@@ -734,7 +732,7 @@ export class AdminController {
 
       const message = await this.deleteServiceUseCase.execute(
         categoryId,
-        serviceId
+        serviceId,
       );
 
       res.status(HttpStatus.OK).json({ message });
@@ -819,7 +817,7 @@ export class AdminController {
   }
   public async activeInActiveCoupons(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const id = req.params.id;

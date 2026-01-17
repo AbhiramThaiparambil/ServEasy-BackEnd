@@ -7,10 +7,8 @@ import { IUserRepository } from "./domain/repositories/IuserRepository";
 import { container } from "tsyringe";
 import { EmailService } from "./services/mailService/MailService";
 import { Otpservice } from "./services/otp/OtpService";
-import { RegisterUser } from "./application/use-case/User/auth/RegisterUser";
 import { RedisService } from "./services/redis/RedisService";
 import { SmsOtpService } from "./services/otp/SmsOtpService";
-import { ResendOtp } from "./application/use-case/User/auth/ResendOtp";
 import { TokenService } from "./services/token/TokenService";
 import { CloudinaryService } from "./services/cloudinary/CloudinaryService";
 import { RegisterServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/RegisterServiceProvider";
@@ -22,7 +20,6 @@ import { RazorpayService } from "./services/payment/RazorpayService";
 import { ChatRepository } from "./infrastructure/repositories/ChatRepository";
 import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
-import { VerifyOtp } from "./application/use-case/User/auth/VerifyOtp";
 import { NotificationRepository } from "./infrastructure/repositories/NotificationRepository";
 import { SiteSettingRepository } from "./infrastructure/repositories/SiteSettingRepository";
 import { ISlotRepository } from "./domain/repositories/ISlotRepository";
@@ -82,11 +79,10 @@ import { IServiceRepository } from "./domain/repositories/IServiceRepository";
 
 import { IAdminGetAdsUseCase } from "./application/use-case/ads/getAds/IAdminGetAds.usecase";
 
-import { IRecommendAdsUseCase } from "./application/use-case/User/Ads/IRecommendAdsUseCase";
-import { RecommendAdsUseCase } from "./application/use-case/User/Ads/RecommendAdsUseCase";
+import { RecommendAdsUseCase } from "./application/use-case/User/Ads/recommendAds/RecommendAdsUseCase";
 import { IExpireAdsUseCase } from "./application/use-case/ads/expireAds/ExpireAds.usecase";
-import { IIncreaseAdClicksUseCase } from "./application/use-case/User/Ads/IIncreaseAdClicksUseCase";
-import { IncreaseAdClicksUseCase } from "./application/use-case/User/Ads/IncreaseAdClicksUseCase";
+import { IIncreaseAdClicksUseCase } from "./application/use-case/User/Ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IncreaseAdClicksUseCase } from "./application/use-case/User/Ads/increaseAdclicks/IncreaseAdClicksUseCase";
 import { IUpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { UpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { IConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/IConfirmBooking.usecase";
@@ -109,8 +105,8 @@ import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/booki
 import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { GetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/GetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
-import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "./application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { GetServiceProviderStatusUseCase } from "./application/use-case/wallet/providerWallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
 import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 import { ITokenService } from "./services/token/ITokenService";
@@ -143,8 +139,7 @@ import { GetAllChatsUseCase } from "./application/use-case/chat/getAllchats/GetA
 import { IGetAllChats } from "./application/use-case/chat/getAllchats/IGetAllChats.usecase";
 import { UploadChatImageUseCase } from "./application/use-case/chat/uploadChatMedia/UploadChatImage.usecase";
 import { IUploadChatImageUseCase } from "./application/use-case/chat/uploadChatMedia/IUploadChatImage.usecase";
-import { IAdminSignin } from "./application/use-case/auth/IAdminSignin.usecase";
-import { AdminSignin } from "./application/use-case/auth/AdminSignin.usecase";
+
 import { CreateNotificationUseCase } from "./application/use-case/notification/createNotification/CreateNotification.usecase";
 import { GetNotificationUseCase } from "./application/use-case/notification/getNotification/GetNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "./application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
@@ -205,6 +200,45 @@ import { IDeleteService } from "./application/use-case/category-management/delet
 import { DeleteService } from "./application/use-case/category-management/deleteService/DeleteService.usecase";
 import { AddReviewUseCase } from "./application/use-case/review/addReview/AddReviewUseCase";
 import { IAddReviewUseCase } from "./application/use-case/review/addReview/IAddReviewUseCase";
+import { IDeleteAddress } from "./application/use-case/User/Address/deleteAddress/IDeleteAddress.usecase";
+import { DeleteAddress } from "./application/use-case/User/Address/deleteAddress/DeleteAddress.usecase";
+import { IAddNewAddress } from "./application/use-case/User/Address/addAddress/IAddNewAddress.usecase";
+import { AddNewAddress } from "./application/use-case/User/Address/addAddress/AddNewAddress.usecase";
+import { EditAddress } from "./application/use-case/User/Address/editAddress/EditAddress.usecase";
+import { IEditAddress } from "./application/use-case/User/Address/editAddress/IEditAddress.usecase";
+import { IGetAddress } from "./application/use-case/User/Address/getAddress/IGetAddress.usecase";
+import { GetAddress } from "./application/use-case/User/Address/getAddress/GetAddress.usecase";
+import { IRecommendAdsUseCase } from "./application/use-case/User/Ads/recommendAds/IRecommendAdsUseCase";
+import { IResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
+import { ResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/ResetPassword.usecase";
+import { SendForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/SendForgotPasswordOtp.usecase";
+import { ISendForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
+import { IVerifyForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
+import { VerifyForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/VerifyForgotPasswordOtp.usecase";
+import { ISignInUseCase } from "./application/use-case/User/auth/signIn/ISignIn.usecase";
+import { SignIn } from "./application/use-case/User/auth/signIn/SignIn.usecase";
+import { ISignUpUseCase } from "./application/use-case/User/auth/signUp/ISignUp.usecase";
+import { SignUpUseCase } from "./application/use-case/User/auth/signUp/SignUp.usecase";
+import { IVerifyOtpUseCase } from "./application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
+import { IGoogleAuthUseCase } from "./application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
+import { GoogleAuthUseCase } from "./application/use-case/User/auth/googleAuth/GoogleAuth.usecase";
+import { IResendOtp } from "./application/use-case/User/auth/resendOtp/IResendOtp.usecase";
+import { ResendOtp } from "./application/use-case/User/auth/resendOtp/ResendOtp.usecase";
+import { VerifyOtp } from "./application/use-case/User/auth/verifyOtp/VerifyOtp.usecase.ts";
+import { AdminSignin } from "./application/use-case/admin/auth/AdminSignin.usecase";
+import { IAdminSignin } from "./application/use-case/admin/auth/IAdminSignin.usecase";
+import { GetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/GetSingleServics.usecase";
+import { GetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/GetAllActiveService.usecase";
+import { GetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/GetServiceProviderInfo.usecase";
+import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfoUseCase";
+import { IGetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/IGetAllActiveService.usecase";
+import { IGetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
+import { IProfileUpdateOtpUseCase } from "./application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
+import { ProfileUpdateOtpUseCase } from "./application/use-case/User/profile/updateProfile/ProfileUpdateOtp.usecase";
+import { UserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/UserProfileUpdate.usecase";
+import { IUserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
+import { IGetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
+import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetProfile.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -213,7 +247,7 @@ container.register<IServiceProviderRepository>(
   REPOSITORY_TOKENS.ServiceProviderRepository,
   {
     useClass: ServiceProviderRepository,
-  }
+  },
 );
 -container.register(RegisterServiceProviderUseCase, {
   useClass: RegisterServiceProviderUseCase,
@@ -230,21 +264,21 @@ container.register<ISubscriptionPlanRepository>(
   REPOSITORY_TOKENS.SubscriptionRepository,
   {
     useClass: SubscriptionPlanRepository,
-  }
+  },
 );
 
 container.register<IAiAssistanceRepository>(
   REPOSITORY_TOKENS.AiAssistanceRepository,
   {
     useClass: aiAssistanceRepository,
-  }
+  },
 );
 
 container.register<IProviderWalletRepository>(
   REPOSITORY_TOKENS.WalletRepository,
   {
     useClass: ProviderWalletRepository,
-  }
+  },
 );
 
 container.register<ICouponRepository>(REPOSITORY_TOKENS.CouponRepository, {
@@ -253,19 +287,20 @@ container.register<ICouponRepository>(REPOSITORY_TOKENS.CouponRepository, {
 
 container.registerSingleton<IEmailService>(
   SERVICE_TOKENS.EmailService,
-  EmailService
+  EmailService,
 );
 
-container.registerSingleton<IOtpService>(SERVICE_TOKENS.Otpservice, Otpservice);
-container.register(ResendOtp, { useClass: ResendOtp });
-container.register(RegisterUser, { useClass: RegisterUser });
+container.registerSingleton<IOtpService>(SERVICE_TOKENS.OtpService, Otpservice);
+
+// container.register(ResendOtp, { useClass: ResendOtp });
+// container.register(RegisterUser, { useClass: RegisterUser });
 container.register<ITokenService>(SERVICE_TOKENS.TokenService, {
   useClass: TokenService,
 });
 
 container.registerSingleton<ICloudinaryService>(
   SERVICE_TOKENS.CloudinaryService,
-  CloudinaryService
+  CloudinaryService,
 );
 container.registerSingleton("SocketService", SocketService);
 
@@ -289,7 +324,7 @@ container.register<IServiceBookingRepository>(
   REPOSITORY_TOKENS.ServiceBookingRepository,
   {
     useClass: ServiceBookingRepository,
-  }
+  },
 );
 
 container.register(SERVICE_TOKENS.RazorpayService, RazorpayService);
@@ -317,42 +352,42 @@ container.register<IFindAllCouponsUseCase>(
   USE_CASE_TOKENS.FindAllCouponsUseCase,
   {
     useClass: FindAllCouponsUseCase,
-  }
+  },
 );
 
 container.register<IMakeCouponInactiveUseCase>(
   USE_CASE_TOKENS.MakeCouponInactiveUseCase,
   {
     useClass: MakeCouponInactiveUseCase,
-  }
+  },
 );
 
 container.register<IToggleShowInBannerUseCase>(
   USE_CASE_TOKENS.CouponshowInBanner,
   {
     useClass: ToggleShowInBannerUseCase,
-  }
+  },
 );
 
 container.register<IFindFeaturedCouponsUseCase>(
   USE_CASE_TOKENS.FindFeaturedCouponsUseCase,
   {
     useClass: FindFeaturedCouponsUseCase,
-  }
+  },
 );
 
 container.register<IApplyCouponToBookingUseCase>(
   USE_CASE_TOKENS.ApplyCouponToBookingUseCase,
   {
     useClass: ApplyCouponToBookingUseCase,
-  }
+  },
 );
 
 container.register<IRemoveCouponToBookingUseCase>(
   USE_CASE_TOKENS.RemoveCouponToBookingUseCase,
   {
     useClass: RemoveCouponToBookingUseCase,
-  }
+  },
 );
 
 container.register<IGetWalletUseCase>(USE_CASE_TOKENS.GetWalletUseCase, {
@@ -363,54 +398,54 @@ container.register<IWithdrawPaymentUseCase>(
   USE_CASE_TOKENS.WithdrawPaymentUseCase,
   {
     useClass: WithdrawPaymentUseCase,
-  }
+  },
 );
 
 container.register<IGetAllProvidersWalletsUseCase>(
   USE_CASE_TOKENS.GetAllProvidersWallets,
   {
     useClass: GetAllProvidersWallets,
-  }
+  },
 );
 
 container.register<IGetProviderWalletUseCase>(
   USE_CASE_TOKENS.GetProviderWalletByIdUseCase,
   {
     useClass: GetProviderWalletUseCase,
-  }
+  },
 );
 
 container.register<IWithdrawFromProviderWalletUseCase>(
   USE_CASE_TOKENS.WithdrawFromProviderWalletUseCase,
-  { useClass: WithdrawFromProviderWalletUseCase }
+  { useClass: WithdrawFromProviderWalletUseCase },
 );
 
 container.register<IGetSubscriptionPlansUseCase>(
   USE_CASE_TOKENS.GetSubscriptionPlansUseCase,
   {
     useClass: GetSubscriptionPlansUseCase,
-  }
+  },
 );
 
 container.register<ICreatePaymentSubscriptionOrderUseCase>(
   USE_CASE_TOKENS.CreatePaymentSubscriptionOrderUseCase,
   {
     useClass: CreatePaymentSubscriptionOrderUseCase,
-  }
+  },
 );
 
 container.register<ICreatePaymentSubscriptionOrderUseCase>(
   USE_CASE_TOKENS.CreatePaymentSubscriptionOrderUseCase,
   {
     useClass: CreatePaymentSubscriptionOrderUseCase,
-  }
+  },
 );
 
 container.register<IVerifySubscriptionPaymentUseCase>(
   USE_CASE_TOKENS.VerifySubscriptionPaymentUseCase,
   {
     useClass: VerifySubscriptionPaymentUseCase,
-  }
+  },
 );
 
 container.register<ICreateAiChatUseCase>(USE_CASE_TOKENS.CreateAiChatUseCase, {
@@ -421,42 +456,42 @@ container.register<IGetAIChatByIdUseCase>(
   USE_CASE_TOKENS.GetAIChatByIdUseCase,
   {
     useClass: GetAIChatByIdUseCase,
-  }
+  },
 );
 
 container.register<IGetProviderAIChatsUseCase>(
   USE_CASE_TOKENS.GetProviderAIChatsUseCase,
   {
     useClass: GetProviderAIChatsUseCase,
-  }
+  },
 );
 
 container.register<IManageServiceProviderSubscriptionsUseCase>(
   USE_CASE_TOKENS.ManageServiceProviderSubscriptionsUseCase,
   {
     useClass: ManageServiceProviderSubscriptionsUseCase,
-  }
+  },
 );
 
 container.register<IGetAllSubscriptionPlansUseCase>(
   USE_CASE_TOKENS.GetAllSubscriptionPlansUseCase,
   {
     useClass: GetAllSubscriptionPlansUseCase,
-  }
+  },
 );
 
 container.register<ICreateSubscriptionPlanUseCase>(
   USE_CASE_TOKENS.CreateSubscriptionPlanUseCase,
   {
     useClass: CreateSubscriptionPlanUseCase,
-  }
+  },
 );
 
 container.register<IUpdateSubscriptionPlanUseCase>(
   USE_CASE_TOKENS.UpdateSubscriptionPlanUseCase,
   {
     useClass: UpdateSubscriptionPlanUseCase,
-  }
+  },
 );
 
 // ADS
@@ -471,7 +506,7 @@ container.register<IGetProviderAdsUseCase>(
   USE_CASE_TOKENS.GetProviderAdsUseCase,
   {
     useClass: GetProviderAdsUseCase,
-  }
+  },
 );
 
 container.register<IAdminGetAdsUseCase>(USE_CASE_TOKENS.AdminGetAdsUseCase, {
@@ -482,14 +517,14 @@ container.register<IGetServiceNamesUseCase>(
   USE_CASE_TOKENS.GetServiceNamesUseCase,
   {
     useClass: GetServiceNamesUseCase,
-  }
+  },
 );
 
 container.register<IChangeAdStatusUseCase>(
   USE_CASE_TOKENS.ChangeAdStatusUseCase,
   {
     useClass: ChangeAdStatusUseCase,
-  }
+  },
 );
 
 container.register<IRecommendAdsUseCase>(USE_CASE_TOKENS.RecommendAdsUseCase, {
@@ -504,7 +539,7 @@ container.register<IIncreaseAdClicksUseCase>(
   USE_CASE_TOKENS.IncreaseAdClicksUseCase,
   {
     useClass: IncreaseAdClicksUseCase,
-  }
+  },
 );
 
 // services
@@ -518,56 +553,56 @@ container.register<IUpdateBookingStatusUseCase>(
   USE_CASE_TOKENS.UpdateBookingStatusUseCase,
   {
     useClass: UpdateBookingStatusUseCase,
-  }
+  },
 );
 
 container.register<IConfirmBookingUseCase>(
   USE_CASE_TOKENS.ConfirmBookingUseCase,
   {
     useClass: ConfirmBookingUseCase,
-  }
+  },
 );
 
 container.register<ICancelBookingUseCase>(
   USE_CASE_TOKENS.CancelBookingUseCase,
   {
     useClass: CancelBookingUseCase,
-  }
+  },
 );
 
 container.register<IRequestPaymentUseCase>(
   USE_CASE_TOKENS.RequestPaymentUseCase,
   {
     useClass: RequestPaymentUseCase,
-  }
+  },
 );
 
 container.register<ICreateBookingUseCase>(
   USE_CASE_TOKENS.CreateBookingUseCase,
   {
     useClass: CreateBookingUseCase,
-  }
+  },
 );
 
 container.register<ICreateOnlineBookingUseCase>(
   USE_CASE_TOKENS.CreateOnlineBookingUseCase,
   {
     useClass: CreateOnlineBookingUseCase,
-  }
+  },
 );
 
 container.register<IGetBookedServicesUseCase>(
   USE_CASE_TOKENS.GetBookedServicesUseCase,
   {
     useClass: GetBookedServicesUseCase,
-  }
+  },
 );
 
 container.register<IGetBookedServiceByIdUseCase>(
   USE_CASE_TOKENS.GetBookedServiceByIdUseCase,
   {
     useClass: GetBookedServiceByIdUseCase,
-  }
+  },
 );
 
 // container.register(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase, {
@@ -578,7 +613,7 @@ container.register<IMarkSlotAsBookedUseCase>(
   USE_CASE_TOKENS.MarkSlotAsBookedUseCase,
   {
     useClass: MarkSlotAsBookedUseCase,
-  }
+  },
 );
 
 container.register<IGetSlotUseCase>(USE_CASE_TOKENS.GetSlotUseCase, {
@@ -597,35 +632,35 @@ container.register<ICleanupSlotsBeforeTodayUseCase>(
   USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase,
   {
     useClass: CleanupSlotsBeforeTodayUseCase,
-  }
+  },
 );
 
 container.register<IRescheduleOnlineServiceSlotUseCase>(
   USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase,
   {
     useClass: RescheduleOnlineServiceSlotUseCase,
-  }
+  },
 );
 
 container.register<IGetServiceProviderRegistrationDetailsUseCase>(
   USE_CASE_TOKENS.GetServiceProviderRegistrationDetailsUseCase,
   {
     useClass: GetServiceProviderRegistrationDetailsUseCase,
-  }
+  },
 );
 
 container.register<IGetServiceProviderStatusUseCase>(
   USE_CASE_TOKENS.GetServiceProviderStatusUseCase,
   {
     useClass: GetServiceProviderStatusUseCase,
-  }
+  },
 );
 
 container.register<IReapplyServiceProviderUseCase>(
   USE_CASE_TOKENS.ReapplyServiceProviderUseCase,
   {
     useClass: ReapplyServiceProviderUseCase,
-  }
+  },
 );
 
 container.register<IGetAllUsers>(USE_CASE_TOKENS.GetAllUsers, {
@@ -648,14 +683,14 @@ container.register<IBlockUnblockCategoryService>(
   USE_CASE_TOKENS.BlockUnblockCategoryService,
   {
     useClass: BlockUnblockCategoryService,
-  }
+  },
 );
 
 container.register<IBlockUnblockSericeProvider>(
   USE_CASE_TOKENS.BlockUnblockSericeProvider,
   {
     useClass: BlockUnblockSericeProvider,
-  }
+  },
 );
 
 container.register<IBlockUnblockService>(USE_CASE_TOKENS.BlockUnblockService, {
@@ -678,7 +713,7 @@ container.register<IBlockUnblockCategory>(
   USE_CASE_TOKENS.BlockUnblockCategory,
   {
     useClass: BlockUnblockCategory,
-  }
+  },
 );
 
 container.register<IDeleteCategory>(USE_CASE_TOKENS.DeleteCategory, {
@@ -705,7 +740,7 @@ container.register<IUploadChatImageUseCase>(
   USE_CASE_TOKENS.UploadChatImageUseCase,
   {
     useClass: UploadChatImageUseCase,
-  }
+  },
 );
 
 container.register<IAdminSignin>(USE_CASE_TOKENS.AdminSignin, {
@@ -716,14 +751,14 @@ container.register<IGetNotificationUseCase>(
   USE_CASE_TOKENS.GetNotificationUseCase,
   {
     useClass: GetNotificationUseCase,
-  }
+  },
 );
 
 container.register<ICreateNotificationUseCase>(
   USE_CASE_TOKENS.CreateNotificationUseCase,
   {
     useClass: CreateNotificationUseCase,
-  }
+  },
 );
 
 container.register<IAddReviewUseCase>(USE_CASE_TOKENS.AddReviewUseCase, {
@@ -734,19 +769,118 @@ container.register<IMarkNotificationAsReadUseCase>(
   USE_CASE_TOKENS.MarkNotificationAsReadUseCase,
   {
     useClass: MarkNotificationAsReadUseCase,
-  }
+  },
 );
 
 container.register<IDeleteSingleNotificationUseCase>(
   USE_CASE_TOKENS.DeleteSingleNotificationUseCase,
   {
     useClass: DeleteSingleNotificationUseCase,
-  }
+  },
 );
 
 container.register<IDeleteAllNotificationUseCase>(
   USE_CASE_TOKENS.DeleteAllNotificationUseCase,
   {
     useClass: DeleteAllNotificationUseCase,
-  }
+  },
+);
+
+container.register<IDeleteAddress>(USE_CASE_TOKENS.DeleteAddress, {
+  useClass: DeleteAddress,
+});
+
+container.register<IAddNewAddress>(USE_CASE_TOKENS.AddNewAddress, {
+  useClass: AddNewAddress,
+});
+
+container.register<IEditAddress>(USE_CASE_TOKENS.EditAddress, {
+  useClass: EditAddress,
+});
+
+container.register<IGetAddress>(USE_CASE_TOKENS.GetAddress, {
+  useClass: GetAddress,
+});
+
+container.register<IResetPasswordUseCase>(
+  USE_CASE_TOKENS.ResetPasswordUseCase,
+  {
+    useClass: ResetPasswordUseCase,
+  },
+);
+
+container.register<ISendForgotPasswordOtpUseCase>(
+  USE_CASE_TOKENS.SendForgotPasswordOtpUseCase,
+  {
+    useClass: SendForgotPasswordOtpUseCase,
+  },
+);
+
+container.register<IVerifyForgotPasswordOtpUseCase>(
+  USE_CASE_TOKENS.VerifyForgotPasswordOtpUseCase,
+  {
+    useClass: VerifyForgotPasswordOtpUseCase,
+  },
+);
+
+container.register<ISignInUseCase>(USE_CASE_TOKENS.SignInUseCase, {
+  useClass: SignIn,
+});
+
+container.register<ISignUpUseCase>(USE_CASE_TOKENS.SignUpUseCase, {
+  useClass: SignUpUseCase,
+});
+
+container.register<IVerifyOtpUseCase>(USE_CASE_TOKENS.VerifyOtpUseCase, {
+  useClass: VerifyOtp,
+});
+
+container.register<IGoogleAuthUseCase>(USE_CASE_TOKENS.GoogleAuthUseCase, {
+  useClass: GoogleAuthUseCase,
+});
+
+container.register<IResendOtp>(USE_CASE_TOKENS.ResendOtpUseCase, {
+  useClass: ResendOtp,
+});
+
+container.register<IGetSingleServiceUseCase>(
+  USE_CASE_TOKENS.GetSingleServiceUseCase,
+  {
+    useClass: GetSingleServiceUseCase,
+  },
+);
+
+container.register<IGetAllActiveServiceUseCase>(
+  USE_CASE_TOKENS.GetAllActiveServiceUseCase,
+  {
+    useClass: GetAllActiveServiceUseCase,
+  },
+);
+
+container.register<IUserProfileUpdateUseCase>(
+  USE_CASE_TOKENS.UserProfileUpdateUseCase,
+  {
+    useClass: UserProfileUpdateUseCase,
+  },
+);
+
+container.register<IProfileUpdateOtpUseCase>(
+  USE_CASE_TOKENS.ProfileUpdateOtpUseCase,
+  {
+    useClass: ProfileUpdateOtpUseCase,
+  },
+);
+
+container.register<IGetUserProfileUseCase>(
+  USE_CASE_TOKENS.GetUserProfileUseCase,
+  {
+    useClass: GetUserProfileUseCase,
+  },
+);
+
+container.register<IGetServiceProviderInfoUseCase>(
+  USE_CASE_TOKENS.GetServiceProviderInfoUseCase,
+  {
+    useClass: GetServiceProviderInfoUseCase,
+  },
 );

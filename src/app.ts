@@ -11,7 +11,6 @@ import "./container";
 import dbConnect from "./infrastructure/database/db";
 import authRouter from "./presentation/routes/authRoutes";
 import userRoutes from "./presentation/routes/User";
-import googleRouter from "./presentation/routes/google";
 import locationRouter from "./presentation/routes/location";
 import serviceProviderRoute from "./presentation/routes/serviceProvider";
 import serviceProviderSubscriptionRouter from "./presentation/routes/ServiceProviderSubscriptionRoute";
@@ -52,7 +51,6 @@ container.resolve(CleanupExpiredSlotsJob).schedule();
 
 app.use("/", authRouter);
 app.use("/", userRoutes);
-app.use("/google", googleRouter);
 app.use("/location", locationRouter);
 app.use("/service-providers", serviceProviderRoute);
 app.use("/service-providers", serviceProviderSubscriptionRouter);

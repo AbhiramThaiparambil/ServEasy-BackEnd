@@ -8,7 +8,6 @@ import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case
 import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
-import { ManageAllServiceUseCase } from "../../application/use-case/admin/mangageAllserviceUseCase";
 import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
@@ -17,7 +16,7 @@ import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvi
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/IGetSubscriptionPlansUseCase";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "../../application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
 import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
@@ -28,6 +27,7 @@ import { IEditAdUseCase } from "../../application/use-case/ads/adsServiceProvide
 import { ICreateAdUseCase } from "../../application/use-case/ads/adsServiceProvider/createAd/ICreateAd.usecase";
 import { IGetProviderAdsUseCase } from "../../application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
+import { ManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/mangageAllserviceUseCase";
 
 @injectable()
 export class ServiceProviderController {
@@ -79,7 +79,7 @@ export class ServiceProviderController {
     @inject(USE_CASE_TOKENS.GetNotificationUseCase)
     private getNotificationUsecase: IGetNotificationUseCase,
     @inject(USE_CASE_TOKENS.MarkNotificationAsReadUseCase)
-    private markAsRead: IMarkNotificationAsReadUseCase
+    private markAsRead: IMarkNotificationAsReadUseCase,
   ) {}
 
   async getRegistrationDetails(req: Request, res: Response): Promise<void> {
@@ -140,9 +140,8 @@ export class ServiceProviderController {
         return;
       }
 
-      const notification = await this.getNotificationUsecase.execute(
-        serviceProviderId
-      );
+      const notification =
+        await this.getNotificationUsecase.execute(serviceProviderId);
       res.status(HttpStatus.OK).json(notification);
     } catch (error) {
       console.error(error);
@@ -154,7 +153,7 @@ export class ServiceProviderController {
 
   markAsReadNotification = async (
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> => {
     try {
       const { id } = req.params;
@@ -180,7 +179,7 @@ export class ServiceProviderController {
 
   async getPaymentInfoForChartServiceProvider(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     console.log("getPaymentInfo is:", this.getPaymentInfo);
 
@@ -196,7 +195,7 @@ export class ServiceProviderController {
       const paymentData = await this.getPaymentInfo.execute(
         serviceProviderId,
         startDate,
-        endDate
+        endDate,
       );
 
       res.status(HttpStatus.OK).json({ paymentData });
@@ -215,7 +214,7 @@ export class ServiceProviderController {
       console.log(req.body);
 
       const updated = await this.editServiceProviderProfileUseCase.execute(
-        req.body
+        req.body,
       );
 
       if (updated) {
@@ -282,7 +281,7 @@ export class ServiceProviderController {
         serviceProviderData,
         profileImage,
         documentImg,
-        documentImg2
+        documentImg2,
       );
 
       const user = res.locals.user;
@@ -290,7 +289,7 @@ export class ServiceProviderController {
       if (user.userId && serviceProvider._id) {
         await this.updateUserWithServiceProviderUseCase.execute(
           user.userId,
-          serviceProvider._id.toString()
+          serviceProvider._id.toString(),
         );
       }
 
@@ -353,7 +352,7 @@ export class ServiceProviderController {
         serviceProviderData,
         profileImage,
         documentImg,
-        documentImg2
+        documentImg2,
       );
 
       res.status(HttpStatus.OK).json({
@@ -380,7 +379,7 @@ export class ServiceProviderController {
       }
 
       const refreshToken = await this.verifyServiceProviderUseCase.execute(
-        user.userId
+        user.userId,
       );
 
       if (!refreshToken) {
@@ -439,7 +438,7 @@ export class ServiceProviderController {
       }
 
       await this.manageAllServiceUseCase.makeActiveAllService(
-        serviceProviderId
+        serviceProviderId,
       );
 
       res.status(HttpStatus.OK).json({
@@ -468,7 +467,7 @@ export class ServiceProviderController {
       }
 
       await this.manageAllServiceUseCase.makeActiveAllService(
-        serviceProviderId
+        serviceProviderId,
       );
 
       res.status(HttpStatus.OK).json({
@@ -521,7 +520,7 @@ export class ServiceProviderController {
 
       const availability =
         await this.checkServiceProviderAvailabilityUseCase.execute(
-          serviceProviderId
+          serviceProviderId,
         );
 
       res.status(HttpStatus.OK).json({ availability });
@@ -544,7 +543,7 @@ export class ServiceProviderController {
       const data = await this.getWalletUseCase.execute(
         serviceProviderId,
         limit,
-        skip
+        skip,
       );
       if (!data) {
         res.status(HttpStatus.BAD_REQUEST);
@@ -572,7 +571,7 @@ export class ServiceProviderController {
       }
       const result = await this.withdrawPaymentUseCase.execute(
         serviceProviderId,
-        amount
+        amount,
       );
 
       res.status(HttpStatus.OK).json({ success: true, data: result });
@@ -585,7 +584,7 @@ export class ServiceProviderController {
 
   async getAvailableSubscriptionPlans(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const plans = await this.getSubscriptionPlansUseCase.execute();
@@ -647,7 +646,7 @@ export class ServiceProviderController {
       const data = await this.getProviderAdsUseCase.execute(
         providerId,
         skip,
-        limit
+        limit,
       );
 
       res.status(HttpStatus.OK).json(data);

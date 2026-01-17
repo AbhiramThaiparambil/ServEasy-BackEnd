@@ -9,6 +9,9 @@ const userController = container.resolve(UserController);
 const userRouter = Router();
 
 userRouter.post("/signup", userController.registerUserController);
+
+userRouter.post("/google/signin", userController.googleAuthController);
+
 userRouter.post("/signin/:method", userController.signInUserController);
 userRouter.post("/verify-otp", userController.verifyOtpController);
 userRouter.post("/resend-otp", userController.resendOtpController);
