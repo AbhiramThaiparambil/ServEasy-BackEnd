@@ -12,7 +12,6 @@ import { VerifyOtp } from "../../application/use-case/User/auth/VerifyOtp";
 import { ResendOtp } from "../../application/use-case/User/auth/ResendOtp";
 import { SendOtp } from "../../application/use-case/User/auth/forgotPassword/sendOtp";
 import { ForgotVerifyOtp } from "../../application/use-case/User/auth/forgotPassword/forgotVerifyOtp";
-import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
 import { ResetPassword } from "../../application/use-case/User/auth/forgotPassword/resetPassword";
 import { ProfileUpdateOtp } from "../../application/use-case/User/profileUpdateOtp";
 import { GetServics } from "../../application/use-case/User/GetServics";
@@ -21,7 +20,6 @@ import { GetAddress } from "../../application/use-case/User/Address/GetAddress";
 import { AddNewAddress } from "../../application/use-case/User/Address/AddNewAddress";
 import { EditAddress } from "../../application/use-case/User/Address/EditAddress";
 import { DeleteAddress } from "../../application/use-case/User/Address/DeleteAddress";
-import { AddReviewUseCase } from "../../application/use-case/review/AddReviewUseCase";
 import { GetServiceProviderInfoUseCase } from "../../application/use-case/User/getServiceProviderInfoUseCase";
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
@@ -29,12 +27,28 @@ import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/F
 import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/IRecommendAdsUseCase";
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
+import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
+import { AddReviewUseCase } from "../../application/use-case/review/addReview/AddReviewUseCase";
+import { IDeleteAllNotificationUseCase } from "../../application/use-case/notification/deleteAllNotification/IDeleteAllNotification.usecase";
+import { IDeleteSingleNotificationUseCase } from "../../application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { IAddReviewUseCase } from "../../application/use-case/review/addReview/IAddReviewUseCase";
 
 @injectable()
 export class UserController {
   constructor(
-    @inject(NotificationUseCase)
-    private notificationUseCase: NotificationUseCase,
+    @inject(USE_CASE_TOKENS.MarkNotificationAsReadUseCase)
+    private markAsRead: IMarkNotificationAsReadUseCase,
+
+    @inject(USE_CASE_TOKENS.DeleteSingleNotificationUseCase)
+    private deleteSingleNotification: IDeleteSingleNotificationUseCase,
+
+    @inject(USE_CASE_TOKENS.DeleteAllNotificationUseCase)
+    private delteAllNotification: IDeleteAllNotificationUseCase,
+
+    @inject(USE_CASE_TOKENS.GetNotificationUseCase)
+    private getNotificationUsecase: IGetNotificationUseCase,
+
     @inject(RegisterUser) private registerUser: RegisterUser,
     @inject(SignIn) private signInUseCase: SignIn,
     @inject(VerifyOtp) private verifyOtpUseCase: VerifyOtp,
@@ -54,7 +68,8 @@ export class UserController {
     @inject(AddNewAddress) private addNewAddressUseCase: AddNewAddress,
     @inject(EditAddress) private editAddressUseCase: EditAddress,
     @inject(DeleteAddress) private deleteAddressUseCase: DeleteAddress,
-    @inject(AddReviewUseCase) private addReviewUseCase: AddReviewUseCase,
+    @inject(USE_CASE_TOKENS.AddReviewUseCase)
+    private addReviewUseCase: IAddReviewUseCase,
     @inject(GetServiceProviderInfoUseCase)
     private getServiceProviderInfoUseCase: GetServiceProviderInfoUseCase,
     @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
@@ -76,9 +91,7 @@ export class UserController {
         return;
       }
 
-      const notification = await this.notificationUseCase.getNotification(
-        userId
-      );
+      const notification = await this.getNotificationUsecase.execute(userId);
       res.status(HttpStatus.OK).json(notification);
     } catch (error) {
       console.error(error);
@@ -101,12 +114,12 @@ export class UserController {
       }
 
       if (id === "deleteAll") {
-        await this.notificationUseCase.delteAllNotification(userId);
+        await this.delteAllNotification.execute(userId);
         res
           .status(HttpStatus.OK)
           .json({ message: "All notifications deleted" });
       } else {
-        await this.notificationUseCase.deleteSingleNotification(id);
+        await this.deleteSingleNotification.execute(id);
         res.status(HttpStatus.OK).json({ message: "Notification deleted" });
       }
     } catch (error) {
@@ -130,7 +143,7 @@ export class UserController {
         return;
       }
 
-      await this.notificationUseCase.markAsRead(id);
+      await this.markAsRead.execute(id);
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });

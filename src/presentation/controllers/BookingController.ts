@@ -16,21 +16,22 @@ import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/
 @injectable()
 export class BookingController {
   constructor(
-    @inject("ICreateBookingUseCase")
+    @inject(USE_CASE_TOKENS.CreateBookingUseCase)
     private createBookingUseCase: ICreateBookingUseCase,
 
-    @inject("ICreateOnlineBookingUseCase")
+    @inject(USE_CASE_TOKENS.CreateOnlineBookingUseCase)
     private createOnlineBookingUseCase: ICreateOnlineBookingUseCase,
-    @inject("IUpdateBookingStatusUseCase")
+
+    @inject(USE_CASE_TOKENS.UpdateBookingStatusUseCase)
     private updateBookingStatusUseCase: IUpdateBookingStatusUseCase,
 
-    @inject("IConfirmBookingUseCase")
+    @inject(USE_CASE_TOKENS.ConfirmBookingUseCase)
     private confirmBookingUseCase: IConfirmBookingUseCase,
 
-    @inject("ICancelBookingUseCase")
+    @inject(USE_CASE_TOKENS.CancelBookingUseCase)
     private cancelBookingUseCase: ICancelBookingUseCase,
 
-    @inject("IRequestPaymentUseCase")
+    @inject(USE_CASE_TOKENS.RequestPaymentUseCase)
     private requestPaymentUseCase: IRequestPaymentUseCase,
     @inject(USE_CASE_TOKENS.GetBookedServicesUseCase)
     private getBookedServicesUseCase: IGetBookedServicesUseCase,

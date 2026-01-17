@@ -1660,27 +1660,35 @@ export class ServiceRepository implements IServiceRepository {
     ]);
   }
 
-  async blockAllserviceServiceProvider(serviceProviderId: string) {
+  async blockAllserviceServiceProvider(
+    serviceProviderId: string
+  ): Promise<boolean> {
     try {
-      await ServiceModel.updateMany(
+      const result = await ServiceModel.updateMany(
         { serviceProviderId },
         { $set: { isActive: false } }
       );
+
+      return result.modifiedCount > 0;
     } catch (error) {
       console.error("Error blocking all services for service provider:", error);
-      throw new Error("Could not block services.");
+      return false;
     }
   }
 
-  async activateAllServicesByServiceProvider(serviceProviderId: string) {
+  async activateAllServicesByServiceProvider(
+    serviceProviderId: string
+  ): Promise<boolean> {
     try {
-      await ServiceModel.updateMany(
+      const result = await ServiceModel.updateMany(
         { serviceProviderId },
         { $set: { isActive: true } }
       );
+
+      return result.modifiedCount > 0;
     } catch (error) {
       console.error("Error activating services for service provider:", error);
-      throw new Error("Could not activate services.");
+      return false;
     }
   }
 

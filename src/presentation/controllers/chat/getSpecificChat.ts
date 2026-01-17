@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { HttpStatus } from "../../../constants/HttpStatus";
-import { SaveMessageUseCase } from "../../../application/use-case/chat/SaveMessageUseCase";
+import { SaveMessageUseCase } from "../../../application/use-case/chat/saveMessage/SaveMessage.usecase";
 
 export const getSpecificChat = async (req: Request, res: Response) => {
   try {
-    
-    const { sender,reciver } = req.body;
-         console.log(sender,reciver);
-         
+    const { sender, reciver } = req.body;
+    console.log(sender, reciver);
+
     if (!sender || !reciver) {
       res
         .status(HttpStatus.BAD_REQUEST)
@@ -18,7 +17,7 @@ export const getSpecificChat = async (req: Request, res: Response) => {
 
     const saveMessageUseCase = container.resolve(SaveMessageUseCase);
     const data = await saveMessageUseCase.getSpecificChat(
-        sender as string,
+      sender as string,
       reciver as string
     );
 

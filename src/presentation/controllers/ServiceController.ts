@@ -8,9 +8,9 @@ import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/removeCoupon/IRemoveCoupon.usecase";
 import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
-import { IDeleteSlotUseCase } from "../../application/use-case/admin/slot/deleteSlot/IDeleteSlot.usecase";
-import { ICreateSlotUseCase } from "../../application/use-case/admin/slot/createSlot/ICreateSlot.usecase";
-import { IGetSlotUseCase } from "../../application/use-case/admin/slot/getSlots/IGetSlot.usecase";
+import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/IDeleteSlot.usecase";
+import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
+import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
 
 @injectable()
 export class ServiceController {

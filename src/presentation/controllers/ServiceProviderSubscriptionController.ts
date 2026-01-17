@@ -3,12 +3,10 @@ import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIService";
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { ICreateAiChatUseCase } from "../../application/use-case/premiumFeatures/aiAssistance/create/ICreateAiChat.usecase";
-import { title } from "process";
 import { ConversationWithParticipantsListInstance } from "twilio/lib/rest/conversations/v1/conversationWithParticipants";
-import { IGetAIChatByIdUseCase } from "../../application/use-case/premiumFeatures/aiAssistance/getById/IGetAIChatByIdUseCase";
-import { tryCatch } from "bullmq";
-import { IGetProviderAIChatsUseCase } from "../../application/use-case/premiumFeatures/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { IGetProviderAIChatsUseCase } from "../../application/use-case/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { IGetAIChatByIdUseCase } from "../../application/use-case/aiAssistance/getById/IGetAIChatByIdUseCase";
+import { ICreateAiChatUseCase } from "../../application/use-case/aiAssistance/create/ICreateAiChat.usecase";
 @injectable()
 export class ServiceProviderSubscriptionController {
   constructor(

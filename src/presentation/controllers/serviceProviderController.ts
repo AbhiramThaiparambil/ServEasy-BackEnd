@@ -7,7 +7,6 @@ import { RegisterServiceProviderUseCase } from "../../application/use-case/servi
 import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
 import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
-import { GetCategory } from "../../application/use-case/admin/category-management/getCategory/GetCategory.usecase";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
 import { ManageAllServiceUseCase } from "../../application/use-case/admin/mangageAllserviceUseCase";
 import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
@@ -17,15 +16,18 @@ import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wa
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/IGetSubscriptionPlansUseCase";
 
-import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
-import { IEditAdUseCase } from "../../application/use-case/ads-useCase/editAd/IEditAd.usecase";
-import { ICreateAdUseCase } from "../../application/use-case/ads-useCase/createAd/ICreateAd.usecase";
-import { IGetProviderAdsUseCase } from "../../application/use-case/ads-useCase/getAd/IGetProviderAds.usecase";
-import { IGetServiceNamesUseCase } from "../../application/use-case/admin/service-management/getServiceNames/IGetServiceNames.usecase";
-import { IChangeAdStatusUseCase } from "../../application/use-case/admin/ads/changeAdStatus/IChangeAdStatus..usecase";
+
+import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
+import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { IGetCategory } from "../../application/use-case/category-management/getCategory/IGetCategory.usecase";
+import { IEditAdUseCase } from "../../application/use-case/ads/adsServiceProvider/editAd/IEditAd.usecase";
+import { ICreateAdUseCase } from "../../application/use-case/ads/adsServiceProvider/createAd/ICreateAd.usecase";
+import { IGetProviderAdsUseCase } from "../../application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
+import { IGetServiceNamesUseCase } from "../../application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
 
 @injectable()
 export class ServiceProviderController {
@@ -43,8 +45,8 @@ export class ServiceProviderController {
 
     @inject(VerifyServiceProvider)
     private verifyServiceProviderUseCase: VerifyServiceProvider,
-    @inject(GetCategory)
-    private getCategoryUseCase: GetCategory,
+    @inject(USE_CASE_TOKENS.GetCategory)
+    private getCategoryUseCase: IGetCategory,
 
     @inject(ManageAllServiceUseCase)
     private manageAllServiceUseCase: ManageAllServiceUseCase,
@@ -66,14 +68,18 @@ export class ServiceProviderController {
     private getServiceNamesUseCase: IGetServiceNamesUseCase,
     @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
     private changeAdStatusUseCase: IChangeAdStatusUseCase,
-    @inject(NotificationUseCase)
-    private notificationUseCase: NotificationUseCase,
+    // @inject(NotificationUseCase)
+    // private notificationUseCase: NotificationUseCase,
     @inject(USE_CASE_TOKENS.GetServiceProviderRegistrationDetailsUseCase)
     private getRegistrationDetailsUseCase: IGetServiceProviderRegistrationDetailsUseCase,
     @inject(USE_CASE_TOKENS.GetServiceProviderStatusUseCase)
     private getServiceProviderStatusUseCase: IGetServiceProviderStatusUseCase,
     @inject(USE_CASE_TOKENS.ReapplyServiceProviderUseCase)
-    private reapplyServiceProviderUseCase: IReapplyServiceProviderUseCase
+    private reapplyServiceProviderUseCase: IReapplyServiceProviderUseCase,
+    @inject(USE_CASE_TOKENS.GetNotificationUseCase)
+    private getNotificationUsecase: IGetNotificationUseCase,
+    @inject(USE_CASE_TOKENS.MarkNotificationAsReadUseCase)
+    private markAsRead: IMarkNotificationAsReadUseCase
   ) {}
 
   async getRegistrationDetails(req: Request, res: Response): Promise<void> {
@@ -134,7 +140,7 @@ export class ServiceProviderController {
         return;
       }
 
-      const notification = await this.notificationUseCase.getNotification(
+      const notification = await this.getNotificationUsecase.execute(
         serviceProviderId
       );
       res.status(HttpStatus.OK).json(notification);
@@ -151,7 +157,6 @@ export class ServiceProviderController {
     res: Response
   ): Promise<void> => {
     try {
-      console.log("$$$$$$$$$$$$+++++$$$$$$$$$$");
       const { id } = req.params;
       if (!id) {
         res
@@ -160,7 +165,7 @@ export class ServiceProviderController {
         return;
       }
 
-      await this.notificationUseCase.markAsRead(id);
+      await this.markAsRead.execute(id);
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });
@@ -397,7 +402,7 @@ export class ServiceProviderController {
 
   async getActiveCategories(req: Request, res: Response): Promise<void> {
     try {
-      const categories = await this.getCategoryUseCase.getActiveCategory();
+      const categories = await this.getCategoryUseCase.execute();
       res.status(HttpStatus.OK).json(categories);
     } catch (error) {
       console.error("Error fetching categories:", error);

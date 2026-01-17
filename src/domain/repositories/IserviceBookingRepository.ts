@@ -78,4 +78,8 @@ export interface IServiceBookingRepository {
     startTime: Date,
     endTime: Date
   ): Promise<IServiceBooking | null>;
+  updateReviewId(
+    bookingId: Types.ObjectId,
+    reviewId: Types.ObjectId
+  ): Promise<void>;
 }

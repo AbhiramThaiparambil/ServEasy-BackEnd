@@ -209,12 +209,14 @@ import { ServiceBookingRepository } from "../../../../infrastructure/repositorie
 import { SocketService } from "../../../../services/socket/SocketService";
 import { ISystemNotification } from "../../../../domain/entities/INotification";
 import { IUpdateBookingStatusUseCase } from "./IUpdateBookingStatusUseCase";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
 
 @injectable()
 export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
   constructor(
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
     @inject(SocketService)
     private socketService: SocketService
   ) {}

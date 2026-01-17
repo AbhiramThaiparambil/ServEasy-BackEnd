@@ -28,4 +28,10 @@ export interface IServiceRepository {
     limit: number,
     search: string
   ): Promise<any>;
+
+  activateAllServicesByServiceProvider(
+    serviceProviderId: string
+  ): Promise<boolean>;
+
+  blockAllserviceServiceProvider(serviceProviderId: string): Promise<boolean>;
 }

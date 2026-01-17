@@ -3,7 +3,7 @@
 import cron from "node-cron";
 import { inject, injectable } from "tsyringe";
 import { USE_CASE_TOKENS } from "../../../constants/tokens";
-import { ICleanupSlotsBeforeTodayUseCase } from "../../../application/use-case/admin/slot/cleanUpSlots/ICleanupSlotsBeforeToday.usecase";
+import { ICleanupSlotsBeforeTodayUseCase } from "../../../application/use-case/slot/cleanUpSlots/ICleanupSlotsBeforeToday.usecase";
 @injectable()
 export class CleanupExpiredSlotsJob {
   constructor(

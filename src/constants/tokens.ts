@@ -33,7 +33,7 @@ export const USE_CASE_TOKENS = {
   RecommendAdsUseCase: "IRecommendAdsUseCase",
   ExpireAdsUseCase: "IExpireAdsUseCase",
   IncreaseAdClicksUseCase: "IIncreaseAdClicksUseCase",
-  UpdateBookingStatusUseCase: "IUpdateBookingStatusUseCase",
+  UpdateBookingStatusUseCase: "UpdateBookingStatusUseCase",
   ConfirmBookingUseCase: "IConfirmBookingUseCase",
   CancelBookingUseCase: "ICancelBookingUseCase",
   RequestPaymentUseCase: "IRequestPaymentUseCase",
@@ -65,6 +65,16 @@ export const USE_CASE_TOKENS = {
   BlockUnblockUsers: "IBlockUnblockUsers",
   GetServiceProviders: "IGetServiceProviders",
   BlockUnblockSericeProvider: "IBlockUnblockSericeProvider",
+  SaveMessageUseCase: "ISaveMessageUseCase",
+  GetAllChatsUseCase: "IGetAllChatsUseCase",
+  UploadChatImageUseCase: "IUploadChatImageUseCase",
+  AdminSignin: "IAdminSignin",
+  GetNotificationUseCase: "IGetNotificationUseCase",
+  CreateNotificationUseCase: "ICreateNotificationUseCase",
+  MarkNotificationAsReadUseCase: "IMarkNotificationAsReadUseCase",
+  DeleteSingleNotificationUseCase: "IDeleteSingleNotificationUseCase",
+  DeleteAllNotificationUseCase: "IDeleteAllNotificationUseCase",
+  AddReviewUseCase: "IAddReviewUseCase",
 };
 
 export const REPOSITORY_TOKENS = {
@@ -79,6 +89,9 @@ export const REPOSITORY_TOKENS = {
   ServiceBookingRepository: "IServiceBookingRepository",
   UserRepository: "IUserRepository",
   CategoryRepository: "ICategoryRepository",
+  ChatRepository: "ChatRepository",
+  NotificationRepository: "NotificationRepository",
+  ReviewRepository: "ReviewRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",

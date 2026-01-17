@@ -1,24 +1,30 @@
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 import { Server, Socket } from "socket.io";
 import { Server as HTTPServer } from "http";
-import { SaveMessageUseCase } from "../../application/use-case/chat/SaveMessageUseCase";
+import { SaveMessageUseCase } from "../../application/use-case/chat/saveMessage/SaveMessage.usecase";
 import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
 // import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
-import { NotificationUseCase } from "../../application/use-case/notification/NotificationUseCase ";
+
 import {
   IChatNotification,
   ISystemNotification,
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
 import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
+import { ICreateNotificationUseCase } from "../../application/use-case/notification/createNotification/ICreateNotification.usecase";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
+import { ISaveMessageUseCase } from "../../application/use-case/chat/saveMessage/ISaveMessage.uescase";
 @singleton()
 export class SocketService {
   private io!: Server;
 
   constructor(
-    private saveMessageUseCase: SaveMessageUseCase,
-    private notificationUseCase: NotificationUseCase
+    @inject(USE_CASE_TOKENS.SaveMessageUseCase)
+    private readonly saveMessageUseCase: SaveMessageUseCase,
+
+    @inject(USE_CASE_TOKENS.CreateNotificationUseCase)
+    private readonly notificationUseCase: ICreateNotificationUseCase
   ) {}
 
   public initialize(server: HTTPServer) {
@@ -73,7 +79,7 @@ export class SocketService {
 
       // this.notificationUseCase.create(content, userId);
     } else if (notification.type === "notification") {
-      this.notificationUseCase.create(notification.content, userId);
+      this.notificationUseCase.execute(notification.content, userId);
     }
   }
 }
