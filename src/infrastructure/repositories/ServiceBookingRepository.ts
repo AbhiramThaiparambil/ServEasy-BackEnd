@@ -1,65 +1,72 @@
-import ServiceBooking from '../models/ServiceBooking';
-import { IServiceBookingRepository } from '../../domain/repositories/IserviceBookingRepository';
-import { Types } from 'mongoose';
-import { injectable } from 'tsyringe';
-import { ObjectId } from 'mongodb';
+import ServiceBooking from "../models/ServiceBooking";
+import { IServiceBookingRepository } from "../../domain/repositories/IserviceBookingRepository";
+import { Types } from "mongoose";
+import { injectable } from "tsyringe";
+import { ObjectId } from "mongodb";
 // import {IServiceBooking} from "../../domain/entities/IServiceBooking"
-import { IServiceBooking } from '../../domain/entities/IServiceBooking';
-import { IPayment } from '../../domain/entities/IPayment'; 
+import { IServiceBooking } from "../../domain/entities/IServiceBooking";
+import { IPayment } from "../../domain/entities/IPayment";
 
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
-  async findBookedServicesByUserId(userId: Types.ObjectId): Promise<IServiceBooking[]> {
+  async findBookedServicesByUserId(
+    userId: Types.ObjectId,
+  ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ userId }).sort({ bookedTime: -1 });
   }
 
-  async findServicesByProviderId(serviceProviderId: Types.ObjectId): Promise<IServiceBooking[]> {
+  async findServicesByProviderId(
+    serviceProviderId: Types.ObjectId,
+  ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ serviceProviderId }).sort({
       bookedTime: -1,
     });
   }
 
-    findById(_id:string):Promise<IServiceBooking|null>{
-      return ServiceBooking.findById(_id)
-    }
+  findById(_id: string): Promise<IServiceBooking | null> {
+    return ServiceBooking.findById(_id);
+  }
 
-
-  async createServiceBooking(serviceBookingData: IServiceBooking): Promise<IServiceBooking> {
+  async createServiceBooking(
+    serviceBookingData: IServiceBooking,
+  ): Promise<IServiceBooking> {
     const newServiceBooking = new ServiceBooking(serviceBookingData);
     return await newServiceBooking.save();
   }
 
   async updateServiceStatus(
     serviceBookingId: Types.ObjectId,
-    serviceStatus: string
+    serviceStatus: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       serviceBookingId,
       { serviceStatus },
-      { new: true }
+      { new: true },
     );
   }
 
   async updatePaymentStatus(
     serviceBookingId: Types.ObjectId,
     paymentStatus: string,
-    paymentType: string
+    paymentType: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       serviceBookingId,
       { paymentStatus, paymentType },
-      { new: true }
+      { new: true },
     );
   }
 
-  async findCountBookedServicebyUserId(userId: Types.ObjectId): Promise<number> {
+  async findCountBookedServicebyUserId(
+    userId: Types.ObjectId,
+  ): Promise<number> {
     return await ServiceBooking.find({ userId }).countDocuments();
   }
 
   async findBookedServicesAndServiceByUserId(
     userId: Types.ObjectId,
     skip: number,
-    limit: number
+    limit: number,
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -68,22 +75,22 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         },
         {
           $lookup: {
-            from: 'services',
-            localField: 'serviceId',
-            foreignField: '_id',
-            as: 'serviceDetails',
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
           },
         },
-        { $unwind: '$serviceDetails' },
+        { $unwind: "$serviceDetails" },
         {
           $project: {
             _id: 1,
-            serviceBookedAddress: '$address',
+            serviceBookedAddress: "$address",
             serviceStatus: 1,
             paymentType: 1,
-            serviceName: '$serviceDetails.serviceName',
-            serviceType: '$serviceDetails.serviceType',
-            serviceImage: '$serviceDetails.serviceImage',
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
             bookedTime: 1,
           },
         },
@@ -100,14 +107,65 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
       return bookedServices;
     } catch (e) {
-      console.error('Error fetching booked services:', e);
+      console.error("Error fetching booked services:", e);
       throw e;
     }
   }
+  // async findBookedServicesAndServiceByServiceProviderId(
+  //   ServiceProviderId: Types.ObjectId,
+  //   skip: number,
+  //   limit: number
+  // ): Promise<any> {
+  //   try {
+  //     const bookedServices = await ServiceBooking.aggregate([
+  //       {
+  //         $match: { serviceProviderId: ServiceProviderId },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "services",
+  //           localField: "serviceId",
+  //           foreignField: "_id",
+  //           as: "serviceDetails",
+  //         },
+  //       },
+  //       {
+  //         $unwind: "$serviceDetails",
+  //       },
+  //       {
+  //         $project: {
+  //           _id: 1,
+  //           serviceBookedAddress: "$address",
+  //           serviceStatus: 1,
+  //           paymentType: 1,
+  //           serviceName: "$serviceDetails.serviceName",
+  //           serviceType: "$serviceDetails.serviceType",
+  //           serviceImage: "$serviceDetails.serviceImage",
+  //           bookedTime: 1,
+  //         },
+  //       },
+  //       {
+  //         $sort: { bookedTime: -1 },
+  //       },
+  //       {
+  //         $skip: skip,
+  //       },
+  //       {
+  //         $limit: limit,
+  //       },
+  //     ]);
+
+  //     return bookedServices;
+  //   } catch (e) {
+  //     console.error("Error fetching booked services:", e);
+  //     throw e;
+  //   }
+  // }
+
   async findBookedServicesAndServiceByServiceProviderId(
     ServiceProviderId: Types.ObjectId,
     skip: number,
-    limit: number
+    limit: number,
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -116,62 +174,97 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         },
         {
           $lookup: {
-            from: 'services',
-            localField: 'serviceId',
-            foreignField: '_id',
-            as: 'serviceDetails',
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
           },
         },
+        { $unwind: "$serviceDetails" },
+
         {
-          $unwind: '$serviceDetails',
+          $addFields: {
+            statusPriority: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $in: [
+                        "$serviceStatus",
+                        ["pending", "confirmed", "in-progress"],
+                      ],
+                    },
+                    then: 1,
+                  },
+                  {
+                    case: { $eq: ["$serviceStatus", "completed"] },
+                    then: 2,
+                  },
+                  {
+                    case: { $eq: ["$serviceStatus", "cancelled"] },
+                    then: 3,
+                  },
+                ],
+                default: 4,
+              },
+            },
+          },
         },
+
+        {
+          $sort: {
+            statusPriority: 1,
+            bookedTime: -1,
+          },
+        },
+
         {
           $project: {
             _id: 1,
-            serviceBookedAddress: '$address',
+            serviceBookedAddress: "$address",
             serviceStatus: 1,
             paymentType: 1,
-            serviceName: '$serviceDetails.serviceName',
-            serviceType: '$serviceDetails.serviceType',
-            serviceImage: '$serviceDetails.serviceImage',
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
             bookedTime: 1,
+            estimatedServiceTime: 1,
+            preferredSlot: 1,
           },
         },
-        {
-          $sort: { bookedTime: -1 },
-        },
-        {
-          $skip: skip,
-        },
-        {
-          $limit: limit,
-        },
+
+        { $skip: skip },
+        { $limit: limit },
       ]);
 
       return bookedServices;
     } catch (e) {
-      console.error('Error fetching booked services:', e);
+      console.error("Error fetching booked services:", e);
       throw e;
     }
   }
 
-  async findCountBookedService(serviceProviderId: Types.ObjectId): Promise<number> {
+  async findCountBookedService(
+    serviceProviderId: Types.ObjectId,
+  ): Promise<number> {
     try {
       return await ServiceBooking.countDocuments({ serviceProviderId });
     } catch (e) {
-      console.error('Error counting booked services:', e);
+      console.error("Error counting booked services:", e);
       throw e;
     }
   }
 
-  async findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null> {
+  async findBookedServiceById(
+    id: Types.ObjectId,
+  ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findById(id);
   }
 
   async confirmBooking(
     id: Types.ObjectId,
     newStatus: string,
-    estimatedServiceTime: string
+    estimatedServiceTime: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: id },
@@ -181,13 +274,13 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           estimatedServiceTime: estimatedServiceTime,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
   async cancelBooking(
     id: Types.ObjectId,
     newStatus: string,
-    cancelReason: string
+    cancelReason: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: id },
@@ -197,7 +290,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           cancelReason: cancelReason,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -211,7 +304,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           payment: payment,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -223,7 +316,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           serviceBills: uploadBills,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -232,8 +325,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       const count = await ServiceBooking.countDocuments();
       return count;
     } catch (error) {
-      console.error('Error counting booked services:', error);
-      throw new Error('Failed to count booked services');
+      console.error("Error counting booked services:", error);
+      throw new Error("Failed to count booked services");
     }
   }
 
@@ -242,7 +335,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     limit: number,
     search: string,
     status: string,
-    statusField: 'serviceStatus' | 'paymentStatus' = 'serviceStatus'
+    statusField: "serviceStatus" | "paymentStatus" = "serviceStatus",
   ): Promise<any> {
     try {
       const matchConditions: any[] = [];
@@ -258,9 +351,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       if (search?.trim()) {
         matchConditions.push({
           $or: [
-            { 'serviceDetails.serviceName': { $regex: search, $options: 'i' } },
-            { 'userData.userName': { $regex: search, $options: 'i' } },
-            { 'serviceProviderInfo.serviceProviderName': { $regex: search, $options: 'i' } },
+            { "serviceDetails.serviceName": { $regex: search, $options: "i" } },
+            { "userData.userName": { $regex: search, $options: "i" } },
+            {
+              "serviceProviderInfo.serviceProviderName": {
+                $regex: search,
+                $options: "i",
+              },
+            },
           ],
         });
       }
@@ -268,39 +366,51 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       const bookedData = await ServiceBooking.aggregate([
         {
           $lookup: {
-            from: 'services',
-            localField: 'serviceId',
-            foreignField: '_id',
-            as: 'serviceDetails',
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
           },
         },
-        { $unwind: { path: '$serviceDetails', preserveNullAndEmptyArrays: true } },
+        {
+          $unwind: {
+            path: "$serviceDetails",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
         {
           $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'userData',
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userData",
           },
         },
-        { $unwind: { path: '$userData', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
         {
           $lookup: {
-            from: 'serviceproviders',
-            localField: 'serviceProviderId',
-            foreignField: '_id',
-            as: 'serviceProviderInfo',
+            from: "serviceproviders",
+            localField: "serviceProviderId",
+            foreignField: "_id",
+            as: "serviceProviderInfo",
           },
         },
-        { $unwind: { path: '$serviceProviderInfo', preserveNullAndEmptyArrays: true } },
+        {
+          $unwind: {
+            path: "$serviceProviderInfo",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
 
         // Apply match if conditions exist
-        ...(matchConditions.length > 0 ? [{ $match: { $and: matchConditions } }] : []),
+        ...(matchConditions.length > 0
+          ? [{ $match: { $and: matchConditions } }]
+          : []),
 
         {
           $project: {
             _id: 1,
-            serviceBookedAddress: '$address',
+            serviceBookedAddress: "$address",
             serviceStatus: 1,
             paymentType: 1,
             paymentStatus: 1,
@@ -308,16 +418,16 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             serviceBills: 1,
             estimatedServiceTime: 1,
             bookedTime: 1,
-            serviceName: '$serviceDetails.serviceName',
-            serviceType: '$serviceDetails.serviceType',
-            serviceImage: '$serviceDetails.serviceImage',
-            userName: '$userData.userName',
-            userEmail: '$userData.email',
-            userPhone: '$userData.phone',
-            userProfile: '$userData.profileImage',
-            serviceProviderName: '$serviceProviderInfo.serviceProviderName',
-            serviceProviderEmail: '$serviceProviderInfo.serviceProviderEmail',
-            profileImage: '$serviceProviderInfo.profileImage',
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
+            userName: "$userData.userName",
+            userEmail: "$userData.email",
+            userPhone: "$userData.phone",
+            userProfile: "$userData.profileImage",
+            serviceProviderName: "$serviceProviderInfo.serviceProviderName",
+            serviceProviderEmail: "$serviceProviderInfo.serviceProviderEmail",
+            profileImage: "$serviceProviderInfo.profileImage",
           },
         },
         { $sort: { bookedTime: -1 } },
@@ -325,10 +435,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         { $limit: limit },
       ]);
 
-      console.log(bookedData, 'bookedData');
+      console.log(bookedData, "bookedData");
       return bookedData;
     } catch (error) {
-      console.error('Error fetching booked service info:', error);
+      console.error("Error fetching booked service info:", error);
       throw error;
     }
   }
@@ -338,64 +448,76 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       const bookedData = await ServiceBooking.aggregate([
         {
           $match: {
-            paymentStatus: 'completed',
+            paymentStatus: "completed",
             serviceProviderId: new Types.ObjectId(id),
           },
         },
         {
           $lookup: {
-            from: 'services',
-            localField: 'serviceId',
-            foreignField: '_id',
-            as: 'serviceDetails',
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
           },
         },
-        { $unwind: '$serviceDetails' },
+        { $unwind: "$serviceDetails" },
         {
           $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'userData',
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userData",
           },
         },
-        { $unwind: '$userData' },
+        { $unwind: "$userData" },
         {
           $project: {
             _id: 1,
-            serviceBookedAddress: '$address',
+            serviceBookedAddress: "$address",
             payment: 1,
             serviceStatus: 1,
             paymentType: 1,
 
-            serviceName: '$serviceDetails.serviceName',
-            serviceType: '$serviceDetails.serviceType',
-            serviceImage: '$serviceDetails.serviceImage',
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            serviceImage: "$serviceDetails.serviceImage",
 
-            userName: '$userData.userName',
-            userEmail: '$userData.email',
-            userPhone: '$userData.phone',
-            userProfile: '$userData.profileImage',
+            userName: "$userData.userName",
+            userEmail: "$userData.email",
+            userPhone: "$userData.phone",
+            userProfile: "$userData.profileImage",
           },
         },
       ]);
 
       return bookedData;
     } catch (e) {
-      console.error('Error fetching booked service with user and service info:', e);
+      console.error(
+        "Error fetching booked service with user and service info:",
+        e,
+      );
       throw e;
     }
   }
 
-  async updateReviewId(bookingId: Types.ObjectId, reviewId: Types.ObjectId): Promise<void> {
-    await ServiceBooking.findOneAndUpdate({ _id: bookingId }, { $set: { reviewId: reviewId } });
+  async updateReviewId(
+    bookingId: Types.ObjectId,
+    reviewId: Types.ObjectId,
+  ): Promise<void> {
+    await ServiceBooking.findOneAndUpdate(
+      { _id: bookingId },
+      { $set: { reviewId: reviewId } },
+    );
   }
 
-  async getPaymentInfo(startDate?: Date | null, endDate?: Date | null): Promise<any> {
+  async getPaymentInfo(
+    startDate?: Date | null,
+    endDate?: Date | null,
+  ): Promise<any> {
     try {
       const match: any = {
-        serviceStatus: 'completed',
-        paymentStatus: 'completed',
+        serviceStatus: "completed",
+        paymentStatus: "completed",
       };
 
       if (startDate && endDate) {
@@ -410,8 +532,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         {
           $group: {
             _id: null,
-            totalRevenue: { $sum: { $ifNull: ['$payment.total', 0] } },
-            totalConvenienceFee: { $sum: { $ifNull: ['$payment.convenienceFee', 0] } },
+            totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
+            totalConvenienceFee: {
+              $sum: { $ifNull: ["$payment.convenienceFee", 0] },
+            },
             count: { $sum: 1 },
           },
         },
@@ -427,7 +551,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
       return result;
     } catch (error) {
-      console.error('Error fetching payment info:', error);
+      console.error("Error fetching payment info:", error);
       throw error;
     }
   }
@@ -435,13 +559,13 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async getPaymentInfoServiceProvider(
     serviceProviderId: string,
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ): Promise<any> {
     try {
       const match: any = {
         serviceProviderId: new ObjectId(serviceProviderId),
-        serviceStatus: 'completed',
-        paymentStatus: 'completed',
+        serviceStatus: "completed",
+        paymentStatus: "completed",
       };
 
       if (startDate && endDate) {
@@ -456,8 +580,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         {
           $group: {
             _id: null,
-            totalRevenue: { $sum: { $ifNull: ['$payment.total', 0] } },
-            totalConvenienceFee: { $sum: { $ifNull: ['$payment.convenienceFee', 0] } },
+            totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
+            totalConvenienceFee: {
+              $sum: { $ifNull: ["$payment.convenienceFee", 0] },
+            },
             count: { $sum: 1 },
           },
         },
@@ -473,28 +599,28 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
       return result;
     } catch (error) {
-      console.error('Error fetching payment info:', error);
+      console.error("Error fetching payment info:", error);
       throw error;
     }
   }
 
   async isServiceTimeConflicting(
     serviceProviderId: Types.ObjectId,
-    estimatedServiceTime: string
+    estimatedServiceTime: string,
   ): Promise<boolean> {
-    console.log(serviceProviderId, 'serviceProviderId');
-    console.log(estimatedServiceTime, 'estimatedServiceTime');
+    console.log(serviceProviderId, "serviceProviderId");
+    console.log(estimatedServiceTime, "estimatedServiceTime");
     const conflict = await ServiceBooking.findOne({
       serviceProviderId,
       estimatedServiceTime,
     });
-    console.log(conflict, 'conflict');
+    console.log(conflict, "conflict");
     return !!conflict;
   }
 
   async rescheduleBooking(
     bookingId: Types.ObjectId,
-    newDate: string
+    newDate: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: bookingId },
@@ -503,14 +629,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           estimatedServiceTime: newDate,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
   async addBookingHistory(
     bookingId: Types.ObjectId,
     action: string,
-    message: string
+    message: string,
   ): Promise<void> {
     await ServiceBooking.findByIdAndUpdate(bookingId, {
       $push: {
@@ -524,12 +650,12 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async checkAvailability(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: Types.ObjectId,
   ): Promise<{ available: boolean; reason?: string }> {
     try {
       const bookings = await ServiceBooking.find({
         serviceProviderId,
-        serviceStatus: { $in: ['in-progress', 'confirmed'] },
+        serviceStatus: { $in: ["in-progress", "confirmed"] },
       });
 
       const now = new Date();
@@ -541,7 +667,9 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           const estimatedTime = new Date(estimatedTimeString); // convert from string to Date
 
           if (isNaN(estimatedTime.getTime())) {
-            console.warn(`Invalid estimatedServiceTime format: ${estimatedTimeString}`);
+            console.warn(
+              `Invalid estimatedServiceTime format: ${estimatedTimeString}`,
+            );
             continue;
           }
 
@@ -552,7 +680,9 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             };
           }
 
-          const oneHourAfter = new Date(estimatedTime.getTime() + 60 * 60 * 1000);
+          const oneHourAfter = new Date(
+            estimatedTime.getTime() + 60 * 60 * 1000,
+          );
           if (now < oneHourAfter) {
             return {
               available: false,
@@ -564,36 +694,98 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
       return { available: true };
     } catch (error) {
-      console.error('Error fetching availability:', error);
+      console.error("Error fetching availability:", error);
       throw error;
     }
   }
 
-    async update(bookingId: string, data: Partial<IServiceBooking>): Promise<IServiceBooking | null> {
-    const updatedBooking = await ServiceBooking.findByIdAndUpdate(bookingId, data, {
-      new: true,
-    });
+  async update(
+    bookingId: string,
+    data: Partial<IServiceBooking>,
+  ): Promise<IServiceBooking | null> {
+    const updatedBooking = await ServiceBooking.findByIdAndUpdate(
+      bookingId,
+      data,
+      {
+        new: true,
+      },
+    );
     return updatedBooking;
   }
 
+  async removeCouponAndUpdatePayment(
+    bookingId: string,
+  ): Promise<IServiceBooking> {
+    const booking = await ServiceBooking.findById(bookingId);
+    if (!booking || !booking.payment) throw new Error("Booking not found");
 
-async removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking> {
- const booking = await ServiceBooking.findById(bookingId);
-  if (!booking||!booking.payment) throw new Error("Booking not found");
+    const updated = await ServiceBooking.findOneAndUpdate(
+      { _id: bookingId },
+      {
+        $unset: { coupon: "" },
+        $set: {
+          "payment.discountAmount": 0,
+          "payment.finalTotal": booking.payment.total,
+        },
+      },
+      { new: true },
+    );
 
-  const updated = await ServiceBooking.findOneAndUpdate(
-    { _id: bookingId },
-    {
-      $unset: { coupon: "" },
-      $set: {
-        "payment.discountAmount": 0,
-        "payment.finalTotal": booking.payment.total, 
-      }
-    },
-    { new: true }
-  );
+    return updated as IServiceBooking;
+  }
 
-  return updated as IServiceBooking;
+  async countActiveServices(
+    serviceProviderId: Types.ObjectId,
+  ): Promise<number> {
+    try {
+      return await ServiceBooking.countDocuments({
+        serviceProviderId,
+        serviceStatus: { $in: ["pending", "in-progress", "confirmed"] },
+      });
+    } catch (error) {
+      console.error("Error counting active services:", error);
+      throw error;
+    }
+  }
 
-}
+  async hasActiveBooking(
+    userId: Types.ObjectId,
+    serviceId: Types.ObjectId,
+  ): Promise<boolean> {
+    console.log(userId, serviceId);
+    const result = await ServiceBooking.aggregate([
+      {
+        $match: {
+          userId: new ObjectId(userId),
+          serviceId: new ObjectId(serviceId),
+          serviceStatus: { $nin: ["cancelled", "completed"] },
+        },
+      },
+      { $limit: 1 },
+      { $project: { _id: 1 } },
+    ]);
+
+    return result.length > 0;
+  }
+
+  async rescheduleOnlineService(
+    bookingId: Types.ObjectId,
+    date: Date,
+    startTime: Date,
+    endTime: Date,
+  ): Promise<IServiceBooking | null> {
+    const booking = await ServiceBooking.findById(bookingId);
+
+    if (!booking) {
+      return null;
+    }
+
+    booking.serviceSlot = {
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+    };
+
+    return await booking.save();
+  }
 }

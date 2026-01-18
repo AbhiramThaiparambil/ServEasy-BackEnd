@@ -2,7 +2,7 @@ import {
   IVerifySubscriptionPaymentUseCase,
   VerifyPaymentDTO,
 } from "./IVerifySubscriptionPaymentUseCase";
-import { RazorpayService } from "../../../../services/razorpayService";
+import { RazorpayService } from "../../../../services/payment/RazorpayService";
 import { inject, injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
@@ -11,14 +11,18 @@ import {
   ISubscriptionStatus,
 } from "../../../../domain/entities/ISubscription";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
-import { REPOSITORY_TOKENS } from "../../../../utils/constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../constants/tokens";
 
 @injectable()
 export class VerifySubscriptionPaymentUseCase
   implements IVerifySubscriptionPaymentUseCase
 {
   constructor(
-    @inject("RazorpayService") private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService)
+    private razorpayService: RazorpayService,
     @inject(ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,
 

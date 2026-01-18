@@ -1,16 +1,10 @@
 import { ObjectId, Types } from "mongoose";
 
-
-
-
 export interface ISlot {
-    _id?:string;
-  serviceId:Types.ObjectId
-  startTime: string;
-  endTime: string;
+  _id?: Types.ObjectId | string;
+  serviceId: Types.ObjectId;
+  startTime: Date;
+  endTime: Date;
   booked: boolean;
- createdAt?: Date;
-
+  createdAt?: Date;
 }
-
-

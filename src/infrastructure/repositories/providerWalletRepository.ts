@@ -1,12 +1,17 @@
-import { Types } from 'mongoose';
-import { IProviderWallet, IWalletTransaction } from '../../domain/entities/IproviderWallet';
-import { IProviderWalletRepository } from '../../domain/repositories/IproviderWalletRepository';
-import { ProviderWalletModel } from '../models/providerWallet';
-import { IProviderWalletView } from '../../utils/types/dto/IProviderWalletView';
-import { IProviderWalletDetailsView } from '../../utils/types/dto/IProviderWalletDetailsView';
+import { Types } from "mongoose";
+import {
+  IProviderWallet,
+  IWalletTransaction,
+} from "../../domain/entities/IproviderWallet";
+import { IProviderWalletRepository } from "../../domain/repositories/IproviderWalletRepository";
+import { ProviderWalletModel } from "../models/providerWallet";
+import { IProviderWalletView } from "../../utils/types/dto/IProviderWalletView";
+import { IProviderWalletDetailsView } from "../../utils/types/dto/IProviderWalletDetailsView";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
-  async createWallet(serviceProviderId: Types.ObjectId): Promise<IProviderWallet> {
+  async createWallet(
+    serviceProviderId: Types.ObjectId
+  ): Promise<IProviderWallet> {
     let wallet = await ProviderWalletModel.findOne({ serviceProviderId });
 
     if (!wallet) {
@@ -26,10 +31,11 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     transaction: IWalletTransaction
   ): Promise<IProviderWallet> {
     const wallet = await ProviderWalletModel.findOne({ serviceProviderId });
-    if (!wallet) throw new Error('Wallet not found');
+    if (!wallet) throw new Error("Wallet not found");
 
     wallet.transactions.push(transaction);
-    wallet.balance += transaction.type === 'credit' ? transaction.amount : -transaction.amount;
+    wallet.balance +=
+      transaction.type === "credit" ? transaction.amount : -transaction.amount;
 
     const updatedWallet = await wallet.save();
     return updatedWallet.toObject() as unknown as IProviderWallet;
@@ -40,16 +46,19 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     transaction: IWalletTransaction
   ): Promise<IProviderWallet> {
     const wallet = await ProviderWalletModel.findOne({ _id: walletId });
-    if (!wallet) throw new Error('Wallet not found');
+    if (!wallet) throw new Error("Wallet not found");
 
     wallet.transactions.push(transaction);
-    wallet.balance += transaction.type === 'credit' ? transaction.amount : -transaction.amount;
+    wallet.balance +=
+      transaction.type === "credit" ? transaction.amount : -transaction.amount;
 
     const updatedWallet = await wallet.save();
     return updatedWallet.toObject() as unknown as IProviderWallet;
   }
 
-  async findByProviderId(serviceProviderId: Types.ObjectId): Promise<IProviderWallet | null> {
+  async findByProviderId(
+    serviceProviderId: Types.ObjectId
+  ): Promise<IProviderWallet | null> {
     return ProviderWalletModel.findOne({ serviceProviderId });
   }
 
@@ -60,11 +69,19 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
   ): Promise<IProviderWallet | null> {
     const result = await ProviderWalletModel.aggregate([
       { $match: { serviceProviderId } },
+      {
+        $lookup: {
+          from: "serviceproviders",
+          foreignField: "_id",
+          localField: "serviceProviderId",
+          as: "providerData",
+        },
+      },
 
       {
         $addFields: {
           transactions: {
-            $sortArray: { input: '$transactions', sortBy: { date: -1 } },
+            $sortArray: { input: "$transactions", sortBy: { date: -1 } },
           },
         },
       },
@@ -72,27 +89,27 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       {
         $addFields: {
           transactions: {
-            $slice: ['$transactions', skip, limit],
+            $slice: ["$transactions", skip, limit],
           },
         },
       },
-
       {
         $project: {
           serviceProviderId: 1,
           balance: 1,
           transactions: 1,
+          bankDetails: "$providerData.bankDetails",
         },
       },
+      { $unwind: "$bankDetails" },
     ]);
-
     return result[0] || null;
   }
 
   async findCountOfTransactions(serviceProviderId: string): Promise<number> {
     const result = await ProviderWalletModel.aggregate([
       { $match: { serviceProviderId: new Types.ObjectId(serviceProviderId) } },
-      { $project: { count: { $size: '$transactions' } } },
+      { $project: { count: { $size: "$transactions" } } },
     ]);
     return result[0]?.count || 0;
   }
@@ -101,119 +118,118 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     return ProviderWalletModel.find();
   }
 
-
- async findPaginatedProviderWallets(
-  skip: number,
-  limit: number
-): Promise<IProviderWalletView[]> {
-  const data = await ProviderWalletModel.aggregate([
-    // 1. Add last transaction date
-    {
-      $addFields: {
-        lastTransactionDate: { $max: '$transactions.date' },
+  async findPaginatedProviderWallets(
+    skip: number,
+    limit: number
+  ): Promise<IProviderWalletView[]> {
+    const data = await ProviderWalletModel.aggregate([
+      // 1. Add last transaction date
+      {
+        $addFields: {
+          lastTransactionDate: { $max: "$transactions.date" },
+        },
       },
-    },
 
-    // 2. Lookup provider
-    {
-      $lookup: {
-        from: 'serviceproviders',
-        localField: 'serviceProviderId',
-        foreignField: '_id',
-        as: 'serviceProvider',
+      // 2. Lookup provider
+      {
+        $lookup: {
+          from: "serviceproviders",
+          localField: "serviceProviderId",
+          foreignField: "_id",
+          as: "serviceProvider",
+        },
       },
-    },
-    { $unwind: '$serviceProvider' },
+      { $unwind: "$serviceProvider" },
 
-    // 3. Add "isSubscribedProvider"
-    {
-      $addFields: {
-        isSubscribedProvider: {
-          $anyElementTrue: {
-            $map: {
-              input: '$serviceProvider.subscriptions',
-              as: 'sub',
-              in: {
-                $and: [
-                  { $lte: ['$$sub.startDate', new Date()] },
-                  { $gte: ['$$sub.endDate', new Date()] },
-                  { $eq: ['$$sub.status', 'active'] },
-                ],
+      // 3. Add "isSubscribedProvider"
+      {
+        $addFields: {
+          isSubscribedProvider: {
+            $anyElementTrue: {
+              $map: {
+                input: "$serviceProvider.subscriptions",
+                as: "sub",
+                in: {
+                  $and: [
+                    { $lte: ["$$sub.startDate", new Date()] },
+                    { $gte: ["$$sub.endDate", new Date()] },
+                    { $eq: ["$$sub.status", "active"] },
+                  ],
+                },
               },
             },
           },
         },
       },
-    },
 
-    // 4. Sort: Pro first, recent activity next
-    {
-      $sort: {
-        isSubscribedProvider: -1,
-        lastTransactionDate: -1,
+      // 4. Sort: Pro first, recent activity next
+      {
+        $sort: {
+          isSubscribedProvider: -1,
+          lastTransactionDate: -1,
+        },
       },
-    },
 
-    // 5. Add "pending" transaction flag
-    {
-      $addFields: {
-        pending: {
-          $anyElementTrue: {
-            $map: {
-              input: '$transactions',
-              as: 'txn',
-              in: {
-                $and: [
-                  { $eq: ['$$txn.type', 'debit'] },
-                  { $eq: ['$$txn.status', 'pending'] },
-                ],
+      // 5. Add "pending" transaction flag
+      {
+        $addFields: {
+          pending: {
+            $anyElementTrue: {
+              $map: {
+                input: "$transactions",
+                as: "txn",
+                in: {
+                  $and: [
+                    { $eq: ["$$txn.type", "debit"] },
+                    { $eq: ["$$txn.status", "pending"] },
+                  ],
+                },
               },
             },
           },
         },
       },
-    },
 
-    // 6. Shape the final output
-    {
-      $project: {
-        _id: 1,
-        profileImage: '$serviceProvider.profileImage',
-        serviceProviderName: '$serviceProvider.serviceProviderName',
-        serviceProviderEmail: '$serviceProvider.serviceProviderEmail',
-        serviceProviderPhone: '$serviceProvider.serviceProviderPhone',
-        description: '$serviceProvider.description',
-        experience: '$serviceProvider.experience',
-        isSubscribedProvider: 1,
-        wallet: {
-          balance: '$balance',
-          pending: '$pending',
+      // 6. Shape the final output
+      {
+        $project: {
+          _id: 1,
+          profileImage: "$serviceProvider.profileImage",
+          serviceProviderName: "$serviceProvider.serviceProviderName",
+          serviceProviderEmail: "$serviceProvider.serviceProviderEmail",
+          serviceProviderPhone: "$serviceProvider.serviceProviderPhone",
+          description: "$serviceProvider.description",
+          experience: "$serviceProvider.experience",
+          isSubscribedProvider: 1,
+          wallet: {
+            balance: "$balance",
+            pending: "$pending",
+          },
         },
       },
-    },
 
-    // 7. Pagination
-    { $skip: skip },
-    { $limit: limit },
-  ]);
+      // 7. Pagination
+      { $skip: skip },
+      { $limit: limit },
+    ]);
 
-  return data;
-}
+    return data;
+  }
 
   async updateTransactionStatus(
     walletId: string,
     transactionId: string,
-    newStatus: 'success' | 'rejected'
+    newStatus: "success" | "rejected"
   ): Promise<boolean> {
     try {
       const result = await ProviderWalletModel.updateOne(
         {
           _id: new Types.ObjectId(walletId),
-          'transactions._id': new Types.ObjectId(transactionId),
+          "transactions._id": new Types.ObjectId(transactionId),
         },
         {
           $set: {
-            'transactions.$.status': newStatus,
+            "transactions.$.status": newStatus,
           },
         }
       );
@@ -233,12 +249,12 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     const result = await ProviderWalletModel.updateOne(
       {
         _id: new Types.ObjectId(walletId),
-        'transactions._id': new Types.ObjectId(transaction._id),
+        "transactions._id": new Types.ObjectId(transaction._id),
       },
       {
         $set: {
-          'transactions.$.status': 'rejected',
-          'transactions.$.rejectionReason': rejectionReason,
+          "transactions.$.status": "rejected",
+          "transactions.$.rejectionReason": rejectionReason,
         },
       }
     );
@@ -249,8 +265,8 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
 
     const revertTransaction: IWalletTransaction = {
       amount: transaction.amount,
-      type: 'credit', 
-      status: 'success',
+      type: "credit",
+      status: "success",
       date: new Date(),
     };
 
@@ -262,144 +278,145 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     return !!added;
   }
 
-  async findProviderWalletByid(id: string): Promise<IProviderWalletDetailsView> {
-  const data = await ProviderWalletModel.aggregate([
-    {
-      $match: { _id: new Types.ObjectId(id) },
-    },
-
-    {
-      $lookup: {
-        from: 'serviceproviders',
-        localField: 'serviceProviderId',
-        foreignField: '_id',
-        as: 'serviceProvider',
+  async findProviderWalletByid(
+    id: string
+  ): Promise<IProviderWalletDetailsView> {
+    const data = await ProviderWalletModel.aggregate([
+      {
+        $match: { _id: new Types.ObjectId(id) },
       },
-    },
-    { $unwind: '$serviceProvider' },
 
-    // ✅ ADD THIS: isSubscribedProvider logic
-    {
-      $addFields: {
-        isSubscribedProvider: {
-          $anyElementTrue: {
-            $map: {
-              input: '$serviceProvider.subscriptions',
-              as: 'sub',
-              in: {
-                $and: [
-                  { $lte: ['$$sub.startDate', new Date()] },
-                  { $gte: ['$$sub.endDate', new Date()] },
-                  { $eq: ['$$sub.status', 'active'] },
-                ],
-              },
-            },
-          },
+      {
+        $lookup: {
+          from: "serviceproviders",
+          localField: "serviceProviderId",
+          foreignField: "_id",
+          as: "serviceProvider",
         },
       },
-    },
+      { $unwind: "$serviceProvider" },
 
-    // Sort transactions
-    {
-      $addFields: {
-        transactions: {
-          $sortArray: { input: '$transactions', sortBy: { date: -1 } },
-        },
-      },
-    },
-
-    // Split credit and debit transactions
-    {
-      $addFields: {
-        creditTransactions: {
-          $filter: {
-            input: '$transactions',
-            as: 't',
-            cond: { $eq: ['$$t.type', 'credit'] },
-          },
-        },
-        debitTransactions: {
-          $filter: {
-            input: '$transactions',
-            as: 't',
-            cond: { $eq: ['$$t.type', 'debit'] },
-          },
-        },
-      },
-    },
-
-    // Calculate totals
-    {
-      $addFields: {
-        totalPendingDebit: {
-          $sum: {
-            $map: {
-              input: {
-                $filter: {
-                  input: '$transactions',
-                  as: 't',
-                  cond: {
-                    $and: [
-                      { $eq: ['$$t.type', 'debit'] },
-                      { $eq: ['$$t.status', 'pending'] },
-                    ],
-                  },
+      // ✅ ADD THIS: isSubscribedProvider logic
+      {
+        $addFields: {
+          isSubscribedProvider: {
+            $anyElementTrue: {
+              $map: {
+                input: "$serviceProvider.subscriptions",
+                as: "sub",
+                in: {
+                  $and: [
+                    { $lte: ["$$sub.startDate", new Date()] },
+                    { $gte: ["$$sub.endDate", new Date()] },
+                    { $eq: ["$$sub.status", "active"] },
+                  ],
                 },
               },
-              as: 'pendingDebit',
-              in: '$$pendingDebit.amount',
             },
           },
         },
+      },
 
-        totalSuccessDebit: {
-          $sum: {
-            $map: {
-              input: {
-                $filter: {
-                  input: '$transactions',
-                  as: 't',
-                  cond: {
-                    $and: [
-                      { $eq: ['$$t.type', 'debit'] },
-                      { $eq: ['$$t.status', 'success'] },
-                    ],
+      // Sort transactions
+      {
+        $addFields: {
+          transactions: {
+            $sortArray: { input: "$transactions", sortBy: { date: -1 } },
+          },
+        },
+      },
+
+      // Split credit and debit transactions
+      {
+        $addFields: {
+          creditTransactions: {
+            $filter: {
+              input: "$transactions",
+              as: "t",
+              cond: { $eq: ["$$t.type", "credit"] },
+            },
+          },
+          debitTransactions: {
+            $filter: {
+              input: "$transactions",
+              as: "t",
+              cond: { $eq: ["$$t.type", "debit"] },
+            },
+          },
+        },
+      },
+
+      // Calculate totals
+      {
+        $addFields: {
+          totalPendingDebit: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: "$transactions",
+                    as: "t",
+                    cond: {
+                      $and: [
+                        { $eq: ["$$t.type", "debit"] },
+                        { $eq: ["$$t.status", "pending"] },
+                      ],
+                    },
                   },
                 },
+                as: "pendingDebit",
+                in: "$$pendingDebit.amount",
               },
-              as: 'successDebit',
-              in: '$$successDebit.amount',
+            },
+          },
+
+          totalSuccessDebit: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: "$transactions",
+                    as: "t",
+                    cond: {
+                      $and: [
+                        { $eq: ["$$t.type", "debit"] },
+                        { $eq: ["$$t.status", "success"] },
+                      ],
+                    },
+                  },
+                },
+                as: "successDebit",
+                in: "$$successDebit.amount",
+              },
             },
           },
         },
       },
-    },
 
-    // ✅ Final projection
-    {
-      $project: {
-        _id: 1,
-        balance: 1,
-        creditTransactions: 1,
-        debitTransactions: 1,
-        totalPendingDebit: 1,
-        totalSuccessDebit: 1,
-        isSubscribedProvider: 1,   // ✅ FIXED
+      // ✅ Final projection
+      {
+        $project: {
+          _id: 1,
+          balance: 1,
+          creditTransactions: 1,
+          debitTransactions: 1,
+          totalPendingDebit: 1,
+          totalSuccessDebit: 1,
+          isSubscribedProvider: 1, // ✅ FIXED
 
-        'serviceProvider.profileImage': 1,
-        'serviceProvider.serviceProviderName': 1,
-        'serviceProvider.serviceProviderEmail': 1,
-        'serviceProvider.serviceProviderPhone': 1,
-        'serviceProvider.description': 1,
-        'serviceProvider.experience': 1,
-        'serviceProvider.bankDetails': 1,
+          "serviceProvider.profileImage": 1,
+          "serviceProvider.serviceProviderName": 1,
+          "serviceProvider.serviceProviderEmail": 1,
+          "serviceProvider.serviceProviderPhone": 1,
+          "serviceProvider.description": 1,
+          "serviceProvider.experience": 1,
+          "serviceProvider.bankDetails": 1,
+        },
       },
-    },
-  ]);
+    ]);
 
-  return data[0] ?? null;
-}
-
+    return data[0] ?? null;
+  }
 
   async findByTransactionId(
     walletId: string,
@@ -412,15 +429,15 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
       {
-        $unwind: '$transactions',
+        $unwind: "$transactions",
       },
       {
         $match: {
-          'transactions._id': new Types.ObjectId(transactionId),
+          "transactions._id": new Types.ObjectId(transactionId),
         },
       },
       {
-        $replaceRoot: { newRoot: '$transactions' },
+        $replaceRoot: { newRoot: "$transactions" },
       },
     ]);
 
@@ -436,11 +453,11 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       const result = await ProviderWalletModel.updateOne(
         {
           _id: new Types.ObjectId(walletId),
-          'transactions._id': new Types.ObjectId(transactionId),
+          "transactions._id": new Types.ObjectId(transactionId),
         },
         {
           $set: {
-            'transactions.$.rejectionReason': rejectionReason,
+            "transactions.$.rejectionReason": rejectionReason,
           },
         }
       );
@@ -451,6 +468,4 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       return false;
     }
   }
-
- 
 }

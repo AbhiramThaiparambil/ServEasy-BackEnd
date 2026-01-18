@@ -1,10 +1,9 @@
-import { Schema, model } from 'mongoose';
-import { IServiceBooking } from '../../domain/entities/IServiceBooking';
-
+import { Schema, model } from "mongoose";
+import { IServiceBooking } from "../../domain/entities/IServiceBooking";
 
 const PaymentSchema = new Schema({
   serviceCost: { type: Number, required: true },
-  metaialCost: { type: Number},
+  metaialCost: { type: Number },
   travelCost: { type: Number, required: true },
   inspectionCost: { type: Number, required: true },
   convenienceFee: { type: Number, required: true },
@@ -19,44 +18,43 @@ const CouponAppliedSchema = new Schema({
   appliedAt: { type: Date, required: true },
 });
 
-
 const ServiceBookingSchema = new Schema<IServiceBooking>(
   {
     serviceProviderId: {
       type: Schema.Types.ObjectId,
-      ref: 'ServiceProvider',
+      ref: "ServiceProvider",
       required: true,
     },
-    serviceId: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
+    serviceId: { type: Schema.Types.ObjectId, ref: "Service", required: true },
     address: {},
     serviceStatus: {
       type: String,
-      default: 'pending',
-      enum: ['pending', 'in-progress', 'completed', 'cancelled', 'confirmed'],
+      default: "pending",
+      enum: ["pending", "in-progress", "completed", "cancelled", "confirmed"],
       required: true,
     },
     paymentType: {
       type: String,
-      default: 'pending',
-      enum: ['cash', 'card', 'online', 'pending'],
+      default: "pending",
+      enum: ["cash", "card", "online", "pending", "wallet"],
       required: true,
     },
     paymentStatus: {
       type: String,
-      default: 'pending',
-      enum: ['pending', 'paid', 'failed', 'pending'],
+      default: "pending",
+      enum: ["pending", "paid", "failed", "pending", "completed"],
       required: true,
     },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     estimatedServiceTime: { type: String },
     bookedTime: { type: Date },
     payment: { type: PaymentSchema },
-    coupon:CouponAppliedSchema ,
+    coupon: CouponAppliedSchema,
     cancelReason: { type: String },
     serviceCompletedTime: { type: Date },
     serviceBills: { type: Array },
     isOnlineService: { type: Boolean },
-    reviewId: { type: Schema.Types.ObjectId, ref: 'Review' },
+    reviewId: { type: Schema.Types.ObjectId, ref: "Review" },
 
     liveLocation: {
       lat: { type: Number },
@@ -67,7 +65,7 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
 
       time: {
         type: String,
-        enum: ['morning', 'afternoon', 'anyTime'],
+        enum: ["morning", "afternoon", "anyTime"],
       },
     },
     serviceSlot: {
@@ -89,5 +87,8 @@ const ServiceBookingSchema = new Schema<IServiceBooking>(
   { timestamps: true }
 );
 
-const ServiceBooking = model<IServiceBooking>('ServiceBooking', ServiceBookingSchema);
+const ServiceBooking = model<IServiceBooking>(
+  "ServiceBooking",
+  ServiceBookingSchema
+);
 export default ServiceBooking;

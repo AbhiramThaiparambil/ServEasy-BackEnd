@@ -1,20 +1,24 @@
-import { inject, injectable } from 'tsyringe';
-import { Types } from 'mongoose';
-import { RazorpayService } from '../../../services/razorpayService';
-import { ServiceRepository } from '../../../infrastructure/repositories/ServiceRepositorie';
-import { ServiceBookingRepository } from '../../../infrastructure/repositories/ServiceBookingRepository';
-import { ServiceProviderRepository } from '../../../infrastructure/repositories/ServiceProviderRepository';
-import { IProviderWalletRepository } from '../../../domain/repositories/IproviderWalletRepository';
-import { IWalletTransaction } from '../../../domain/entities/IproviderWallet';
-import { REPOSITORY_TOKENS } from '../../../utils/constants/tokens';
+import { inject, injectable } from "tsyringe";
+import { Types } from "mongoose";
+import { RazorpayService } from "../../../services/payment/RazorpayService";
+import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
+import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
+import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
+import { IProviderWalletRepository } from "../../../domain/repositories/IproviderWalletRepository";
+import { IWalletTransaction } from "../../../domain/entities/IproviderWallet";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class VerifyPaymentUseCase {
   constructor(
-    @inject(RazorpayService) private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService)
+    private razorpayService: RazorpayService,
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
-    @inject(ServiceBookingRepository) private serviceBookingRepository: ServiceBookingRepository,
-    @inject(ServiceProviderRepository) private serviceProviderRepository: ServiceProviderRepository,
-    @inject(REPOSITORY_TOKENS.WalletRepository) private walletRepository: IProviderWalletRepository
+    @inject(ServiceBookingRepository)
+    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(ServiceProviderRepository)
+    private serviceProviderRepository: ServiceProviderRepository,
+    @inject(REPOSITORY_TOKENS.WalletRepository)
+    private walletRepository: IProviderWalletRepository
   ) {}
 
   async execute(
@@ -25,10 +29,11 @@ export class VerifyPaymentUseCase {
   ) {
     try {
       const serviceObjId = new Types.ObjectId(id);
-      const bookedService = await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+      const bookedService =
+        await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
 
-      if (bookedService?.paymentStatus === 'completed') {
-        return { success: false, message: 'Payment already verified' };
+      if (bookedService?.paymentStatus === "completed") {
+        return { success: false, message: "Payment already verified" };
       }
 
       const result = await this.razorpayService.verifyPaymentSignature(
@@ -36,41 +41,58 @@ export class VerifyPaymentUseCase {
         razorpay_payment_id,
         razorpay_signature
       );
-      const service = await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+      const service = await this.serviceBookingRepository.findBookedServiceById(
+        serviceObjId
+      );
       if (service?.isOnlineService) {
-        this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'in-progress');
+        this.serviceBookingRepository.updateServiceStatus(
+          serviceObjId,
+          "in-progress"
+        );
       } else {
-        this.serviceBookingRepository.updateServiceStatus(serviceObjId, 'completed');
+        this.serviceBookingRepository.updateServiceStatus(
+          serviceObjId,
+          "completed"
+        );
       }
 
-      if (!service || !service.serviceProviderId || !service.payment) return false;
+      if (!service || !service.serviceProviderId || !service.payment)
+        return false;
 
-      let wallet = await this.walletRepository.findByProviderId(service?.serviceProviderId);
+      let wallet = await this.walletRepository.findByProviderId(
+        service?.serviceProviderId
+      );
 
       if (!wallet) {
-        wallet = await this.walletRepository.createWallet(service?.serviceProviderId);
+        wallet = await this.walletRepository.createWallet(
+          service?.serviceProviderId
+        );
       }
 
       const transaction: IWalletTransaction = {
         amount: service.payment?.total - service.payment?.convenienceFee,
-        type: 'credit',
+        type: "credit",
         refBookingId: service._id,
-        date:new Date()
+        date: new Date(),
       };
 
-      await this.walletRepository.addTransaction(service.serviceProviderId, transaction);
+      await this.walletRepository.addTransaction(
+        service.serviceProviderId,
+        transaction
+      );
 
-      const paymentStatus = result.status === 'captured' ? 'completed' : 'failed';
+      const paymentStatus =
+        result.status === "captured" ? "completed" : "failed";
 
       await this.serviceBookingRepository.updatePaymentStatus(
         serviceObjId,
         paymentStatus,
         result.method
       );
-      return { success: true, message: 'Payment verified successfully' };
+      return { success: true, message: "Payment verified successfully" };
     } catch (error) {
-      console.error('VerifyPaymentUseCase Error:', error);
-      return { success: false, message: 'Failed to verify payment' };
+      console.error("VerifyPaymentUseCase Error:", error);
+      return { success: false, message: "Failed to verify payment" };
     }
   }
 }

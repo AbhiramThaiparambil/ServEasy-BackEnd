@@ -1,29 +1,36 @@
-import { Request, Response } from 'express';
-import { injectable, inject } from 'tsyringe';
-import { GetAllActiveService } from '../../application/use-case/User/getAllService';
-import { HttpStatus } from '../../constants/HttpStatus';
-import { UpdateServiceStatus } from '../../application/use-case/bookService/updateBookingStatus';
-import { DeleteSlotUseCase } from '../../application/use-case/admin/slot/DeleteSlotUseCase';
-import { promises } from 'dns';
-import { CreateSlotUseCase } from '../../application/use-case/admin/slot/CreateSlotUseCase';
-import { GetServiceSlot } from '../../application/use-case/admin/slot/getSlot';
-import { USE_CASE_TOKENS } from '../../utils/constants/tokens';
-import { IApplyCouponToBookingUseCase } from '../../application/use-case/bookService/coupons/IApplyCouponToBookingUseCase';
-import { IRemoveCouponToBookingUseCase } from '../../application/use-case/bookService/coupons/IRemoveCoupon';
+import { Request, Response } from "express";
+import { injectable, inject } from "tsyringe";
+import { HttpStatus } from "../../constants/HttpStatus";
+// import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
+import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IApplyCouponToBooking.usecase";
+import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/removeCoupon/IRemoveCoupon.usecase";
+import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
+import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/IDeleteSlot.usecase";
+import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
+import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
 
 @injectable()
 export class ServiceController {
   constructor(
-    @inject(GetAllActiveService)
-    private getAllActiveService: GetAllActiveService,
-    @inject(UpdateServiceStatus) private updateServiceStatus: UpdateServiceStatus,
-    @inject(DeleteSlotUseCase) private deleteSlotUseCase: DeleteSlotUseCase,
-    @inject(CreateSlotUseCase) private createSlot: CreateSlotUseCase,
-    @inject(GetServiceSlot) private getServiceSlot: GetServiceSlot,
+    @inject(USE_CASE_TOKENS.GetAllActiveServiceUseCase)
+    private getAllActiveService: IGetAllActiveServiceUseCase,
+    @inject(USE_CASE_TOKENS.CancelBookingUseCase)
+    private cancelBookingUseCase: ICancelBookingUseCase,
+    @inject(USE_CASE_TOKENS.DeleteSlotUseCase)
+    private deleteSlotUseCase: IDeleteSlotUseCase,
+
+    @inject(USE_CASE_TOKENS.CreateSlotUseCase)
+    private createSlotUseCase: ICreateSlotUseCase,
+
+    @inject(USE_CASE_TOKENS.GetSlotUseCase)
+    private getServiceSlotUseCase: IGetSlotUseCase,
     @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
     private applyCouponUseCase: IApplyCouponToBookingUseCase,
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
-    private removeCouponUseCase: IRemoveCouponToBookingUseCase
+    private removeCouponUseCase: IRemoveCouponToBookingUseCase,
   ) {}
 
   async cancelUserBooking(req: Request, res: Response): Promise<void> {
@@ -33,48 +40,67 @@ export class ServiceController {
 
       if (!id || !cancellationReason) {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Booking ID and cancellation reason are required.',
+          message: "Booking ID and cancellation reason are required.",
         });
         return;
       }
 
-      const result = await this.updateServiceStatus.bookingCancel(
+      const result = await this.cancelBookingUseCase.execute(
         id,
-        'cancelled',
-        cancellationReason
+        "cancelled",
+        cancellationReason,
       );
 
       res.status(HttpStatus.OK).json({
-        message: 'Booking cancelled successfully.',
+        message: "Booking cancelled successfully.",
         data: result,
       });
     } catch (error) {
-      console.error('Error cancelling user booking:', error);
+      console.error("Error cancelling user booking:", error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Something went wrong while cancelling the booking.',
+        message: "Something went wrong while cancelling the booking.",
       });
     }
   }
 
-  async getOnlineServiceWithSlotHandler(req: Request, res: Response): Promise<void> {
+  async getOnlineServiceWithSlotHandler(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
-      const data = await this.getAllActiveService.getOnlineServicesWithSlot();
+      const { serviceId } = req.params;
+
+      if (!serviceId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "serviceId is required" });
+        return;
+      }
+      const data =
+        await this.getAllActiveService.getOnlineServicesWithSlot(serviceId);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.error('Error fetching online services with slots:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error fetching online services with slots:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   }
 
-  async getOnlineServiceSlotsHandler(req: Request, res: Response): Promise<void> {
+  async getOnlineServiceSlotsHandler(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const id = req.params.id;
 
-      const data = await this.getServiceSlot.execute(id);
+      const data = await this.getServiceSlotUseCase.execute(id);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.error('Error fetching online services with slots:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+      console.error("Error fetching online services with slots:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   }
 
@@ -84,7 +110,7 @@ export class ServiceController {
 
       if (!id) {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Slot ID is required',
+          message: "Slot ID is required",
         });
         return;
       }
@@ -92,12 +118,12 @@ export class ServiceController {
       await this.deleteSlotUseCase!.execute(id);
 
       res.status(HttpStatus.OK).json({
-        message: 'Slot deleted successfully',
+        message: "Slot deleted successfully",
       });
     } catch (error) {
-      console.error('Error deleting slot:', error);
+      console.error("Error deleting slot:", error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
       });
     }
   }
@@ -105,15 +131,15 @@ export class ServiceController {
   async createSlotHandler(req: Request, res: Response): Promise<void> {
     try {
       const { serviceId, startTime, endTime } = req.body;
-
+      console.log(startTime, endTime);
       if (!serviceId || !startTime || !endTime) {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Missing required fields: serviceId, startTime, endTime',
+          message: "Missing required fields: serviceId, startTime, endTime",
         });
         return;
       }
 
-      const slot = await this.createSlot!.execute({
+      const slot = await this.createSlotUseCase!.execute({
         serviceId,
         startTime,
         endTime,
@@ -121,13 +147,13 @@ export class ServiceController {
       });
 
       res.status(HttpStatus.CREATED).json({
-        message: 'Slot created successfully',
+        message: "Slot created successfully",
         slot,
       });
     } catch (error) {
-      console.error('Error creating slot:', error);
+      console.error("Error creating slot:", error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
       });
     }
   }
@@ -137,10 +163,13 @@ export class ServiceController {
       const { bookingId } = req.params;
       const { couponCode } = req.body;
 
-      const updatedBooking = await this.applyCouponUseCase.execute({ bookingId, couponCode });
+      const updatedBooking = await this.applyCouponUseCase.execute({
+        bookingId,
+        couponCode,
+      });
 
       res.status(HttpStatus.OK).json({
-        message: 'Coupon applied successfully',
+        message: "Coupon applied successfully",
         payment: updatedBooking,
       });
       return;
@@ -148,7 +177,7 @@ export class ServiceController {
       console.log(error);
       res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: error.message || 'Failed to apply coupon' });
+        .json({ message: error.message || "Failed to apply coupon" });
 
       return;
     }
@@ -158,22 +187,24 @@ export class ServiceController {
     try {
       const { bookingId } = req.params;
       if (!bookingId) {
-        res
-          .status(HttpStatus.BAD_REQUEST)
-          .json({ message: 'Missing required fields: serviceId, startTime, endTime' });
+        res.status(HttpStatus.BAD_REQUEST).json({
+          message: "Missing required fields: serviceId, startTime, endTime",
+        });
         return;
       }
-      const updatedBooking = await this.removeCouponUseCase.execute( bookingId );
-          console.log(updatedBooking)
-       res.status(200).json({
-        message: 'Coupon removed successfully',
-        updatedBooking
+      const updatedBooking = await this.removeCouponUseCase.execute(bookingId);
+      console.log(updatedBooking);
+      res.status(200).json({
+        message: "Coupon removed successfully",
+        updatedBooking,
       });
-      return
-    } catch (error: any) { 
-      console.log(error)
-       res.status(400).json({ message: error.message || 'Failed to remove coupon' });
-    return
-      }
+      return;
+    } catch (error: any) {
+      console.log(error);
+      res
+        .status(400)
+        .json({ message: error.message || "Failed to remove coupon" });
+      return;
+    }
   }
 }

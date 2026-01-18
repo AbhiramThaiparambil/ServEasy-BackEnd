@@ -1,17 +1,17 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
-import { RazorpayService } from "../../../services/razorpayService";
+import { RazorpayService } from "../../../services/payment/RazorpayService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
+import { SERVICE_TOKENS } from "../../../constants/tokens";
 
 @injectable()
 export class GetPaymentInfoServiceProviderUseCase {
   constructor(
-    @inject(RazorpayService) private razorpayService: RazorpayService,
+    @inject(SERVICE_TOKENS.RazorpayService)
+    private razorpayService: RazorpayService,
     @inject(ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
-    
+    private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
   async serviceProviderInfo(id: string) {
@@ -20,9 +20,21 @@ export class GetPaymentInfoServiceProviderUseCase {
     return data;
   }
 
-  async adminPaymentInfo(skip:number,limit:number,search:string,status:string,statusType:'serviceStatus' | 'paymentStatus' = 'serviceStatus') {
-    const data = await this.serviceBookingRepository.findPaymentInfoAdmin(skip,limit,search,status,statusType);
-    const count= await this.serviceBookingRepository.getBookedServiceCount()
-    return {data,count};
+  async adminPaymentInfo(
+    skip: number,
+    limit: number,
+    search: string,
+    status: string,
+    statusType: "serviceStatus" | "paymentStatus" = "serviceStatus"
+  ) {
+    const data = await this.serviceBookingRepository.findPaymentInfoAdmin(
+      skip,
+      limit,
+      search,
+      status,
+      statusType
+    );
+    const count = await this.serviceBookingRepository.getBookedServiceCount();
+    return { data, count };
   }
 }

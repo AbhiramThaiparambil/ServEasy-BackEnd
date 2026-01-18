@@ -1,80 +1,134 @@
-import { Router } from 'express';
-import { addNewService } from '../controllers/service/addnewService';
-import { getServices } from '../controllers/service/getServices';
-import { serviceProviderAuth } from '../../Middlewares/serviceProviderMiddleware';
-import { blockUnblockService } from '../controllers/service/activeAndInactive';
-import { updateService } from '../controllers/service/updateService';
-import { bookServiceHandler } from '../controllers/ServiceBooking/serviceBooking';
-import { GetbookServiceHandler } from '../controllers/ServiceBooking/getBookedService';
-import { getSingleBookedServiceHandler } from '../controllers/ServiceBooking/getSingleBookedService';
-import { GetServiceProviderBookServiceHandler } from '../controllers/serviceProvider/bookings/GetBookServic';
-import { getServiceDetailsServiceProvider } from '../controllers/ServiceBooking/getServiceDetailsServiceProvider';
-import { serviceProviderStatusChange } from '../controllers/ServiceBooking/serviceProviderStausChange';
-import { authMiddleware } from '../../Middlewares/authMiddleware';
-import { uploadBillsHandler } from '../controllers/ServiceBooking/uploadBills';
-import { ServiceController } from '../controllers/ServiceController';
-import { container } from 'tsyringe';
-import { checkUserBlocked } from '../../Middlewares/checkUserBlocked';
-
+import { Router } from "express";
+import { addNewService } from "../controllers/service/addnewService";
+import { getServices } from "../controllers/service/getServices";
+import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
+import { blockUnblockService } from "../controllers/service/activeAndInactive";
+import { updateService } from "../controllers/service/updateService";
+import { authMiddleware } from "../Middlewares/authMiddleware";
+import { uploadBillsHandler } from "../controllers/ServiceBooking/uploadBills";
+import { ServiceController } from "../controllers/ServiceController";
+import { container } from "tsyringe";
+import { checkUserBlocked } from "../Middlewares/checkUserBlocked";
+import { BookingController } from "../controllers/BookingController";
+const bookingController = container.resolve(BookingController);
 const serviceController = container.resolve(ServiceController);
-const serviceRouter = Router();
-serviceRouter.put('/:serviceId', updateService);
+const router = Router();
+router.put("/:serviceId", updateService);
 
-serviceRouter
-  .route('/')
+router
+  .route("/")
   .post(addNewService)
-  .get(authMiddleware('User'), serviceProviderAuth, getServices);
+  .get(authMiddleware("User"), serviceProviderAuth, getServices);
 
-serviceRouter.patch(
-  '/block-unblock',
-  authMiddleware('User'),
+router.patch(
+  "/block-unblock",
+  authMiddleware("User"),
   serviceProviderAuth,
   blockUnblockService
 );
 
-
-
-serviceRouter.post('/bookings/:bookingId/coupon/apply', authMiddleware('User'), checkUserBlocked,(req, res) =>
-  serviceController.applyCoupon(req, res) );
-
-serviceRouter.delete('/bookings/:bookingId/coupon/remove', authMiddleware('User'), checkUserBlocked,(req, res) =>serviceController.removeCoupon(req, res)  );
-
-serviceRouter.post('/book', authMiddleware('User'), checkUserBlocked, bookServiceHandler);
-
-serviceRouter.get('/bookings', authMiddleware('User'), checkUserBlocked, GetbookServiceHandler);
-serviceRouter.get(
-  '/bookings/serviceprovider',
-  authMiddleware('User'),
-  serviceProviderAuth,
-  GetServiceProviderBookServiceHandler
+router.post(
+  "/bookings/:bookingId/coupon/apply",
+  authMiddleware("User"),
+  checkUserBlocked,
+  (req, res) => serviceController.applyCoupon(req, res)
 );
 
-serviceRouter.get('/online-services/with-slots', (req, res) =>
+router.delete(
+  "/bookings/:bookingId/coupon/remove",
+  authMiddleware("User"),
+  checkUserBlocked,
+  (req, res) => serviceController.removeCoupon(req, res)
+);
+
+router.post(
+  "/book",
+  authMiddleware("User"),
+  checkUserBlocked,
+  bookingController.createBooking.bind(bookingController)
+);
+
+router.post(
+  "/book-online",
+  authMiddleware("User"),
+  checkUserBlocked,
+  bookingController.createOnlineBooking.bind(bookingController)
+);
+
+router.get(
+  "/bookings",
+  authMiddleware("User"),
+  checkUserBlocked,
+  bookingController.getUserBookedServices.bind(bookingController)
+);
+
+router.get(
+  "/bookings/serviceprovider",
+  authMiddleware("User"),
+  serviceProviderAuth,
+
+  bookingController.getBookedServicesForProvider.bind(bookingController)
+);
+
+router.get("/online-services/with-slots/:serviceId", (req, res) =>
   serviceController.getOnlineServiceWithSlotHandler(req, res)
 );
 
-serviceRouter.get('/online-services/slots/:id', (req, res) =>
+router.get("/online-services/slots/:id", (req, res) =>
   serviceController.getOnlineServiceSlotsHandler(req, res)
 );
 
-serviceRouter.delete('/slots/:id', (req, res) => serviceController.deleteSlotHandler(req, res));
-
-serviceRouter.post('/slots', (req, res) => serviceController.createSlotHandler(req, res));
-
-serviceRouter.post('/service-provider/uploadbills/:id/', uploadBillsHandler);
-
-serviceRouter.put(
-  '/service-provider/bookings/:id/:action',
-  authMiddleware('User'),
-  serviceProviderAuth,
-  serviceProviderStatusChange
+router.delete("/slots/:id", (req, res) =>
+  serviceController.deleteSlotHandler(req, res)
 );
 
-serviceRouter.put('/bookings/:id/cancel', (req, res) =>
-  serviceController.cancelUserBooking(req, res)
+router.post("/slots", (req, res) =>
+  serviceController.createSlotHandler(req, res)
 );
 
-serviceRouter.get('/bookings/serviceProvider/:id', getServiceDetailsServiceProvider);
+router.post("/service-provider/uploadbills/:id/", uploadBillsHandler);
 
-serviceRouter.get('/bookings:id', getSingleBookedServiceHandler);
-export default serviceRouter;
+// router.put(
+//   "/service-provider/bookings/:id/:action",
+//   authMiddleware("User"),
+//   serviceProviderAuth,
+//   serviceProviderStatusChange
+// );
+
+router.patch(
+  "/service-provider/booking/:id/status",
+  bookingController.updateBookingStatus.bind(bookingController)
+);
+router.patch(
+  "/service-provider/booking/:id/confirm",
+  bookingController.confirmBooking.bind(bookingController)
+);
+router.patch(
+  "/service-provider/booking/:id/cancel",
+  bookingController.cancelBooking.bind(bookingController)
+);
+router.patch(
+  "/service-provider/booking/:id/payment-request",
+  bookingController.requestPayment.bind(bookingController)
+);
+
+// router.put("/bookings/:id/cancel", (req, res) =>
+//   serviceController.cancelUserBooking(req, res)
+// );
+
+router.get(
+  "/bookings/serviceProvider/:id",
+  bookingController.getBookedServiceDetailsForProvider.bind(bookingController)
+);
+
+router.get(
+  "/bookings:id",
+  bookingController.getBookedServiceDetailsForUser.bind(bookingController)
+);
+
+router.patch(
+  "/online-bookings/:bookingId/reschedule",
+  bookingController.RescheduleOnlineService.bind(bookingController)
+);
+
+export default router;

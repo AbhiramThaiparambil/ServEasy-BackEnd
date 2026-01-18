@@ -1,11 +1,11 @@
-import { Types } from 'mongoose';
-import { ISlot } from './ISlot';
+import { Types } from "mongoose";
+import { ISlot } from "./ISlot";
 
-export interface Location {
+export interface ILocation {
   type: "Point";
   coordinates: [number, number];
   address: string;
-} 
+}
 export interface Review {
   userId: Types.ObjectId;
   rating: number;
@@ -13,6 +13,7 @@ export interface Review {
 }
 
 export interface IService {
+  _id?: Types.ObjectId;
   serviceName: string;
   description: string;
   serviceType: string;
@@ -25,12 +26,6 @@ export interface IService {
   serviceImage: string;
 }
 
-
 export interface IOnlineService extends IService {
-
-slots:ISlot[]|[]
-
+  slots: ISlot[] | [];
 }
-
-
-

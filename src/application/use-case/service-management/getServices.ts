@@ -1,6 +1,5 @@
 import { IService } from "../../../domain/entities/IService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import { CloudinaryService } from "../../../services/cloudinary/cloudinary";
 import { inject, injectable } from "tsyringe";
 @injectable()
 export class GetService {
@@ -10,8 +9,10 @@ export class GetService {
 
   async execute(id: string) {
     try {
-      const allServices = await this.serviceRepository.findAllServiceProviderId(id);
-     
+      const allServices = await this.serviceRepository.findAllServiceProviderId(
+        id
+      );
+
       return allServices;
     } catch (error) {
       console.error("Error adding new service:", error);

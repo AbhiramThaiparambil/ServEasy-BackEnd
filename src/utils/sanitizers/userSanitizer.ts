@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { User } from "../../domain/entities/IUser";
+import { IUser } from "../../domain/entities/IUser";
 
 export interface SafeUser {
   _id?: string;
@@ -7,12 +7,12 @@ export interface SafeUser {
   email: string | null;
   phone: string | null;
   isBlocked: boolean;
-  profileImage?: string; 
-  isAdmin?:boolean,
-  serviceProvider?:Types.ObjectId
+  profileImage?: string;
+  isAdmin?: boolean;
+  serviceProvider?: Types.ObjectId;
 }
 
-export const userSanitizer = (user: User): SafeUser => {
+export const userSanitizer = (user: IUser): SafeUser => {
   const safeUser: SafeUser = {
     _id: user._id,
     userName: user.userName,
@@ -20,7 +20,7 @@ export const userSanitizer = (user: User): SafeUser => {
     phone: user.phone || null,
     isBlocked: user.isBlocked || false,
     profileImage: user.profileImage,
-    isAdmin: user.isAdmin
+    isAdmin: user.isAdmin,
   };
 
   if (user.serviceProvider instanceof Types.ObjectId) {
