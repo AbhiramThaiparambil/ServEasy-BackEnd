@@ -1,4 +1,4 @@
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
+import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
 
 export interface IServiceProviderRejectVerify {
   rejectServiceProvider(

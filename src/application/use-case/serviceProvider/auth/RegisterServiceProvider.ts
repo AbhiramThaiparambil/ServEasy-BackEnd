@@ -13,24 +13,21 @@ export class RegisterServiceProviderUseCase {
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
-    private cloudinaryService: CloudinaryService // Ensure this matches the registration
+    private cloudinaryService: CloudinaryService, // Ensure this matches the registration
   ) {}
 
   async execute(
     serviceProviderData: IServiceProviderRegistration,
     profileImageRow: string,
     documentRow: string,
-    document2Row: string | null
+    document2Row: string | null,
   ): Promise<IServiceProvider> {
-    console.log("-----------------");
-
     console.log(serviceProviderData.bankDetails);
-    console.log("-----------------");
 
     const document = await this.cloudinaryService.uploadDocuments(documentRow);
     const profileImage =
       await this.cloudinaryService.uploadServiceProviderProfile(
-        profileImageRow
+        profileImageRow,
       );
     console.log(document);
 
@@ -38,14 +35,12 @@ export class RegisterServiceProviderUseCase {
     serviceProviderData.document?.push(document);
 
     if (document2Row) {
-      const document = await this.cloudinaryService.uploadDocuments(
-        document2Row
-      );
+      const document =
+        await this.cloudinaryService.uploadDocuments(document2Row);
       serviceProviderData.document.push(document);
     }
-    const result = await this.serviceProviderRepository.create(
-      serviceProviderData
-    );
+    const result =
+      await this.serviceProviderRepository.create(serviceProviderData);
     console.log(result);
     return result;
   }

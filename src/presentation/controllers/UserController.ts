@@ -921,7 +921,6 @@ export class UserController {
 
   public editAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log("-9-0-0-0-0-0-0-0-0");
       console.log(req.body);
 
       const { address } = req.body;

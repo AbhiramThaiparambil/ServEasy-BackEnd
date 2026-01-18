@@ -181,7 +181,6 @@ export class ServiceProviderController {
     req: Request,
     res: Response,
   ): Promise<void> {
-    console.log("getPaymentInfo is:", this.getPaymentInfo);
 
     try {
       const startDate = req.query.startDate
@@ -191,7 +190,6 @@ export class ServiceProviderController {
         ? new Date(req.query.endDate as string)
         : undefined;
       const serviceProviderId = res.locals.serviceProvider_id;
-      console.log("getPaymentInfo is:", this.getPaymentInfo);
       const paymentData = await this.getPaymentInfo.execute(
         serviceProviderId,
         startDate,

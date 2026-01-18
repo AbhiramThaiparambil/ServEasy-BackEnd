@@ -14,8 +14,6 @@ import {
 export class AdRepository implements IAdRepository {
   async createAd(data: IAd): Promise<IAd | null> {
     try {
-      console.log("===========================");
-
       const ad = await AdModel.create(data);
       return ad.toObject() as IAd;
     } catch (e) {
@@ -94,7 +92,7 @@ export class AdRepository implements IAdRepository {
 
       const result = await AdModel.updateOne(
         { _id: adId },
-        { $set: { status } }
+        { $set: { status } },
       );
 
       return result.modifiedCount > 0;
@@ -107,7 +105,7 @@ export class AdRepository implements IAdRepository {
   async getAdsByProvider(
     providerId: string,
     skip: number = 0,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<IAdDTO[]> {
     try {
       const id = new Types.ObjectId(providerId);
@@ -123,7 +121,7 @@ export class AdRepository implements IAdRepository {
   }
 
   async findRecommendedAds(
-    params: IGetRecommendedAdsRequestDTO
+    params: IGetRecommendedAdsRequestDTO,
   ): Promise<IRecommendedAdDTO[]> {
     const {
       count = 1,
@@ -238,7 +236,7 @@ export class AdRepository implements IAdRepository {
       },
       {
         $set: { status: "expired" },
-      }
+      },
     );
 
     return result.modifiedCount ?? 0;
@@ -271,7 +269,7 @@ export class AdRepository implements IAdRepository {
     const updated = await AdModel.findByIdAndUpdate(
       adId,
       { $inc: { clicks: 1 } },
-      { new: true }
+      { new: true },
     );
 
     return updated?.clicks ?? 0;

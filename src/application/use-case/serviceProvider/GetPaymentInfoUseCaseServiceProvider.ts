@@ -5,20 +5,19 @@ import { ServiceBookingRepository } from "../../../infrastructure/repositories/S
 export class GetPaymentInfoUseCaseServiceProvider {
   constructor(
     @inject(ServiceBookingRepository)
-    private serviceBooking: ServiceBookingRepository
+    private serviceBooking: ServiceBookingRepository,
   ) {}
 
   async execute(
     serviceProviderId: string,
     startDate: Date = new Date("1970-01-01"),
-    endDate: Date = new Date()
+    endDate: Date = new Date(),
   ): Promise<any> {
     const res = await this.serviceBooking.getPaymentInfoServiceProvider(
       serviceProviderId,
       startDate ?? null,
-      endDate ?? null
+      endDate ?? null,
     );
-    console.log("-----------------------------------------");
 
     console.log(res);
     return res;

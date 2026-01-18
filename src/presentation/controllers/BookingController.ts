@@ -63,7 +63,6 @@ export class BookingController {
         data: booking,
       });
     } catch (error) {
-      console.log("error message  🤡😨😨😨");
 
       console.log(error);
       res.status(409).json({

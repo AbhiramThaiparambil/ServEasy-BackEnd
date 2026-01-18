@@ -1,5 +1,5 @@
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
-import { SafeServiceProvider } from "../../../../../utils/sanitizers/serviceProviderSanitrizer";
+import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
+import { SafeServiceProvider } from "../../../../utils/sanitizers/serviceProviderSanitrizer";
 
 export interface IGetServiceProviders {
   execute(

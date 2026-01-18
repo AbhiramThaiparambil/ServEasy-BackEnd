@@ -340,7 +340,6 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     try {
       const matchConditions: any[] = [];
 
-      console.log(`${statusField}: ${status} --------------`);
 
       // Add status filter
       if (status) {

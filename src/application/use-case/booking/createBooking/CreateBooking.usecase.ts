@@ -34,7 +34,6 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
     try {
-      console.log("im useCase booking");
       const service = await this.serviceRepository.findById(serviceId);
       if (!service) {
         throw new Error("Service not found");

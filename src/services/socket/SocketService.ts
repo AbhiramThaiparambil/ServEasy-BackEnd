@@ -24,7 +24,7 @@ export class SocketService {
     private readonly saveMessageUseCase: SaveMessageUseCase,
 
     @inject(USE_CASE_TOKENS.CreateNotificationUseCase)
-    private readonly notificationUseCase: ICreateNotificationUseCase
+    private readonly notificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   public initialize(server: HTTPServer) {
@@ -40,7 +40,7 @@ export class SocketService {
 
       new ChatHandler(this.io, this.saveMessageUseCase, this).register(socket);
       new NotificationHandler(this.notificationUseCase, this.io).register(
-        socket
+        socket,
       );
       new VideoCallHandler(this.io, this).register(socket);
 
@@ -55,20 +55,14 @@ export class SocketService {
     notification:
       | IVideoCallNotification
       | IChatNotification
-      | ISystemNotification
+      | ISystemNotification,
   ) {
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
-
     console.log(notification);
-    console.log("----------------------------------------------------");
     console.log(userId);
 
     if (!this.io) {
       console.error(
-        "SocketService has not been initialized with an HTTP server yet."
+        "SocketService has not been initialized with an HTTP server yet.",
       );
       return;
     }
