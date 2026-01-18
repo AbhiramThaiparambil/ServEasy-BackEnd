@@ -1,5 +1,5 @@
 import { injectable, inject, container } from "tsyringe";
-import mongoose, { Types } from "mongoose";
+import mongoose, { ClientSession, Types } from "mongoose";
 import {
   IServiceBooking,
   IPreferredServiceDateTime,
@@ -10,15 +10,18 @@ import { ServiceRepository } from "../../../../infrastructure/repositories/Servi
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import { ICreateBookingUseCase } from "./ICreateBooking.usecase";
 import { BookingQueueService } from "../../../../infrastructure/jobs/queue/BookingQueueService";
+import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
 
 @injectable()
 export class CreateBookingUseCase implements ICreateBookingUseCase {
   constructor(
-    @inject(ServiceRepository)
-    private serviceRepository: ServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository)
+    private serviceRepository: IServiceRepository,
 
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
   ) {}
 
   async execute(
@@ -26,62 +29,71 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     serviceId: mongoose.Types.ObjectId,
     address: IAddress,
     preferredServiceTime: IPreferredServiceDateTime,
-    liveLocation?: IliveLocation
+    liveLocation?: IliveLocation,
   ): Promise<IServiceBooking> {
-    console.log("im useCase booking");
-    const service = await this.serviceRepository.findById(serviceId);
-    if (!service) {
-      throw new Error("Service not found");
-    }
+    const session: ClientSession = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      console.log("im useCase booking");
+      const service = await this.serviceRepository.findById(serviceId);
+      if (!service) {
+        throw new Error("Service not found");
+      }
 
-    const hasActiveBooking =
-      await this.serviceBookingRepository.hasActiveBooking(userId, serviceId);
+      const hasActiveBooking =
+        await this.serviceBookingRepository.hasActiveBooking(userId, serviceId);
 
-    if (hasActiveBooking) {
-      throw new Error("User already has an active booking");
-    }
+      if (hasActiveBooking) {
+        throw new Error("User already has an active booking");
+      }
 
-    const activeServices =
-      await this.serviceBookingRepository.countActiveServices(
-        service.serviceProviderId
+      const activeServices =
+        await this.serviceBookingRepository.countActiveServices(
+          service.serviceProviderId,
+        );
+      console.log(activeServices);
+      if (activeServices >= 2) {
+        throw new Error("Service provider is busy");
+      }
+
+      const bookingData: IServiceBooking = {
+        serviceProviderId: service.serviceProviderId,
+        serviceId,
+        userId,
+        address,
+        serviceStatus: "pending",
+        paymentType: "pending",
+        paymentStatus: "pending",
+        bookedTime: new Date(),
+        preferredSlot: preferredServiceTime,
+        ...(liveLocation && { liveLocation }),
+      };
+
+      const result =
+        await this.serviceBookingRepository.createServiceBooking(bookingData);
+
+      if (!result || !result._id) {
+        throw new Error("Failed to book service");
+      }
+
+      await this.serviceBookingRepository.addBookingHistory(
+        result._id,
+        "booked",
+        "Service has been booked",
       );
-    console.log(activeServices);
-    if (activeServices >= 2) {
-      throw new Error("Service provider is busy");
+      await session.commitTransaction();
+      session.endSession();
+
+      const bookingQueueService = container.resolve(BookingQueueService);
+      await bookingQueueService.addAutoCancelJob(
+        new Types.ObjectId(result._id.toString()),
+      );
+
+      return result;
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
     }
-
-    const bookingData: IServiceBooking = {
-      serviceProviderId: service.serviceProviderId,
-      serviceId,
-      userId,
-      address,
-      serviceStatus: "pending",
-      paymentType: "pending",
-      paymentStatus: "pending",
-      bookedTime: new Date(),
-      preferredSlot: preferredServiceTime,
-      ...(liveLocation && { liveLocation }),
-    };
-
-    const result = await this.serviceBookingRepository.createServiceBooking(
-      bookingData
-    );
-
-    if (!result || !result._id) {
-      throw new Error("Failed to book service");
-    }
-
-    await this.serviceBookingRepository.addBookingHistory(
-      result._id,
-      "booked",
-      "Service has been booked"
-    );
-
-    const bookingQueueService = container.resolve(BookingQueueService);
-    await bookingQueueService.addAutoCancelJob(
-      new Types.ObjectId(result._id.toString())
-    );
-
-    return result;
   }
 }

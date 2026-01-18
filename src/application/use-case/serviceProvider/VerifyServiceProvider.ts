@@ -11,7 +11,7 @@ export class VerifyServiceProvider {
     private serviceProviderRepository: IServiceProviderRepository,
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
-    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
   ) {}
 
   async execute(userId: string): Promise<string | false> {
@@ -24,13 +24,20 @@ export class VerifyServiceProvider {
 
       if (userData.serviceProvider) {
         const serviceProvider = await this.serviceProviderRepository.findById(
-          userData.serviceProvider.toString()
+          userData.serviceProvider.toString(),
         );
+
+        if (
+          serviceProvider?.isVerified == "pending" ||
+          serviceProvider?.isVerified == "rejected"
+        ) {
+          return false;
+        }
 
         if (serviceProvider && serviceProvider._id) {
           return this.tokenService.generateRefreshToken(
             serviceProvider._id.toString(),
-            "serviceProvider"
+            "serviceProvider",
           );
         }
       }

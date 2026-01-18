@@ -39,13 +39,12 @@ export class BookingController {
     @inject(USE_CASE_TOKENS.GetBookedServiceByIdUseCase)
     private getBookedServiceByIdUseCase: IGetBookedServiceByIdUseCase,
     @inject(USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase)
-    private rescheduleOnlineServiceSlotUseCase: IRescheduleOnlineServiceSlotUseCase
+    private rescheduleOnlineServiceSlotUseCase: IRescheduleOnlineServiceSlotUseCase,
   ) {}
 
   async createBooking(req: Request, res: Response) {
     try {
       const userId = res.locals.user?.userId;
-      console.log("hey");
       const { serviceId, address, preferredServiceTime, liveLocation } =
         req.body;
       console.log(serviceId, address, preferredServiceTime, liveLocation);
@@ -55,7 +54,7 @@ export class BookingController {
         new mongoose.Types.ObjectId(serviceId),
         address,
         preferredServiceTime,
-        liveLocation
+        liveLocation,
       );
 
       res.status(201).json({
@@ -64,6 +63,8 @@ export class BookingController {
         data: booking,
       });
     } catch (error) {
+      console.log("error message  🤡😨😨😨");
+
       console.log(error);
       res.status(409).json({
         success: false,
@@ -81,7 +82,7 @@ export class BookingController {
       const booking = await this.createOnlineBookingUseCase.execute(
         userId,
         new mongoose.Types.ObjectId(serviceId),
-        slotId
+        slotId,
       );
 
       res.status(201).json({
@@ -110,7 +111,7 @@ export class BookingController {
 
       const data = await this.updateBookingStatusUseCase.execute(
         id,
-        serviceStatus
+        serviceStatus,
       );
 
       res.status(HttpStatus.OK).json({
@@ -144,7 +145,7 @@ export class BookingController {
         estimatedServiceTime,
         serviceProviderId,
         Boolean(reschedule),
-        reschedReason
+        reschedReason,
       );
 
       res.status(HttpStatus.OK).json({
@@ -171,7 +172,7 @@ export class BookingController {
         bookingId,
         date,
         startTime,
-        endTime
+        endTime,
       );
 
       res.status(HttpStatus.OK).json({
@@ -200,7 +201,7 @@ export class BookingController {
       const data = await this.cancelBookingUseCase.execute(
         id,
         serviceStatus,
-        cancellationReason
+        cancellationReason,
       );
 
       res.status(HttpStatus.OK).json({
@@ -228,7 +229,7 @@ export class BookingController {
       const data = await this.requestPaymentUseCase.execute(
         id,
         payment,
-        paymentStatus
+        paymentStatus,
       );
 
       res.status(HttpStatus.OK).json({
@@ -261,7 +262,7 @@ export class BookingController {
         await this.getBookedServicesUseCase.getUserBookedServices(
           userId,
           skip,
-          limit
+          limit,
         );
 
       res.status(HttpStatus.OK).json({ services });
@@ -287,7 +288,7 @@ export class BookingController {
 
       const service =
         await this.getBookedServiceByIdUseCase.getForServiceProvider(
-          new mongoose.Types.ObjectId(id)
+          new mongoose.Types.ObjectId(id),
         );
 
       res.status(HttpStatus.OK).json({ service });
@@ -312,7 +313,7 @@ export class BookingController {
       }
 
       const service = await this.getBookedServiceByIdUseCase.getForUser(
-        new mongoose.Types.ObjectId(id)
+        new mongoose.Types.ObjectId(id),
       );
 
       res.status(HttpStatus.OK).json({ service });
@@ -344,7 +345,7 @@ export class BookingController {
         await this.getBookedServicesUseCase.getServiceProviderBookedServices(
           new mongoose.Types.ObjectId(serviceProviderId),
           skip,
-          limit
+          limit,
         );
 
       res.status(HttpStatus.OK).json({
@@ -355,7 +356,7 @@ export class BookingController {
       console.error(
         "Error in getBookedServicesForProvider:",
         (error as Error).message,
-        (error as Error).stack
+        (error as Error).stack,
       );
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

@@ -10,13 +10,13 @@ import { IPayment } from "../../domain/entities/IPayment";
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
   async findBookedServicesByUserId(
-    userId: Types.ObjectId
+    userId: Types.ObjectId,
   ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ userId }).sort({ bookedTime: -1 });
   }
 
   async findServicesByProviderId(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: Types.ObjectId,
   ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ serviceProviderId }).sort({
       bookedTime: -1,
@@ -28,7 +28,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async createServiceBooking(
-    serviceBookingData: IServiceBooking
+    serviceBookingData: IServiceBooking,
   ): Promise<IServiceBooking> {
     const newServiceBooking = new ServiceBooking(serviceBookingData);
     return await newServiceBooking.save();
@@ -36,29 +36,29 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async updateServiceStatus(
     serviceBookingId: Types.ObjectId,
-    serviceStatus: string
+    serviceStatus: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       serviceBookingId,
       { serviceStatus },
-      { new: true }
+      { new: true },
     );
   }
 
   async updatePaymentStatus(
     serviceBookingId: Types.ObjectId,
     paymentStatus: string,
-    paymentType: string
+    paymentType: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       serviceBookingId,
       { paymentStatus, paymentType },
-      { new: true }
+      { new: true },
     );
   }
 
   async findCountBookedServicebyUserId(
-    userId: Types.ObjectId
+    userId: Types.ObjectId,
   ): Promise<number> {
     return await ServiceBooking.find({ userId }).countDocuments();
   }
@@ -66,7 +66,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async findBookedServicesAndServiceByUserId(
     userId: Types.ObjectId,
     skip: number,
-    limit: number
+    limit: number,
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -165,7 +165,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async findBookedServicesAndServiceByServiceProviderId(
     ServiceProviderId: Types.ObjectId,
     skip: number,
-    limit: number
+    limit: number,
   ): Promise<any> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
@@ -245,7 +245,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findCountBookedService(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: Types.ObjectId,
   ): Promise<number> {
     try {
       return await ServiceBooking.countDocuments({ serviceProviderId });
@@ -256,7 +256,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findBookedServiceById(
-    id: Types.ObjectId
+    id: Types.ObjectId,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findById(id);
   }
@@ -264,7 +264,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async confirmBooking(
     id: Types.ObjectId,
     newStatus: string,
-    estimatedServiceTime: string
+    estimatedServiceTime: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: id },
@@ -274,13 +274,13 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           estimatedServiceTime: estimatedServiceTime,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
   async cancelBooking(
     id: Types.ObjectId,
     newStatus: string,
-    cancelReason: string
+    cancelReason: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: id },
@@ -290,7 +290,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           cancelReason: cancelReason,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -304,7 +304,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           payment: payment,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -316,7 +316,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           serviceBills: uploadBills,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -335,7 +335,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     limit: number,
     search: string,
     status: string,
-    statusField: "serviceStatus" | "paymentStatus" = "serviceStatus"
+    statusField: "serviceStatus" | "paymentStatus" = "serviceStatus",
   ): Promise<any> {
     try {
       const matchConditions: any[] = [];
@@ -494,7 +494,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     } catch (e) {
       console.error(
         "Error fetching booked service with user and service info:",
-        e
+        e,
       );
       throw e;
     }
@@ -502,17 +502,17 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async updateReviewId(
     bookingId: Types.ObjectId,
-    reviewId: Types.ObjectId
+    reviewId: Types.ObjectId,
   ): Promise<void> {
     await ServiceBooking.findOneAndUpdate(
       { _id: bookingId },
-      { $set: { reviewId: reviewId } }
+      { $set: { reviewId: reviewId } },
     );
   }
 
   async getPaymentInfo(
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ): Promise<any> {
     try {
       const match: any = {
@@ -559,7 +559,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async getPaymentInfoServiceProvider(
     serviceProviderId: string,
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ): Promise<any> {
     try {
       const match: any = {
@@ -606,7 +606,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async isServiceTimeConflicting(
     serviceProviderId: Types.ObjectId,
-    estimatedServiceTime: string
+    estimatedServiceTime: string,
   ): Promise<boolean> {
     console.log(serviceProviderId, "serviceProviderId");
     console.log(estimatedServiceTime, "estimatedServiceTime");
@@ -620,7 +620,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async rescheduleBooking(
     bookingId: Types.ObjectId,
-    newDate: string
+    newDate: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
       { _id: bookingId },
@@ -629,14 +629,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           estimatedServiceTime: newDate,
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
   async addBookingHistory(
     bookingId: Types.ObjectId,
     action: string,
-    message: string
+    message: string,
   ): Promise<void> {
     await ServiceBooking.findByIdAndUpdate(bookingId, {
       $push: {
@@ -650,7 +650,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async checkAvailability(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: Types.ObjectId,
   ): Promise<{ available: boolean; reason?: string }> {
     try {
       const bookings = await ServiceBooking.find({
@@ -668,7 +668,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
           if (isNaN(estimatedTime.getTime())) {
             console.warn(
-              `Invalid estimatedServiceTime format: ${estimatedTimeString}`
+              `Invalid estimatedServiceTime format: ${estimatedTimeString}`,
             );
             continue;
           }
@@ -681,7 +681,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           }
 
           const oneHourAfter = new Date(
-            estimatedTime.getTime() + 60 * 60 * 1000
+            estimatedTime.getTime() + 60 * 60 * 1000,
           );
           if (now < oneHourAfter) {
             return {
@@ -701,20 +701,20 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async update(
     bookingId: string,
-    data: Partial<IServiceBooking>
+    data: Partial<IServiceBooking>,
   ): Promise<IServiceBooking | null> {
     const updatedBooking = await ServiceBooking.findByIdAndUpdate(
       bookingId,
       data,
       {
         new: true,
-      }
+      },
     );
     return updatedBooking;
   }
 
   async removeCouponAndUpdatePayment(
-    bookingId: string
+    bookingId: string,
   ): Promise<IServiceBooking> {
     const booking = await ServiceBooking.findById(bookingId);
     if (!booking || !booking.payment) throw new Error("Booking not found");
@@ -728,14 +728,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
           "payment.finalTotal": booking.payment.total,
         },
       },
-      { new: true }
+      { new: true },
     );
 
     return updated as IServiceBooking;
   }
 
   async countActiveServices(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: Types.ObjectId,
   ): Promise<number> {
     try {
       return await ServiceBooking.countDocuments({
@@ -750,7 +750,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async hasActiveBooking(
     userId: Types.ObjectId,
-    serviceId: Types.ObjectId
+    serviceId: Types.ObjectId,
   ): Promise<boolean> {
     console.log(userId, serviceId);
     const result = await ServiceBooking.aggregate([
@@ -772,7 +772,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     bookingId: Types.ObjectId,
     date: Date,
     startTime: Date,
-    endTime: Date
+    endTime: Date,
   ): Promise<IServiceBooking | null> {
     const booking = await ServiceBooking.findById(bookingId);
 

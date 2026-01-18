@@ -12,6 +12,6 @@ export interface ICreateBookingUseCase {
     serviceId: mongoose.Types.ObjectId,
     address: IAddress,
     preferredServiceTime: IPreferredServiceDateTime,
-    liveLocation?: IliveLocation
+    liveLocation?: IliveLocation,
   ): Promise<IServiceBooking>;
 }
