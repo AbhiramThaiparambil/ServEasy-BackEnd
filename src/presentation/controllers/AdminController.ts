@@ -1066,8 +1066,6 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
       const data = await this.getAdsUseCase.execute(skip, limit);
-      console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶");
-      console.log("🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶");
 
       console.log(data);
 
@@ -1082,8 +1080,6 @@ export class AdminController {
 
   async changeAdStatus(req: Request, res: Response): Promise<void> {
     try {
-      console.log("😍😍😍😍😍😍😍😍😍😍😍");
-      console.log("😍😍😍😍😍😍😍😍😍😍😍");
       const { adId } = req.params;
       const { status } = req.body; // expecting { status: "active" | "block" }
       console.log("called");

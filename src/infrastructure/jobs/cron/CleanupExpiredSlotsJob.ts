@@ -8,7 +8,7 @@ import { ICleanupSlotsBeforeTodayUseCase } from "../../../application/use-case/s
 export class CleanupExpiredSlotsJob {
   constructor(
     @inject(USE_CASE_TOKENS.CleanupSlotsBeforeTodayUseCase)
-    private cleanupSlotsUseCase: ICleanupSlotsBeforeTodayUseCase
+    private cleanupSlotsUseCase: ICleanupSlotsBeforeTodayUseCase,
   ) {
     // (async () => {
     //   console.log("Running slot cleanup (startup run)");
@@ -21,12 +21,12 @@ export class CleanupExpiredSlotsJob {
       "0 0 * * *", // Every day at 12:00 AM
       async () => {
         try {
-          console.log("⏰ Running expired slot cleanup job");
+          console.log(" Running expired slot cleanup job");
 
           const deletedCount = await this.cleanupSlotsUseCase.execute();
 
           console.log(
-            `✅ Expired slot cleanup completed. Deleted slots: ${deletedCount}`
+            ` Expired slot cleanup completed. Deleted slots: ${deletedCount}`,
           );
         } catch (error) {
           console.error("❌ Expired slot cleanup job failed", error);
@@ -34,7 +34,7 @@ export class CleanupExpiredSlotsJob {
       },
       {
         timezone: "Asia/Kolkata",
-      }
+      },
     );
   }
 }

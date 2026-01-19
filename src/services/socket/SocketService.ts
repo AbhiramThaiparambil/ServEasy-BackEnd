@@ -57,14 +57,9 @@ export class SocketService {
       | IChatNotification
       | ISystemNotification
   ) {
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
-    console.log("----------------------------------------------------");
+ 
 
     console.log(notification);
-    console.log("----------------------------------------------------");
-    console.log(userId);
 
     if (!this.io) {
       console.error(

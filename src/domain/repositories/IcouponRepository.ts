@@ -1,5 +1,5 @@
-import { Types } from 'mongoose';
-import { IBannerCouponResponse, ICoupon } from '../../domain/entities/ICoupon';
+import { Types } from "mongoose";
+import { IBannerCouponResponse, ICoupon } from "../../domain/entities/ICoupon";
 
 export interface ICouponRepository {
   findAllCoupons(): Promise<ICoupon[]>;
@@ -9,7 +9,7 @@ export interface ICouponRepository {
   findAllActiveCoupons(): Promise<ICoupon[]>;
   updateCouponShowInBanner(id: string, action: boolean): Promise<boolean>;
   updateCouponStatus(id: string, action: boolean): Promise<boolean>;
-  findFeaturedCoupons(skip:number): Promise<IBannerCouponResponse>;
+  findFeaturedCoupons(skip: number): Promise<IBannerCouponResponse>;
   findByCode(code: string): Promise<ICoupon | null>;
   checkIsExceedMaxUseLimit(_id: string): Promise<boolean>;
   hasUserUsedCoupon(code: string, userId: string): Promise<boolean>;
