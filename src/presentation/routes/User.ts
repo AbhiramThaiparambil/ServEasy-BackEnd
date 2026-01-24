@@ -98,4 +98,7 @@ userRouter.patch(
 );
 
 userRouter.get("/coupons/featured", userController.findFeatureCoupons);
+
+userRouter.get("/coupons/", userController.findActiveCoupons);
+
 export default userRouter;

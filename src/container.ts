@@ -241,6 +241,8 @@ import { IGetUserProfileUseCase } from "./application/use-case/User/profile/getP
 import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetProfile.usecase";
 import { ICreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
 import { CreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
+import { IFindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { FindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/FindAllActiveCoupons.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -891,5 +893,12 @@ container.register<ICreateServiceOrderUseCase>(
   USE_CASE_TOKENS.CreateServiceOrderUseCase,
   {
     useClass: CreateServiceOrderUseCase,
+  },
+);
+
+container.register<IFindAllActiveCouponsUseCase>(
+  USE_CASE_TOKENS.FindAllActiveCouponsUseCase,
+  {
+    useClass: FindAllActiveCouponsUseCase,
   },
 );

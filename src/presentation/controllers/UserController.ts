@@ -36,6 +36,7 @@ import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/ser
 import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
 import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
 import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
+import { IFindAllActiveCouponsUseCase } from "../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
 
 @injectable()
 export class UserController {
@@ -102,6 +103,9 @@ export class UserController {
     private increaseAdClicksUseCase: IIncreaseAdClicksUseCase,
     @inject(USE_CASE_TOKENS.GoogleAuthUseCase)
     private googleAuthUseCase: IGoogleAuthUseCase,
+
+    @inject(USE_CASE_TOKENS.FindAllActiveCouponsUseCase)
+    private findActiveCouponsusecase: IFindAllActiveCouponsUseCase,
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -1099,6 +1103,30 @@ export class UserController {
     }
   };
 
+  public findActiveCoupons = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      const coupons = await this.findActiveCouponsusecase.execute();
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Active coupons fetched successfully",
+        data: coupons,
+      });
+      return;
+    } catch (error) {
+      console.error("Find active coupons error:", error);
+
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Failed to fetch active coupons",
+      });
+      return;
+    }
+  };
+
   public getRecommendedAds = async (
     req: Request,
     res: Response,
@@ -1135,7 +1163,9 @@ export class UserController {
         clicks: result,
       });
     } catch (err) {
-      res.status(500).json({ success: false, message: err });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: err });
     }
   };
 }
