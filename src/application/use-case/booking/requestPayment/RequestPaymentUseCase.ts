@@ -11,13 +11,13 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
     @inject(SocketService)
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   async execute(
     bookingId: string,
     paymentData: IPayment,
-    paymentStatus: string
+    paymentStatus: string,
   ) {
     const id = new mongoose.Types.ObjectId(bookingId);
 
@@ -34,20 +34,25 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     const data = await this.serviceBookingRepository.requestPayment(
       id,
       paymentStatus,
-      payment
+      payment,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       id,
       "payment-requested",
-      "Payment requested"
+      "Payment requested",
     );
 
-    this.socketService.sendNotificationToUser(data?.userId + "", {
-      type: "notification",
-      content: "Payment requested. Please complete payment to proceed.",
-      timestamp: new Date().toISOString(),
-    });
+    this.socketService.sendNotificationToUser(
+      data?.userId + "",
+      data?.userId + "",
+      {
+        type: "notification",
+        targetRole:"USER",
+        content: "Payment requested. Please complete payment to proceed.",
+        timestamp: new Date().toISOString(),
+      },
+    );
 
     return data;
   }

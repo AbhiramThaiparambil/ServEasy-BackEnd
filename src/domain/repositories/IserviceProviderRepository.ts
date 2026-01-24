@@ -10,21 +10,24 @@ import {
 } from "../../utils/types/dto/ISubscriptionWithPlan";
 export interface IServiceProviderRepository {
   create(
-    ServiceProvider: IServiceProviderRegistration
+    ServiceProvider: IServiceProviderRegistration,
   ): Promise<IServiceProvider>;
   findByEmail(email: string): Promise<IServiceProvider | null>;
   // findByPhone(phone:string):Promise<IServiceProvider |null>
 
   findById(id: string | Types.ObjectId): Promise<IServiceProvider | null>;
+
+  findUserIdByProviderId(providerId: string | Types.ObjectId): Promise<string>;
+
   update(
     id: string,
-    data: Partial<IServiceProvider>
+    data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider | null>;
 
   findServiceProviderSkipLimit(
     skip: number,
     limit: number,
-    search: string
+    search: string,
   ): Promise<IServiceProvider[]>;
   findByUserID(userId: string): Promise<IServiceProvider | null>;
   unblockService(ServiceProviderId: string): Promise<boolean>;
@@ -32,32 +35,32 @@ export interface IServiceProviderRepository {
   blockService(ProviderId: string): Promise<boolean>;
   addSubscription(
     providerId: string,
-    subscription: ISubscription
+    subscription: ISubscription,
   ): Promise<IServiceProvider | null>;
 
   findSubscriptions(
-    providerId: string
+    providerId: string,
   ): Promise<IFindSubscriptionsResult | null>;
   findSubscriptionIsActiveOrNot(
-    providerId: string
+    providerId: string,
   ): Promise<{ isActive: boolean }>;
   expireSubscriptions(): Promise<number>;
 
   findLatestActiveSubscription(
-    providerId: string
+    providerId: string,
   ): Promise<ISubscription | null>;
   findLatestSubscription(providerId: string): Promise<ISubscription | null>;
 
   findRegistrationDetailsByUserId(
-    userId: string
+    userId: string,
   ): Promise<IServiceProvider | null>;
 
   findStatusByUserId(
-    userId: string
+    userId: string,
   ): Promise<{ isVerified: "verified" | "pending" | "rejected" } | null>;
 
   updateRegistration(
     serviceProviderId: ObjectId,
-    data: Partial<IServiceProvider>
+    data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider>;
 }

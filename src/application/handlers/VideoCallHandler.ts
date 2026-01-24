@@ -2,7 +2,10 @@ import { Server, Socket } from "socket.io";
 import { SocketService } from "../../services/socket/SocketService";
 
 export class VideoCallHandler {
-  constructor(private io: Server, private socketService: SocketService) {}
+  constructor(
+    private io: Server,
+    private socketService: SocketService,
+  ) {}
 
   public register(socket: Socket) {
     socket.on(
@@ -11,17 +14,19 @@ export class VideoCallHandler {
         {
           user1,
           user2,
+          targetRole,
           callerName,
           callerProfile,
           user,
         }: {
           user1: string;
           user2: string;
+          targetRole: "SERVICE_PROVIDER" | "USER";
           callerName: string;
           callerProfile: string;
           user: boolean;
         },
-        callback: () => void
+        callback: () => void,
       ) => {
         console.log(user2, callerName, callerProfile);
 
@@ -31,13 +36,22 @@ export class VideoCallHandler {
         const room = this.io.sockets.adapter.rooms.get(roomId);
         const socketsInRoom = room ? Array.from(room) : [];
         const isReceiverInRoom = socketsInRoom.some(
-          (socketId) => socketId !== socket.id
+          (socketId) => socketId !== socket.id,
         ); // exclude sender socket
 
         if (!isReceiverInRoom) {
-          this.socketService.sendNotificationToUser(user2, {
+          console.log("_____________________________________");
+
+          console.log("user 2 ");
+          console.log(user2);
+          console.log("user 1");
+          console.log(user1);
+          console.log("_____________________________________");
+          console.log(callerName, callerProfile, user);
+          this.socketService.sendNotificationToUser(user2, user2, {
             type: "video_call",
             callerId: user1,
+            targetRole,
             callerName,
             callerProfile: callerProfile,
             callRoomId: roomId,
@@ -57,16 +71,13 @@ export class VideoCallHandler {
         });
 
         callback?.();
-      }
+      },
     );
 
     socket.on(
       "reject_videoCall",
       ({ callRoomId, user2 }: { callRoomId: string; user2: string }) => {
         console.log(callRoomId);
-        console.log(
-          "{}P{}{}{}{{{{}{}{}{}{}{}{}{}{}}{}{}{}{}{}{}}{}{}{}{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}{{{{{{{{{{{}}}}}}}}}}"
-        );
 
         console.log(user2);
         console.log(user2);
@@ -75,12 +86,13 @@ export class VideoCallHandler {
 
         socket.to(callRoomId).emit("user-left");
 
-        this.socketService.sendNotificationToUser(user2, {
+        this.socketService.sendNotificationToUser(user2, user2, {
           type: "notification",
+          targetRole: "USER",
           content: "User rejected your call",
           timestamp: Date.now() + "",
         });
-      }
+      },
     );
 
     socket.on(
@@ -88,7 +100,7 @@ export class VideoCallHandler {
       ({ user1, user2, data }: { user1: string; user2: string; data: any }) => {
         const roomId = this.createRoomId(user1, user2);
         socket.to(roomId).emit("signal", { data });
-      }
+      },
     );
 
     socket.on(
@@ -97,7 +109,7 @@ export class VideoCallHandler {
         const roomId = this.createRoomId(user1, user2);
         socket.leave(roomId);
         socket.to(roomId).emit("user-left");
-      }
+      },
     );
 
     socket.on("disconnect", () => {

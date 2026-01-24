@@ -4,7 +4,6 @@ import { Server as HTTPServer } from "http";
 import { SaveMessageUseCase } from "../../application/use-case/chat/saveMessage/SaveMessage.usecase";
 import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
-// import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
 
 import {
   IChatNotification,
@@ -24,7 +23,7 @@ export class SocketService {
     private readonly saveMessageUseCase: SaveMessageUseCase,
 
     @inject(USE_CASE_TOKENS.CreateNotificationUseCase)
-    private readonly notificationUseCase: ICreateNotificationUseCase
+    private readonly notificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   public initialize(server: HTTPServer) {
@@ -40,8 +39,9 @@ export class SocketService {
 
       new ChatHandler(this.io, this.saveMessageUseCase, this).register(socket);
       new NotificationHandler(this.notificationUseCase, this.io).register(
-        socket
+        socket,
       );
+
       new VideoCallHandler(this.io, this).register(socket);
 
       socket.on("disconnect", () => {
@@ -52,18 +52,17 @@ export class SocketService {
 
   public sendNotificationToUser(
     userId: string,
+    referenceId: string,
     notification:
       | IVideoCallNotification
       | IChatNotification
-      | ISystemNotification
+      | ISystemNotification,
   ) {
- 
-
     console.log(notification);
 
     if (!this.io) {
       console.error(
-        "SocketService has not been initialized with an HTTP server yet."
+        "SocketService has not been initialized with an HTTP server yet.",
       );
       return;
     }
@@ -71,10 +70,9 @@ export class SocketService {
 
     if (notification.type === "chat") {
       const content = `${notification.senderName} sent you a message: "${notification.content}"`;
-
       // this.notificationUseCase.create(content, userId);
     } else if (notification.type === "notification") {
-      this.notificationUseCase.execute(notification.content, userId);
+      this.notificationUseCase.execute(notification.content, referenceId);
     }
   }
 }

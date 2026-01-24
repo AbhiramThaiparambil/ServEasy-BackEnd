@@ -12,7 +12,7 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
     @inject(SocketService)
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   async execute(
@@ -21,7 +21,7 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     estimatedServiceTime: string,
     serviceProviderId: string,
     reschedule: boolean,
-    rescheduleReason?: string
+    rescheduleReason?: string,
   ) {
     const bookingObjectId = new mongoose.Types.ObjectId(bookingId);
     const providerId = new mongoose.Types.ObjectId(serviceProviderId);
@@ -29,16 +29,17 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     const isConflicting =
       await this.serviceBookingRepository.isServiceTimeConflicting(
         providerId,
-        estimatedServiceTime
+        estimatedServiceTime,
       );
 
     if (isConflicting) {
       throw new Error("Time slot already allocated");
     }
 
-    const booking = await this.serviceBookingRepository.findBookedServiceById(
-      bookingObjectId
-    );
+    const booking =
+      await this.serviceBookingRepository.findBookedServiceById(
+        bookingObjectId,
+      );
 
     if (!booking) throw new Error("Booking not found");
 
@@ -47,26 +48,28 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     if (reschedule) {
       await this.serviceBookingRepository.rescheduleBooking(
         bookingObjectId,
-        estimatedServiceTime
+        estimatedServiceTime,
       );
 
       await this.serviceBookingRepository.addBookingHistory(
         bookingObjectId,
         "rescheduled",
-        `Rescheduled to ${formatDateTime(estimatedServiceTime)}`
+        `Rescheduled to ${formatDateTime(estimatedServiceTime)}`,
       );
 
       notification = {
         type: "notification",
+        targetRole: "USER",
         content: `Your booking has been rescheduled to ${formatDateTime(
-          estimatedServiceTime
+          estimatedServiceTime,
         )}`,
         timestamp: new Date().toISOString(),
       };
 
       this.socketService.sendNotificationToUser(
-        booking.userId + "",
-        notification
+        booking.userId.toString(),
+        booking.userId.toString(),
+        notification,
       );
 
       return { success: true };
@@ -79,24 +82,26 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     const data = await this.serviceBookingRepository.confirmBooking(
       bookingObjectId,
       status,
-      estimatedServiceTime
+      estimatedServiceTime,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       bookingObjectId,
       "confirmed",
-      `Booking confirmed for ${formatDateTime(estimatedServiceTime)}`
+      `Booking confirmed for ${formatDateTime(estimatedServiceTime)}`,
     );
 
     notification = {
       type: "notification",
+      targetRole: "USER",
       content: "Your booking has been confirmed!",
       timestamp: new Date().toISOString(),
     };
 
     this.socketService.sendNotificationToUser(
-      booking.userId + "",
-      notification
+      booking.userId.toString(),
+      booking.userId.toString(),
+      notification,
     );
 
     return data;

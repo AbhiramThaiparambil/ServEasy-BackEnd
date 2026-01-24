@@ -10,7 +10,7 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     @inject(ServiceBookingRepository)
     private serviceBookingRepository: ServiceBookingRepository,
     @inject(SocketService)
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   async execute(bookingId: string, status: string, reason: string) {
@@ -19,20 +19,25 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     const data = await this.serviceBookingRepository.cancelBooking(
       id,
       status,
-      reason
+      reason,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       id,
       "cancelled",
-      `Cancelled: ${reason}`
+      `Cancelled: ${reason}`,
     );
 
-    this.socketService.sendNotificationToUser(data?.userId + "", {
-      type: "notification",
-      content: "Your booking has been cancelled",
-      timestamp: new Date().toISOString(),
-    });
+    this.socketService.sendNotificationToUser(
+      data?.userId + "",
+      data?.userId + "",
+      {
+        type: "notification",
+        targetRole:"USER",
+        content: "Your booking has been cancelled",
+        timestamp: new Date().toISOString(),
+      },
+    );
 
     return data;
   }

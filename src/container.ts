@@ -239,6 +239,8 @@ import { UserProfileUpdateUseCase } from "./application/use-case/User/profile/up
 import { IUserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
 import { IGetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
 import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetProfile.usecase";
+import { ICreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
+import { CreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -882,5 +884,12 @@ container.register<IGetServiceProviderInfoUseCase>(
   USE_CASE_TOKENS.GetServiceProviderInfoUseCase,
   {
     useClass: GetServiceProviderInfoUseCase,
+  },
+);
+
+container.register<ICreateServiceOrderUseCase>(
+  USE_CASE_TOKENS.CreateServiceOrderUseCase,
+  {
+    useClass: CreateServiceOrderUseCase,
   },
 );

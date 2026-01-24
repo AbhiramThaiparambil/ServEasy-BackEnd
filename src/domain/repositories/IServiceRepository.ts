@@ -41,11 +41,12 @@ export interface IServiceRepository {
 
   blockAllserviceServiceProvider(serviceProviderId: string): Promise<boolean>;
   findNearestServicesFilter(
+    userId: string,
+    skip: number,
+    limit: number,
     userLongitude?: number | null,
     userLatitude?: number | null,
     filters?: INearbyServiceFilters,
-    limit?: number,
-    cursor?: string | null,
   ): Promise<INearbyServicePagination>;
 
   findActiveServiceCategories(): Promise<
@@ -54,9 +55,9 @@ export interface IServiceRepository {
   getActiveServiceNames(): Promise<string[]>;
 
   findAllActiveServicesUser(
+    skip: number,
     limit: number,
-    cursor?: string | null,
-  ): Promise<{ services: INearbyServiceResult[]; nextCursor: string | null }>;
+  ): Promise<{ services: INearbyServiceResult[] }>;
   findSingleOnlineServicesWithSlot(
     serviceId: string,
   ): Promise<IOnlineService[]>;

@@ -19,7 +19,7 @@ userRouter.get(
   "/profile",
   authMiddleware("User"),
   checkUserBlocked,
-  userController.userProfileController
+  userController.userProfileController,
 );
 
 userRouter.post("/forgot-password", userController.sendOtpController);
@@ -27,24 +27,28 @@ userRouter.post("/forgot-password/verify-otp", userController.forgotVerifyOtp);
 userRouter.post(
   "/forgot-password/reset",
 
-  userController.resetPassword
+  userController.resetPassword,
 );
 userRouter.put(
   "/updateProfile/:userid",
   authMiddleware("User"),
   checkUserBlocked,
-  userController.userProfileUpdateController
+  userController.userProfileUpdateController,
 );
 userRouter.post(
   "/updateProfile/verifyotp",
-  userController.profileUpdateOtpController
+  userController.profileUpdateOtpController,
 );
 userRouter.get("/logout", userController.logoutUserController);
 
 userRouter.get("/user/service/:id", userController.getSingleServiceHandler);
 userRouter.get("/user/profile/:id", userController.userProfileController);
 // userRouter.get("/getactive/services",userController.getActiveServices);
-userRouter.get("/getactive/services/", userController.getActiveNearbyServices);
+userRouter.get(
+  "/getactive/services/",
+  authMiddleware("User"),
+  userController.getActiveNearbyServices,
+);
 
 userRouter
   .route("/user/addresses")
@@ -56,31 +60,31 @@ userRouter.delete(
   "/user/addresses:id",
   authMiddleware("User"),
   checkUserBlocked,
-  userController.deleteAddress
+  userController.deleteAddress,
 );
 
 userRouter.route("/reviews").post(userController.addReview);
 
 userRouter.get(
   "/user/profile/serviceprovider-chat/:id",
-  userController.getServiceProviderInfoChat
+  userController.getServiceProviderInfoChat,
 );
 
 userRouter.get(
   "/notification",
   authMiddleware("User"),
-  userController.getNotification
+  userController.getNotification,
 );
 userRouter.patch(
   "/notification/:id",
   authMiddleware("User"),
-  userController.markAsReadNotification
+  userController.markAsReadNotification,
 );
 
 userRouter.delete(
   "/notification/:id",
   authMiddleware("User"),
-  userController.deleteNotification
+  userController.deleteNotification,
 );
 userRouter.get("/banners/active", userController.getSiteBanners);
 userRouter.get("/themes", userController.getSiteThemes);
@@ -90,7 +94,7 @@ userRouter.get("/ads/recommend", userController.getRecommendedAds);
 userRouter.patch(
   "/ads/:adId/click",
   clickLimiter,
-  userController.increaseClicks
+  userController.increaseClicks,
 );
 
 userRouter.get("/coupons/featured", userController.findFeatureCoupons);

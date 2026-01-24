@@ -28,5 +28,4 @@ export interface INearbyServiceResult {
 
 export interface INearbyServicePagination {
   services: INearbyServiceResult[];
-  nextCursor: string | null;
 }

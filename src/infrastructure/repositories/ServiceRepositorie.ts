@@ -242,27 +242,27 @@ export class ServiceRepository implements IServiceRepository {
   //   }
 
   async findAllActiveServicesUser(
+    skip: number,
     limit: number,
-    cursor?: string | null,
-  ): Promise<{ services: INearbyServiceResult[]; nextCursor: string | null }> {
-    const matchStage: any = {
-      isActive: true,
-    };
-
-    if (cursor) {
-      matchStage._id = { $gt: new Types.ObjectId(cursor) };
-    }
-
+  ): Promise<{ services: INearbyServiceResult[] }> {
     const pipeline: PipelineStage[] = [
       {
-        $match: matchStage,
+        $match: {
+          isActive: true,
+        },
       },
+
       {
         $sort: { _id: 1 },
+      },
+
+      {
+        $skip: skip,
       },
       {
         $limit: limit,
       },
+
       {
         $lookup: {
           from: "categories",
@@ -277,6 +277,7 @@ export class ServiceRepository implements IServiceRepository {
           preserveNullAndEmptyArrays: true,
         },
       },
+
       {
         $lookup: {
           from: "serviceproviders",
@@ -291,6 +292,7 @@ export class ServiceRepository implements IServiceRepository {
           preserveNullAndEmptyArrays: true,
         },
       },
+
       {
         $project: {
           serviceProviderName: "$providerInfo.serviceProviderName",
@@ -310,10 +312,7 @@ export class ServiceRepository implements IServiceRepository {
 
     const services = await ServiceModel.aggregate(pipeline);
 
-    const nextCursor =
-      services.length > 0 ? services[services.length - 1]._id.toString() : null;
-
-    return { services, nextCursor };
+    return { services };
   }
 
   // async  findNearestServices(
@@ -952,6 +951,9 @@ export class ServiceRepository implements IServiceRepository {
   // }
 
   async findNearestServicesFilter(
+    userId: string,
+    skip: number,
+    limit: number,
     userLongitude?: number | null,
     userLatitude?: number | null,
     filters?: {
@@ -960,23 +962,26 @@ export class ServiceRepository implements IServiceRepository {
       priceSort?: "gtToLow" | "lowTogt";
       searchQuery?: string;
     },
-    limit?: number,
-    cursor?: string | null,
-  ): Promise<INearbyServicePagination> {
+  ): Promise<{ services: INearbyServiceResult[] }> {
     const maxDistanceInMeters = 20000;
     const pipeline: any[] = [];
 
-    let sortDirection: 1 | -1 = 1;
+    /* -------------------- CATEGORY OBJECT ID -------------------- */
+    const categoryObjectId =
+      filters?.category && Types.ObjectId.isValid(filters.category)
+        ? new Types.ObjectId(filters.category)
+        : null;
+
+    /* -------------------- SORT SETUP -------------------- */
     let sortStage: Record<string, 1 | -1> = { _id: 1 };
 
     if (filters?.priceSort === "gtToLow") {
-      sortDirection = -1;
       sortStage = { estimatedPrice: -1, _id: -1 };
     } else if (filters?.priceSort === "lowTogt") {
-      sortDirection = 1;
       sortStage = { estimatedPrice: 1, _id: 1 };
     }
 
+    /* -------------------- GEO / BASE MATCH -------------------- */
     if (userLongitude != null && userLatitude != null) {
       pipeline.push({
         $geoNear: {
@@ -991,59 +996,33 @@ export class ServiceRepository implements IServiceRepository {
       pipeline.push({ $match: { isActive: true } });
     }
 
+    /* -------------------- SORT -------------------- */
     pipeline.push({ $sort: sortStage });
 
-    if (cursor) {
-      if (filters?.priceSort) {
-        const [priceStr, idStr] = cursor.split("_");
-        const price = parseFloat(priceStr);
-        const id = new Types.ObjectId(idStr);
-
-        pipeline.push({
-          $match: {
-            $or: [
-              {
-                estimatedPrice: {
-                  [sortDirection === 1 ? "$gt" : "$lt"]: price,
-                },
-              },
-              {
-                estimatedPrice: price,
-                _id: { [sortDirection === 1 ? "$gt" : "$lt"]: id },
-              },
-            ],
-          },
-        });
-      } else {
-        pipeline.push({
-          $match: { _id: { $gt: new Types.ObjectId(cursor) } },
-        });
-      }
-    }
-
-    pipeline.push(
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "categoryInfo",
-        },
-      },
-      {
-        $unwind: {
-          path: "$categoryInfo",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-    );
-
-    if (filters?.category) {
+    /* -------------------- CATEGORY FILTER -------------------- */
+    if (categoryObjectId) {
       pipeline.push({
-        $match: { "categoryInfo.category": filters.category },
+        $match: { category: { $in: [categoryObjectId] } },
       });
     }
 
+    /* -------------------- CURRENT USER LOOKUP -------------------- */
+    pipeline.push(
+      {
+        $lookup: {
+          from: "users",
+          let: { currentUserId: new Types.ObjectId(userId) },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$currentUserId"] } } },
+            { $project: { serviceProvider: 1 } },
+          ],
+          as: "currentUser",
+        },
+      },
+      { $addFields: { currentUser: { $arrayElemAt: ["$currentUser", 0] } } },
+    );
+
+    /* -------------------- PROVIDER LOOKUP -------------------- */
     pipeline.push(
       {
         $lookup: {
@@ -1053,20 +1032,55 @@ export class ServiceRepository implements IServiceRepository {
           as: "providerInfo",
         },
       },
+      { $unwind: "$providerInfo" },
+    );
+
+    /* -------------------- PROVIDER WALLET BLOCK CHECK -------------------- */
+    pipeline.push(
+      {
+        $lookup: {
+          from: "providerwallets",
+          localField: "serviceProviderId",
+          foreignField: "serviceProviderId",
+          as: "walletInfo",
+        },
+      },
       {
         $unwind: {
-          path: "$providerInfo",
+          path: "$walletInfo",
           preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          "walletInfo.isBlocked": { $ne: true },
         },
       },
     );
 
+    /* -------------------- EXCLUDE USER'S OWN PROVIDER -------------------- */
+    pipeline.push({
+      $match: {
+        $expr: {
+          $cond: [
+            { $ifNull: ["$currentUser.serviceProvider", false] },
+            { $ne: ["$serviceProviderId", "$currentUser.serviceProvider"] },
+            true,
+          ],
+        },
+      },
+    });
+
+    /* -------------------- EXPERIENCE FILTER -------------------- */
     if (filters?.experience !== undefined) {
       pipeline.push({
-        $match: { "providerInfo.experience": { $gte: filters.experience } },
+        $match: {
+          "providerInfo.experience": { $gte: filters.experience },
+        },
       });
     }
 
+    /* -------------------- SEARCH FILTER -------------------- */
     if (filters?.searchQuery) {
       pipeline.push({
         $match: {
@@ -1078,11 +1092,14 @@ export class ServiceRepository implements IServiceRepository {
       });
     }
 
+    /* -------------------- PAGINATION (SKIP + LIMIT) -------------------- */
+    pipeline.push({ $skip: skip }, { $limit: limit });
+
+    /* -------------------- FINAL PROJECTION -------------------- */
     pipeline.push({
       $project: {
         serviceProviderName: "$providerInfo.serviceProviderName",
         profileImage: "$providerInfo.profileImage",
-        category: "$categoryInfo.category",
         experience: "$providerInfo.experience",
         serviceName: 1,
         description: 1,
@@ -1095,19 +1112,10 @@ export class ServiceRepository implements IServiceRepository {
       },
     });
 
-    pipeline.push({ $limit: limit });
-
+    /* -------------------- EXECUTE -------------------- */
     const services = await ServiceModel.aggregate(pipeline);
 
-    let nextCursor = null;
-    if (services.length > 0) {
-      const last = services[services.length - 1];
-      nextCursor = filters?.priceSort
-        ? `${last.estimatedPrice}_${last._id.toString()}`
-        : last._id.toString();
-    }
-
-    return { services, nextCursor };
+    return { services };
   }
 
   async getActiveServiceNames(): Promise<string[]> {

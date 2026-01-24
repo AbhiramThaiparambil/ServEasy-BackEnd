@@ -18,7 +18,7 @@ import { Types } from "mongoose";
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
   async create(
-    serviceProvider: IServiceProviderRegistration
+    serviceProvider: IServiceProviderRegistration,
   ): Promise<IServiceProvider> {
     console.log(serviceProvider.bankDetails);
 
@@ -31,14 +31,14 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async findById(
-    id: string | mongoose.Types.ObjectId
+    id: string | mongoose.Types.ObjectId,
   ): Promise<IServiceProvider | null> {
     return await ServiceProviderModel.findById(id);
   }
 
   async update(
     id: string,
-    data: Partial<IServiceProvider>
+    data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider | null> {
     return await ServiceProviderModel.findByIdAndUpdate(id, data, {
       new: true,
@@ -53,7 +53,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   async findServiceProviderSkipLimit(
     skip: number,
     limit: number,
-    search: string
+    search: string,
   ): Promise<IServiceProvider[]> {
     return await ServiceProviderModel.find({
       $or: [
@@ -70,7 +70,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async findByUserID(
-    userId: string
+    userId: string,
   ): Promise<(IServiceProvider & { isProServiceProvider: boolean }) | null> {
     const provider = await ServiceProviderModel.findOne({ userId });
 
@@ -79,7 +79,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     const now = new Date();
     const activeSubscription = (provider.subscriptions ?? []).find(
       (sub) =>
-        sub.status === "active" && sub.startDate <= now && sub.endDate >= now
+        sub.status === "active" && sub.startDate <= now && sub.endDate >= now,
     );
 
     return {
@@ -89,7 +89,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async findSubscriptionIsActiveOrNot(
-    providerId: string
+    providerId: string,
   ): Promise<{ isActive: boolean }> {
     const provider = await ServiceProviderModel.findOne(
       {
@@ -102,7 +102,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           },
         },
       },
-      { "subscriptions.$": 1 }
+      { "subscriptions.$": 1 },
     );
 
     if (!provider || provider.subscriptions?.length === 0) {
@@ -113,7 +113,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async findSubscriptions(
-    providerId: string
+    providerId: string,
   ): Promise<IFindSubscriptionsResult | null> {
     const now = new Date();
 
@@ -155,7 +155,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       (sub) =>
         sub.status === "active" &&
         new Date(sub.startDate) <= now &&
-        new Date(sub.endDate) >= now
+        new Date(sub.endDate) >= now,
     );
 
     const expiredSubscriptions = result.filter(
@@ -164,7 +164,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           sub.status === "active" &&
           new Date(sub.startDate) <= now &&
           new Date(sub.endDate) >= now
-        )
+        ),
     );
 
     return {
@@ -177,7 +177,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     try {
       const result = await ServiceProviderModel.updateOne(
         { _id: ProviderId },
-        { $set: { isBlocked: true } }
+        { $set: { isBlocked: true } },
       );
       return result.modifiedCount > 0;
     } catch (error: any) {
@@ -189,7 +189,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     try {
       const result = await ServiceProviderModel.updateOne(
         { _id: ProviderId },
-        { $set: { isBlocked: false } }
+        { $set: { isBlocked: false } },
       );
       return result.modifiedCount > 0;
     } catch (error) {
@@ -235,7 +235,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           },
         },
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -258,14 +258,14 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
             "elem.endDate": { $lt: today },
           },
         ],
-      }
+      },
     );
 
     return result.modifiedCount;
   }
 
   async findLatestActiveSubscription(
-    providerIdString: string
+    providerIdString: string,
   ): Promise<ISubscription | null> {
     if (!isValidObjectId(providerIdString)) {
       console.error("Invalid serviceProviderId:", providerIdString);
@@ -285,7 +285,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           },
         },
       },
-      { subscriptions: 1 }
+      { subscriptions: 1 },
     );
 
     if (!provider || !provider.subscriptions) {
@@ -296,7 +296,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       (s) =>
         s.status === "active" &&
         s.startDate <= new Date() &&
-        s.endDate >= new Date()
+        s.endDate >= new Date(),
     );
 
     if (activeSubs.length === 0) {
@@ -305,12 +305,12 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
 
     // pick the one with the latest endDate
     return activeSubs.reduce((latest, sub) =>
-      sub.endDate > latest.endDate ? sub : latest
+      sub.endDate > latest.endDate ? sub : latest,
     );
   }
 
   async findLatestSubscription(
-    providerIdString: string
+    providerIdString: string,
   ): Promise<ISubscription | null> {
     if (!isValidObjectId(providerIdString)) {
       console.error("Invalid serviceProviderId:", providerIdString);
@@ -368,13 +368,13 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
         SocialMedia
         isVerified
         document
-        `
+        `,
       )
       .lean();
   }
 
   async findStatusByUserId(
-    userId: string
+    userId: string,
   ): Promise<{ isVerified: "pending" | "verified" | "rejected" } | null> {
     const provider = await ServiceProviderModel.findOne({ userId })
       .select("isVerified")
@@ -391,7 +391,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
 
   async updateRegistration(
     serviceProviderId: ObjectId,
-    data: Partial<IServiceProvider>
+    data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider> {
     const updatedProvider = await ServiceProviderModel.findByIdAndUpdate(
       serviceProviderId,
@@ -401,7 +401,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!updatedProvider) {
@@ -409,5 +409,19 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     }
 
     return updatedProvider;
+  }
+
+  async findUserIdByProviderId(
+    providerId: string | Types.ObjectId,
+  ): Promise<string> {
+    const provider = await ServiceProviderModel.findById(providerId)
+      .select("userId")
+      .lean();
+
+    if (!provider) {
+      throw new Error(`ServiceProvider not found: ${providerId}`);
+    }
+
+    return provider.userId.toString();
   }
 }
