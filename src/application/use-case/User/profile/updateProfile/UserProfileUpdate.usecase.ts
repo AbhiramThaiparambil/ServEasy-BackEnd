@@ -8,7 +8,10 @@ import { IUserRepository } from "../../../../../domain/repositories/IuserReposit
 import { IEmailService } from "../../../../../services/mailService/IEmailService";
 import { IOtpService } from "../../../../../services/otp/IOtpService";
 import { ISmsOtpService } from "../../../../../services/otp/ISmsOtpService";
-import { IUserProfileUpdateUseCase } from "./IUserProfileUpdate.usecase";
+import {
+  IUpdateProfileResult,
+  IUserProfileUpdateUseCase,
+} from "./IUserProfileUpdate.usecase";
 
 @injectable()
 export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
@@ -24,12 +27,14 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
   async updateProfile(
     userId: string,
     newUserName?: string,
-    NewProfileImage?: string,
-  ) {
+    newProfileImage?: string,
+    newPassword?: string,
+    oldPassword?: string,
+  ): Promise<IUpdateProfileResult> {
     let profile = "";
 
-    if (NewProfileImage) {
-      profile = await this.cloudinaryService.uploadUserProfile(NewProfileImage);
+    if (newProfileImage) {
+      profile = await this.cloudinaryService.uploadUserProfile(newProfileImage);
     }
 
     const updateData: Record<string, string> = {};
@@ -42,15 +47,43 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
       updateData["profileImage"] = profile;
     }
 
-    if (Object.keys(updateData).length === 0) {
-      return false;
+    if (newPassword && oldPassword) {
+      const user = await this.userRepository.findById(userId);
+      if (user) {
+        console.log();
+        const isCorrect = await this.userRepository.comparePassword(
+          oldPassword,
+          user.password,
+        );
+        console.log(isCorrect);
+        if (isCorrect) {
+          console.log(newPassword);
+          const hashPassword =
+            await this.userRepository.HashPassword(newPassword);
+          updateData["password"] = hashPassword;
+        } else {
+          if (!isCorrect) {
+            return {
+              updated: false,
+              message: "Old password is incorrect",
+            };
+          }
+        }
+      }
     }
 
+    if (Object.keys(updateData).length === 0) {
+      return {
+        updated: false,
+        message: "No changes detected to update.",
+      };
+    }
     const result = await this.userRepository.updateUserBasedId(
       userId,
       updateData,
-    ); // Fix 3
-    return result;
+    );
+
+    return { updated: true, result: result };
   }
 
   async sendEmailOtp(email: string): Promise<{
@@ -73,7 +106,7 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
       return {
         successMessage: `OTP sent successfully to ${email}`,
         auth: email,
-      }; // Included auth
+      };
     } catch (error) {
       console.error("Error in sendEmailOtp:", error);
       return { errorMessage: "Failed to send OTP. Please try again." };
@@ -91,7 +124,7 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
         return {
           errorMessage:
             "This phone number is already in use. Please enter a new one.",
-        }; // Corrected error message
+        };
       }
 
       const otp = this.otpService.generateOtp();

@@ -20,7 +20,7 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
-    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
   ) {
     this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
@@ -41,6 +41,7 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
 
       const { sub, email, name, picture, email_verified } = payload;
 
+      console.log(sub, email, name, picture, email_verified);
       if (!email) {
         throw new Error("Email not found in Google payload");
       }
@@ -59,7 +60,7 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
           userName: name || email.split("@")[0],
           email,
           googleId: sub,
-          profileImage: picture || "",
+          ...(picture && { profileImage: picture }),
         };
 
         user = await this.userRepository.create(newUser);
@@ -68,11 +69,11 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
       if (user) {
         const accessToken = this.tokenService.generateAccessToken(
           user._id + "",
-          "userId"
+          "userId",
         );
         const refreshToken = this.tokenService.generateRefreshToken(
           (user._id = ""),
-          "userId"
+          "userId",
         );
         return { accessToken, refreshToken };
       } else {

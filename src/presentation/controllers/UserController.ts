@@ -439,20 +439,17 @@ export class UserController {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Email or phone number is required" });
-        return;
       }
 
       if (email) {
         const message = await this.sendOtpUseCase.sendEmailOtp(email);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
-          return;
         }
         if (message.errorMessage) {
           res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: message.errorMessage });
-          return;
         }
       }
 
@@ -460,13 +457,11 @@ export class UserController {
         const message = await this.sendOtpUseCase.sendSmsOtp(phone);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
-          return;
         }
         if (message.errorMessage) {
           res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: message.errorMessage });
-          return;
         }
       }
     } catch (error) {
@@ -550,10 +545,14 @@ export class UserController {
 
   userProfileUpdateController = async (req: Request, res: Response) => {
     try {
-      console.log("Request Body:", req.body);
-      console.log("User ID:", req.params.userid);
-
-      const { newEmail, newPhone, newUserName, NewProfileImage } = req.body;
+      const {
+        newEmail,
+        newPhone,
+        newUserName,
+        NewProfileImage,
+        newPassword,
+        oldPassword,
+      } = req.body;
       const userId = req.params.userid;
 
       if (!userId) {
@@ -563,12 +562,24 @@ export class UserController {
         return;
       }
 
-      if (newUserName || NewProfileImage) {
-        await this.userProfileUpdate.updateProfile(
+      if (newUserName || NewProfileImage || newPassword || oldPassword) {
+        const update = await this.userProfileUpdate.updateProfile(
           userId,
           newUserName,
           NewProfileImage,
+          newPassword,
+          oldPassword,
         );
+
+        if (!update.updated) {
+          res.status(HttpStatus.BAD_REQUEST).json({ message: update.message });
+          return;
+        }
+
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "Profile updated successfully" });
+        return;
       }
 
       let otpResponse;
@@ -602,12 +613,6 @@ export class UserController {
         });
         return;
       }
-
-      res
-        .status(HttpStatus.OK)
-        .json({ message: "Profile updated successfully" });
-
-      return;
     } catch (error) {
       console.error("Error updating profile:", error);
       res
