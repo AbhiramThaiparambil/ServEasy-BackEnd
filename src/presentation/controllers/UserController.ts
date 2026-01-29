@@ -36,6 +36,7 @@ import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/ser
 import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
 import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
 import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
+import { IFindAllActiveCouponsUseCase } from "../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
 
 @injectable()
 export class UserController {
@@ -102,6 +103,9 @@ export class UserController {
     private increaseAdClicksUseCase: IIncreaseAdClicksUseCase,
     @inject(USE_CASE_TOKENS.GoogleAuthUseCase)
     private googleAuthUseCase: IGoogleAuthUseCase,
+
+    @inject(USE_CASE_TOKENS.FindAllActiveCouponsUseCase)
+    private findActiveCouponsusecase: IFindAllActiveCouponsUseCase,
   ) {}
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -435,20 +439,17 @@ export class UserController {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Email or phone number is required" });
-        return;
       }
 
       if (email) {
         const message = await this.sendOtpUseCase.sendEmailOtp(email);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
-          return;
         }
         if (message.errorMessage) {
           res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: message.errorMessage });
-          return;
         }
       }
 
@@ -456,13 +457,11 @@ export class UserController {
         const message = await this.sendOtpUseCase.sendSmsOtp(phone);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
-          return;
         }
         if (message.errorMessage) {
           res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: message.errorMessage });
-          return;
         }
       }
     } catch (error) {
@@ -476,6 +475,8 @@ export class UserController {
   forgotVerifyOtp = async (req: Request, res: Response): Promise<void> => {
     try {
       const { otp, key } = req.body;
+
+      console.log(console.log(req.body));
 
       if (!otp || !key) {
         res
@@ -503,10 +504,9 @@ export class UserController {
     }
   };
 
-  async resetPassword(req: Request, res: Response): Promise<void> {
+  resetPassword = async (req: Request, res: Response): Promise<void> => {
     try {
       const { password, email, phone } = req.body;
-
       if (!password) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -542,14 +542,18 @@ export class UserController {
         Message: "Something went wrong. Please try again later.",
       });
     }
-  }
+  };
 
   userProfileUpdateController = async (req: Request, res: Response) => {
     try {
-      console.log("Request Body:", req.body);
-      console.log("User ID:", req.params.userid);
-
-      const { newEmail, newPhone, newUserName, NewProfileImage } = req.body;
+      const {
+        newEmail,
+        newPhone,
+        newUserName,
+        NewProfileImage,
+        newPassword,
+        oldPassword,
+      } = req.body;
       const userId = req.params.userid;
 
       if (!userId) {
@@ -559,12 +563,24 @@ export class UserController {
         return;
       }
 
-      if (newUserName || NewProfileImage) {
-        await this.userProfileUpdate.updateProfile(
+      if (newUserName || NewProfileImage || newPassword || oldPassword) {
+        const update = await this.userProfileUpdate.updateProfile(
           userId,
           newUserName,
           NewProfileImage,
+          newPassword,
+          oldPassword,
         );
+
+        if (!update.updated) {
+          res.status(HttpStatus.BAD_REQUEST).json({ message: update.message });
+          return;
+        }
+
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "Profile updated successfully" });
+        return;
       }
 
       let otpResponse;
@@ -598,12 +614,6 @@ export class UserController {
         });
         return;
       }
-
-      res
-        .status(HttpStatus.OK)
-        .json({ message: "Profile updated successfully" });
-
-      return;
     } catch (error) {
       console.error("Error updating profile:", error);
       res
@@ -733,13 +743,12 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const cursor = req.query.cursor as string | null;
-
-      const result = await this.getAllActiveService.execute({
-        limit,
-        cursor,
-      });
+      const page = Math.max(Number(req.query.page) || 1, 1);
+      const limit = Math.min(Number(req.query.limit) || 10, 50);
+      const skip = (page - 1) * limit;
+      console.log(limit);
+      console.log(skip);
+      const result = await this.getAllActiveService.execute(skip, limit);
 
       res.status(HttpStatus.OK).json(result);
       return;
@@ -757,46 +766,57 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const filters = req.query.filters as {
-        category?: string;
-        experience?: string;
-        priceSort?: "gtToLow" | "lowTogt";
-        searchQuery?: string;
-      };
-      const { limit = 10, cursor = null } = req.query;
+      const userId = res.locals.user?.userId;
 
-      console.log(req.query);
+      const page = Math.max(Number(req.query.page) || 1, 1);
+      const limit = Math.min(Number(req.query.limit) || 3);
+      const skip = (page - 1) * limit;
+      console.log(limit);
+      console.log(skip);
+      /* -------------------- LOCATION -------------------- */
+      const longitude =
+        req.query.longitude !== undefined ? Number(req.query.longitude) : null;
 
-      const longitude = Number(req.query.longitude);
-      const latitude = Number(req.query.latitude);
+      const latitude =
+        req.query.latitude !== undefined ? Number(req.query.latitude) : null;
+
+      /* -------------------- FILTERS (FLAT QUERY) -------------------- */
       const parsedFilters = {
-        category: filters?.category,
-        experience: filters?.experience
-          ? parseInt(filters.experience)
+        category: req.query.category as string | undefined,
+
+        experience: req.query.experience
+          ? parseInt((req.query.experience as string).replace("+", ""), 10)
           : undefined,
-        priceSort: filters?.priceSort,
-        searchQuery: filters?.searchQuery,
+
+        priceSort: req.query.priceSort as "gtToLow" | "lowTogt" | undefined,
+
+        searchQuery: req.query.searchQuery as string | undefined,
       };
 
-      if (isNaN(longitude) || isNaN(latitude)) {
-        const result = await this.getAllActiveService.getNearByServices(
-          null,
-          null,
-          parsedFilters,
-          Number(limit),
-          cursor as string | null,
-        );
-        res.status(HttpStatus.OK).json(result);
+      console.log("Parsed Filters:", parsedFilters);
+      console.log("Pagination:", { page, limit, skip });
 
-        return;
-      }
+      // if (isNaN(longitude) || isNaN(latitude)) {
+      //   const result = await this.getAllActiveService.getNearByServices(
+      //     userId,
+      //     skip,
+      //     limit,
+      //     null,
+      //     null,
+      //     parsedFilters,
+      //   );
+      //   res.status(HttpStatus.OK).json(result);
+
+      //   return;
+      // }
 
       const result = await this.getAllActiveService.getNearByServices(
+        userId,
+        skip,
+        limit,
         longitude,
         latitude,
         parsedFilters,
-        Number(limit),
-        cursor as string | null,
       );
 
       res.status(HttpStatus.OK).json(result);
@@ -1088,6 +1108,30 @@ export class UserController {
     }
   };
 
+  public findActiveCoupons = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      const coupons = await this.findActiveCouponsusecase.execute();
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Active coupons fetched successfully",
+        data: coupons,
+      });
+      return;
+    } catch (error) {
+      console.error("Find active coupons error:", error);
+
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Failed to fetch active coupons",
+      });
+      return;
+    }
+  };
+
   public getRecommendedAds = async (
     req: Request,
     res: Response,
@@ -1124,7 +1168,9 @@ export class UserController {
         clicks: result,
       });
     } catch (err) {
-      res.status(500).json({ success: false, message: err });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: err });
     }
   };
 }

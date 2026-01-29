@@ -11,8 +11,14 @@ import { ServiceBookingRepository } from "../../../../infrastructure/repositorie
 import { ICreateBookingUseCase } from "./ICreateBooking.usecase";
 import { BookingQueueService } from "../../../../infrastructure/jobs/queue/BookingQueueService";
 import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
-import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../constants/tokens";
 import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
+import { SocketService } from "../../../../services/socket/SocketService";
+import { ISystemNotification } from "../../../../domain/entities/INotification";
+import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 
 @injectable()
 export class CreateBookingUseCase implements ICreateBookingUseCase {
@@ -22,6 +28,10 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
 
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private serviceBookingRepository: IServiceBookingRepository,
+    @inject(SocketService)
+    private socketService: SocketService,
+    @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
+    private serviceProviderRepo: IServiceProviderRepository,
   ) {}
 
   async execute(
@@ -68,8 +78,10 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
         ...(liveLocation && { liveLocation }),
       };
 
-      const result =
-        await this.serviceBookingRepository.createServiceBooking(bookingData);
+      const result = await this.serviceBookingRepository.createServiceBooking(
+        bookingData,
+        session,
+      );
 
       if (!result || !result._id) {
         throw new Error("Failed to book service");
@@ -79,7 +91,26 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
         result._id,
         "booked",
         "Service has been booked",
+        session,
       );
+
+      const notification: ISystemNotification = {
+        type: "notification",
+        targetRole: "SERVICE_PROVIDER",
+        content: `A customer booked your ${service.serviceName} service. View the booking details to proceed.`,
+        timestamp: new Date().toISOString(),
+      };
+
+      const providerUserId =
+        await this.serviceProviderRepo.findUserIdByProviderId(
+          service.serviceProviderId,
+        );
+      await this.socketService.sendNotificationToUser(
+        providerUserId,
+        service.serviceProviderId.toString(),
+        notification,
+      );
+
       await session.commitTransaction();
       session.endSession();
 
@@ -90,6 +121,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
 
       return result;
     } catch (error) {
+      console.log(error);
       await session.abortTransaction();
       session.endSession();
       throw error;

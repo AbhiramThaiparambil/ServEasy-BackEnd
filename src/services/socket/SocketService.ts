@@ -4,7 +4,6 @@ import { Server as HTTPServer } from "http";
 import { SaveMessageUseCase } from "../../application/use-case/chat/saveMessage/SaveMessage.usecase";
 import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
-// import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
 
 import {
   IChatNotification,
@@ -42,6 +41,7 @@ export class SocketService {
       new NotificationHandler(this.notificationUseCase, this.io).register(
         socket,
       );
+
       new VideoCallHandler(this.io, this).register(socket);
 
       socket.on("disconnect", () => {
@@ -52,6 +52,7 @@ export class SocketService {
 
   public sendNotificationToUser(
     userId: string,
+    referenceId: string,
     notification:
       | IVideoCallNotification
       | IChatNotification
@@ -70,10 +71,9 @@ export class SocketService {
 
     if (notification.type === "chat") {
       const content = `${notification.senderName} sent you a message: "${notification.content}"`;
-
       // this.notificationUseCase.create(content, userId);
     } else if (notification.type === "notification") {
-      this.notificationUseCase.execute(notification.content, userId);
+      this.notificationUseCase.execute(notification.content, referenceId);
     }
   }
 }

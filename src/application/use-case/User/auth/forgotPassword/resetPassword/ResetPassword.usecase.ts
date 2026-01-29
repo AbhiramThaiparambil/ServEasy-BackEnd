@@ -7,13 +7,15 @@ import { IResetPasswordUseCase } from "./IResetPassword.usecase";
 export class ResetPasswordUseCase implements IResetPasswordUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.UserRepository)
-    private userRepository: IUserRepository
+    private userRepository: IUserRepository,
   ) {}
 
   async resetPasswordEmail(
     newPassword: string,
-    email: string
+    email: string,
   ): Promise<string | void> {
+    console.log("hey im usecaese ");
+
     const user = await this.userRepository.findByEmail(email);
 
     if (!user || !user._id) {
@@ -21,13 +23,12 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
     }
 
     if (user.password) {
-      const hashedPassword = await this.userRepository.HashPassword(
-        newPassword
-      );
+      const hashedPassword =
+        await this.userRepository.HashPassword(newPassword);
 
       const res = await this.userRepository.updatePassword(
         user._id,
-        hashedPassword
+        hashedPassword,
       );
       console.log(res);
       if (res == true) {
@@ -38,7 +39,7 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
 
   async resetPasswordPhone(
     newPassword: string,
-    phone: string
+    phone: string,
   ): Promise<string | void> {
     const user = await this.userRepository.findByEmail(phone);
 
@@ -47,13 +48,12 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
     }
 
     if (user.password) {
-      const hashedPassword = await this.userRepository.HashPassword(
-        newPassword
-      );
+      const hashedPassword =
+        await this.userRepository.HashPassword(newPassword);
 
       const res = await this.userRepository.updatePassword(
         user._id,
-        hashedPassword
+        hashedPassword,
       );
       console.log(res);
       if (res == true) {

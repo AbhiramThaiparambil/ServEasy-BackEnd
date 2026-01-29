@@ -11,15 +11,13 @@ import { RedisService } from "../../../../services/redis/RedisService";
 import { IRedisService } from "../../../../services/redis/IRedisService";
 
 @injectable()
-export class CreatePaymentSubscriptionOrderUseCase
-  implements ICreatePaymentSubscriptionOrderUseCase
-{
+export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubscriptionOrderUseCase {
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
     @inject(REPOSITORY_TOKENS.SubscriptionRepository)
     private subscriptionPlanRepository: ISubscriptionPlanRepository,
-    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService
+    @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService,
   ) {}
 
   async execute(userId: string, planId: string): Promise<PaymentOrder> {
@@ -37,9 +35,8 @@ export class CreatePaymentSubscriptionOrderUseCase
 
     // Validate plan
     console.log("planId:", planId);
-    const plan = await this.subscriptionPlanRepository.findSubscriptionPlanById(
-      planId
-    );
+    const plan =
+      await this.subscriptionPlanRepository.findSubscriptionPlanById(planId);
     console.log(plan);
     if (!plan) {
       return { success: false, message: "Subscription plan not found" };

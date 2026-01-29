@@ -13,6 +13,9 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
   ) {}
 
   async getNearByServices(
+    userId: string,
+    skip: number,
+    limit: number,
     userLongitude: number | null,
     userLatitude: number | null,
     filters?: {
@@ -21,20 +24,19 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
       priceSort?: "gtToLow" | "lowTogt";
       searchQuery?: string;
     },
-    limit: number = 10,
-    cursor: string | null = null,
   ) {
     try {
       const allFilterServices =
         await this.serviceRepository.findNearestServicesFilter(
+          userId,
+          skip,
+          limit,
           userLongitude,
           userLatitude,
           filters,
-          limit,
-          cursor,
         );
 
-      console.log(allFilterServices);
+      // console.log(allFilterServices);
 
       const categories =
         await this.serviceRepository.findActiveServiceCategories();
@@ -49,15 +51,15 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
     }
   }
 
-  async execute({ limit, cursor }: { limit: number; cursor?: string | null }) {
+  async execute(skip: number, limit: number) {
     try {
       const categories =
         await this.serviceRepository.findActiveServiceCategories();
 
-      const { services: allServices, nextCursor } =
-        await this.serviceRepository.findAllActiveServicesUser(limit, cursor);
+      const { services: allServices } =
+        await this.serviceRepository.findAllActiveServicesUser(skip, limit);
 
-      return { allServices, categories, nextCursor };
+      return { allServices, categories };
     } catch (error) {
       console.error("Error fetching active services:", error);
       throw new Error("Failed to fetch active services");

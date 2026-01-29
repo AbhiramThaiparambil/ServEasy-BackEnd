@@ -14,12 +14,14 @@ export class VideoCallHandler {
         {
           user1,
           user2,
+          targetRole,
           callerName,
           callerProfile,
           user,
         }: {
           user1: string;
           user2: string;
+          targetRole: "SERVICE_PROVIDER" | "USER";
           callerName: string;
           callerProfile: string;
           user: boolean;
@@ -38,9 +40,18 @@ export class VideoCallHandler {
         ); // exclude sender socket
 
         if (!isReceiverInRoom) {
-          this.socketService.sendNotificationToUser(user2, {
+          console.log("_____________________________________");
+
+          console.log("user 2 ");
+          console.log(user2);
+          console.log("user 1");
+          console.log(user1);
+          console.log("_____________________________________");
+          console.log(callerName, callerProfile, user);
+          this.socketService.sendNotificationToUser(user2, user2, {
             type: "video_call",
             callerId: user1,
+            targetRole,
             callerName,
             callerProfile: callerProfile,
             callRoomId: roomId,
@@ -75,8 +86,9 @@ export class VideoCallHandler {
 
         socket.to(callRoomId).emit("user-left");
 
-        this.socketService.sendNotificationToUser(user2, {
+        this.socketService.sendNotificationToUser(user2, user2, {
           type: "notification",
+          targetRole: "USER",
           content: "User rejected your call",
           timestamp: Date.now() + "",
         });

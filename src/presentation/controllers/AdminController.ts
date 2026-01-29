@@ -1066,7 +1066,7 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
       const data = await this.getAdsUseCase.execute(skip, limit);
-  
+
       console.log(data);
 
       res.status(HttpStatus.OK).json(data);
@@ -1080,10 +1080,8 @@ export class AdminController {
 
   async changeAdStatus(req: Request, res: Response): Promise<void> {
     try {
-    
       const { adId } = req.params;
-      const { status } = req.body; // expecting { status: "active" | "block" }
-      console.log("called");
+      const { status } = req.body;
       if (!adId || !status) {
         res.status(400).json({ message: "adId and status are required" });
         return;

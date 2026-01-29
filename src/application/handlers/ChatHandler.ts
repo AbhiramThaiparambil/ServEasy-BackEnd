@@ -7,7 +7,7 @@ export class ChatHandler {
   constructor(
     private io: Server,
     private saveMessageUseCase: SaveMessageUseCase,
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   public register(socket: Socket) {
@@ -24,7 +24,7 @@ export class ChatHandler {
         socket.join(roomId);
         socket.to(roomId).emit("user_online");
         socket.to(roomId).emit("serviceProvider_online");
-      }
+      },
     );
 
     socket.on(
@@ -34,28 +34,31 @@ export class ChatHandler {
         receiverId,
         message,
         senderInfo,
+        targetRole,
       }: {
         senderId: string;
         receiverId: string;
         message: IMessage;
         senderInfo: { senderName: string; senderProfile: string };
+        targetRole?: "SERVICE_PROVIDER" | "USER";
       }) => {
         const roomId = this.createRoomId(senderId, receiverId);
         const savedMessage = await this.saveMessageUseCase.execute(
           senderId,
           receiverId,
-          message
+          message,
         );
 
         const room = this.io.sockets.adapter.rooms.get(roomId);
         const socketsInRoom = room ? Array.from(room) : [];
         const isReceiverInRoom = socketsInRoom.some(
-          (socketId) => socketId !== socket.id
+          (socketId) => socketId !== socket.id,
         );
 
         if (!isReceiverInRoom) {
-          this.socketService.sendNotificationToUser(receiverId, {
+          this.socketService.sendNotificationToUser(receiverId, receiverId, {
             type: "chat",
+            targetRole,
             senderId,
             senderName: senderInfo.senderName,
             senderProfile: senderInfo.senderProfile,
@@ -63,7 +66,7 @@ export class ChatHandler {
           });
         }
         socket.to(roomId).emit("receive_message", { message: savedMessage });
-      }
+      },
     );
 
     socket.on("leave_chat", ({ senderId, receiverId, offlineId }) => {

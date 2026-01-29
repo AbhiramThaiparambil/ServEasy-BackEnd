@@ -8,36 +8,39 @@ import { SocketService } from "../../../../services/socket/SocketService";
 import { IServiceBooking } from "../../../../domain/entities/IServiceBooking";
 
 @injectable()
-export class RescheduleOnlineServiceSlotUseCase
-  implements IRescheduleOnlineServiceSlotUseCase
-{
+export class RescheduleOnlineServiceSlotUseCase implements IRescheduleOnlineServiceSlotUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private serviceBookingRepository: IServiceBookingRepository,
     @inject(SocketService)
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   async execute(
     bookingId: string,
     date: Date,
     startTime: Date,
-    endTime: Date
+    endTime: Date,
   ): Promise<boolean> {
     const data = await this.serviceBookingRepository.rescheduleOnlineService(
       new Types.ObjectId(bookingId),
       date,
       startTime,
-      endTime
+      endTime,
     );
     if (!data) {
       return false;
     }
-    this.socketService.sendNotificationToUser(data.userId.toString(), {
-      type: "notification",
-      content: `Your booking has been rescheduled to a new date`,
-      timestamp: new Date().toISOString(),
-    });
+    this.socketService.sendNotificationToUser(
+      data.userId.toString(),
+      data.userId.toString(),
+      {
+        type: "notification",
+        targetRole: "USER",
+        content: `Your booking has been rescheduled to a new date`,
+        timestamp: new Date().toISOString(),
+      },
+    );
     return true;
   }
 }

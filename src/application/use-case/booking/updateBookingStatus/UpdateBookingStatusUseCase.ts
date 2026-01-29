@@ -218,7 +218,7 @@ export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private serviceBookingRepository: IServiceBookingRepository,
     @inject(SocketService)
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   async execute(bookingId: string, status: string) {
@@ -226,24 +226,29 @@ export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
 
     const data = await this.serviceBookingRepository.updateServiceStatus(
       id,
-      status
+      status,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       id,
       "status-updated",
-      `Booking status updated to ${status}`
+      `Booking status updated to ${status}`,
     );
 
     const notification: ISystemNotification = {
       type: "notification",
+      targetRole:"USER",
       content: data?.isOnlineService
         ? "Your service has been confirmed. Please complete payment."
         : `Your booking status has been updated to ${status}`,
       timestamp: new Date().toISOString(),
     };
 
-    this.socketService.sendNotificationToUser(data?.userId + "", notification);
+    this.socketService.sendNotificationToUser(
+      data?.userId + "",
+      data?.userId + "",
+      notification,
+    );
 
     return data;
   }

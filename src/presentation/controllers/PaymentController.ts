@@ -4,13 +4,17 @@ import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IVerifySubscriptionPaymentUseCase } from "../../application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase";
 import { inject, injectable } from "tsyringe";
 import { ICreatePaymentSubscriptionOrderUseCase } from "../../application/use-case/subscription/payment/ICreatePaymentSubscriptionOrderUseCase";
+import { ICreateServiceOrderUseCase } from "../../application/use-case/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
 @injectable()
 export class PaymentController {
   constructor(
     @inject(USE_CASE_TOKENS.VerifySubscriptionPaymentUseCase)
     private verifySubscriptionPaymentUseCase: IVerifySubscriptionPaymentUseCase,
     @inject(USE_CASE_TOKENS.CreatePaymentSubscriptionOrderUseCase)
-    private createPaymentSubscriptionOrderUseCase: ICreatePaymentSubscriptionOrderUseCase
+    private createPaymentSubscriptionOrderUseCase: ICreatePaymentSubscriptionOrderUseCase,
+
+    @inject(USE_CASE_TOKENS.CreateServiceOrderUseCase)
+    private createServiceOrderUseCase: ICreateServiceOrderUseCase,
   ) {}
 
   async subscriptionVerifyPayment(req: Request, res: Response) {
@@ -54,7 +58,7 @@ export class PaymentController {
     }
   }
 
-  async createOrderHandler(req: Request, res: Response) {
+  async createSubscriptionPaymentOrder(req: Request, res: Response) {
     const { planId } = req.body;
     console.log(req.body);
     console.log(planId);
@@ -70,7 +74,7 @@ export class PaymentController {
     try {
       const result = await this.createPaymentSubscriptionOrderUseCase.execute(
         serviceProviderId,
-        planId
+        planId,
       );
 
       if (!result || result.success === false) {
@@ -81,6 +85,35 @@ export class PaymentController {
     } catch (error) {
       console.error("Order creation failed:", error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Failed to create Razorpay order",
+      });
+    }
+  }
+
+  async createServicePaymentOrder(req: Request, res: Response): Promise<void> {
+    const { serviceId } = req.body;
+    console.log("called create service payment order");
+    if (!serviceId) {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "Missing or invalid service ID",
+      });
+      return;
+    }
+
+    try {
+      const result = await this.createServiceOrderUseCase.execute(serviceId);
+      console.log(result);
+      if (!result || result.success === false) {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+        return;
+      }
+
+      res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      console.error("Order creation failed:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Failed to create Razorpay order",
       });

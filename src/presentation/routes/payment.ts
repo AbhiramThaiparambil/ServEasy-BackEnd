@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import { createOrderHandler } from "../controllers/payment/CreateOrderHandiler";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 
 import { verifyPaymentHandler } from "../controllers/payment/verifyPaymentHandler";
@@ -10,15 +9,19 @@ import { getPaymentDetailsAdminHandler } from "../controllers/payment/getPayment
 import { container } from "tsyringe";
 import { PaymentController } from "../controllers/PaymentController";
 const paymentRouter = Router();
-// verifyPaymentHandler
+
 const paymentController = container.resolve(PaymentController);
-paymentRouter.post("/create-order", createOrderHandler);
+
+paymentRouter.post("/create-order", (req, res) => {
+  paymentController.createServicePaymentOrder(req, res);
+});
+
 paymentRouter.post("/verify", verifyPaymentHandler);
 paymentRouter.get(
   "/service-provider",
   authMiddleware("User"),
   serviceProviderAuth,
-  getPaymentDetailsHandler
+  getPaymentDetailsHandler,
 );
 paymentRouter.get("/admin", getPaymentDetailsAdminHandler);
 
@@ -28,7 +31,7 @@ paymentRouter.post(
   serviceProviderAuth,
   (req, res) => {
     paymentController.subscriptionVerifyPayment(req, res);
-  }
+  },
 );
 
 paymentRouter.post(
@@ -36,8 +39,8 @@ paymentRouter.post(
   authMiddleware("User"),
   serviceProviderAuth,
   (req, res) => {
-    paymentController.createOrderHandler(req, res);
-  }
+    paymentController.createSubscriptionPaymentOrder(req, res);
+  },
 );
 
 export default paymentRouter;

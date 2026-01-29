@@ -93,6 +93,8 @@ export const USE_CASE_TOKENS = {
   ProfileUpdateOtpUseCase: "ProfileUpdateOtpUseCase",
   UserProfileUpdateUseCase: "IUserProfileUpdateUseCase",
   GetUserProfileUseCase: "IGetUserProfileUseCase",
+  CreateServiceOrderUseCase: "CreateServiceOrderUseCase",
+  FindAllActiveCouponsUseCase: "IFindAllActiveCouponsUseCase",
 };
 
 export const REPOSITORY_TOKENS = {
