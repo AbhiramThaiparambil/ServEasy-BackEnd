@@ -1,6 +1,6 @@
 import ServiceBooking from "../models/ServiceBooking";
 import { IServiceBookingRepository } from "../../domain/repositories/IserviceBookingRepository";
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import { injectable } from "tsyringe";
 import { ObjectId } from "mongodb";
 // import {IServiceBooking} from "../../domain/entities/IServiceBooking"
@@ -29,9 +29,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async createServiceBooking(
     serviceBookingData: IServiceBooking,
+    session?: ClientSession,
   ): Promise<IServiceBooking> {
     const newServiceBooking = new ServiceBooking(serviceBookingData);
-    return await newServiceBooking.save();
+    return await newServiceBooking.save({ session });
   }
 
   async updateServiceStatus(
@@ -637,16 +638,21 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     bookingId: Types.ObjectId,
     action: string,
     message: string,
+    session?: ClientSession,
   ): Promise<void> {
-    await ServiceBooking.findByIdAndUpdate(bookingId, {
-      $push: {
-        bookingHistory: {
-          action,
-          message,
-          timestamp: new Date(),
+    await ServiceBooking.findByIdAndUpdate(
+      bookingId,
+      {
+        $push: {
+          bookingHistory: {
+            action,
+            message,
+            timestamp: new Date(),
+          },
         },
       },
-    });
+      { session },
+    );
   }
 
   async checkAvailability(

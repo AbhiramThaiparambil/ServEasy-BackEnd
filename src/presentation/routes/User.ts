@@ -24,11 +24,7 @@ userRouter.get(
 
 userRouter.post("/forgot-password", userController.sendOtpController);
 userRouter.post("/forgot-password/verify-otp", userController.forgotVerifyOtp);
-userRouter.post(
-  "/forgot-password/reset",
-
-  userController.resetPassword,
-);
+userRouter.post("/forgot-password/reset", userController.resetPassword);
 userRouter.put(
   "/updateProfile/:userid",
   authMiddleware("User"),

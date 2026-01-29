@@ -79,8 +79,10 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
         ...(liveLocation && { liveLocation }),
       };
 
-      const result =
-        await this.serviceBookingRepository.createServiceBooking(bookingData);
+      const result = await this.serviceBookingRepository.createServiceBooking(
+        bookingData,
+        session,
+      );
 
       if (!result || !result._id) {
         throw new Error("Failed to book service");
@@ -90,6 +92,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
         result._id,
         "booked",
         "Service has been booked",
+        session,
       );
 
       const notification: ISystemNotification = {

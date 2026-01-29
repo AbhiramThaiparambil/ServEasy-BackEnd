@@ -476,6 +476,8 @@ export class UserController {
     try {
       const { otp, key } = req.body;
 
+      console.log(console.log(req.body));
+
       if (!otp || !key) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -502,10 +504,9 @@ export class UserController {
     }
   };
 
-  async resetPassword(req: Request, res: Response): Promise<void> {
+  resetPassword = async (req: Request, res: Response): Promise<void> => {
     try {
       const { password, email, phone } = req.body;
-
       if (!password) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -541,7 +542,7 @@ export class UserController {
         Message: "Something went wrong. Please try again later.",
       });
     }
-  }
+  };
 
   userProfileUpdateController = async (req: Request, res: Response) => {
     try {
