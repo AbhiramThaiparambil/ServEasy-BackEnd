@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
-import { AdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/AdminSiteSettingsUseCase";
+import { IAdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/IAdminSiteSettings.usecase";
+import { IServiceProviderRejectVerify } from "../../application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 import fs from "fs";
@@ -25,7 +26,6 @@ import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdS
 import { IGetAllUsers } from "../../application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
 import { IBlockUnblockUsers } from "../../application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
 import { IGetServiceProviders } from "../../application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
-import { ServiceProviderRejectVerify } from "../../application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
 import { IGetAllServices } from "../../application/use-case/service-management/serviceManagementAdmin/getService/IGetAllServices.usecase";
 import { IBlockUnblockService } from "../../application/use-case/service-management/serviceManagementAdmin/blockUnblock/IBlockUnblock.usecase";
 import { IAddCategory } from "../../application/use-case/category-management/addCategoryy.ts/IAddCategory.usecase";
@@ -58,10 +58,10 @@ export class AdminController {
     private getServiceProvidersUseCase: IGetServiceProviders,
     @inject(USE_CASE_TOKENS.GetPaymentInfoUseCase)
     private getPaymentInfoUseCase: IGetPaymentInfoUseCase,
-    @inject(AdminSiteSettingsUseCase)
-    private adminSiteSettingsUseCase: AdminSiteSettingsUseCase,
-    @inject(ServiceProviderRejectVerify)
-    private serviceProviderRejectVerify: ServiceProviderRejectVerify,
+    @inject(USE_CASE_TOKENS.AdminSiteSettingsUseCase)
+    private adminSiteSettingsUseCase: IAdminSiteSettingsUseCase,
+    @inject(USE_CASE_TOKENS.ServiceProviderRejectVerify)
+    private serviceProviderRejectVerify: IServiceProviderRejectVerify,
 
     @inject(USE_CASE_TOKENS.GetAllServices)
     private getAllServicesUseCase: IGetAllServices,

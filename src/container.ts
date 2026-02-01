@@ -247,6 +247,10 @@ import { GetAdminProfileUseCase } from "./application/use-case/admin/profile/pro
 import { IGetAdminProfileUseCase } from "./application/use-case/admin/profile/IProfile";
 import { GetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/GetPaymentInfo.usecase";
 import { IGetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
+import { IAdminSiteSettingsUseCase } from "./application/use-case/siteSetting/IAdminSiteSettings.usecase";
+import { AdminSiteSettingsUseCase } from "./application/use-case/siteSetting/AdminSiteSettingsUseCase";
+import { IServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
+import { ServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -806,6 +810,20 @@ container.register<IGetPaymentInfoUseCase>(
   USE_CASE_TOKENS.GetPaymentInfoUseCase,
   {
     useClass: GetPaymentInfoUseCase,
+  },
+);
+
+container.register<IAdminSiteSettingsUseCase>(
+  USE_CASE_TOKENS.AdminSiteSettingsUseCase,
+  {
+    useClass: AdminSiteSettingsUseCase,
+  },
+);
+
+container.register<IServiceProviderRejectVerify>(
+  USE_CASE_TOKENS.ServiceProviderRejectVerify,
+  {
+    useClass: ServiceProviderRejectVerify,
   },
 );
 

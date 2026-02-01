@@ -1,8 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { SiteSettingRepository } from "../../../infrastructure/repositories/SiteSettingRepository";
+import { REPOSITORY_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class UserSiteSettings{
- constructor(@inject("SiteSettingRepository") private siteSetting:SiteSettingRepository){}
+ constructor(@inject(REPOSITORY_TOKENS.SiteSettingRepository) private siteSetting:SiteSettingRepository){}
     async getThemes():Promise<string[]|[]>{
       return await this.siteSetting.findAllThemes()
     

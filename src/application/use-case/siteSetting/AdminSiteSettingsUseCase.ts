@@ -8,8 +8,11 @@ import {
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
 import { ICloudinaryService } from "../../../services/cloudinary/ICloudinaryService";
+import { IAdminSiteSettingsUseCase } from "./IAdminSiteSettings.usecase";
+
 @injectable()
-export class AdminSiteSettingsUseCase {
+export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
+
   constructor(
     
     @inject(REPOSITORY_TOKENS.SiteSettingRepository)

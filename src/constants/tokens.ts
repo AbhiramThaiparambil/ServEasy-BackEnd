@@ -97,6 +97,8 @@ export const USE_CASE_TOKENS = {
   FindAllActiveCouponsUseCase: "IFindAllActiveCouponsUseCase",
   GetAdminProfileUseCase: "IGetAdminProfileUseCase",
   GetPaymentInfoUseCase: "IGetPaymentInfoUseCase",
+  AdminSiteSettingsUseCase: "IAdminSiteSettingsUseCase",
+  ServiceProviderRejectVerify: "IServiceProviderRejectVerify",
 };
 
 export const REPOSITORY_TOKENS = {

@@ -8,8 +8,10 @@ import {
   USE_CASE_TOKENS,
 } from "../../../../constants/tokens";
 
+import { IServiceProviderRejectVerify } from "./IServiceProviderReject.usecase";
+
 @injectable()
-export class ServiceProviderRejectVerify {
+export class ServiceProviderRejectVerify implements IServiceProviderRejectVerify {
   constructor(
     @inject(SERVICE_TOKENS.EmailService) private email: IEmailService,
 
