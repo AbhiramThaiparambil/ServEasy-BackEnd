@@ -1,9 +1,10 @@
 import axios from "axios";
 import { config } from "dotenv";
 import { injectable } from "tsyringe";
+import { ILocationService } from "./ILocationService";
 config();
 @injectable()
-export class LocationService {
+export class LocationService implements ILocationService {
   private locationUrl = "https://us1.locationiq.com/v1/search.php";
   private locationIqApiKey = process.env.LOCATIONIQ_API_KEY as string;
   async getLocation(query: string) {

@@ -89,4 +89,12 @@ export interface IServiceBookingRepository {
     startDate?: Date | null,
     endDate?: Date | null,
   ): Promise<any>;
+
+  getPaymentInfoServiceProvider(
+    serviceProviderId: string,
+    startDate?: Date | null,
+    endDate?: Date | null,
+  ): Promise<any>;
+
+  checkAvailability(serviceProviderId: Types.ObjectId): Promise<any>;
 }

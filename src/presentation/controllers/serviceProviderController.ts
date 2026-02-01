@@ -27,7 +27,7 @@ import { IEditAdUseCase } from "../../application/use-case/ads/adsServiceProvide
 import { ICreateAdUseCase } from "../../application/use-case/ads/adsServiceProvider/createAd/ICreateAd.usecase";
 import { IGetProviderAdsUseCase } from "../../application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
-import { ManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/mangageAllserviceUseCase";
+import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
 
 @injectable()
 export class ServiceProviderController {
@@ -48,8 +48,8 @@ export class ServiceProviderController {
     @inject(USE_CASE_TOKENS.GetCategory)
     private getCategoryUseCase: IGetCategory,
 
-    @inject(ManageAllServiceUseCase)
-    private manageAllServiceUseCase: ManageAllServiceUseCase,
+    @inject(USE_CASE_TOKENS.ManageAllServiceUseCase)
+    private manageAllServiceUseCase: IManageAllServiceUseCase,
     @inject(checkServiceProviderAvailabilityUseCase)
     private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
     @inject(USE_CASE_TOKENS.GetWalletUseCase)

@@ -1,9 +1,13 @@
 import { inject, injectable } from "tsyringe";
-import { SiteSettingRepository } from "../../../infrastructure/repositories/SiteSettingRepository";
+import { ISiteSettingRepository } from "../../../domain/repositories/ISiteSetting";
 import { REPOSITORY_TOKENS } from "../../../constants/tokens";
+import { IUserSiteSettings } from "./IUserSiteSettings";
 @injectable()
-export class UserSiteSettings{
- constructor(@inject(REPOSITORY_TOKENS.SiteSettingRepository) private siteSetting:SiteSettingRepository){}
+export class UserSiteSettings implements IUserSiteSettings {
+  constructor(
+    @inject(REPOSITORY_TOKENS.SiteSettingRepository)
+    private siteSetting: ISiteSettingRepository,
+  ) {}
     async getThemes():Promise<string[]|[]>{
       return await this.siteSetting.findAllThemes()
     

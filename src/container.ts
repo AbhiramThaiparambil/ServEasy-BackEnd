@@ -22,6 +22,7 @@ import { IChatRepository } from "./domain/repositories/IChatRepository";
 import { ReviewRepository } from "./infrastructure/repositories/ReviewRepository";
 import { NotificationRepository } from "./infrastructure/repositories/NotificationRepository";
 import { SiteSettingRepository } from "./infrastructure/repositories/SiteSettingRepository";
+import { ISiteSettingRepository } from "./domain/repositories/ISiteSetting";
 import { ISlotRepository } from "./domain/repositories/ISlotRepository";
 import { SlotRepository } from "./infrastructure/repositories/SlotRepository";
 import { SocketService } from "./services/socket/SocketService";
@@ -251,6 +252,23 @@ import { IAdminSiteSettingsUseCase } from "./application/use-case/siteSetting/IA
 import { AdminSiteSettingsUseCase } from "./application/use-case/siteSetting/AdminSiteSettingsUseCase";
 import { IServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
 import { ServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
+import { IManageAllServiceUseCase } from "./application/use-case/admin/dashboard/IManageAllService.usecase";
+import { ManageAllServiceUseCase } from "./application/use-case/admin/dashboard/ManageAllService.usecase";
+import { IEditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/IEditProfile";
+import { EditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/EditProfile";
+import { IGetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/IGetPaymentInfoServiceProvider";
+import { GetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
+import { ICheckServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/ICheckServiceProviderAvailability";
+import { checkServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
+import { IVerifyServiceProvider } from "./application/use-case/serviceProvider/IVerifyServiceProvider";
+import { VerifyServiceProvider } from "./application/use-case/serviceProvider/VerifyServiceProvider";
+import { IGetServiceProvider } from "./application/use-case/serviceProvider/auth/IGetServiceProvider";
+import { GetServiceProvider } from "./application/use-case/serviceProvider/auth/getServiceProvider";
+import { IAutoSuggestion } from "./application/use-case/User/location/IAutoSuggestion";
+import { AutoSuggestion } from "./application/use-case/User/location/autoSuggestion";
+import { IUserSiteSettings } from "./application/use-case/siteSetting/IUserSiteSettings";
+import { UserSiteSettings } from "./application/use-case/siteSetting/UserSiteSettingsUseCase";
+import { ILocationService } from "./services/location/ILocationService";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -326,7 +344,9 @@ container.register<IRedisService>(SERVICE_TOKENS.RedisService, {
   useClass: RedisService,
 });
 
-container.register("LocationService", { useClass: LocationService });
+container.register<ILocationService>(SERVICE_TOKENS.LocationService, {
+  useClass: LocationService,
+});
 
 container.register<IServiceRepository>(REPOSITORY_TOKENS.ServiceRepository, {
   useClass: ServiceRepository,
@@ -350,7 +370,13 @@ container.register<IChatRepository>(REPOSITORY_TOKENS.ChatRepository, {
   useClass: ChatRepository,
 });
 
-container.register("SiteSettingRepository", SiteSettingRepository);
+container.register<ISiteSettingRepository>(
+  REPOSITORY_TOKENS.SiteSettingRepository,
+  {
+    useClass: SiteSettingRepository,
+  },
+);
+
 
 container.register(REPOSITORY_TOKENS.AdRepository, AdRepository);
 
@@ -824,6 +850,62 @@ container.register<IServiceProviderRejectVerify>(
   USE_CASE_TOKENS.ServiceProviderRejectVerify,
   {
     useClass: ServiceProviderRejectVerify,
+  },
+);
+
+container.register<IManageAllServiceUseCase>(
+  USE_CASE_TOKENS.ManageAllServiceUseCase,
+  {
+    useClass: ManageAllServiceUseCase,
+  },
+);
+
+container.register<IEditServiceProviderProfileUseCase>(
+  USE_CASE_TOKENS.EditServiceProviderProfileUseCase,
+  {
+    useClass: EditServiceProviderProfileUseCase,
+  },
+);
+
+container.register<IGetPaymentInfoUseCaseServiceProvider>(
+  USE_CASE_TOKENS.GetPaymentInfoUseCaseServiceProvider,
+  {
+    useClass: GetPaymentInfoUseCaseServiceProvider,
+  },
+);
+
+container.register<ICheckServiceProviderAvailabilityUseCase>(
+  USE_CASE_TOKENS.CheckServiceProviderAvailabilityUseCase,
+  {
+    useClass: checkServiceProviderAvailabilityUseCase,
+  },
+);
+
+container.register<IVerifyServiceProvider>(
+  USE_CASE_TOKENS.VerifyServiceProvider,
+  {
+    useClass: VerifyServiceProvider,
+  },
+);
+
+container.register<IGetServiceProvider>(
+  USE_CASE_TOKENS.GetServiceProvider,
+  {
+    useClass: GetServiceProvider,
+  },
+);
+
+container.register<IAutoSuggestion>(
+  USE_CASE_TOKENS.AutoSuggestion,
+  {
+    useClass: AutoSuggestion,
+  },
+);
+
+container.register<IUserSiteSettings>(
+  USE_CASE_TOKENS.UserSiteSettings,
+  {
+    useClass: UserSiteSettings,
   },
 );
 

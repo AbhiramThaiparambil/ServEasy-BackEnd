@@ -4,8 +4,10 @@ import { IUserRepository } from "../../../domain/repositories/IuserRepository";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
 import { ITokenService } from "../../../services/token/ITokenService";
 
+import { IVerifyServiceProvider } from "./IVerifyServiceProvider";
+
 @injectable()
-export class VerifyServiceProvider {
+export class VerifyServiceProvider implements IVerifyServiceProvider {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,

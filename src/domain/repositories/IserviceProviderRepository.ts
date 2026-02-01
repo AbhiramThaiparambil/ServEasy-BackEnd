@@ -2,6 +2,7 @@ import { ObjectId, Types } from "mongoose";
 import {
   IServiceProvider,
   IServiceProviderRegistration,
+  IUpdateProfile,
 } from "../entities/IServiceProvider";
 import { ISubscription } from "../entities/ISubscription";
 import {
@@ -63,4 +64,7 @@ export interface IServiceProviderRepository {
     serviceProviderId: ObjectId,
     data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider>;
+
+  editProvider(data: IUpdateProfile): Promise<boolean>;
 }
+

@@ -99,10 +99,17 @@ export const USE_CASE_TOKENS = {
   GetPaymentInfoUseCase: "IGetPaymentInfoUseCase",
   AdminSiteSettingsUseCase: "IAdminSiteSettingsUseCase",
   ServiceProviderRejectVerify: "IServiceProviderRejectVerify",
+  ManageAllServiceUseCase: "IManageAllServiceUseCase",
+  EditServiceProviderProfileUseCase: "IEditServiceProviderProfileUseCase",
+  GetPaymentInfoUseCaseServiceProvider: "IGetPaymentInfoUseCaseServiceProvider",
+  CheckServiceProviderAvailabilityUseCase: "ICheckServiceProviderAvailabilityUseCase",
+  VerifyServiceProvider: "IVerifyServiceProvider",
+  GetServiceProvider: "IGetServiceProvider",
+  AutoSuggestion: "IAutoSuggestion",
+  UserSiteSettings: "IUserSiteSettings",
 };
 
 export const REPOSITORY_TOKENS = {
-  ServiceRepository: "ServiceRepository",
   WalletRepository: "IWalletRepository",
   CouponRepository: "ICouponRepository",
   SubscriptionRepository: "ISubscriptionPlanRepository",
@@ -117,6 +124,7 @@ export const REPOSITORY_TOKENS = {
   NotificationRepository: "NotificationRepository",
   ReviewRepository: "ReviewRepository",
   SiteSettingRepository: "ISiteSettingRepository",
+  ServiceRepository: "IServiceRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
@@ -127,9 +135,10 @@ export const SERVICE_TOKENS = {
   RazorpayService: "RazorpayService",
   SmsOtpService: "ISmsOtpService",
   EmailService: "IEmailService",
-  ServiceRepository: "ServiceRepository",
   OtpService: "IOtpService",
+  LocationService: "ILocationService",
 };
+
 
 // IBlockUnblockUsers
 // BlockUnblockSericeProvider

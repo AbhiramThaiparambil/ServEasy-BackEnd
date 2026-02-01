@@ -1,11 +1,13 @@
 import { inject, injectable } from "tsyringe";
-import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
+import { IServiceBookingRepository } from "../../../domain/repositories/IserviceBookingRepository";
+import { IGetPaymentInfoUseCaseServiceProvider } from "./IGetPaymentInfoServiceProvider";
+import { REPOSITORY_TOKENS } from "../../../constants/tokens";
 
 @injectable()
-export class GetPaymentInfoUseCaseServiceProvider {
+export class GetPaymentInfoUseCaseServiceProvider implements IGetPaymentInfoUseCaseServiceProvider {
   constructor(
-    @inject(ServiceBookingRepository)
-    private serviceBooking: ServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBooking: IServiceBookingRepository,
   ) {}
 
   async execute(
