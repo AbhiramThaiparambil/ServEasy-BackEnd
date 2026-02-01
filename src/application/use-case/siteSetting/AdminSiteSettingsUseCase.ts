@@ -6,14 +6,16 @@ import {
   IFooterBanner,
 } from "../../../domain/entities/ISiteSettings";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { SERVICE_TOKENS } from "../../../constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
+import { ICloudinaryService } from "../../../services/cloudinary/ICloudinaryService";
 @injectable()
 export class AdminSiteSettingsUseCase {
   constructor(
-    @inject("SiteSettingRepository")
+    
+    @inject(REPOSITORY_TOKENS.SiteSettingRepository)
     private siteSettingRepository: ISiteSettingRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
-    private cloudinaryService: CloudinaryService
+    private cloudinaryService: ICloudinaryService
   ) {}
 
   addHomeBanner = async (bannerData: IHomeBanner) => {

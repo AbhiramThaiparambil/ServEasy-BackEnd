@@ -114,6 +114,7 @@ export const REPOSITORY_TOKENS = {
   ChatRepository: "ChatRepository",
   NotificationRepository: "NotificationRepository",
   ReviewRepository: "ReviewRepository",
+  SiteSettingRepository: "ISiteSettingRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
