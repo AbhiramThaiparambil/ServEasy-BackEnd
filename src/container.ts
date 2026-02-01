@@ -243,6 +243,10 @@ import { ICreateServiceOrderUseCase } from "./application/use-case/payment/Creat
 import { CreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
 import { IFindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
 import { FindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/FindAllActiveCoupons.usecase";
+import { GetAdminProfileUseCase } from "./application/use-case/admin/profile/profile";
+import { IGetAdminProfileUseCase } from "./application/use-case/admin/profile/IProfile";
+import { GetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/GetPaymentInfo.usecase";
+import { IGetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -798,6 +802,13 @@ container.register<IAddNewAddress>(USE_CASE_TOKENS.AddNewAddress, {
   useClass: AddNewAddress,
 });
 
+container.register<IGetPaymentInfoUseCase>(
+  USE_CASE_TOKENS.GetPaymentInfoUseCase,
+  {
+    useClass: GetPaymentInfoUseCase,
+  },
+);
+
 container.register<IEditAddress>(USE_CASE_TOKENS.EditAddress, {
   useClass: EditAddress,
 });
@@ -900,5 +911,13 @@ container.register<IFindAllActiveCouponsUseCase>(
   USE_CASE_TOKENS.FindAllActiveCouponsUseCase,
   {
     useClass: FindAllActiveCouponsUseCase,
+  },
+);
+
+
+container.register<IGetAdminProfileUseCase>(
+  USE_CASE_TOKENS.GetAdminProfileUseCase,
+  {
+    useClass: GetAdminProfileUseCase,
   },
 );

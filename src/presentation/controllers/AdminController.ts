@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { GetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/getPaymentInfoUseCase";
+import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
 import { AdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/AdminSiteSettingsUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
@@ -41,23 +41,23 @@ import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/subsc
 import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
 import { BlockUnblockSericeProvider } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
-import { GetAdminProfileUseCase } from "../../application/use-case/admin/profile/profile";
+import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
 
 @injectable()
 export class AdminController {
   constructor(
     @inject(USE_CASE_TOKENS.AdminSignin) private signInUseCase: IAdminSignin,
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
-    @inject(GetAdminProfileUseCase)
-    private getAdminProfileUseCase: GetAdminProfileUseCase,
+    @inject(USE_CASE_TOKENS.GetAdminProfileUseCase)
+    private getAdminProfileUseCase: IGetAdminProfileUseCase,
     @inject(USE_CASE_TOKENS.GetAllUsers)
     private getAllUsersUseCase: IGetAllUsers,
     @inject(USE_CASE_TOKENS.BlockUnblockUsers)
     private blockUnblockUsersUseCase: IBlockUnblockUsers,
     @inject(USE_CASE_TOKENS.GetServiceProviders)
     private getServiceProvidersUseCase: IGetServiceProviders,
-    @inject(GetPaymentInfoUseCase)
-    private getPaymentInfoUseCase: GetPaymentInfoUseCase,
+    @inject(USE_CASE_TOKENS.GetPaymentInfoUseCase)
+    private getPaymentInfoUseCase: IGetPaymentInfoUseCase,
     @inject(AdminSiteSettingsUseCase)
     private adminSiteSettingsUseCase: AdminSiteSettingsUseCase,
     @inject(ServiceProviderRejectVerify)

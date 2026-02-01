@@ -84,4 +84,9 @@ export interface IServiceBookingRepository {
     bookingId: Types.ObjectId,
     reviewId: Types.ObjectId,
   ): Promise<void>;
+
+  getPaymentInfo(
+    startDate?: Date | null,
+    endDate?: Date | null,
+  ): Promise<any>;
 }
