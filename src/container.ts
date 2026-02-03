@@ -269,6 +269,8 @@ import { IUserSiteSettings } from "./application/use-case/siteSetting/IUserSiteS
 import { UserSiteSettings } from "./application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { ILocationService } from "./services/location/ILocationService";
 import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
+import { IUploadBillsUseCase } from "./application/use-case/booking/billing/IUploadBills.usecase";
+import { UploadBillsUseCase } from "./application/use-case/booking/billing/UploadBills.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -1021,3 +1023,7 @@ container.register<IGetAdminProfileUseCase>(
     useClass: GetAdminProfileUseCase,
   },
 );
+
+container.register<IUploadBillsUseCase>(USE_CASE_TOKENS.UploadBillsUseCase, {
+  useClass: UploadBillsUseCase,
+});

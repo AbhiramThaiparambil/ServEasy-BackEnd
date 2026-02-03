@@ -107,6 +107,46 @@ export class UserController {
     @inject(USE_CASE_TOKENS.FindAllActiveCouponsUseCase)
     private findActiveCouponsusecase: IFindAllActiveCouponsUseCase,
   ) {}
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { refreshToken } = req.cookies;
+
+      if (!refreshToken) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Refresh token is missing" });
+        return;
+      }
+
+      const decoded = this.tokenService.verifyRefreshToken(refreshToken);
+      if (!decoded) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Invalid refresh token" });
+        return;
+      }
+
+      const user = await this.getUserProfileUseCase.execute(decoded.userId);
+
+      if (!user) {
+        res.status(HttpStatus.NOT_FOUND).json({ error: "User not found" });
+        return;
+      }
+
+      const newAccessToken = await this.tokenService.generateAccessToken(
+        user._id + "",
+        "userId",
+      );
+
+      res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
+    } catch (error) {
+      console.error("RefreshToken error:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  };
+
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;

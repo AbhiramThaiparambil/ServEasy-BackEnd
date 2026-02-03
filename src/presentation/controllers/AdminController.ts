@@ -113,6 +113,48 @@ export class AdminController {
     private changeAdStatusUseCase: IChangeAdStatusUseCase,
   ) {}
 
+
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const adminTokenData = req.cookies.adminToken;
+
+      if (!adminTokenData) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Refresh token is missing" });
+        return;
+      }
+
+      const decoded = this.tokenService.verifyRefreshToken(adminTokenData);
+
+      if (!decoded) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Invalid refresh token" });
+        return;
+      }
+
+      const user = await this.getAdminProfileUseCase.execute(decoded.adminId);
+
+      if (!user || !user.isAdmin) {
+        res.status(HttpStatus.NOT_FOUND).json({ error: "Admin not found" });
+        return;
+      }
+
+      const newAccessToken = await this.tokenService.generateAccessToken(
+        user._id + "",
+        "adminId",
+      );
+
+      res.status(HttpStatus.OK).json({ adminToken: newAccessToken });
+    } catch (error) {
+      console.error("Admin RefreshToken error:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  };
+
   async signIn(req: Request, res: Response) {
     try {
       const { email, phone, password } = req.body;

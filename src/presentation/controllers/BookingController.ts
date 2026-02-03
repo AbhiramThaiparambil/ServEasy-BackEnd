@@ -12,6 +12,7 @@ import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServices.usecase";
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchByid/IGetBookedServiceById.usecase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
+import { IUploadBillsUseCase } from "../../application/use-case/booking/billing/IUploadBills.usecase";
 
 @injectable()
 export class BookingController {
@@ -40,6 +41,8 @@ export class BookingController {
     private getBookedServiceByIdUseCase: IGetBookedServiceByIdUseCase,
     @inject(USE_CASE_TOKENS.RescheduleOnlineServiceSlotUseCase)
     private rescheduleOnlineServiceSlotUseCase: IRescheduleOnlineServiceSlotUseCase,
+    @inject(USE_CASE_TOKENS.UploadBillsUseCase)
+    private uploadBillsUseCase: IUploadBillsUseCase,
   ) {}
 
   async createBooking(req: Request, res: Response) {
@@ -124,6 +127,40 @@ export class BookingController {
       });
     }
   }
+
+
+
+
+
+   uploadBills = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { invoices } = req.body;
+
+    if (!Array.isArray(invoices) || invoices.length === 0) {
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "No invoice images provided." });
+      return;
+    }
+
+    
+    await this.uploadBillsUseCase.execute(id, invoices);
+
+    res
+      .status(HttpStatus.CREATED)
+      .json({ message: "Invoice images uploaded successfully." });
+  } catch (error) {
+    console.error("Error uploading invoice bills:", error);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Failed to upload invoice images." });
+  }
+};
+
 
   async confirmBooking(req: Request, res: Response) {
     try {

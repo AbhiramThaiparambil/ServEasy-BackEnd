@@ -3,9 +3,10 @@ import { CloudinaryService } from "../../../../services/cloudinary/CloudinarySer
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import mongoose from "mongoose";
 import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { IUploadBillsUseCase } from "./IUploadBills.usecase";
 
 @injectable()
-export class UploadBills {
+export class UploadBillsUseCase implements IUploadBillsUseCase {
   constructor(
     @inject(SERVICE_TOKENS.CloudinaryService)
     private cloudinaryService: CloudinaryService,

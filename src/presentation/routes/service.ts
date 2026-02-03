@@ -5,7 +5,6 @@ import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 import { blockUnblockService } from "../controllers/service/activeAndInactive";
 import { updateService } from "../controllers/service/updateService";
 import { authMiddleware } from "../Middlewares/authMiddleware";
-import { uploadBillsHandler } from "../controllers/ServiceBooking/uploadBills";
 import { ServiceController } from "../controllers/ServiceController";
 import { container } from "tsyringe";
 import { checkUserBlocked } from "../Middlewares/checkUserBlocked";
@@ -86,7 +85,7 @@ router.post("/slots", (req, res) =>
   serviceController.createSlotHandler(req, res)
 );
 
-router.post("/service-provider/uploadbills/:id/", uploadBillsHandler);
+router.post("/service-provider/uploadbills/:id/", bookingController.uploadBills.bind(bookingController));
 
 // router.put(
 //   "/service-provider/bookings/:id/:action",
