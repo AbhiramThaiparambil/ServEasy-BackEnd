@@ -19,7 +19,7 @@ import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
-import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
 import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
 import { IGetCategory } from "../../application/use-case/category-management/getCategory/IGetCategory.usecase";

@@ -96,9 +96,9 @@ import { ICreateOnlineBookingUseCase } from "./application/use-case/booking/crea
 import { CreateOnlineBookingUseCase } from "./application/use-case/booking/createOnlineBooking/CreateOnlineBooking.usecase";
 import { CreateBookingUseCase } from "./application/use-case/booking/createBooking/CreateBooking.usecase";
 import { ICreateBookingUseCase } from "./application/use-case/booking/createBooking/ICreateBooking.usecase";
-import { GetBookedServicesUseCase } from "./application/use-case/booking/fetchByid/GetBookedServices.usecase";
-import { IGetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
-import { IGetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
+import { GetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/GetBookedServices.usecase";
+import { IGetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServices.usecase";
+import { IGetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchByid/IGetBookedServiceById.usecase";
 import { GetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchByid/GetBookedServiceById.usecase";
 
 import { IServiceBookingRepository } from "./domain/repositories/IserviceBookingRepository";
@@ -127,7 +127,7 @@ import { GetSlotUseCase } from "./application/use-case/slot/getSlots/GetSlot.use
 import { IMarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/IMarkSlotAsBooked.usecase";
 import { MarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/MarkSlotAsBooked.usecase";
 import { ExpireAdsUseCase } from "./application/use-case/ads/expireAds/IExpireAds.usecase";
-import { IChangeAdStatusUseCase } from "./application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
+import { IChangeAdStatusUseCase } from "./application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
 import { ChangeAdStatusUseCase } from "./application/use-case/ads/changeAdStatus/ChangeAdStatus.usecase";
 import { AdminGetAdsUseCase } from "./application/use-case/ads/getAds/AdminGetAds.usecase";
 
@@ -181,8 +181,8 @@ import { IGetAllServices } from "./application/use-case/service-management/servi
 import { GetAllServices } from "./application/use-case/service-management/serviceManagementAdmin/getService/GetAllServices.usecase";
 import { IBlockUnblockCategoryService } from "./application/use-case/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
 import { BlockUnblockCategoryService } from "./application/use-case/category-management/blockUnblockService/BlockUnblockCategoryService.usecase";
-import { IBlockUnblockSericeProvider } from "./application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockSericeProvider.usecase";
-import { BlockUnblockSericeProvider } from "./application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { IBlockUnblockProviderUseCase } from "./application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockProvider.usecase";
+import { BlockUnblockProviderUseCase } from "./application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
 import { IBlockUnblockService } from "./application/use-case/service-management/serviceManagementAdmin/blockUnblock/IBlockUnblock.usecase";
 import { BlockUnblockService } from "./application/use-case/service-management/serviceManagementAdmin/blockUnblock/BlockUnblock.usecase";
 import { IAddCategory } from "./application/use-case/category-management/addCategoryy.ts/IAddCategory.usecase";
@@ -231,7 +231,6 @@ import { IAdminSignin } from "./application/use-case/admin/auth/IAdminSignin.use
 import { GetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/GetSingleServics.usecase";
 import { GetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/GetAllActiveService.usecase";
 import { GetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/GetServiceProviderInfo.usecase";
-import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfoUseCase";
 import { IGetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/IGetAllActiveService.usecase";
 import { IGetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
 import { IProfileUpdateOtpUseCase } from "./application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
@@ -239,7 +238,7 @@ import { ProfileUpdateOtpUseCase } from "./application/use-case/User/profile/upd
 import { UserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/UserProfileUpdate.usecase";
 import { IUserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
 import { IGetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
-import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetProfile.usecase";
+import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetUserProfile.usecase";
 import { ICreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
 import { CreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
 import { IFindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
@@ -269,6 +268,7 @@ import { AutoSuggestion } from "./application/use-case/User/location/autoSuggest
 import { IUserSiteSettings } from "./application/use-case/siteSetting/IUserSiteSettings";
 import { UserSiteSettings } from "./application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { ILocationService } from "./services/location/ILocationService";
+import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -724,10 +724,10 @@ container.register<IBlockUnblockCategoryService>(
   },
 );
 
-container.register<IBlockUnblockSericeProvider>(
+container.register<IBlockUnblockProviderUseCase>(
   USE_CASE_TOKENS.BlockUnblockSericeProvider,
   {
-    useClass: BlockUnblockSericeProvider,
+    useClass: BlockUnblockProviderUseCase,
   },
 );
 

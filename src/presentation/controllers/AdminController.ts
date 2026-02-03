@@ -22,7 +22,7 @@ import { userInfo } from "os";
 
 import path from "path";
 
-import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
 import { IGetAllUsers } from "../../application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
 import { IBlockUnblockUsers } from "../../application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
 import { IGetServiceProviders } from "../../application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
@@ -39,9 +39,10 @@ import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/w
 import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/subscriptionManagement/getSubscription/IGetAllSubscriptionPlans.usecase";
 import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/createSubscription/ICreateSubscriptionPlan.usecase";
 import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
-import { BlockUnblockSericeProvider } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { BlockUnblockProviderUseCase } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
 import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
+import { IBlockUnblockProviderUseCase } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockProvider.usecase";
 
 @injectable()
 export class AdminController {
@@ -70,7 +71,7 @@ export class AdminController {
     private blockUnblockServiceUseCase: IBlockUnblockService,
 
     @inject(USE_CASE_TOKENS.BlockUnblockSericeProvider)
-    private blockUnblockProviderUseCase: BlockUnblockSericeProvider,
+    private blockUnblockProviderUseCase: IBlockUnblockProviderUseCase,
     @inject(USE_CASE_TOKENS.AddCategory)
     private addCategoryUseCase: IAddCategory,
     @inject(USE_CASE_TOKENS.GetCategory)

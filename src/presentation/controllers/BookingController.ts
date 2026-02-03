@@ -9,8 +9,8 @@ import { IConfirmBookingUseCase } from "../../application/use-case/booking/confi
 import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
 import { IRequestPaymentUseCase } from "../../application/use-case/booking/requestPayment/IRequestPaymentUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServicesUseCase";
-import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServiceByIdUseCase";
+import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServices.usecase";
+import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchByid/IGetBookedServiceById.usecase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 
 @injectable()

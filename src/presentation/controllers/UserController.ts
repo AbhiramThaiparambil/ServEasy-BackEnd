@@ -30,7 +30,7 @@ import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/User
 import { IResetPasswordUseCase } from "../../application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
 import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
 import { IGoogleAuthUseCase } from "../../application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
-import { IGetServiceProviderInfoUseCase } from "../../application/use-case/User/service/getProviderInfo/IGetServiceProviderInfoUseCase";
+import { IGetServiceProviderInfoUseCase } from "../../application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
 import { IGetSingleServiceUseCase } from "../../application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
 import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
 import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";

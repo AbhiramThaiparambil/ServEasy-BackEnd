@@ -1,13 +1,13 @@
 import { inject, injectable } from "tsyringe";
 
-import { IBlockUnblockSericeProvider } from "./IBlockUnblockSericeProvider.usecase";
+import { IBlockUnblockProviderUseCase } from "./IBlockUnblockProvider.usecase";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
 import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
 
 @injectable()
-export class BlockUnblockSericeProvider implements IBlockUnblockSericeProvider {
+export class BlockUnblockProviderUseCase implements IBlockUnblockProviderUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,

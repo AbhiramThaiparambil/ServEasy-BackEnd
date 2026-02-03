@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import mongoose from "mongoose";
 import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
 import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
-import { IGetBookedServicesUseCase } from "../fetchBookings/IGetBookedServicesUseCase";
+import { IGetBookedServicesUseCase } from "./IGetBookedServices.usecase";
 
 @injectable()
 export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {

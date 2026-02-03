@@ -6,8 +6,8 @@ import { ServiceBookingRepository } from "../../../../infrastructure/repositorie
 import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
 import { ReviewRepository } from "../../../../infrastructure/repositories/ReviewRepository";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
-import { IGetBookedServiceByIdUseCase } from "../fetchBookings/IGetBookedServiceByIdUseCase";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IGetBookedServiceByIdUseCase } from "./IGetBookedServiceById.usecase";
 
 @injectable()
 export class GetBookedServiceByIdUseCase

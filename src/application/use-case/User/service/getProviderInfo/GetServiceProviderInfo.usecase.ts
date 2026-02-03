@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
+import { IGetServiceProviderInfoUseCase } from "./IGetServiceProviderInfo.usecase";
 import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 
 @injectable()
