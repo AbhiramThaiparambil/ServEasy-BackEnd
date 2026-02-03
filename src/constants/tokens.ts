@@ -108,6 +108,10 @@ export const USE_CASE_TOKENS = {
   AutoSuggestion: "IAutoSuggestion",
   UserSiteSettings: "IUserSiteSettings",
   UploadBillsUseCase: "IUploadBillsUseCase",
+  AddNewService: "AddNewService",
+  GetService: "GetService",
+  EditService: "EditService",
+  BlockUnblockSericeUseCase: "BlockUnblockSericeUseCase",
 };
 
 export const REPOSITORY_TOKENS = {

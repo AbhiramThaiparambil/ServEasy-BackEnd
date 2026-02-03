@@ -11,6 +11,10 @@ import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/I
 import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
 import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
 import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
+import { AddNewService } from "../../application/use-case/service-management/addnewService";
+import { GetService } from "../../application/use-case/service-management/getServices";
+import { EditService } from "../../application/use-case/service-management/EditService";
+import { BlockUnblockSericeUseCase } from "../../application/use-case/service-management/BlockUnblockSericeUseCase";
 
 @injectable()
 export class ServiceController {
@@ -31,9 +35,17 @@ export class ServiceController {
     private applyCouponUseCase: IApplyCouponToBookingUseCase,
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
     private removeCouponUseCase: IRemoveCouponToBookingUseCase,
+    @inject(USE_CASE_TOKENS.AddNewService)
+    private addNewServiceUseCase: AddNewService,
+    @inject(USE_CASE_TOKENS.GetService)
+    private getServiceUseCase: GetService,
+    @inject(USE_CASE_TOKENS.EditService)
+    private editServiceUseCase: EditService,
+    @inject(USE_CASE_TOKENS.BlockUnblockSericeUseCase)
+    private blockUnblockServiceUseCase: BlockUnblockSericeUseCase,
   ) {}
 
-  async cancelUserBooking(req: Request, res: Response): Promise<void> {
+   async cancelUserBooking(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const { cancellationReason } = req.body;
@@ -205,6 +217,203 @@ export class ServiceController {
         .status(400)
         .json({ message: error.message || "Failed to remove coupon" });
       return;
+    }
+  }
+
+  /* ---------------------- NEW METHODS (Refactored) ---------------------- */
+
+  // 1. Add New Service
+  async addNewService(req: Request, res: Response): Promise<void> {
+    try {
+      const {
+        serviceName,
+        description,
+        serviceType,
+        category,
+        location,
+        estimatedPrice,
+        serviceImage,
+        serviceProviderId,
+      } = req.body;
+
+      if (
+        !serviceName ||
+        !description ||
+        !serviceType ||
+        !category ||
+        !location ||
+        !estimatedPrice ||
+        !serviceImage ||
+        !serviceProviderId
+      ) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ error: "Bad Request: Missing required fields" });
+        return;
+      }
+      const updateLocation = {
+        type: "Point",
+        coordinates: [location.longitude, location.latitude],
+        address: location.address,
+      };
+      const serviceData: any = {
+        serviceName,
+        description,
+        serviceType,
+        category,
+        location: updateLocation,
+        estimatedPrice,
+        serviceImage,
+        serviceProviderId,
+      };
+
+      const service = await this.addNewServiceUseCase.execute(serviceData);
+
+      res.status(HttpStatus.CREATED).json({ data: service });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  }
+
+  // 2. Get Services
+  async getServices(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+
+      if (!serviceProviderId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Service Provider ID is required." });
+        return;
+      }
+
+      const result = await this.getServiceUseCase.execute(serviceProviderId);
+
+      res.status(HttpStatus.OK).json({ allServices: result });
+    } catch (e) {
+      console.error(e);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "An error occurred while fetching services.",
+      });
+    }
+  }
+
+  // 3. Update Service
+  async updateService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId } = req.params;
+      if (!serviceId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ error: "Bad Request: Missing serviceId" });
+        return;
+      }
+
+      const {
+        serviceName,
+        description,
+        serviceType,
+        category,
+        location,
+        estimatedPrice,
+        serviceImage,
+        serviceProviderId,
+      }: any = req.body;
+
+      // Validate required fields
+      if (
+        !serviceName ||
+        !description ||
+        !serviceType ||
+        !category ||
+        !location ||
+        !estimatedPrice ||
+        !serviceImage ||
+        !serviceProviderId
+      ) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ error: "Bad Request: Missing required fields" });
+        return;
+      }
+
+      const serviceData: any = {
+        serviceName,
+        description,
+        serviceType,
+        category,
+        location,
+        estimatedPrice,
+        serviceImage: "",
+        serviceProviderId,
+      };
+
+      const updatedService = await this.editServiceUseCase.execute(
+        serviceId,
+        serviceData,
+        serviceImage,
+      );
+
+      if (!updatedService) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ error: "Service not found or not updated" });
+        return;
+      }
+
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "Service updated successfully", data: updatedService });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  }
+
+  // 4. Block/Unblock Service
+  async blockUnblockService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId, action } = req.body;
+
+      if (!serviceId || !action) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "serviceId and action are required" });
+        return;
+      }
+
+      let result: boolean;
+
+      if (action === "Block") {
+        result = await this.blockUnblockServiceUseCase.blockService(serviceId);
+      } else if (action === "Unblock") {
+        result = await this.blockUnblockServiceUseCase.unblockService(serviceId);
+      } else {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Invalid action. Use 'Block' or 'Unblock'." });
+        return;
+      }
+
+      if (result) {
+        res.status(HttpStatus.OK).json({
+          message: `Service ${action.toLowerCase()}ed successfully`,
+        });
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          message: `Failed to ${action.toLowerCase()} service`,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error in blockUnblockService:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message || "Internal server error" });
     }
   }
 }

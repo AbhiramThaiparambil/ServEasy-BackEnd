@@ -124,6 +124,10 @@ import { IDeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/IDele
 import { IGetSlotUseCase } from "./application/use-case/slot/getSlots/IGetSlot.usecase";
 import { DeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/DeleteSlot.usecase";
 import { GetSlotUseCase } from "./application/use-case/slot/getSlots/GetSlot.usecase";
+import { AddNewService } from "./application/use-case/service-management/addnewService";
+import { GetService } from "./application/use-case/service-management/getServices";
+import { EditService } from "./application/use-case/service-management/EditService";
+import { BlockUnblockSericeUseCase } from "./application/use-case/service-management/BlockUnblockSericeUseCase";
 import { IMarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/IMarkSlotAsBooked.usecase";
 import { MarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/MarkSlotAsBooked.usecase";
 import { ExpireAdsUseCase } from "./application/use-case/ads/expireAds/IExpireAds.usecase";
@@ -1026,4 +1030,20 @@ container.register<IGetAdminProfileUseCase>(
 
 container.register<IUploadBillsUseCase>(USE_CASE_TOKENS.UploadBillsUseCase, {
   useClass: UploadBillsUseCase,
+});
+
+container.register(USE_CASE_TOKENS.AddNewService, {
+  useClass: AddNewService,
+});
+
+container.register(USE_CASE_TOKENS.GetService, {
+  useClass: GetService,
+});
+
+container.register(USE_CASE_TOKENS.EditService, {
+  useClass: EditService,
+});
+
+container.register(USE_CASE_TOKENS.BlockUnblockSericeUseCase, {
+  useClass: BlockUnblockSericeUseCase,
 });

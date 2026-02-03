@@ -1,9 +1,5 @@
 import { Router } from "express";
-import { addNewService } from "../controllers/service/addnewService";
-import { getServices } from "../controllers/service/getServices";
 import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
-import { blockUnblockService } from "../controllers/service/activeAndInactive";
-import { updateService } from "../controllers/service/updateService";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { ServiceController } from "../controllers/ServiceController";
 import { container } from "tsyringe";
@@ -12,18 +8,18 @@ import { BookingController } from "../controllers/BookingController";
 const bookingController = container.resolve(BookingController);
 const serviceController = container.resolve(ServiceController);
 const router = Router();
-router.put("/:serviceId", updateService);
+router.put("/:serviceId", (req, res) => serviceController.updateService(req, res));
 
 router
   .route("/")
-  .post(addNewService)
-  .get(authMiddleware("User"), serviceProviderAuth, getServices);
+  .post((req, res) => serviceController.addNewService(req, res))
+  .get(authMiddleware("User"), serviceProviderAuth, (req, res) => serviceController.getServices(req, res));
 
 router.patch(
   "/block-unblock",
   authMiddleware("User"),
   serviceProviderAuth,
-  blockUnblockService
+  (req, res) => serviceController.blockUnblockService(req, res)
 );
 
 router.post(
