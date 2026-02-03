@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
-import { IAdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/IAdminSiteSettings.usecase";
 import { IServiceProviderRejectVerify } from "../../application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
@@ -43,6 +42,7 @@ import { BlockUnblockProviderUseCase } from "../../application/use-case/serviceP
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
 import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
 import { IBlockUnblockProviderUseCase } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockProvider.usecase";
+import { IAdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/adminSiteSettings/IAdminSiteSettings.usecase";
 
 @injectable()
 export class AdminController {

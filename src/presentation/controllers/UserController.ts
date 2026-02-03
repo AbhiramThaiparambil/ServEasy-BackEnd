@@ -6,7 +6,6 @@ import { HttpStatus } from "../../constants/HttpStatus";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { SignIn } from "../../application/use-case/User/auth/signIn/SignIn.usecase";
 
-import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
@@ -37,6 +36,7 @@ import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profi
 import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
 import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
 import { IFindAllActiveCouponsUseCase } from "../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { IUserSiteSettings } from "../../application/use-case/siteSetting/userSiteSettings.ts/IUserSiteSettings";
 
 @injectable()
 export class UserController {
@@ -91,7 +91,7 @@ export class UserController {
     private addReviewUseCase: IAddReviewUseCase,
     @inject(USE_CASE_TOKENS.GetServiceProviderInfoUseCase)
     private getServiceProviderInfoUseCase: IGetServiceProviderInfoUseCase,
-    @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
+    @inject(USE_CASE_TOKENS.UserSiteSettings) private userSiteSettings: IUserSiteSettings,
 
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
     private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase,

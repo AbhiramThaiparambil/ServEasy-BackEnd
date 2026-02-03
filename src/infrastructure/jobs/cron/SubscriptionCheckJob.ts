@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { USE_CASE_TOKENS } from "../../../constants/tokens";
 import { inject, injectable } from "tsyringe";
-import { IManageServiceProviderSubscriptionsUseCase } from "../../../application/use-case/subscription/IManageServiceProviderSubscriptionsUseCase";
+import { IManageServiceProviderSubscriptionsUseCase } from "../../../application/use-case/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
 @injectable()
 export class SubscriptionCheckJob {
   constructor(

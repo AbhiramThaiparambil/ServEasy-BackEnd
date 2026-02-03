@@ -13,7 +13,6 @@ import { setAuthCookies } from "../../utils/setAuthCookies";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
-import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/IGetSubscriptionPlansUseCase";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
@@ -28,6 +27,7 @@ import { ICreateAdUseCase } from "../../application/use-case/ads/adsServiceProvi
 import { IGetProviderAdsUseCase } from "../../application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
+import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
 
 @injectable()
 export class ServiceProviderController {

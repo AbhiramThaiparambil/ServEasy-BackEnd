@@ -1,7 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { ISiteSettingRepository } from "../../../domain/repositories/ISiteSetting";
-import { REPOSITORY_TOKENS } from "../../../constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IUserSiteSettings } from "./IUserSiteSettings";
+import { ISiteSettingRepository } from "../../../../domain/repositories/ISiteSetting";
+
 @injectable()
 export class UserSiteSettings implements IUserSiteSettings {
   constructor(

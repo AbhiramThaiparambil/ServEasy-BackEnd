@@ -1,17 +1,14 @@
 import { inject, injectable } from "tsyringe";
-import { ISiteSettingRepository } from "../../../domain/repositories/ISiteSetting";
-import {
-  IHomeBanner,
-  ITheme,
-  IFooterBanner,
-} from "../../../domain/entities/ISiteSettings";
-import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
-import { ICloudinaryService } from "../../../services/cloudinary/ICloudinaryService";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../constants/tokens";
+import { ISiteSettingRepository } from "../../../../domain/repositories/ISiteSetting";
+import { ICloudinaryService } from "../../../../services/cloudinary/ICloudinaryService";
+import { IFooterBanner, IHomeBanner, ITheme } from "../../../../domain/entities/ISiteSettings";
 import { IAdminSiteSettingsUseCase } from "./IAdminSiteSettings.usecase";
 
+
 @injectable()
-export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
+export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase
+ {
 
   constructor(
     

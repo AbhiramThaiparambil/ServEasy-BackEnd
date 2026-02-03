@@ -59,8 +59,6 @@ import { IGetProviderWalletUseCase } from "./application/use-case/wallet/getWall
 import { WithdrawFromProviderWalletUseCase } from "./application/use-case/wallet/withdraw/WithdrawFromProviderWallet.usecase";
 import { ISubscriptionPlanRepository } from "./domain/repositories/ISubscriptionPlanRepository";
 import { SubscriptionPlanRepository } from "./infrastructure/repositories/SubscriptionPlanRepository";
-import { IGetSubscriptionPlansUseCase } from "./application/use-case/subscription/IGetSubscriptionPlansUseCase";
-import { GetSubscriptionPlansUseCase } from "./application/use-case/subscription/GetSubscriptionPlansUseCase";
 import { ICreatePaymentSubscriptionOrderUseCase } from "./application/use-case/subscription/payment/ICreatePaymentSubscriptionOrderUseCase";
 import { CreatePaymentSubscriptionOrderUseCase } from "./application/use-case/subscription/payment/CreatePaymentSubscriptionOrderUseCase";
 import { IVerifySubscriptionPaymentUseCase } from "./application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase";
@@ -70,8 +68,8 @@ import { IGoogleGenAIService } from "./services/aiAssistant/IGoogleGenAIService"
 import { IAiAssistanceRepository } from "./domain/repositories/IAiAssistanceRepository";
 import { aiAssistanceRepository } from "./infrastructure/repositories/AiAssistanceRepository";
 
-import { ManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/ManageServiceProviderSubscriptionsUseCase";
-import { IManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/IManageServiceProviderSubscriptionsUseCase";
+import { ManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/manageSubscription/ManageServiceProviderSubscriptionsUseCase";
+import { IManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
 import { connect } from "http2";
 
 import { AdRepository } from "./infrastructure/repositories/AdRepository";
@@ -255,8 +253,6 @@ import { GetAdminProfileUseCase } from "./application/use-case/admin/profile/pro
 import { IGetAdminProfileUseCase } from "./application/use-case/admin/profile/IProfile";
 import { GetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/GetPaymentInfo.usecase";
 import { IGetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
-import { IAdminSiteSettingsUseCase } from "./application/use-case/siteSetting/IAdminSiteSettings.usecase";
-import { AdminSiteSettingsUseCase } from "./application/use-case/siteSetting/AdminSiteSettingsUseCase";
 import { IServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
 import { ServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
 import { IManageAllServiceUseCase } from "./application/use-case/admin/dashboard/IManageAllService.usecase";
@@ -273,14 +269,18 @@ import { IGetServiceProvider } from "./application/use-case/serviceProvider/auth
 import { GetServiceProvider } from "./application/use-case/serviceProvider/auth/getServiceProvider";
 import { IAutoSuggestion } from "./application/use-case/User/location/IAutoSuggestion";
 import { AutoSuggestion } from "./application/use-case/User/location/autoSuggestion";
-import { IUserSiteSettings } from "./application/use-case/siteSetting/IUserSiteSettings";
-import { UserSiteSettings } from "./application/use-case/siteSetting/UserSiteSettingsUseCase";
+import { IUserSiteSettings } from "./application/use-case/siteSetting/userSiteSettings.ts/IUserSiteSettings";
 import { ILocationService } from "./services/location/ILocationService";
 import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
 import { IUploadBillsUseCase } from "./application/use-case/booking/billing/IUploadBills.usecase";
 import { UploadBillsUseCase } from "./application/use-case/booking/billing/UploadBills.usecase";
 import { IVerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/IVerfypayment.usecase";
 import { VerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/VerifyPayment.usecase";
+import { IGetSubscriptionPlansUseCase } from "./application/use-case/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { GetSubscriptionPlansUseCase } from "./application/use-case/subscription/getSubscriptionPlans/GetSubscriptionPlansUseCase";
+import { IAdminSiteSettingsUseCase } from "./application/use-case/siteSetting/adminSiteSettings/IAdminSiteSettings.usecase";
+import { AdminSiteSettingsUseCase } from "./application/use-case/siteSetting/adminSiteSettings/AdminSiteSettingsUseCase";
+import { UserSiteSettings } from "./application/use-case/siteSetting/userSiteSettings.ts/UserSiteSettingsUseCase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
