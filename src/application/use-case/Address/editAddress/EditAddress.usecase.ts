@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
-import { IAddress } from "../../../../../domain/entities/IAddress";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
+import { IAddress } from "../../../../domain/entities/IAddress";
 
 @injectable()
 export class EditAddress {

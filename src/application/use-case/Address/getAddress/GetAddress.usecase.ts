@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { IAddress } from "../../../../../domain/entities/IAddress";
-import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { IAddress } from "../../../../domain/entities/IAddress";
+import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { IGetAddress } from "./IGetAddress.usecase";
 
 @injectable()

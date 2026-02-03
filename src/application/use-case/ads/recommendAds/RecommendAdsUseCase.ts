@@ -1,12 +1,12 @@
 import { inject, injectable } from "tsyringe";
-import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IRecommendAdsUseCase } from "./IRecommendAdsUseCase";
-import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
-import { IAd } from "../../../../../domain/entities/IAd";
+import { IAdRepository } from "../../../../domain/repositories/IAdRepository";
+import { IAd } from "../../../../domain/entities/IAd";
 import {
   IGetRecommendedAdsRequestDTO,
   IRecommendedAdDTO,
-} from "../../../../../utils/types/dto/IRecommendAdsDTO";
+} from "../../../../utils/types/dto/IRecommendAdsDTO";
 
 @injectable()
 export class RecommendAdsUseCase implements IRecommendAdsUseCase {

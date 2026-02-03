@@ -80,10 +80,10 @@ import { IServiceRepository } from "./domain/repositories/IServiceRepository";
 
 import { IAdminGetAdsUseCase } from "./application/use-case/ads/getAds/IAdminGetAds.usecase";
 
-import { RecommendAdsUseCase } from "./application/use-case/User/Ads/recommendAds/RecommendAdsUseCase";
+import { RecommendAdsUseCase } from "./application/use-case/ads/recommendAds/RecommendAdsUseCase";
 import { IExpireAdsUseCase } from "./application/use-case/ads/expireAds/ExpireAds.usecase";
-import { IIncreaseAdClicksUseCase } from "./application/use-case/User/Ads/increaseAdclicks/IIncreaseAdClicksUseCase";
-import { IncreaseAdClicksUseCase } from "./application/use-case/User/Ads/increaseAdclicks/IncreaseAdClicksUseCase";
+import { IIncreaseAdClicksUseCase } from "./application/use-case/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IncreaseAdClicksUseCase } from "./application/use-case/ads/increaseAdclicks/IncreaseAdClicksUseCase";
 import { IUpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { UpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { IConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/IConfirmBooking.usecase";
@@ -209,15 +209,15 @@ import { IDeleteService } from "./application/use-case/category-management/delet
 import { DeleteService } from "./application/use-case/category-management/deleteService/DeleteService.usecase";
 import { AddReviewUseCase } from "./application/use-case/review/addReview/AddReviewUseCase";
 import { IAddReviewUseCase } from "./application/use-case/review/addReview/IAddReviewUseCase";
-import { IDeleteAddress } from "./application/use-case/User/Address/deleteAddress/IDeleteAddress.usecase";
-import { DeleteAddress } from "./application/use-case/User/Address/deleteAddress/DeleteAddress.usecase";
-import { IAddNewAddress } from "./application/use-case/User/Address/addAddress/IAddNewAddress.usecase";
-import { AddNewAddress } from "./application/use-case/User/Address/addAddress/AddNewAddress.usecase";
-import { EditAddress } from "./application/use-case/User/Address/editAddress/EditAddress.usecase";
-import { IEditAddress } from "./application/use-case/User/Address/editAddress/IEditAddress.usecase";
-import { IGetAddress } from "./application/use-case/User/Address/getAddress/IGetAddress.usecase";
-import { GetAddress } from "./application/use-case/User/Address/getAddress/GetAddress.usecase";
-import { IRecommendAdsUseCase } from "./application/use-case/User/Ads/recommendAds/IRecommendAdsUseCase";
+import { IDeleteAddress } from "./application/use-case/Address/deleteAddress/IDeleteAddress.usecase";
+import { DeleteAddress } from "./application/use-case/Address/deleteAddress/DeleteAddress.usecase";
+import { IAddNewAddress } from "./application/use-case/Address/addAddress/IAddNewAddress.usecase";
+import { AddNewAddress } from "./application/use-case/Address/addAddress/AddNewAddress.usecase";
+import { EditAddress } from "./application/use-case/Address/editAddress/EditAddress.usecase";
+import { IEditAddress } from "./application/use-case/Address/editAddress/IEditAddress.usecase";
+import { IGetAddress } from "./application/use-case/Address/getAddress/IGetAddress.usecase";
+import { GetAddress } from "./application/use-case/Address/getAddress/GetAddress.usecase";
+import { IRecommendAdsUseCase } from "./application/use-case/ads/recommendAds/IRecommendAdsUseCase";
 import { IResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
 import { ResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/ResetPassword.usecase";
 import { SendForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/SendForgotPasswordOtp.usecase";

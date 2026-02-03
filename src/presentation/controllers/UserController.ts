@@ -9,7 +9,7 @@ import { SignIn } from "../../application/use-case/User/auth/signIn/SignIn.useca
 import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
-import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IIncreaseAdClicksUseCase } from "../../application/use-case/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
 import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
 import { AddReviewUseCase } from "../../application/use-case/review/addReview/AddReviewUseCase";
@@ -17,11 +17,11 @@ import { IDeleteAllNotificationUseCase } from "../../application/use-case/notifi
 import { IDeleteSingleNotificationUseCase } from "../../application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
 import { IAddReviewUseCase } from "../../application/use-case/review/addReview/IAddReviewUseCase";
-import { IGetAddress } from "../../application/use-case/User/Address/getAddress/IGetAddress.usecase";
-import { IAddNewAddress } from "../../application/use-case/User/Address/addAddress/IAddNewAddress.usecase";
-import { IEditAddress } from "../../application/use-case/User/Address/editAddress/IEditAddress.usecase";
-import { IDeleteAddress } from "../../application/use-case/User/Address/deleteAddress/IDeleteAddress.usecase";
-import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/recommendAds/IRecommendAdsUseCase";
+import { IGetAddress } from "../../application/use-case/Address/getAddress/IGetAddress.usecase";
+import { IAddNewAddress } from "../../application/use-case/Address/addAddress/IAddNewAddress.usecase";
+import { IEditAddress } from "../../application/use-case/Address/editAddress/IEditAddress.usecase";
+import { IDeleteAddress } from "../../application/use-case/Address/deleteAddress/IDeleteAddress.usecase";
+import { IRecommendAdsUseCase } from "../../application/use-case/ads/recommendAds/IRecommendAdsUseCase";
 import { ISignInUseCase } from "../../application/use-case/User/auth/signIn/ISignIn.usecase";
 import { ISignUpUseCase } from "../../application/use-case/User/auth/signUp/ISignUp.usecase";
 import { IVerifyOtpUseCase } from "../../application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
