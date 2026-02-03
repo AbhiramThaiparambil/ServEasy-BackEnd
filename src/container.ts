@@ -124,10 +124,14 @@ import { IDeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/IDele
 import { IGetSlotUseCase } from "./application/use-case/slot/getSlots/IGetSlot.usecase";
 import { DeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/DeleteSlot.usecase";
 import { GetSlotUseCase } from "./application/use-case/slot/getSlots/GetSlot.usecase";
-import { AddNewService } from "./application/use-case/service-management/addnewService";
-import { GetService } from "./application/use-case/service-management/getServices";
-import { EditService } from "./application/use-case/service-management/EditService";
-import { BlockUnblockSericeUseCase } from "./application/use-case/service-management/BlockUnblockSericeUseCase";
+import { AddNewServiceUseCase } from "./application/use-case/service-management/addNewService/AddNewService.usecase";
+import { IAddNewServiceUseCase } from "./application/use-case/service-management/addNewService/IAddNewService.usecase";
+import { GetServicesUseCase } from "./application/use-case/service-management/getServices/GetServices.usecase";
+import { IGetServicesUseCase } from "./application/use-case/service-management/getServices/IGetServices.usecase";
+import { EditServiceUseCase } from "./application/use-case/service-management/editService/EditService.usecase";
+import { IEditServiceUseCase } from "./application/use-case/service-management/editService/IEditService.usecase";
+import { BlockUnblockServiceUseCase } from "./application/use-case/service-management/blockUnblockService/BlockUnblockService.usecase";
+import { IBlockUnblockServiceUseCase } from "./application/use-case/service-management/blockUnblockService/IBlockUnblockService.usecase";
 import { IMarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/IMarkSlotAsBooked.usecase";
 import { MarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/MarkSlotAsBooked.usecase";
 import { ExpireAdsUseCase } from "./application/use-case/ads/expireAds/IExpireAds.usecase";
@@ -1034,20 +1038,20 @@ container.register<IUploadBillsUseCase>(USE_CASE_TOKENS.UploadBillsUseCase, {
   useClass: UploadBillsUseCase,
 });
 
-container.register(USE_CASE_TOKENS.AddNewService, {
-  useClass: AddNewService,
+container.register<IAddNewServiceUseCase>(USE_CASE_TOKENS.AddNewService, {
+  useClass: AddNewServiceUseCase,
 });
 
-container.register(USE_CASE_TOKENS.GetService, {
-  useClass: GetService,
+container.register<IGetServicesUseCase>(USE_CASE_TOKENS.GetService, {
+  useClass: GetServicesUseCase,
 });
 
-container.register(USE_CASE_TOKENS.EditService, {
-  useClass: EditService,
+container.register<IEditServiceUseCase>(USE_CASE_TOKENS.EditService, {
+  useClass: EditServiceUseCase,
 });
 
-container.register(USE_CASE_TOKENS.BlockUnblockSericeUseCase, {
-  useClass: BlockUnblockSericeUseCase,
+container.register<IBlockUnblockServiceUseCase>(USE_CASE_TOKENS.BlockUnblockSericeUseCase, {
+  useClass: BlockUnblockServiceUseCase,
 });
 
 container.register<IVerifyPaymentUseCase>(USE_CASE_TOKENS.VerifyPaymentUseCase, {

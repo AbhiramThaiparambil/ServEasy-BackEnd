@@ -1,14 +1,17 @@
 import { inject, injectable } from "tsyringe";
-import { IService } from "../../../domain/entities/IService";
-import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
-import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
+
+import { IEditServiceUseCase } from "./IEditService.usecase";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../constants/tokens";
+import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
+import { ICloudinaryService } from "../../../../services/cloudinary/ICloudinaryService";
+import { IService } from "../../../../domain/entities/IService";
+
 @injectable()
-export class EditService {
+export class EditServiceUseCase implements IEditServiceUseCase {
   constructor(
-    @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: ServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: IServiceRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
-    private cloudinaryService: CloudinaryService
+    private cloudinaryService: ICloudinaryService
   ) {}
 
   async execute(

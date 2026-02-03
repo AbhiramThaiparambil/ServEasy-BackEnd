@@ -11,10 +11,10 @@ import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/I
 import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
 import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
 import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
-import { AddNewService } from "../../application/use-case/service-management/addnewService";
-import { GetService } from "../../application/use-case/service-management/getServices";
-import { EditService } from "../../application/use-case/service-management/EditService";
-import { BlockUnblockSericeUseCase } from "../../application/use-case/service-management/BlockUnblockSericeUseCase";
+import { IAddNewServiceUseCase } from "../../application/use-case/service-management/addNewService/IAddNewService.usecase";
+import { IGetServicesUseCase } from "../../application/use-case/service-management/getServices/IGetServices.usecase";
+import { IEditServiceUseCase } from "../../application/use-case/service-management/editService/IEditService.usecase";
+import { IBlockUnblockServiceUseCase } from "../../application/use-case/service-management/blockUnblockService/IBlockUnblockService.usecase";
 
 @injectable()
 export class ServiceController {
@@ -36,13 +36,13 @@ export class ServiceController {
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
     private removeCouponUseCase: IRemoveCouponToBookingUseCase,
     @inject(USE_CASE_TOKENS.AddNewService)
-    private addNewServiceUseCase: AddNewService,
+    private addNewServiceUseCase: IAddNewServiceUseCase,
     @inject(USE_CASE_TOKENS.GetService)
-    private getServiceUseCase: GetService,
+    private getServiceUseCase: IGetServicesUseCase,
     @inject(USE_CASE_TOKENS.EditService)
-    private editServiceUseCase: EditService,
+    private editServiceUseCase: IEditServiceUseCase,
     @inject(USE_CASE_TOKENS.BlockUnblockSericeUseCase)
-    private blockUnblockServiceUseCase: BlockUnblockSericeUseCase,
+    private blockUnblockServiceUseCase: IBlockUnblockServiceUseCase,
   ) {}
 
    async cancelUserBooking(req: Request, res: Response): Promise<void> {
