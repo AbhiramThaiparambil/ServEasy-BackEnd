@@ -275,6 +275,8 @@ import { ILocationService } from "./services/location/ILocationService";
 import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
 import { IUploadBillsUseCase } from "./application/use-case/booking/billing/IUploadBills.usecase";
 import { UploadBillsUseCase } from "./application/use-case/booking/billing/UploadBills.usecase";
+import { IVerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/IVerfypayment.usecase";
+import { VerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/VerifyPayment.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -1046,4 +1048,8 @@ container.register(USE_CASE_TOKENS.EditService, {
 
 container.register(USE_CASE_TOKENS.BlockUnblockSericeUseCase, {
   useClass: BlockUnblockSericeUseCase,
+});
+
+container.register<IVerifyPaymentUseCase>(USE_CASE_TOKENS.VerifyPaymentUseCase, {
+  useClass: VerifyPaymentUseCase,
 });

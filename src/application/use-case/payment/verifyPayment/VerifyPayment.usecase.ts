@@ -1,14 +1,15 @@
 import { inject, injectable } from "tsyringe";
 import { Types } from "mongoose";
-import { RazorpayService } from "../../../services/payment/RazorpayService";
-import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../infrastructure/repositories/ServiceBookingRepository";
-import { ServiceProviderRepository } from "../../../infrastructure/repositories/ServiceProviderRepository";
-import { IProviderWalletRepository } from "../../../domain/repositories/IproviderWalletRepository";
-import { IWalletTransaction } from "../../../domain/entities/IproviderWallet";
-import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
+import { RazorpayService } from "../../../../services/payment/RazorpayService";
+import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
+import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
+import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
+import { IProviderWalletRepository } from "../../../../domain/repositories/IproviderWalletRepository";
+import { IWalletTransaction } from "../../../../domain/entities/IproviderWallet";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../constants/tokens";
+import { IVerifyPaymentUseCase, VerifyPaymentResponseDTO } from "./IVerfypayment.usecase";
 @injectable()
-export class VerifyPaymentUseCase {
+export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
@@ -26,7 +27,7 @@ export class VerifyPaymentUseCase {
     razorpay_order_id: string,
     razorpay_payment_id: string,
     razorpay_signature: string
-  ) {
+  ):Promise<VerifyPaymentResponseDTO>{
     try {
       const serviceObjId = new Types.ObjectId(id);
       const bookedService =
@@ -57,7 +58,7 @@ export class VerifyPaymentUseCase {
       }
 
       if (!service || !service.serviceProviderId || !service.payment)
-        return false;
+        return { success: false, message: "Service not found" };
 
       let wallet = await this.walletRepository.findByProviderId(
         service?.serviceProviderId

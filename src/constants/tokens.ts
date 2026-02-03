@@ -112,6 +112,7 @@ export const USE_CASE_TOKENS = {
   GetService: "GetService",
   EditService: "EditService",
   BlockUnblockSericeUseCase: "BlockUnblockSericeUseCase",
+  VerifyPaymentUseCase: "IVerifyPaymentUseCase",
 };
 
 export const REPOSITORY_TOKENS = {

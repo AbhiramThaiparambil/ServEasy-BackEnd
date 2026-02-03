@@ -1,11 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { IService } from "../../../domain/entities/IService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
+import { REPOSITORY_TOKENS } from "../../../constants/tokens";
 
 @injectable()
 export class BlockUnblockSericeUseCase {
   constructor(
-    @inject("ServiceRepository") private serviceRepository: ServiceRepository
+    @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: ServiceRepository
   ) {}
 
   async blockService(serviceId: string): Promise<boolean> {

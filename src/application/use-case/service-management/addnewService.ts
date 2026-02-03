@@ -2,11 +2,11 @@ import { IService } from "../../../domain/entities/IService";
 import { ServiceRepository } from "../../../infrastructure/repositories/ServiceRepositorie";
 import { CloudinaryService } from "../../../services/cloudinary/CloudinaryService";
 import { inject, injectable } from "tsyringe";
-import { SERVICE_TOKENS } from "../../../constants/tokens";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
 @injectable()
 export class AddNewService {
   constructor(
-    @inject("ServiceRepository") private serviceRepository: ServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: ServiceRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
     private cloudinaryService: CloudinaryService
   ) {}
