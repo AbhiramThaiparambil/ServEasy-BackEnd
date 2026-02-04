@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
-import { ICoupon } from "../../../../../domain/entities/ICoupon";
 import { IFindAllCouponsUseCase } from "./IFindAllCoupons.usecase";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
+import { CouponResponseDTO } from "../../../../dtos/admin/coupon/CouponResponseDTO";
 
 @injectable()
 export class FindAllCouponsUseCase implements IFindAllCouponsUseCase {
@@ -9,7 +9,7 @@ export class FindAllCouponsUseCase implements IFindAllCouponsUseCase {
     @inject("ICouponRepository") private couponRepo: ICouponRepository
   ) {}
 
-  async execute(): Promise<ICoupon[]> {
-    return await this.couponRepo.findAllCoupons();
+  async execute(): Promise<CouponResponseDTO[]> {
+    return (await this.couponRepo.findAllCoupons()) as CouponResponseDTO[];
   }
 }

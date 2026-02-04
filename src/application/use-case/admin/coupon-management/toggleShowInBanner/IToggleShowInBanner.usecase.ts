@@ -1,3 +1,5 @@
+import { ToggleShowInBannerDTO } from "../../../../dtos/admin/coupon/ToggleShowInBannerDTO";
+
 export interface IToggleShowInBannerUseCase {
-  execute(id: string, show: boolean): Promise<void>;
+  execute(data: ToggleShowInBannerDTO): Promise<void>;
 }

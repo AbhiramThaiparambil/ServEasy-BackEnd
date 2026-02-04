@@ -38,7 +38,6 @@ import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/a
 import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/admin/subscription-management/getSubscription/IGetAllSubscriptionPlans.usecase";
 import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/createSubscription/ICreateSubscriptionPlan.usecase";
 import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/updateSubscription/IUpdateSubscriptionPlan.usecase";
-import { BlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/BlockUnblockProvider.usecase";
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
 import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
 import { IBlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/IBlockUnblockProvider.usecase";
@@ -51,6 +50,9 @@ import { DeleteCategoryDTO } from "../../application/dtos/admin/category/DeleteC
 import { AddServiceDTO } from "../../application/dtos/admin/category/AddServiceDTO";
 import { DeleteServiceDTO } from "../../application/dtos/admin/category/DeleteServiceDTO";
 import { BlockUnblockCategoryServiceDTO } from "../../application/dtos/admin/category/BlockUnblockCategoryServiceDTO";
+import { CreateCouponDTO } from "../../application/dtos/admin/coupon/CreateCouponDTO";
+import { MakeCouponInactiveDTO } from "../../application/dtos/admin/coupon/MakeCouponInactiveDTO";
+import { ToggleShowInBannerDTO } from "../../application/dtos/admin/coupon/ToggleShowInBannerDTO";
 
 @injectable()
 export class AdminController {
@@ -870,18 +872,22 @@ export class AdminController {
   public async createCoupon(req: Request, res: Response) {
     try {
       const { data } = req.body;
-      console.log(data);
-      if (!data) {
-        res.status(HttpStatus.BAD_REQUEST);
+      console.log("createCoupon input:", data);
+      
+      const inputData: CreateCouponDTO = data; // Ensure type safety or validation here if strictly needed
+
+      if (!inputData) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "Coupon data required" });
         return;
       }
 
-      const resdata = await this.createCouponUseCase.execute(data);
+      const resdata = await this.createCouponUseCase.execute(inputData);
       console.log(resdata);
-      res.status(HttpStatus.CREATED);
+      res.status(HttpStatus.CREATED).json(resdata); // Return the created coupon
       return;
     } catch (e) {
       console.log(e);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     }
   }
 
@@ -902,17 +908,20 @@ export class AdminController {
     res: Response,
   ): Promise<void> {
     try {
-      const id = req.params.id;
-      const action: boolean = req.body.action;
-      if (!id) {
-        res.status(HttpStatus.BAD_REQUEST);
+      const dto: MakeCouponInactiveDTO = {
+        id: req.params.id,
+        action: req.body.action,
+      };
+      
+      if (!dto.id) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "ID is required" });
         return;
       }
 
-      await this.makeActiveInActiveCouponUseCase.execute(id, action);
+      await this.makeActiveInActiveCouponUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
-        message: `Coupon ${action ? "activated" : "deactivated"} successfully`,
+        message: `Coupon ${dto.action ? "activated" : "deactivated"} successfully`,
       });
     } catch (error) {
       console.error("Error toggling coupon status:", error);
@@ -924,21 +933,23 @@ export class AdminController {
 
   public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
     try {
-      const id = req.params.id;
-      const action: boolean = req.body.action;
+      const dto: ToggleShowInBannerDTO = {
+          id: req.params.id,
+          show: req.body.action
+      };
 
-      if (!id) {
+      if (!dto.id) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Coupon ID is required" });
         return;
       }
 
-      await this.showInBannerUseCase.execute(id, action);
+      await this.showInBannerUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: `Coupon ${
-          action ? "shown in" : "removed from"
+          dto.show ? "shown in" : "removed from"
         } banner successfully`,
       });
     } catch (error) {

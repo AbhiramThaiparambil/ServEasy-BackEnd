@@ -1,5 +1,5 @@
-import { ICoupon } from '../../../../../domain/entities/ICoupon';
+import { CouponResponseDTO } from "../../../../dtos/admin/coupon/CouponResponseDTO";
 
 export interface IFindAllCouponsUseCase {
-  execute(): Promise<ICoupon[]>;
+  execute(): Promise<CouponResponseDTO[]>;
 }

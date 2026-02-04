@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
 import { IMakeCouponInactiveUseCase } from "./IMakeCouponInactive.usecase";
+import { MakeCouponInactiveDTO } from "../../../../dtos/admin/coupon/MakeCouponInactiveDTO";
 
 @injectable()
 export class MakeCouponInactiveUseCase implements IMakeCouponInactiveUseCase {
@@ -8,8 +9,8 @@ export class MakeCouponInactiveUseCase implements IMakeCouponInactiveUseCase {
     @inject("ICouponRepository") private couponRepo: ICouponRepository,
   ) {}
 
-  async execute(id: string, action: boolean): Promise<void> {
-    const res = await this.couponRepo.updateCouponStatus(id, action);
+  async execute(data: MakeCouponInactiveDTO): Promise<void> {
+    const res = await this.couponRepo.updateCouponStatus(data.id, data.action);
 
     console.log(res);
     return;

@@ -1,3 +1,5 @@
+import { MakeCouponInactiveDTO } from "../../../../dtos/admin/coupon/MakeCouponInactiveDTO";
+
 export interface IMakeCouponInactiveUseCase {
-  execute(id: string,action:boolean): Promise<void>;
+  execute(data: MakeCouponInactiveDTO): Promise<void>;
 }
