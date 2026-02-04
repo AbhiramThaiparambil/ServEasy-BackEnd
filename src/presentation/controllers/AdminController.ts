@@ -45,6 +45,12 @@ import { IBlockUnblockProviderUseCase } from "../../application/use-case/admin/p
 import { IAdminSiteSettingsUseCase } from "../../application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
 import { IBlockUnblockCategoryService } from "../../application/use-case/admin/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
 import { AddCategoryDTO } from "../../application/dtos/admin/category/AddCategoryDTO";
+import { EditCategoryDTO } from "../../application/dtos/admin/category/EditCategoryDTO";
+import { BlockUnblockCategoryDTO } from "../../application/dtos/admin/category/BlockUnblockCategoryDTO";
+import { DeleteCategoryDTO } from "../../application/dtos/admin/category/DeleteCategoryDTO";
+import { AddServiceDTO } from "../../application/dtos/admin/category/AddServiceDTO";
+import { DeleteServiceDTO } from "../../application/dtos/admin/category/DeleteServiceDTO";
+import { BlockUnblockCategoryServiceDTO } from "../../application/dtos/admin/category/BlockUnblockCategoryServiceDTO";
 
 @injectable()
 export class AdminController {
@@ -663,23 +669,23 @@ export class AdminController {
 
   async editCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId, categoryName } = req.body;
+      const data: EditCategoryDTO = {
+        categoryId: req.body.categoryId,
+        newName: req.body.categoryName,
+      };
 
-      if (!categoryId || !categoryName) {
+      if (!data.categoryId || !data.newName) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID and name are required" });
         return;
       }
 
-      const data = await this.editCategoryUseCase.execute({
-        categoryId,
-        newName: categoryName,
-      });
+      const result = await this.editCategoryUseCase.execute(data);
 
       res
         .status(HttpStatus.OK)
-        .json({ message: "Category updated successfully", data });
+        .json({ message: "Category updated successfully", data: result });
       return;
     } catch (error) {
       console.error("AdminController::editCategory error", error);
@@ -692,20 +698,18 @@ export class AdminController {
 
   async blockUnblockCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId } = req.body;
+      const data: BlockUnblockCategoryDTO = { categoryId: req.body.categoryId };
 
-      if (!categoryId) {
+      if (!data.categoryId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID is required" });
         return;
       }
 
-      const data = await this.blockUnblockCategoryUseCase.execute({
-        categoryId,
-      });
+      const result = await this.blockUnblockCategoryUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message: data });
+      res.status(HttpStatus.OK).json({ message: result });
       return;
     } catch (error) {
       console.error("AdminController::blockUnblockCategory error", error);
@@ -718,18 +722,18 @@ export class AdminController {
 
   async deleteCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { id: categoryId } = req.params;
+      const data: DeleteCategoryDTO = { categoryId: req.params.id };
 
-      if (!categoryId) {
+      if (!data.categoryId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID is required" });
         return;
       }
 
-      const data = await this.deleteCategoryUseCase.execute({ categoryId });
+      const result = await this.deleteCategoryUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message: data });
+      res.status(HttpStatus.OK).json({ message: result });
       return;
     } catch (error) {
       console.error("AdminController::deleteCategory error", error);
@@ -751,14 +755,16 @@ export class AdminController {
         return;
       }
 
-      const data = await this.addServiceUseCase.execute({
+      const dto: AddServiceDTO = {
         categoryId,
         service: {
           serviceName: newServiceName,
           serviceDescription: newServiceDescription,
           isHidden: false,
         },
-      });
+      };
+
+      const data = await this.addServiceUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ message: data });
     } catch (error) {
@@ -771,21 +777,21 @@ export class AdminController {
 
   async deleteService(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId, serviceId } = req.params;
+      const data: DeleteServiceDTO = {
+        categoryId: req.params.categoryId,
+        serviceId: req.params.serviceId,
+      };
 
-      if (!categoryId || !serviceId) {
+      if (!data.categoryId || !data.serviceId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID and Service ID are required" });
         return;
       }
 
-      const data = await this.deleteServiceUseCase.execute({
-        categoryId,
-        serviceId,
-      });
+      const result = await this.deleteServiceUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message: data });
+      res.status(HttpStatus.OK).json({ message: result });
     } catch (error) {
       console.error("AdminController::deleteService error", error);
       res
@@ -797,21 +803,21 @@ export class AdminController {
 
   async blockUnblockCategoryService(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId, serviceId } = req.body;
+      const data: BlockUnblockCategoryServiceDTO = {
+        categoryId: req.body.categoryId,
+        serviceId: req.body.serviceId,
+      };
 
-      if (!categoryId || !serviceId) {
+      if (!data.categoryId || !data.serviceId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID and Service ID are required" });
         return;
       }
 
-      const data = await this.blockUnblockCategoryServiceUseCase.execute({
-        categoryId,
-        serviceId,
-      });
+      const result = await this.blockUnblockCategoryServiceUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message: data });
+      res.status(HttpStatus.OK).json({ message: result });
     } catch (error) {
       console.error("AdminController::blockUnblockCategoryService error", error);
       res
