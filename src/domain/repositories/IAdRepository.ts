@@ -1,4 +1,4 @@
-import { IAdminAd, IAdStatus } from "../../utils/types/dto/IAdAdminDto";
+import { IAdminAd, IAdStatus } from "../../application/dtos/admin/GetAdsAdminDTO";
 import { IAdDTO } from "../../utils/types/dto/IAdDto";
 import { IGetRecommendedAdsRequestDTO, IRecommendedAdDTO } from "../../utils/types/dto/IRecommendAdsDTO";
 import { IAd } from "../entities/IAd";

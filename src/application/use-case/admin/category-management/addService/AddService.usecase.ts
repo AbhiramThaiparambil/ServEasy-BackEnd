@@ -3,7 +3,8 @@ import { inject, injectable } from "tsyringe";
 import { IAddService } from "./IAddService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { AddServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { AddServiceDTO } from "../../../../dtos/admin/category/AddServiceDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class AddService implements IAddService {

@@ -44,6 +44,7 @@ import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profil
 import { IBlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/IBlockUnblockProvider.usecase";
 import { IAdminSiteSettingsUseCase } from "../../application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
 import { IBlockUnblockCategoryService } from "../../application/use-case/admin/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
+import { AddCategoryDTO } from "../../application/dtos/admin/category/AddCategoryDTO";
 
 @injectable()
 export class AdminController {
@@ -619,8 +620,8 @@ export class AdminController {
 
   async addCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { newCategory } = req.body;
-
+      const newCategory :AddCategoryDTO = req.body;
+                
       if (!newCategory) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -628,20 +629,20 @@ export class AdminController {
         return;
       }
 
-      const data = await this.addCategoryUseCase.execute({
-        category: newCategory,
-      });
+      const data = await this.addCategoryUseCase.execute(newCategory);
 
       res.status(HttpStatus.OK).json({ data });
       return;
     } catch (error) {
-      console.error("AdminController::addCategory error", error);
+      console.error("AdminController:: addCategory error", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
       return;
     }
   }
+
+  
 
   async getCategory(req: Request, res: Response): Promise<void> {
     try {

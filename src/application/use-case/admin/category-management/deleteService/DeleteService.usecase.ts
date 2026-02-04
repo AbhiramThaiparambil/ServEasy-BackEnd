@@ -3,7 +3,8 @@ import { inject, injectable } from "tsyringe";
 import { IDeleteService } from "./IDeleteService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { DeleteServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { DeleteServiceDTO } from "../../../../dtos/admin/category/DeleteServiceDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class DeleteService implements IDeleteService {

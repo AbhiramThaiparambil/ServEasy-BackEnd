@@ -2,7 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IDeleteCategory } from "./IDeleteCategory.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { DeleteCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { DeleteCategoryDTO } from "../../../../dtos/admin/category/DeleteCategoryDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class DeleteCategory implements IDeleteCategory {

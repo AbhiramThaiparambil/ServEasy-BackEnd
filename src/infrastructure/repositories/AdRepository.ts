@@ -4,7 +4,7 @@ import { IAd } from "../../domain/entities/IAd";
 import { AdModel } from "../models/AdModel";
 import { IAdDTO } from "../../utils/types/dto/IAdDto";
 import { Types } from "mongoose";
-import { IAdminAd, IAdStatus } from "../../utils/types/dto/IAdAdminDto";
+import { IAdminAd, IAdStatus } from "../../application/dtos/admin/GetAdsAdminDTO";
 import {
   IGetRecommendedAdsRequestDTO,
   IRecommendedAdDTO,

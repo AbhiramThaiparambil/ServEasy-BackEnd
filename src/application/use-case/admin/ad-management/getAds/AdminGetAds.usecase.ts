@@ -2,7 +2,6 @@ import { injectable, inject } from "tsyringe";
 import { IAdminGetAdsUseCase } from "./IAdminGetAds.usecase";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { IAdminAd } from "../../../../../utils/types/dto/IAdAdminDto";
 
 import { GetAdsAdminDTO, GetAdsAdminResponseDTO } from "../../../../dtos/admin/GetAdsAdminDTO";
 

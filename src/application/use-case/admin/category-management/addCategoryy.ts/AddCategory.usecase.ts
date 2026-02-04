@@ -2,7 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IAddCategory } from "./IAddCategory.usecase";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { AddCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { AddCategoryDTO } from "../../../../dtos/admin/category/AddCategoryDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class AddCategory implements IAddCategory {

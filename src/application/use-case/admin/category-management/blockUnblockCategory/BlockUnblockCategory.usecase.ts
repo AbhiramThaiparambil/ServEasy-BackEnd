@@ -2,7 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IBlockUnblockCategory } from "./IBlockUnblockCategory.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { BlockUnblockCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { BlockUnblockCategoryDTO } from "../../../../dtos/admin/category/BlockUnblockCategoryDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class BlockUnblockCategory implements IBlockUnblockCategory {

@@ -2,7 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IEditCategory } from "./IEditCategory.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { EditCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+import { EditCategoryDTO } from "../../../../dtos/admin/category/EditCategoryDTO";
+import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
 
 @injectable()
 export class EditCategory implements IEditCategory {
