@@ -1,3 +1,5 @@
+import { GetAdsAdminDTO, GetAdsAdminResponseDTO } from "../../../../dtos/admin/GetAdsAdminDTO";
+
 export interface IAdminGetAdsUseCase {
-  execute(skip: number, limit: number): Promise<any>;
+  execute(data: GetAdsAdminDTO): Promise<GetAdsAdminResponseDTO>;
 }

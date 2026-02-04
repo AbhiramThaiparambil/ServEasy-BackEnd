@@ -24,7 +24,7 @@ export class AdRepository implements IAdRepository {
     }
   }
 
-  async getAllAds(skip: number, limit: number): Promise<IAdminAd[]> {
+  async findAllAdsWithProvider(skip: number, limit: number): Promise<IAdminAd[]> {
     const ads = await AdModel.aggregate([
       { $sort: { createdAt: -1 } },
       { $skip: skip },

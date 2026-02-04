@@ -1107,7 +1107,7 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const data = await this.getAdsUseCase.execute(skip, limit);
+      const data = await this.getAdsUseCase.execute({ skip, limit });
 
       console.log(data);
 

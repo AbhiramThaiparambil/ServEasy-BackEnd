@@ -13,18 +13,13 @@ export interface IAdminAd {
   caption: string;
   description: string;
   image: string;
-
   targetLocation: ILocation
-
   radiusKm: number;
-
   startDate: string; 
   endDate: string;   
-
   views: number;
   clicks: number;
   status:IAdStatus;
-
   createdAt: string;
   updatedAt: string;
 }

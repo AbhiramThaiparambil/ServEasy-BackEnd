@@ -4,6 +4,8 @@ import { IAdRepository } from "../../../../../domain/repositories/IAdRepository"
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAdminAd } from "../../../../../utils/types/dto/IAdAdminDto";
 
+import { GetAdsAdminDTO, GetAdsAdminResponseDTO } from "../../../../dtos/admin/GetAdsAdminDTO";
+
 @injectable()
 export class AdminGetAdsUseCase implements IAdminGetAdsUseCase {
   constructor(
@@ -11,10 +13,10 @@ export class AdminGetAdsUseCase implements IAdminGetAdsUseCase {
   ) {}
 
   async execute(
-    skip: number,
-    limit: number
-  ): Promise<{ count: number; ads: IAdminAd[] }> {
-    const ads = await this.adRepository.getAllAds(skip, limit);
+    data: GetAdsAdminDTO
+  ): Promise<GetAdsAdminResponseDTO> {
+    const { skip, limit } = data;
+    const ads = await this.adRepository.findAllAdsWithProvider(skip, limit);
     const count = await this.adRepository.getTotalAdCount();
     return { ads, count };
   }

@@ -12,7 +12,7 @@ export interface IAdRepository {
     skip?: number,
     limit?: number
   ): Promise<IAdDTO[]>;
-  getAllAds(skip: number, limit: number): Promise<IAdminAd[]>;
+  findAllAdsWithProvider(skip: number, limit: number): Promise<IAdminAd[]>;
   getTotalAdCount(): Promise<number>;
   changeAdStatus(id: string, status: IAdStatus): Promise<boolean>;
   getTotalProviderAdCount(id: string): Promise<number>;
