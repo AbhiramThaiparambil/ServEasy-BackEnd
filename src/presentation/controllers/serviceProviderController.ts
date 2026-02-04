@@ -15,19 +15,19 @@ import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wa
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "../../application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/wallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
-import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
-import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
-import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
-import { IGetCategory } from "../../application/use-case/category-management/getCategory/IGetCategory.usecase";
-import { IEditAdUseCase } from "../../application/use-case/ads/adsServiceProvider/editAd/IEditAd.usecase";
-import { ICreateAdUseCase } from "../../application/use-case/ads/adsServiceProvider/createAd/ICreateAd.usecase";
-import { IGetProviderAdsUseCase } from "../../application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
-import { IGetServiceNamesUseCase } from "../../application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
+import { IEditAdUseCase } from "../../application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
+import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
+import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
+import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
-import { IGetSubscriptionPlansUseCase } from "../../application/use-case/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
 
 @injectable()
 export class ServiceProviderController {

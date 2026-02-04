@@ -30,82 +30,82 @@ import { ProviderWalletRepository } from "./infrastructure/repositories/provider
 import { IProviderWalletRepository } from "./domain/repositories/IproviderWalletRepository";
 import { ICouponRepository } from "./domain/repositories/IcouponRepository";
 import { CouponRepository } from "./infrastructure/repositories/couponRepository";
-import { ICreateCouponUseCase } from "./application/use-case/coupon/createCoupon/ICreateCoupon.usecase";
-import { IFindAllCouponsUseCase } from "./application/use-case/coupon/findAllCoupons/IFindAllCoupons.usecase";
-import { CreateCouponUseCase } from "./application/use-case/coupon/createCoupon/CreateCoupon.usecase";
-import { FindAllCouponsUseCase } from "./application/use-case/coupon/findAllCoupons/FindAllCoupons.usecase";
+import { ICreateCouponUseCase } from "./application/use-case/admin/coupon-management/createCoupon/ICreateCoupon.usecase";
+import { IFindAllCouponsUseCase } from "./application/use-case/admin/coupon-management/findAllCoupons/IFindAllCoupons.usecase";
+import { CreateCouponUseCase } from "./application/use-case/admin/coupon-management/createCoupon/CreateCoupon.usecase";
+import { FindAllCouponsUseCase } from "./application/use-case/admin/coupon-management/findAllCoupons/FindAllCoupons.usecase";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
   USE_CASE_TOKENS,
 } from "./constants/tokens";
-import { MakeCouponInactiveUseCase } from "./application/use-case/coupon/makeCouponInactive/MakeCouponInactive.usecase";
-import { IMakeCouponInactiveUseCase } from "./application/use-case/coupon/makeCouponInactive/IMakeCouponInactive.usecase";
-import { IToggleShowInBannerUseCase } from "./application/use-case/coupon/toggleShowInBanner/IToggleShowInBanner.usecase";
-import { ToggleShowInBannerUseCase } from "./application/use-case/coupon/toggleShowInBanner/ToggleShowInBanner.usecase";
-import { IFindFeaturedCouponsUseCase } from "./application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
-import { FindFeaturedCouponsUseCase } from "./application/use-case/coupon/FeaturedCoupons/FindFeaturedCoupons.usecase";
-import { ApplyCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/ApplyCouponToBooking.usecase";
-import { IApplyCouponToBookingUseCase } from "./application/use-case/coupon/applyCoupon/IApplyCouponToBooking.usecase";
-import { IRemoveCouponToBookingUseCase } from "./application/use-case/coupon/removeCoupon/IRemoveCoupon.usecase";
-import { RemoveCouponToBookingUseCase } from "./application/use-case/coupon/removeCoupon/RemoveCoupon.usecase";
+import { MakeCouponInactiveUseCase } from "./application/use-case/admin/coupon-management/makeCouponInactive/MakeCouponInactive.usecase";
+import { IMakeCouponInactiveUseCase } from "./application/use-case/admin/coupon-management/makeCouponInactive/IMakeCouponInactive.usecase";
+import { IToggleShowInBannerUseCase } from "./application/use-case/admin/coupon-management/toggleShowInBanner/IToggleShowInBanner.usecase";
+import { ToggleShowInBannerUseCase } from "./application/use-case/admin/coupon-management/toggleShowInBanner/ToggleShowInBanner.usecase";
+import { IFindFeaturedCouponsUseCase } from "./application/use-case/user/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
+import { FindFeaturedCouponsUseCase } from "./application/use-case/user/coupon/FeaturedCoupons/FindFeaturedCoupons.usecase";
+import { ApplyCouponToBookingUseCase } from "./application/use-case/user/coupon/applyCoupon/ApplyCouponToBooking.usecase";
+import { IApplyCouponToBookingUseCase } from "./application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
+import { IRemoveCouponToBookingUseCase } from "./application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
+import { RemoveCouponToBookingUseCase } from "./application/use-case/user/coupon/removeCoupon/RemoveCoupon.usecase";
 import { GetWalletUseCase } from "./application/use-case/serviceProvider/wallet/getWallet/GetWalletUseCase";
 import { IGetWalletUseCase } from "./application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "./application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 import { WithdrawPaymentUseCase } from "./application/use-case/serviceProvider/wallet/withdrawPayment/WithdrawPaymentUseCase";
-import { IGetAllProvidersWalletsUseCase } from "./application/use-case/wallet/getWallet/IGetAllProvidersWallets.usecase";
-import { GetAllProvidersWallets } from "./application/use-case/wallet/getWallet/GetAllProvidersWallets.usecase";
-import { IGetProviderWalletUseCase } from "./application/use-case/wallet/getWalletByid/IGetProviderWalletById.usecase";
-import { WithdrawFromProviderWalletUseCase } from "./application/use-case/wallet/withdraw/WithdrawFromProviderWallet.usecase";
+import { IGetAllProvidersWalletsUseCase } from "./application/use-case/admin/wallet-management/getWallet/IGetAllProvidersWallets.usecase";
+import { GetAllProvidersWallets } from "./application/use-case/admin/wallet-management/getWallet/GetAllProvidersWallets.usecase";
+import { IGetProviderWalletUseCase } from "./application/use-case/admin/wallet-management/getWalletByid/IGetProviderWalletById.usecase";
+import { WithdrawFromProviderWalletUseCase } from "./application/use-case/admin/wallet-management/withdraw/WithdrawFromProviderWallet.usecase";
 import { ISubscriptionPlanRepository } from "./domain/repositories/ISubscriptionPlanRepository";
 import { SubscriptionPlanRepository } from "./infrastructure/repositories/SubscriptionPlanRepository";
-import { ICreatePaymentSubscriptionOrderUseCase } from "./application/use-case/subscription/payment/ICreatePaymentSubscriptionOrderUseCase";
-import { CreatePaymentSubscriptionOrderUseCase } from "./application/use-case/subscription/payment/CreatePaymentSubscriptionOrderUseCase";
-import { IVerifySubscriptionPaymentUseCase } from "./application/use-case/subscription/payment/IVerifySubscriptionPaymentUseCase";
-import { VerifySubscriptionPaymentUseCase } from "./application/use-case/subscription/payment/VerifySubscriptionPaymentUseCase";
+import { ICreatePaymentSubscriptionOrderUseCase } from "./application/use-case/common/payment/ICreatePaymentSubscriptionOrderUseCase";
+import { CreatePaymentSubscriptionOrderUseCase } from "./application/use-case/common/payment/CreatePaymentSubscriptionOrderUseCase";
+import { IVerifySubscriptionPaymentUseCase } from "./application/use-case/common/payment/IVerifySubscriptionPaymentUseCase";
+import { VerifySubscriptionPaymentUseCase } from "./application/use-case/common/payment/VerifySubscriptionPaymentUseCase";
 import { GoogleGenAIService } from "./services/aiAssistant/GoogleGenAIService";
 import { IGoogleGenAIService } from "./services/aiAssistant/IGoogleGenAIService";
 import { IAiAssistanceRepository } from "./domain/repositories/IAiAssistanceRepository";
 import { aiAssistanceRepository } from "./infrastructure/repositories/AiAssistanceRepository";
 
-import { ManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/manageSubscription/ManageServiceProviderSubscriptionsUseCase";
-import { IManageServiceProviderSubscriptionsUseCase } from "./application/use-case/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
+import { ManageServiceProviderSubscriptionsUseCase } from "./application/use-case/serviceProvider/subscription/manageSubscription/ManageServiceProviderSubscriptionsUseCase";
+import { IManageServiceProviderSubscriptionsUseCase } from "./application/use-case/serviceProvider/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
 import { connect } from "http2";
 
 import { AdRepository } from "./infrastructure/repositories/AdRepository";
 
 import { IServiceRepository } from "./domain/repositories/IServiceRepository";
 
-import { IAdminGetAdsUseCase } from "./application/use-case/ads/getAds/IAdminGetAds.usecase";
+import { IAdminGetAdsUseCase } from "./application/use-case/admin/ad-management/getAds/IAdminGetAds.usecase";
 
-import { RecommendAdsUseCase } from "./application/use-case/ads/recommendAds/RecommendAdsUseCase";
+import { RecommendAdsUseCase } from "./application/use-case/user/ads/recommendAds/RecommendAdsUseCase";
 import { IExpireAdsUseCase } from "./application/use-case/ads/expireAds/ExpireAds.usecase";
-import { IIncreaseAdClicksUseCase } from "./application/use-case/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
-import { IncreaseAdClicksUseCase } from "./application/use-case/ads/increaseAdclicks/IncreaseAdClicksUseCase";
-import { IUpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
-import { UpdateBookingStatusUseCase } from "./application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
-import { IConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/IConfirmBooking.usecase";
-import { ConfirmBookingUseCase } from "./application/use-case/booking/confirmBooking/ConfirmBooking.usecase";
-import { ICancelBookingUseCase } from "./application/use-case/booking/cancelBooking/ICancelBooking.usecase";
-import { CancelBookingUseCase } from "./application/use-case/booking/cancelBooking/CancelBooking.usecase";
-import { IRequestPaymentUseCase } from "./application/use-case/booking/requestPayment/IRequestPaymentUseCase";
-import { RequestPaymentUseCase } from "./application/use-case/booking/requestPayment/RequestPaymentUseCase";
-import { ICreateOnlineBookingUseCase } from "./application/use-case/booking/createOnlineBooking/ICreateOnlineBooking.usecase";
-import { CreateOnlineBookingUseCase } from "./application/use-case/booking/createOnlineBooking/CreateOnlineBooking.usecase";
-import { CreateBookingUseCase } from "./application/use-case/booking/createBooking/CreateBooking.usecase";
-import { ICreateBookingUseCase } from "./application/use-case/booking/createBooking/ICreateBooking.usecase";
-import { GetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/GetBookedServices.usecase";
-import { IGetBookedServicesUseCase } from "./application/use-case/booking/fetchBookings/IGetBookedServices.usecase";
-import { IGetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchByid/IGetBookedServiceById.usecase";
-import { GetBookedServiceByIdUseCase } from "./application/use-case/booking/fetchByid/GetBookedServiceById.usecase";
+import { IIncreaseAdClicksUseCase } from "./application/use-case/user/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IncreaseAdClicksUseCase } from "./application/use-case/user/ads/increaseAdclicks/IncreaseAdClicksUseCase";
+import { IUpdateBookingStatusUseCase } from "./application/use-case/serviceProvider/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { UpdateBookingStatusUseCase } from "./application/use-case/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusUseCase";
+import { IConfirmBookingUseCase } from "./application/use-case/serviceProvider/booking/confirmBooking/IConfirmBooking.usecase";
+import { ConfirmBookingUseCase } from "./application/use-case/serviceProvider/booking/confirmBooking/ConfirmBooking.usecase";
+import { ICancelBookingUseCase } from "./application/use-case/user/booking/cancelBooking/ICancelBooking.usecase";
+import { CancelBookingUseCase } from "./application/use-case/user/booking/cancelBooking/CancelBooking.usecase";
+import { IRequestPaymentUseCase } from "./application/use-case/serviceProvider/booking/requestPayment/IRequestPaymentUseCase";
+import { RequestPaymentUseCase } from "./application/use-case/serviceProvider/booking/requestPayment/RequestPaymentUseCase";
+import { ICreateOnlineBookingUseCase } from "./application/use-case/user/booking/createOnlineBooking/ICreateOnlineBooking.usecase";
+import { CreateOnlineBookingUseCase } from "./application/use-case/user/booking/createOnlineBooking/CreateOnlineBooking.usecase";
+import { CreateBookingUseCase } from "./application/use-case/user/booking/createBooking/CreateBooking.usecase";
+import { ICreateBookingUseCase } from "./application/use-case/user/booking/createBooking/ICreateBooking.usecase";
+import { GetBookedServicesUseCase } from "./application/use-case/common/booking/fetchBookings/GetBookedServices.usecase";
+import { IGetBookedServicesUseCase } from "./application/use-case/common/booking/fetchBookings/IGetBookedServices.usecase";
+import { IGetBookedServiceByIdUseCase } from "./application/use-case/common/booking/fetchByid/IGetBookedServiceById.usecase";
+import { GetBookedServiceByIdUseCase } from "./application/use-case/common/booking/fetchByid/GetBookedServiceById.usecase";
 
 import { IServiceBookingRepository } from "./domain/repositories/IserviceBookingRepository";
-import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/rescheduleOnlineService/RescheduleOnlineService.usecase";
-import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
+import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineService.usecase";
+import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { GetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/GetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "./application/use-case/wallet/providerWallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
-import { GetServiceProviderStatusUseCase } from "./application/use-case/wallet/providerWallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/wallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/wallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
 import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 import { ITokenService } from "./services/token/ITokenService";
@@ -114,147 +114,147 @@ import { ICloudinaryService } from "./services/cloudinary/ICloudinaryService";
 import { ISmsOtpService } from "./services/otp/ISmsOtpService";
 import { IOtpService } from "./services/otp/IOtpService";
 import { IEmailService } from "./services/mailService/IEmailService";
-import { ICleanupSlotsBeforeTodayUseCase } from "./application/use-case/slot/cleanUpSlots/ICleanupSlotsBeforeToday.usecase";
-import { CleanupSlotsBeforeTodayUseCase } from "./application/use-case/slot/cleanUpSlots/CleanupSlotsBeforeToday.usecase";
-import { ICreateSlotUseCase } from "./application/use-case/slot/createSlot/ICreateSlot.usecase";
-import { CreateSlotUseCase } from "./application/use-case/slot/createSlot/CreateSlot.usecase";
-import { IDeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/IDeleteSlot.usecase";
-import { IGetSlotUseCase } from "./application/use-case/slot/getSlots/IGetSlot.usecase";
-import { DeleteSlotUseCase } from "./application/use-case/slot/deleteSlot/DeleteSlot.usecase";
-import { GetSlotUseCase } from "./application/use-case/slot/getSlots/GetSlot.usecase";
-import { AddNewServiceUseCase } from "./application/use-case/service-management/addNewService/AddNewService.usecase";
-import { IAddNewServiceUseCase } from "./application/use-case/service-management/addNewService/IAddNewService.usecase";
-import { GetServicesUseCase } from "./application/use-case/service-management/getServices/GetServices.usecase";
-import { IGetServicesUseCase } from "./application/use-case/service-management/getServices/IGetServices.usecase";
-import { EditServiceUseCase } from "./application/use-case/service-management/editService/EditService.usecase";
-import { IEditServiceUseCase } from "./application/use-case/service-management/editService/IEditService.usecase";
-import { BlockUnblockServiceUseCase } from "./application/use-case/service-management/blockUnblockService/BlockUnblockService.usecase";
-import { IBlockUnblockServiceUseCase } from "./application/use-case/service-management/blockUnblockService/IBlockUnblockService.usecase";
-import { IMarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/IMarkSlotAsBooked.usecase";
-import { MarkSlotAsBookedUseCase } from "./application/use-case/slot/markAsBooked/MarkSlotAsBooked.usecase";
+import { ICleanupSlotsBeforeTodayUseCase } from "./application/use-case/serviceProvider/slot/cleanUpSlots/ICleanupSlotsBeforeToday.usecase";
+import { CleanupSlotsBeforeTodayUseCase } from "./application/use-case/serviceProvider/slot/cleanUpSlots/CleanupSlotsBeforeToday.usecase";
+import { ICreateSlotUseCase } from "./application/use-case/serviceProvider/slot/createSlot/ICreateSlot.usecase";
+import { CreateSlotUseCase } from "./application/use-case/serviceProvider/slot/createSlot/CreateSlot.usecase";
+import { IDeleteSlotUseCase } from "./application/use-case/serviceProvider/slot/deleteSlot/IDeleteSlot.usecase";
+import { IGetSlotUseCase } from "./application/use-case/serviceProvider/slot/getSlots/IGetSlot.usecase";
+import { DeleteSlotUseCase } from "./application/use-case/serviceProvider/slot/deleteSlot/DeleteSlot.usecase";
+import { GetSlotUseCase } from "./application/use-case/serviceProvider/slot/getSlots/GetSlot.usecase";
+import { AddNewServiceUseCase } from "./application/use-case/serviceProvider/service-management/addNewService/AddNewService.usecase";
+import { IAddNewServiceUseCase } from "./application/use-case/serviceProvider/service-management/addNewService/IAddNewService.usecase";
+import { GetServicesUseCase } from "./application/use-case/serviceProvider/service-management/getServices/GetServices.usecase";
+import { IGetServicesUseCase } from "./application/use-case/serviceProvider/service-management/getServices/IGetServices.usecase";
+import { EditServiceUseCase } from "./application/use-case/serviceProvider/service-management/editService/EditService.usecase";
+import { IEditServiceUseCase } from "./application/use-case/serviceProvider/service-management/editService/IEditService.usecase";
+import { BlockUnblockServiceUseCase } from "./application/use-case/serviceProvider/service-management/blockUnblockService/BlockUnblockService.usecase";
+import { IBlockUnblockServiceUseCase } from "./application/use-case/serviceProvider/service-management/blockUnblockService/IBlockUnblockService.usecase";
+import { IMarkSlotAsBookedUseCase } from "./application/use-case/serviceProvider/slot/markAsBooked/IMarkSlotAsBooked.usecase";
+import { MarkSlotAsBookedUseCase } from "./application/use-case/serviceProvider/slot/markAsBooked/MarkSlotAsBooked.usecase";
 import { ExpireAdsUseCase } from "./application/use-case/ads/expireAds/IExpireAds.usecase";
-import { IChangeAdStatusUseCase } from "./application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
-import { ChangeAdStatusUseCase } from "./application/use-case/ads/changeAdStatus/ChangeAdStatus.usecase";
-import { AdminGetAdsUseCase } from "./application/use-case/ads/getAds/AdminGetAds.usecase";
+import { IChangeAdStatusUseCase } from "./application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { ChangeAdStatusUseCase } from "./application/use-case/common/ads/changeAdStatus/ChangeAdStatus.usecase";
+import { AdminGetAdsUseCase } from "./application/use-case/admin/ad-management/getAds/AdminGetAds.usecase";
 
-import { IWithdrawFromProviderWalletUseCase } from "./application/use-case/wallet/withdraw/IWithdrawFromProviderWallet.usecase";
-import { GetProviderWalletUseCase } from "./application/use-case/wallet/getWalletByid/GetProviderWalletById.usecase";
+import { IWithdrawFromProviderWalletUseCase } from "./application/use-case/admin/wallet-management/withdraw/IWithdrawFromProviderWallet.usecase";
+import { GetProviderWalletUseCase } from "./application/use-case/admin/wallet-management/getWalletByid/GetProviderWalletById.usecase";
 
-import { ISaveMessageUseCase } from "./application/use-case/chat/saveMessage/ISaveMessage.uescase";
-import { SaveMessageUseCase } from "./application/use-case/chat/saveMessage/SaveMessage.usecase";
-import { GetAllChatsUseCase } from "./application/use-case/chat/getAllchats/GetAllChats.usecase";
-import { IGetAllChats } from "./application/use-case/chat/getAllchats/IGetAllChats.usecase";
-import { UploadChatImageUseCase } from "./application/use-case/chat/uploadChatMedia/UploadChatImage.usecase";
-import { IUploadChatImageUseCase } from "./application/use-case/chat/uploadChatMedia/IUploadChatImage.usecase";
+import { ISaveMessageUseCase } from "./application/use-case/common/chat/saveMessage/ISaveMessage.uescase";
+import { SaveMessageUseCase } from "./application/use-case/common/chat/saveMessage/SaveMessage.usecase";
+import { GetAllChatsUseCase } from "./application/use-case/common/chat/getAllchats/GetAllChats.usecase";
+import { IGetAllChats } from "./application/use-case/common/chat/getAllchats/IGetAllChats.usecase";
+import { UploadChatImageUseCase } from "./application/use-case/common/chat/uploadChatMedia/UploadChatImage.usecase";
+import { IUploadChatImageUseCase } from "./application/use-case/common/chat/uploadChatMedia/IUploadChatImage.usecase";
 
-import { CreateNotificationUseCase } from "./application/use-case/notification/createNotification/CreateNotification.usecase";
-import { GetNotificationUseCase } from "./application/use-case/notification/getNotification/GetNotification.usecase";
-import { IMarkNotificationAsReadUseCase } from "./application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
-import { MarkNotificationAsReadUseCase } from "./application/use-case/notification/markNotificationAsRead/MarkNotificationAsRead.usecase";
-import { IDeleteSingleNotificationUseCase } from "./application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
-import { DeleteSingleNotificationUseCase } from "./application/use-case/notification/deleteSingleNotification/DeleteSingleNotification.usecase";
-import { IDeleteAllNotificationUseCase } from "./application/use-case/notification/deleteAllNotification/IDeleteAllNotification.usecase";
-import { DeleteAllNotificationUseCase } from "./application/use-case/notification/deleteAllNotification/DeleteAllNotification.usecase";
-import { ICreateNotificationUseCase } from "./application/use-case/notification/createNotification/ICreateNotification.usecase";
-import { IGetNotificationUseCase } from "./application/use-case/notification/getNotification/IGetNotification.usecase";
-import { CreateAiChatUseCase } from "./application/use-case/aiAssistance/create/CreateAiChat.usecase";
-import { ICreateAiChatUseCase } from "./application/use-case/aiAssistance/create/ICreateAiChat.usecase";
-import { IGetAIChatByIdUseCase } from "./application/use-case/aiAssistance/getById/IGetAIChatByIdUseCase";
-import { GetAIChatByIdUseCase } from "./application/use-case/aiAssistance/getById/GetAIChatByIdUseCase";
-import { IGetProviderAIChatsUseCase } from "./application/use-case/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
-import { GetProviderAIChatsUseCase } from "./application/use-case/aiAssistance/getByServiceProvidersId/GetProviderAIChats.usecase";
-import { IGetAllSubscriptionPlansUseCase } from "./application/use-case/subscriptionManagement/getSubscription/IGetAllSubscriptionPlans.usecase";
-import { GetAllSubscriptionPlansUseCase } from "./application/use-case/subscriptionManagement/getSubscription/GetAllSubscriptionPlans.usecase";
-import { ICreateSubscriptionPlanUseCase } from "./application/use-case/subscriptionManagement/createSubscription/ICreateSubscriptionPlan.usecase";
-import { CreateSubscriptionPlanUseCase } from "./application/use-case/subscriptionManagement/createSubscription/CreateSubscriptionPlan.usecase";
-import { IUpdateSubscriptionPlanUseCase } from "./application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
-import { UpdateSubscriptionPlanUseCase } from "./application/use-case/subscriptionManagement/updateSubscription/UpdateSubscriptionPlan.usecase";
-import { IEditAdUseCase } from "./application/use-case/ads/adsServiceProvider/editAd/IEditAd.usecase";
-import { EditAdUseCase } from "./application/use-case/ads/adsServiceProvider/editAd/EditAd.usecase";
-import { ICreateAdUseCase } from "./application/use-case/ads/adsServiceProvider/createAd/ICreateAd.usecase";
-import { CreateAdUseCase } from "./application/use-case/ads/adsServiceProvider/createAd/CreateAd.usecase";
-import { IGetProviderAdsUseCase } from "./application/use-case/ads/adsServiceProvider/getAd/IGetProviderAds.usecase";
-import { GetProviderAdsUseCase } from "./application/use-case/ads/adsServiceProvider/getAd/GetProviderAds.usecase";
-import { IGetServiceNamesUseCase } from "./application/use-case/service-management/serviceManagementAdmin/getServiceNames/IGetServiceNames.usecase";
-import { GetServiceNamesUseCase } from "./application/use-case/service-management/serviceManagementAdmin/getServiceNames/GetServiceNames.usecases";
-import { IGetAllUsers } from "./application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
-import { GetAllUsersUseCase } from "./application/use-case/userManagement/getAllUsers/GetAllUsers.usecase";
-import { IBlockUnblockUsers } from "./application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
-import { BlockUnblockUsers } from "./application/use-case/userManagement/blockUnblockUsers/BlockUnblockUsers.usecase";
-import { IGetServiceProviders } from "./application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
-import { GetServiceProviders } from "./application/use-case/serviceProviderManagement/getServiceProvider/GetServiceProviders.usecase";
-import { IGetAllServices } from "./application/use-case/service-management/serviceManagementAdmin/getService/IGetAllServices.usecase";
-import { GetAllServices } from "./application/use-case/service-management/serviceManagementAdmin/getService/GetAllServices.usecase";
-import { IBlockUnblockCategoryService } from "./application/use-case/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
-import { BlockUnblockCategoryService } from "./application/use-case/category-management/blockUnblockService/BlockUnblockCategoryService.usecase";
-import { IBlockUnblockProviderUseCase } from "./application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockProvider.usecase";
-import { BlockUnblockProviderUseCase } from "./application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
-import { IBlockUnblockService } from "./application/use-case/service-management/serviceManagementAdmin/blockUnblock/IBlockUnblock.usecase";
-import { BlockUnblockService } from "./application/use-case/service-management/serviceManagementAdmin/blockUnblock/BlockUnblock.usecase";
-import { IAddCategory } from "./application/use-case/category-management/addCategoryy.ts/IAddCategory.usecase";
-import { AddCategory } from "./application/use-case/category-management/addCategoryy.ts/AddCategory.usecase";
-import { IGetCategory } from "./application/use-case/category-management/getCategory/IGetCategory.usecase";
-import { GetCategory } from "./application/use-case/category-management/getCategory/GetCategory.usecase";
-import { IEditCategory } from "./application/use-case/category-management/editCategory/IEditCategory.usecase";
-import { EditCategory } from "./application/use-case/category-management/editCategory/EditCategory.usecase";
-import { IBlockUnblockCategory } from "./application/use-case/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
-import { BlockUnblockCategory } from "./application/use-case/category-management/blockUnblockCategory/BlockUnblockCategory.usecase";
-import { IDeleteCategory } from "./application/use-case/category-management/deleteCategory/IDeleteCategory.usecase";
-import { IAddService } from "./application/use-case/category-management/addService/IAddService.usecase";
-import { DeleteCategory } from "./application/use-case/category-management/deleteCategory/DeleteCategory.usecase";
-import { AddService } from "./application/use-case/category-management/addService/AddService.usecase";
-import { IDeleteService } from "./application/use-case/category-management/deleteService/IDeleteService.usecase";
-import { DeleteService } from "./application/use-case/category-management/deleteService/DeleteService.usecase";
-import { AddReviewUseCase } from "./application/use-case/review/addReview/AddReviewUseCase";
-import { IAddReviewUseCase } from "./application/use-case/review/addReview/IAddReviewUseCase";
-import { IDeleteAddress } from "./application/use-case/Address/deleteAddress/IDeleteAddress.usecase";
-import { DeleteAddress } from "./application/use-case/Address/deleteAddress/DeleteAddress.usecase";
-import { IAddNewAddress } from "./application/use-case/Address/addAddress/IAddNewAddress.usecase";
-import { AddNewAddress } from "./application/use-case/Address/addAddress/AddNewAddress.usecase";
-import { EditAddress } from "./application/use-case/Address/editAddress/EditAddress.usecase";
-import { IEditAddress } from "./application/use-case/Address/editAddress/IEditAddress.usecase";
-import { IGetAddress } from "./application/use-case/Address/getAddress/IGetAddress.usecase";
-import { GetAddress } from "./application/use-case/Address/getAddress/GetAddress.usecase";
-import { IRecommendAdsUseCase } from "./application/use-case/ads/recommendAds/IRecommendAdsUseCase";
-import { IResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
-import { ResetPasswordUseCase } from "./application/use-case/User/auth/forgotPassword/resetPassword/ResetPassword.usecase";
-import { SendForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/SendForgotPasswordOtp.usecase";
-import { ISendForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
-import { IVerifyForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
-import { VerifyForgotPasswordOtpUseCase } from "./application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/VerifyForgotPasswordOtp.usecase";
-import { ISignInUseCase } from "./application/use-case/User/auth/signIn/ISignIn.usecase";
-import { SignIn } from "./application/use-case/User/auth/signIn/SignIn.usecase";
-import { ISignUpUseCase } from "./application/use-case/User/auth/signUp/ISignUp.usecase";
-import { SignUpUseCase } from "./application/use-case/User/auth/signUp/SignUp.usecase";
-import { IVerifyOtpUseCase } from "./application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
-import { IGoogleAuthUseCase } from "./application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
-import { GoogleAuthUseCase } from "./application/use-case/User/auth/googleAuth/GoogleAuth.usecase";
-import { IResendOtp } from "./application/use-case/User/auth/resendOtp/IResendOtp.usecase";
-import { ResendOtp } from "./application/use-case/User/auth/resendOtp/ResendOtp.usecase";
-import { VerifyOtp } from "./application/use-case/User/auth/verifyOtp/VerifyOtp.usecase.ts";
+import { CreateNotificationUseCase } from "./application/use-case/common/notification/createNotification/CreateNotification.usecase";
+import { GetNotificationUseCase } from "./application/use-case/common/notification/getNotification/GetNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "./application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { MarkNotificationAsReadUseCase } from "./application/use-case/common/notification/markNotificationAsRead/MarkNotificationAsRead.usecase";
+import { IDeleteSingleNotificationUseCase } from "./application/use-case/common/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
+import { DeleteSingleNotificationUseCase } from "./application/use-case/common/notification/deleteSingleNotification/DeleteSingleNotification.usecase";
+import { IDeleteAllNotificationUseCase } from "./application/use-case/common/notification/deleteAllNotification/IDeleteAllNotification.usecase";
+import { DeleteAllNotificationUseCase } from "./application/use-case/common/notification/deleteAllNotification/DeleteAllNotification.usecase";
+import { ICreateNotificationUseCase } from "./application/use-case/common/notification/createNotification/ICreateNotification.usecase";
+import { IGetNotificationUseCase } from "./application/use-case/common/notification/getNotification/IGetNotification.usecase";
+import { CreateAiChatUseCase } from "./application/use-case/serviceProvider/ai-assistance/create/CreateAiChat.usecase";
+import { ICreateAiChatUseCase } from "./application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
+import { IGetAIChatByIdUseCase } from "./application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
+import { GetAIChatByIdUseCase } from "./application/use-case/serviceProvider/ai-assistance/getById/GetAIChatByIdUseCase";
+import { IGetProviderAIChatsUseCase } from "./application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { GetProviderAIChatsUseCase } from "./application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/GetProviderAIChats.usecase";
+import { IGetAllSubscriptionPlansUseCase } from "./application/use-case/admin/subscription-management/getSubscription/IGetAllSubscriptionPlans.usecase";
+import { GetAllSubscriptionPlansUseCase } from "./application/use-case/admin/subscription-management/getSubscription/GetAllSubscriptionPlans.usecase";
+import { ICreateSubscriptionPlanUseCase } from "./application/use-case/admin/subscription-management/createSubscription/ICreateSubscriptionPlan.usecase";
+import { CreateSubscriptionPlanUseCase } from "./application/use-case/admin/subscription-management/createSubscription/CreateSubscriptionPlan.usecase";
+import { IUpdateSubscriptionPlanUseCase } from "./application/use-case/admin/subscription-management/updateSubscription/IUpdateSubscriptionPlan.usecase";
+import { UpdateSubscriptionPlanUseCase } from "./application/use-case/admin/subscription-management/updateSubscription/UpdateSubscriptionPlan.usecase";
+import { IEditAdUseCase } from "./application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
+import { EditAdUseCase } from "./application/use-case/serviceProvider/ads/editAd/EditAd.usecase";
+import { ICreateAdUseCase } from "./application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
+import { CreateAdUseCase } from "./application/use-case/serviceProvider/ads/createAd/CreateAd.usecase";
+import { IGetProviderAdsUseCase } from "./application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
+import { GetProviderAdsUseCase } from "./application/use-case/serviceProvider/ads/getAd/GetProviderAds.usecase";
+import { IGetServiceNamesUseCase } from "./application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
+import { GetServiceNamesUseCase } from "./application/use-case/serviceProvider/service-management/getServiceNames/GetServiceNames.usecases";
+import { IGetAllUsers } from "./application/use-case/admin/user-management/getAllUsers/IGetAllUsers.usecase";
+import { GetAllUsersUseCase } from "./application/use-case/admin/user-management/getAllUsers/GetAllUsers.usecase";
+import { IBlockUnblockUsers } from "./application/use-case/admin/user-management/blockUnblockUsers/IBlockUnblockUsers.usecase";
+import { BlockUnblockUsers } from "./application/use-case/admin/user-management/blockUnblockUsers/BlockUnblockUsers.usecase";
+import { IGetServiceProviders } from "./application/use-case/admin/provider-management/getServiceProvider/IGetServiceProviders.usecase";
+import { GetServiceProviders } from "./application/use-case/admin/provider-management/getServiceProvider/GetServiceProviders.usecase";
+import { IGetAllServices } from "./application/use-case/admin/service-management/getService/IGetAllServices.usecase";
+import { GetAllServices } from "./application/use-case/admin/service-management/getService/GetAllServices.usecase";
+import { IBlockUnblockCategoryService } from "./application/use-case/admin/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
+import { BlockUnblockCategoryService } from "./application/use-case/admin/category-management/blockUnblockService/BlockUnblockCategoryService.usecase";
+import { IBlockUnblockProviderUseCase } from "./application/use-case/admin/provider-management/blockServiceProvider/IBlockUnblockProvider.usecase";
+import { BlockUnblockProviderUseCase } from "./application/use-case/admin/provider-management/blockServiceProvider/BlockUnblockProvider.usecase";
+import { IBlockUnblockService } from "./application/use-case/admin/service-management/blockUnblock/IBlockUnblock.usecase";
+import { BlockUnblockService } from "./application/use-case/admin/service-management/blockUnblock/BlockUnblock.usecase";
+import { IAddCategory } from "./application/use-case/admin/category-management/addCategoryy.ts/IAddCategory.usecase";
+import { AddCategory } from "./application/use-case/admin/category-management/addCategoryy.ts/AddCategory.usecase";
+import { IGetCategory } from "./application/use-case/common/category/getCategory/IGetCategory.usecase";
+import { GetCategory } from "./application/use-case/common/category/getCategory/GetCategory.usecase";
+import { IEditCategory } from "./application/use-case/admin/category-management/editCategory/IEditCategory.usecase";
+import { EditCategory } from "./application/use-case/admin/category-management/editCategory/EditCategory.usecase";
+import { IBlockUnblockCategory } from "./application/use-case/admin/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
+import { BlockUnblockCategory } from "./application/use-case/admin/category-management/blockUnblockCategory/BlockUnblockCategory.usecase";
+import { IDeleteCategory } from "./application/use-case/admin/category-management/deleteCategory/IDeleteCategory.usecase";
+import { IAddService } from "./application/use-case/admin/category-management/addService/IAddService.usecase";
+import { DeleteCategory } from "./application/use-case/admin/category-management/deleteCategory/DeleteCategory.usecase";
+import { AddService } from "./application/use-case/admin/category-management/addService/AddService.usecase";
+import { IDeleteService } from "./application/use-case/admin/category-management/deleteService/IDeleteService.usecase";
+import { DeleteService } from "./application/use-case/admin/category-management/deleteService/DeleteService.usecase";
+import { AddReviewUseCase } from "./application/use-case/user/review/addReview/AddReviewUseCase";
+import { IAddReviewUseCase } from "./application/use-case/user/review/addReview/IAddReviewUseCase";
+import { IDeleteAddress } from "./application/use-case/user/address/deleteAddress/IDeleteAddress.usecase";
+import { DeleteAddress } from "./application/use-case/user/address/deleteAddress/DeleteAddress.usecase";
+import { IAddNewAddress } from "./application/use-case/user/address/addAddress/IAddNewAddress.usecase";
+import { AddNewAddress } from "./application/use-case/user/address/addAddress/AddNewAddress.usecase";
+import { EditAddress } from "./application/use-case/user/address/editAddress/EditAddress.usecase";
+import { IEditAddress } from "./application/use-case/user/address/editAddress/IEditAddress.usecase";
+import { IGetAddress } from "./application/use-case/user/address/getAddress/IGetAddress.usecase";
+import { GetAddress } from "./application/use-case/user/address/getAddress/GetAddress.usecase";
+import { IRecommendAdsUseCase } from "./application/use-case/user/ads/recommendAds/IRecommendAdsUseCase";
+import { IResetPasswordUseCase } from "./application/use-case/user/auth/forgotPassword/resetPassword/IResetPassword.usecase";
+import { ResetPasswordUseCase } from "./application/use-case/user/auth/forgotPassword/resetPassword/ResetPassword.usecase";
+import { SendForgotPasswordOtpUseCase } from "./application/use-case/user/auth/forgotPassword/sendForgotPasswordOtp/SendForgotPasswordOtp.usecase";
+import { ISendForgotPasswordOtpUseCase } from "./application/use-case/user/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
+import { IVerifyForgotPasswordOtpUseCase } from "./application/use-case/user/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
+import { VerifyForgotPasswordOtpUseCase } from "./application/use-case/user/auth/forgotPassword/verifyForgotPasswordOtp/VerifyForgotPasswordOtp.usecase";
+import { ISignInUseCase } from "./application/use-case/user/auth/signIn/ISignIn.usecase";
+import { SignIn } from "./application/use-case/user/auth/signIn/SignIn.usecase";
+import { ISignUpUseCase } from "./application/use-case/user/auth/signUp/ISignUp.usecase";
+import { SignUpUseCase } from "./application/use-case/user/auth/signUp/SignUp.usecase";
+import { IVerifyOtpUseCase } from "./application/use-case/user/auth/verifyOtp/IVerifyOtp.usecase";
+import { IGoogleAuthUseCase } from "./application/use-case/user/auth/googleAuth/IGoogleAuth.usecase";
+import { GoogleAuthUseCase } from "./application/use-case/user/auth/googleAuth/GoogleAuth.usecase";
+import { IResendOtp } from "./application/use-case/user/auth/resendOtp/IResendOtp.usecase";
+import { ResendOtp } from "./application/use-case/user/auth/resendOtp/ResendOtp.usecase";
+import { VerifyOtp } from "./application/use-case/user/auth/verifyOtp/VerifyOtp.usecase.ts";
 import { AdminSignin } from "./application/use-case/admin/auth/AdminSignin.usecase";
 import { IAdminSignin } from "./application/use-case/admin/auth/IAdminSignin.usecase";
-import { GetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/GetSingleServics.usecase";
-import { GetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/GetAllActiveService.usecase";
-import { GetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/GetServiceProviderInfo.usecase";
-import { IGetAllActiveServiceUseCase } from "./application/use-case/User/service/getService/IGetAllActiveService.usecase";
-import { IGetSingleServiceUseCase } from "./application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
-import { IProfileUpdateOtpUseCase } from "./application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
-import { ProfileUpdateOtpUseCase } from "./application/use-case/User/profile/updateProfile/ProfileUpdateOtp.usecase";
-import { UserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/UserProfileUpdate.usecase";
-import { IUserProfileUpdateUseCase } from "./application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
-import { IGetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
-import { GetUserProfileUseCase } from "./application/use-case/User/profile/getProfile/GetUserProfile.usecase";
-import { ICreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
-import { CreateServiceOrderUseCase } from "./application/use-case/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
-import { IFindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
-import { FindAllActiveCouponsUseCase } from "./application/use-case/coupon/findAllActiveCoupons/FindAllActiveCoupons.usecase";
+import { GetSingleServiceUseCase } from "./application/use-case/user/service/getSingleService/GetSingleServics.usecase";
+import { GetAllActiveServiceUseCase } from "./application/use-case/user/service/getService/GetAllActiveService.usecase";
+import { GetServiceProviderInfoUseCase } from "./application/use-case/user/service/getProviderInfo/GetServiceProviderInfo.usecase";
+import { IGetAllActiveServiceUseCase } from "./application/use-case/user/service/getService/IGetAllActiveService.usecase";
+import { IGetSingleServiceUseCase } from "./application/use-case/user/service/getSingleService/IGetSingleServics.usecase";
+import { IProfileUpdateOtpUseCase } from "./application/use-case/user/profile/updateProfile/IProfileUpdateOtp.usecase";
+import { ProfileUpdateOtpUseCase } from "./application/use-case/user/profile/updateProfile/ProfileUpdateOtp.usecase";
+import { UserProfileUpdateUseCase } from "./application/use-case/user/profile/updateProfile/UserProfileUpdate.usecase";
+import { IUserProfileUpdateUseCase } from "./application/use-case/user/profile/updateProfile/IUserProfileUpdate.usecase";
+import { IGetUserProfileUseCase } from "./application/use-case/user/profile/getProfile/IGetUserProfile.usecase";
+import { GetUserProfileUseCase } from "./application/use-case/user/profile/getProfile/GetUserProfile.usecase";
+import { ICreateServiceOrderUseCase } from "./application/use-case/common/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
+import { CreateServiceOrderUseCase } from "./application/use-case/common/payment/CreateServiceOrderUseCase/CreateServiceOrderUseCase";
+import { IFindAllActiveCouponsUseCase } from "./application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { FindAllActiveCouponsUseCase } from "./application/use-case/user/coupon/findAllActiveCoupons/FindAllActiveCoupons.usecase";
 import { GetAdminProfileUseCase } from "./application/use-case/admin/profile/profile";
 import { IGetAdminProfileUseCase } from "./application/use-case/admin/profile/IProfile";
 import { GetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/GetPaymentInfo.usecase";
 import { IGetPaymentInfoUseCase } from "./application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
-import { IServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
-import { ServiceProviderRejectVerify } from "./application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
+import { IServiceProviderRejectVerify } from "./application/use-case/admin/provider-management/rejectRequest/IServiceProviderReject.usecase";
+import { ServiceProviderRejectVerify } from "./application/use-case/admin/provider-management/rejectRequest/ServiceProviderReject.usecase";
 import { IManageAllServiceUseCase } from "./application/use-case/admin/dashboard/IManageAllService.usecase";
 import { ManageAllServiceUseCase } from "./application/use-case/admin/dashboard/ManageAllService.usecase";
 import { IEditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/IEditProfile";
@@ -267,20 +267,20 @@ import { IVerifyServiceProvider } from "./application/use-case/serviceProvider/I
 import { VerifyServiceProvider } from "./application/use-case/serviceProvider/VerifyServiceProvider";
 import { IGetServiceProvider } from "./application/use-case/serviceProvider/auth/IGetServiceProvider";
 import { GetServiceProvider } from "./application/use-case/serviceProvider/auth/getServiceProvider";
-import { IAutoSuggestion } from "./application/use-case/User/location/IAutoSuggestion";
-import { AutoSuggestion } from "./application/use-case/User/location/autoSuggestion";
-import { IUserSiteSettings } from "./application/use-case/siteSetting/userSiteSettings.ts/IUserSiteSettings";
+import { IAutoSuggestion } from "./application/use-case/user/location/IAutoSuggestion";
+import { AutoSuggestion } from "./application/use-case/user/location/autoSuggestion";
+import { IUserSiteSettings } from "./application/use-case/user/site-settings/IUserSiteSettings";
 import { ILocationService } from "./services/location/ILocationService";
-import { IGetServiceProviderInfoUseCase } from "./application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
-import { IUploadBillsUseCase } from "./application/use-case/booking/billing/IUploadBills.usecase";
-import { UploadBillsUseCase } from "./application/use-case/booking/billing/UploadBills.usecase";
-import { IVerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/IVerfypayment.usecase";
-import { VerifyPaymentUseCase } from "./application/use-case/payment/verifyPayment/VerifyPayment.usecase";
-import { IGetSubscriptionPlansUseCase } from "./application/use-case/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
-import { GetSubscriptionPlansUseCase } from "./application/use-case/subscription/getSubscriptionPlans/GetSubscriptionPlansUseCase";
-import { IAdminSiteSettingsUseCase } from "./application/use-case/siteSetting/adminSiteSettings/IAdminSiteSettings.usecase";
-import { AdminSiteSettingsUseCase } from "./application/use-case/siteSetting/adminSiteSettings/AdminSiteSettingsUseCase";
-import { UserSiteSettings } from "./application/use-case/siteSetting/userSiteSettings.ts/UserSiteSettingsUseCase";
+import { IGetServiceProviderInfoUseCase } from "./application/use-case/user/service/getProviderInfo/IGetServiceProviderInfo.usecase";
+import { IUploadBillsUseCase } from "./application/use-case/serviceProvider/booking/billing/IUploadBills.usecase";
+import { UploadBillsUseCase } from "./application/use-case/serviceProvider/booking/billing/UploadBills.usecase";
+import { IVerifyPaymentUseCase } from "./application/use-case/common/payment/verifyPayment/IVerfypayment.usecase";
+import { VerifyPaymentUseCase } from "./application/use-case/common/payment/verifyPayment/VerifyPayment.usecase";
+import { IGetSubscriptionPlansUseCase } from "./application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { GetSubscriptionPlansUseCase } from "./application/use-case/serviceProvider/subscription/getSubscriptionPlans/GetSubscriptionPlansUseCase";
+import { IAdminSiteSettingsUseCase } from "./application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
+import { AdminSiteSettingsUseCase } from "./application/use-case/admin/site-settings/AdminSiteSettingsUseCase";
+import { UserSiteSettings } from "./application/use-case/user/site-settings/UserSiteSettingsUseCase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -388,7 +388,6 @@ container.register<ISiteSettingRepository>(
     useClass: SiteSettingRepository,
   },
 );
-
 
 container.register(REPOSITORY_TOKENS.AdRepository, AdRepository);
 
@@ -900,26 +899,17 @@ container.register<IVerifyServiceProvider>(
   },
 );
 
-container.register<IGetServiceProvider>(
-  USE_CASE_TOKENS.GetServiceProvider,
-  {
-    useClass: GetServiceProvider,
-  },
-);
+container.register<IGetServiceProvider>(USE_CASE_TOKENS.GetServiceProvider, {
+  useClass: GetServiceProvider,
+});
 
-container.register<IAutoSuggestion>(
-  USE_CASE_TOKENS.AutoSuggestion,
-  {
-    useClass: AutoSuggestion,
-  },
-);
+container.register<IAutoSuggestion>(USE_CASE_TOKENS.AutoSuggestion, {
+  useClass: AutoSuggestion,
+});
 
-container.register<IUserSiteSettings>(
-  USE_CASE_TOKENS.UserSiteSettings,
-  {
-    useClass: UserSiteSettings,
-  },
-);
+container.register<IUserSiteSettings>(USE_CASE_TOKENS.UserSiteSettings, {
+  useClass: UserSiteSettings,
+});
 
 container.register<IEditAddress>(USE_CASE_TOKENS.EditAddress, {
   useClass: EditAddress,
@@ -1026,7 +1016,6 @@ container.register<IFindAllActiveCouponsUseCase>(
   },
 );
 
-
 container.register<IGetAdminProfileUseCase>(
   USE_CASE_TOKENS.GetAdminProfileUseCase,
   {
@@ -1050,10 +1039,16 @@ container.register<IEditServiceUseCase>(USE_CASE_TOKENS.EditService, {
   useClass: EditServiceUseCase,
 });
 
-container.register<IBlockUnblockServiceUseCase>(USE_CASE_TOKENS.BlockUnblockSericeUseCase, {
-  useClass: BlockUnblockServiceUseCase,
-});
+container.register<IBlockUnblockServiceUseCase>(
+  USE_CASE_TOKENS.BlockUnblockSericeUseCase,
+  {
+    useClass: BlockUnblockServiceUseCase,
+  },
+);
 
-container.register<IVerifyPaymentUseCase>(USE_CASE_TOKENS.VerifyPaymentUseCase, {
-  useClass: VerifyPaymentUseCase,
-});
+container.register<IVerifyPaymentUseCase>(
+  USE_CASE_TOKENS.VerifyPaymentUseCase,
+  {
+    useClass: VerifyPaymentUseCase,
+  },
+);

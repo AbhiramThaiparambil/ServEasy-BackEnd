@@ -4,12 +4,12 @@ import {
   ISystemNotification,
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
-import { ICreateNotificationUseCase } from "../use-case/notification/createNotification/ICreateNotification.usecase";
+import { ICreateNotificationUseCase } from "../use-case/common/notification/createNotification/ICreateNotification.usecase";
 
 export class NotificationHandler {
   constructor(
     private notificationUseCase: ICreateNotificationUseCase,
-    private io: Server
+    private io: Server,
   ) {}
 
   public register(socket: Socket) {
@@ -27,7 +27,7 @@ export class NotificationHandler {
     notification:
       | IVideoCallNotification
       | IChatNotification
-      | ISystemNotification
+      | ISystemNotification,
   ) {
     this.io.to(userId).emit("receive_notification", notification);
     console.log(notification);

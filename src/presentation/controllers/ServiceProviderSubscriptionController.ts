@@ -4,9 +4,9 @@ import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIServ
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { ConversationWithParticipantsListInstance } from "twilio/lib/rest/conversations/v1/conversationWithParticipants";
-import { IGetProviderAIChatsUseCase } from "../../application/use-case/aiAssistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
-import { IGetAIChatByIdUseCase } from "../../application/use-case/aiAssistance/getById/IGetAIChatByIdUseCase";
-import { ICreateAiChatUseCase } from "../../application/use-case/aiAssistance/create/ICreateAiChat.usecase";
+import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
+import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
 @injectable()
 export class ServiceProviderSubscriptionController {
   constructor(

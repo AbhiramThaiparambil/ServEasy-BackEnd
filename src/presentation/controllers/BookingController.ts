@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import mongoose from "mongoose";
-import { ICreateBookingUseCase } from "../../application/use-case/booking/createBooking/ICreateBooking.usecase";
-import { ICreateOnlineBookingUseCase } from "../../application/use-case/booking/createOnlineBooking/ICreateOnlineBooking.usecase";
+import { ICreateBookingUseCase } from "../../application/use-case/user/booking/createBooking/ICreateBooking.usecase";
+import { ICreateOnlineBookingUseCase } from "../../application/use-case/user/booking/createOnlineBooking/ICreateOnlineBooking.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
-import { IConfirmBookingUseCase } from "../../application/use-case/booking/confirmBooking/IConfirmBooking.usecase";
-import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
-import { IRequestPaymentUseCase } from "../../application/use-case/booking/requestPayment/IRequestPaymentUseCase";
+import { IUpdateBookingStatusUseCase } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { IConfirmBookingUseCase } from "../../application/use-case/serviceProvider/booking/confirmBooking/IConfirmBooking.usecase";
+import { ICancelBookingUseCase } from "../../application/use-case/user/booking/cancelBooking/ICancelBooking.usecase";
+import { IRequestPaymentUseCase } from "../../application/use-case/serviceProvider/booking/requestPayment/IRequestPaymentUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { IGetBookedServicesUseCase } from "../../application/use-case/booking/fetchBookings/IGetBookedServices.usecase";
-import { IGetBookedServiceByIdUseCase } from "../../application/use-case/booking/fetchByid/IGetBookedServiceById.usecase";
-import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
-import { IUploadBillsUseCase } from "../../application/use-case/booking/billing/IUploadBills.usecase";
+import { IGetBookedServicesUseCase } from "../../application/use-case/common/booking/fetchBookings/IGetBookedServices.usecase";
+import { IGetBookedServiceByIdUseCase } from "../../application/use-case/common/booking/fetchByid/IGetBookedServiceById.usecase";
+import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
+import { IUploadBillsUseCase } from "../../application/use-case/serviceProvider/booking/billing/IUploadBills.usecase";
 
 @injectable()
 export class BookingController {
@@ -128,39 +128,30 @@ export class BookingController {
     }
   }
 
+  uploadBills = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { invoices } = req.body;
 
+      if (!Array.isArray(invoices) || invoices.length === 0) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "No invoice images provided." });
+        return;
+      }
 
+      await this.uploadBillsUseCase.execute(id, invoices);
 
-
-   uploadBills = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const { invoices } = req.body;
-
-    if (!Array.isArray(invoices) || invoices.length === 0) {
       res
-        .status(HttpStatus.BAD_REQUEST)
-        .json({ message: "No invoice images provided." });
-      return;
+        .status(HttpStatus.CREATED)
+        .json({ message: "Invoice images uploaded successfully." });
+    } catch (error) {
+      console.error("Error uploading invoice bills:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to upload invoice images." });
     }
-
-    
-    await this.uploadBillsUseCase.execute(id, invoices);
-
-    res
-      .status(HttpStatus.CREATED)
-      .json({ message: "Invoice images uploaded successfully." });
-  } catch (error) {
-    console.error("Error uploading invoice bills:", error);
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ message: "Failed to upload invoice images." });
-  }
-};
-
+  };
 
   async confirmBooking(req: Request, res: Response) {
     try {

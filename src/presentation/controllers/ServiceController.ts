@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import { HttpStatus } from "../../constants/HttpStatus";
-// import { UpdateServiceStatus } from "../../application/use-case/booking/updateBookingStatus/UpdateBookingStatusUseCase";
+// import { UpdateServiceStatus } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { IApplyCouponToBookingUseCase } from "../../application/use-case/coupon/applyCoupon/IApplyCouponToBooking.usecase";
-import { IRemoveCouponToBookingUseCase } from "../../application/use-case/coupon/removeCoupon/IRemoveCoupon.usecase";
-import { IUpdateBookingStatusUseCase } from "../../application/use-case/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
-import { ICancelBookingUseCase } from "../../application/use-case/booking/cancelBooking/ICancelBooking.usecase";
-import { IDeleteSlotUseCase } from "../../application/use-case/slot/deleteSlot/IDeleteSlot.usecase";
-import { ICreateSlotUseCase } from "../../application/use-case/slot/createSlot/ICreateSlot.usecase";
-import { IGetSlotUseCase } from "../../application/use-case/slot/getSlots/IGetSlot.usecase";
-import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
-import { IAddNewServiceUseCase } from "../../application/use-case/service-management/addNewService/IAddNewService.usecase";
-import { IGetServicesUseCase } from "../../application/use-case/service-management/getServices/IGetServices.usecase";
-import { IEditServiceUseCase } from "../../application/use-case/service-management/editService/IEditService.usecase";
-import { IBlockUnblockServiceUseCase } from "../../application/use-case/service-management/blockUnblockService/IBlockUnblockService.usecase";
+import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
+import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
+import { IUpdateBookingStatusUseCase } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
+import { ICancelBookingUseCase } from "../../application/use-case/user/booking/cancelBooking/ICancelBooking.usecase";
+import { IDeleteSlotUseCase } from "../../application/use-case/serviceProvider/slot/deleteSlot/IDeleteSlot.usecase";
+import { ICreateSlotUseCase } from "../../application/use-case/serviceProvider/slot/createSlot/ICreateSlot.usecase";
+import { IGetSlotUseCase } from "../../application/use-case/serviceProvider/slot/getSlots/IGetSlot.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/user/service/getService/IGetAllActiveService.usecase";
+import { IAddNewServiceUseCase } from "../../application/use-case/serviceProvider/service-management/addNewService/IAddNewService.usecase";
+import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/service-management/getServices/IGetServices.usecase";
+import { IEditServiceUseCase } from "../../application/use-case/serviceProvider/service-management/editService/IEditService.usecase";
+import { IBlockUnblockServiceUseCase } from "../../application/use-case/serviceProvider/service-management/blockUnblockService/IBlockUnblockService.usecase";
 
 @injectable()
 export class ServiceController {

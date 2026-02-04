@@ -4,39 +4,39 @@ import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { SignIn } from "../../application/use-case/User/auth/signIn/SignIn.usecase";
+import { SignIn } from "../../application/use-case/user/auth/signIn/SignIn.usecase";
 
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
-import { IIncreaseAdClicksUseCase } from "../../application/use-case/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IFindFeaturedCouponsUseCase } from "../../application/use-case/user/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
+import { IIncreaseAdClicksUseCase } from "../../application/use-case/user/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
-import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
-import { AddReviewUseCase } from "../../application/use-case/review/addReview/AddReviewUseCase";
-import { IDeleteAllNotificationUseCase } from "../../application/use-case/notification/deleteAllNotification/IDeleteAllNotification.usecase";
-import { IDeleteSingleNotificationUseCase } from "../../application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
-import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
-import { IAddReviewUseCase } from "../../application/use-case/review/addReview/IAddReviewUseCase";
-import { IGetAddress } from "../../application/use-case/Address/getAddress/IGetAddress.usecase";
-import { IAddNewAddress } from "../../application/use-case/Address/addAddress/IAddNewAddress.usecase";
-import { IEditAddress } from "../../application/use-case/Address/editAddress/IEditAddress.usecase";
-import { IDeleteAddress } from "../../application/use-case/Address/deleteAddress/IDeleteAddress.usecase";
-import { IRecommendAdsUseCase } from "../../application/use-case/ads/recommendAds/IRecommendAdsUseCase";
-import { ISignInUseCase } from "../../application/use-case/User/auth/signIn/ISignIn.usecase";
-import { ISignUpUseCase } from "../../application/use-case/User/auth/signUp/ISignUp.usecase";
-import { IVerifyOtpUseCase } from "../../application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
-import { IResendOtp } from "../../application/use-case/User/auth/resendOtp/IResendOtp.usecase";
-import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
-import { IResetPasswordUseCase } from "../../application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
-import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
-import { IGoogleAuthUseCase } from "../../application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
-import { IGetServiceProviderInfoUseCase } from "../../application/use-case/User/service/getProviderInfo/IGetServiceProviderInfo.usecase";
-import { IGetSingleServiceUseCase } from "../../application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
-import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
-import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
-import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
-import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
-import { IFindAllActiveCouponsUseCase } from "../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
-import { IUserSiteSettings } from "../../application/use-case/siteSetting/userSiteSettings.ts/IUserSiteSettings";
+import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
+import { AddReviewUseCase } from "../../application/use-case/user/review/addReview/AddReviewUseCase";
+import { IDeleteAllNotificationUseCase } from "../../application/use-case/common/notification/deleteAllNotification/IDeleteAllNotification.usecase";
+import { IDeleteSingleNotificationUseCase } from "../../application/use-case/common/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { IAddReviewUseCase } from "../../application/use-case/user/review/addReview/IAddReviewUseCase";
+import { IGetAddress } from "../../application/use-case/user/address/getAddress/IGetAddress.usecase";
+import { IAddNewAddress } from "../../application/use-case/user/address/addAddress/IAddNewAddress.usecase";
+import { IEditAddress } from "../../application/use-case/user/address/editAddress/IEditAddress.usecase";
+import { IDeleteAddress } from "../../application/use-case/user/address/deleteAddress/IDeleteAddress.usecase";
+import { IRecommendAdsUseCase } from "../../application/use-case/user/ads/recommendAds/IRecommendAdsUseCase";
+import { ISignInUseCase } from "../../application/use-case/user/auth/signIn/ISignIn.usecase";
+import { ISignUpUseCase } from "../../application/use-case/user/auth/signUp/ISignUp.usecase";
+import { IVerifyOtpUseCase } from "../../application/use-case/user/auth/verifyOtp/IVerifyOtp.usecase";
+import { IResendOtp } from "../../application/use-case/user/auth/resendOtp/IResendOtp.usecase";
+import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/user/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
+import { IResetPasswordUseCase } from "../../application/use-case/user/auth/forgotPassword/resetPassword/IResetPassword.usecase";
+import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/user/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
+import { IGoogleAuthUseCase } from "../../application/use-case/user/auth/googleAuth/IGoogleAuth.usecase";
+import { IGetServiceProviderInfoUseCase } from "../../application/use-case/user/service/getProviderInfo/IGetServiceProviderInfo.usecase";
+import { IGetSingleServiceUseCase } from "../../application/use-case/user/service/getSingleService/IGetSingleServics.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/user/service/getService/IGetAllActiveService.usecase";
+import { IUserProfileUpdateUseCase } from "../../application/use-case/user/profile/updateProfile/IUserProfileUpdate.usecase";
+import { IProfileUpdateOtpUseCase } from "../../application/use-case/user/profile/updateProfile/IProfileUpdateOtp.usecase";
+import { IGetUserProfileUseCase } from "../../application/use-case/user/profile/getProfile/IGetUserProfile.usecase";
+import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
 
 @injectable()
 export class UserController {
@@ -91,7 +91,8 @@ export class UserController {
     private addReviewUseCase: IAddReviewUseCase,
     @inject(USE_CASE_TOKENS.GetServiceProviderInfoUseCase)
     private getServiceProviderInfoUseCase: IGetServiceProviderInfoUseCase,
-    @inject(USE_CASE_TOKENS.UserSiteSettings) private userSiteSettings: IUserSiteSettings,
+    @inject(USE_CASE_TOKENS.UserSiteSettings)
+    private userSiteSettings: IUserSiteSettings,
 
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
     private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase,

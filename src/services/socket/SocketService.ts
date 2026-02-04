@@ -1,7 +1,7 @@
 import { inject, singleton } from "tsyringe";
 import { Server, Socket } from "socket.io";
 import { Server as HTTPServer } from "http";
-import { SaveMessageUseCase } from "../../application/use-case/chat/saveMessage/SaveMessage.usecase";
+import { SaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/SaveMessage.usecase";
 import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
 
@@ -11,9 +11,9 @@ import {
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
 import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
-import { ICreateNotificationUseCase } from "../../application/use-case/notification/createNotification/ICreateNotification.usecase";
+import { ICreateNotificationUseCase } from "../../application/use-case/common/notification/createNotification/ICreateNotification.usecase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { ISaveMessageUseCase } from "../../application/use-case/chat/saveMessage/ISaveMessage.uescase";
+import { ISaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/ISaveMessage.uescase";
 @singleton()
 export class SocketService {
   private io!: Server;

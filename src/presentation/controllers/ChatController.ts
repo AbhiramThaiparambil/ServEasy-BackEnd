@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { inject, injectable } from "tsyringe";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { IUploadChatImageUseCase } from "../../application/use-case/chat/uploadChatMedia/IUploadChatImage.usecase";
-import { IGetAllChats } from "../../application/use-case/chat/getAllchats/IGetAllChats.usecase";
-import { ISaveMessageUseCase } from "../../application/use-case/chat/saveMessage/ISaveMessage.uescase";
+import { IUploadChatImageUseCase } from "../../application/use-case/common/chat/uploadChatMedia/IUploadChatImage.usecase";
+import { IGetAllChats } from "../../application/use-case/common/chat/getAllchats/IGetAllChats.usecase";
+import { ISaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/ISaveMessage.uescase";
 @injectable()
 export class ChatController {
   constructor(

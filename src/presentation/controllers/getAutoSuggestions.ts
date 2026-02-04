@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { AutoSuggestion } from "../../application/use-case/User/location/autoSuggestion";
+import { AutoSuggestion } from "../../application/use-case/user/location/autoSuggestion";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 export const getAutoSuggestions = async (req: Request, res: Response) => {

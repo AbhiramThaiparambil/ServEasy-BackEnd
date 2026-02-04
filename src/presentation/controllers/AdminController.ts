@@ -1,48 +1,48 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
-import { IServiceProviderRejectVerify } from "../../application/use-case/serviceProviderManagement/rejectRequest/IServiceProviderReject.usecase";
+import { IServiceProviderRejectVerify } from "../../application/use-case/admin/provider-management/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 import fs from "fs";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { ICreateCouponUseCase } from "../../application/use-case/coupon/createCoupon/ICreateCoupon.usecase";
-import { IFindAllCouponsUseCase } from "../../application/use-case/coupon/findAllCoupons/IFindAllCoupons.usecase";
-import { IMakeCouponInactiveUseCase } from "../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactive.usecase";
-import { IToggleShowInBannerUseCase } from "../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBanner.usecase";
-import { IGetAllProvidersWalletsUseCase } from "../../application/use-case/wallet/getWallet/IGetAllProvidersWallets.usecase";
-import { IGetProviderWalletUseCase } from "../../application/use-case/wallet/getWalletByid/IGetProviderWalletById.usecase";
+import { ICreateCouponUseCase } from "../../application/use-case/admin/coupon-management/createCoupon/ICreateCoupon.usecase";
+import { IFindAllCouponsUseCase } from "../../application/use-case/admin/coupon-management/findAllCoupons/IFindAllCoupons.usecase";
+import { IMakeCouponInactiveUseCase } from "../../application/use-case/admin/coupon-management/makeCouponInactive/IMakeCouponInactive.usecase";
+import { IToggleShowInBannerUseCase } from "../../application/use-case/admin/coupon-management/toggleShowInBanner/IToggleShowInBanner.usecase";
+import { IGetAllProvidersWalletsUseCase } from "../../application/use-case/admin/wallet-management/getWallet/IGetAllProvidersWallets.usecase";
+import { IGetProviderWalletUseCase } from "../../application/use-case/admin/wallet-management/getWalletByid/IGetProviderWalletById.usecase";
 
-import { IAdminGetAdsUseCase } from "../../application/use-case/ads/getAds/IAdminGetAds.usecase";
+import { IAdminGetAdsUseCase } from "../../application/use-case/admin/ad-management/getAds/IAdminGetAds.usecase";
 import { ITokenService } from "../../services/token/ITokenService";
 
 import { userInfo } from "os";
 
 import path from "path";
 
-import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus.usecase";
-import { IGetAllUsers } from "../../application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
-import { IBlockUnblockUsers } from "../../application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
-import { IGetServiceProviders } from "../../application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
-import { IGetAllServices } from "../../application/use-case/service-management/serviceManagementAdmin/getService/IGetAllServices.usecase";
-import { IBlockUnblockService } from "../../application/use-case/service-management/serviceManagementAdmin/blockUnblock/IBlockUnblock.usecase";
-import { IAddCategory } from "../../application/use-case/category-management/addCategoryy.ts/IAddCategory.usecase";
-import { IGetCategory } from "../../application/use-case/category-management/getCategory/IGetCategory.usecase";
-import { IEditCategory } from "../../application/use-case/category-management/editCategory/IEditCategory.usecase";
-import { IBlockUnblockCategory } from "../../application/use-case/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
-import { IDeleteCategory } from "../../application/use-case/category-management/deleteCategory/IDeleteCategory.usecase";
-import { IAddService } from "../../application/use-case/category-management/addService/IAddService.usecase";
-import { IDeleteService } from "../../application/use-case/category-management/deleteService/IDeleteService.usecase";
-import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/wallet/withdraw/IWithdrawFromProviderWallet.usecase";
-import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/subscriptionManagement/getSubscription/IGetAllSubscriptionPlans.usecase";
-import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/createSubscription/ICreateSubscriptionPlan.usecase";
-import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
-import { BlockUnblockProviderUseCase } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { IGetAllUsers } from "../../application/use-case/admin/user-management/getAllUsers/IGetAllUsers.usecase";
+import { IBlockUnblockUsers } from "../../application/use-case/admin/user-management/blockUnblockUsers/IBlockUnblockUsers.usecase";
+import { IGetServiceProviders } from "../../application/use-case/admin/provider-management/getServiceProvider/IGetServiceProviders.usecase";
+import { IGetAllServices } from "../../application/use-case/admin/service-management/getService/IGetAllServices.usecase";
+import { IBlockUnblockService } from "../../application/use-case/admin/service-management/blockUnblock/IBlockUnblock.usecase";
+import { IAddCategory } from "../../application/use-case/admin/category-management/addCategoryy.ts/IAddCategory.usecase";
+import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
+import { IEditCategory } from "../../application/use-case/admin/category-management/editCategory/IEditCategory.usecase";
+import { IBlockUnblockCategory } from "../../application/use-case/admin/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
+import { IDeleteCategory } from "../../application/use-case/admin/category-management/deleteCategory/IDeleteCategory.usecase";
+import { IAddService } from "../../application/use-case/admin/category-management/addService/IAddService.usecase";
+import { IDeleteService } from "../../application/use-case/admin/category-management/deleteService/IDeleteService.usecase";
+import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/admin/wallet-management/withdraw/IWithdrawFromProviderWallet.usecase";
+import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/admin/subscription-management/getSubscription/IGetAllSubscriptionPlans.usecase";
+import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/createSubscription/ICreateSubscriptionPlan.usecase";
+import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/updateSubscription/IUpdateSubscriptionPlan.usecase";
+import { BlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/BlockUnblockProvider.usecase";
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
 import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
-import { IBlockUnblockProviderUseCase } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/IBlockUnblockProvider.usecase";
-import { IAdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/adminSiteSettings/IAdminSiteSettings.usecase";
+import { IBlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/IBlockUnblockProvider.usecase";
+import { IAdminSiteSettingsUseCase } from "../../application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
 
 @injectable()
 export class AdminController {
@@ -112,7 +112,6 @@ export class AdminController {
     @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
     private changeAdStatusUseCase: IChangeAdStatusUseCase,
   ) {}
-
 
   refreshToken = async (req: Request, res: Response): Promise<void> => {
     try {

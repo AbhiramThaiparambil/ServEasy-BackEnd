@@ -1,7 +1,7 @@
 import { Socket, Server } from "socket.io";
-import { SaveMessageUseCase } from "../use-case/chat/saveMessage/SaveMessage.usecase";
 import { IMessage } from "../../domain/entities/IChat";
 import { SocketService } from "../../services/socket/SocketService";
+import { SaveMessageUseCase } from "../use-case/common/chat/saveMessage/SaveMessage.usecase";
 
 export class ChatHandler {
   constructor(
