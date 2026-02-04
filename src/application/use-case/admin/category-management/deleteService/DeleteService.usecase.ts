@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { IDeleteService } from "./IDeleteService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
+import { DeleteServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
 
 @injectable()
 export class DeleteService implements IDeleteService {
@@ -11,7 +12,8 @@ export class DeleteService implements IDeleteService {
     private categoryRepository: ICategoryRepository
   ) {}
 
-  async execute(categoryId: string, serviceId: string): Promise<string> {
+  async execute(data: DeleteServiceDTO): Promise<CategoryResponseDTO> {
+    const { categoryId, serviceId } = data;
     try {
       const category = await this.categoryRepository.getCategoryById(
         categoryId
@@ -19,18 +21,26 @@ export class DeleteService implements IDeleteService {
       if (!category) {
         throw new Error("Category does not exist");
       }
-
       if (!category.typeService) {
-        throw new Error("No services found in this category");
+        throw new Error("Service type does not exist in this category");
       }
 
-      // Remove the service with the given serviceId
-      category.typeService = category.typeService.filter(
-        (service) => service.id !== serviceId
-      );
+      let serviceFound = false;
+      category.typeService = category.typeService.filter((service) => {
+        if (service.id === serviceId) {
+          serviceFound = true;
+          return false;
+        }
+        return true;
+      });
+
+      if (!serviceFound) {
+        throw new Error("Service ID not found in the category");
+      }
 
       await this.categoryRepository.updateCategory(categoryId, category);
-      return "Service deleted successfully from category";
+
+      return "Service deleted successfully";
     } catch (error: any) {
       throw new Error(
         error.message || "An error occurred while deleting the service"

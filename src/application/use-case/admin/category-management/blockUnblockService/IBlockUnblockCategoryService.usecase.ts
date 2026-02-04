@@ -1,3 +1,5 @@
+import { BlockUnblockCategoryServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+
 export interface IBlockUnblockCategoryService {
-  execute(categoryId: string, serviceId: string): Promise<string>;
+  execute(data: BlockUnblockCategoryServiceDTO): Promise<CategoryResponseDTO>;
 }

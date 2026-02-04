@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IEditCategory } from "./IEditCategory.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
+import { EditCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
 
 @injectable()
 export class EditCategory implements IEditCategory {
@@ -10,7 +11,8 @@ export class EditCategory implements IEditCategory {
     private categoryRepository: ICategoryRepository
   ) {}
 
-  async execute(categoryId: string, newName: string): Promise<string> {
+  async execute(data: EditCategoryDTO): Promise<CategoryResponseDTO> {
+    const { categoryId, newName } = data;
     try {
       const category = await this.categoryRepository.getCategoryById(
         categoryId

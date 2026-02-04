@@ -6,7 +6,7 @@ import {
 } from "../../../../constants/tokens";
 import { ITokenService } from "../../../../services/token/ITokenService";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
-import { IAuthResponse } from "../../../../domain/entities/IAuthResponse";
+import { AdminLoginDTO, AdminLoginResponseDTO } from "../../../dtos/admin/auth/AdminAuthDTO";
 
 @injectable()
 export class AdminSignin implements IAdminSignin {
@@ -16,10 +16,21 @@ export class AdminSignin implements IAdminSignin {
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService
   ) {}
 
-  async signByEmail(
+  async execute(data: AdminLoginDTO): Promise<AdminLoginResponseDTO> {
+    const { email, phone, password } = data;
+
+    if (email) {
+      return this.signByEmail(email, password);
+    } else if (phone) {
+      return this.signByPhone(phone, password);
+    }
+    return null;
+  }
+
+  private async signByEmail(
     email: string,
     password: string
-  ): Promise<IAuthResponse | null> {
+  ): Promise<AdminLoginResponseDTO> {
     const user = await this.userRepository.findByEmail(email);
     if (user && user.isAdmin) {
       const isMatch = await this.userRepository.comparePassword(
@@ -43,10 +54,10 @@ export class AdminSignin implements IAdminSignin {
     return null;
   }
 
-  async signByPhone(
+  private async signByPhone(
     phone: string,
     password: string
-  ): Promise<IAuthResponse | null> {
+  ): Promise<AdminLoginResponseDTO> {
     const user = await this.userRepository.findByPhone(phone);
     if (user && user.isAdmin) {
       const isMatch = await this.userRepository.comparePassword(

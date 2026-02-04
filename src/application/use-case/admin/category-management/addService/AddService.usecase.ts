@@ -3,7 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { IAddService } from "./IAddService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
-import { IServiceType } from "../../../../../domain/entities/ICategory ";
+import { AddServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
 
 @injectable()
 export class AddService implements IAddService {
@@ -13,9 +13,9 @@ export class AddService implements IAddService {
   ) {}
 
   async execute(
-    categoryId: string,
-    data: IServiceType
-  ): Promise<string | void> {
+    data: AddServiceDTO
+  ): Promise<CategoryResponseDTO> {
+    const { categoryId, service } = data;
     try {
       const categorie = await this.categoryRepository.getCategoryById(
         categoryId
@@ -23,7 +23,7 @@ export class AddService implements IAddService {
       if (!categorie) {
         throw new Error("categories do not exist");
       }
-      categorie.typeService?.push(data);
+      categorie.typeService?.push(service);
       await this.categoryRepository.updateCategory(categoryId, categorie);
 
       return "service added successfully";

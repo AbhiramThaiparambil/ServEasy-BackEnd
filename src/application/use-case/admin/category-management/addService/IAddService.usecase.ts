@@ -1,5 +1,5 @@
-import { IServiceType } from "../../../../../domain/entities/ICategory ";
+import { AddServiceDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
 
 export interface IAddService {
-  execute(categoryId: string, data: IServiceType): Promise<string | void>;
+  execute(data: AddServiceDTO): Promise<CategoryResponseDTO>;
 }

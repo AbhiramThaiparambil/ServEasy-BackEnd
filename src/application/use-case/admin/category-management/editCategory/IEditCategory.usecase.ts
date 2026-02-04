@@ -1,3 +1,5 @@
+import { EditCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+
 export interface IEditCategory {
-  execute(categoryId: string, newName: string): Promise<string>;
+  execute(data: EditCategoryDTO): Promise<CategoryResponseDTO>;
 }

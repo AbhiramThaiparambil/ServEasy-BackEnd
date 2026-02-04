@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IAddCategory } from "./IAddCategory.usecase";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { ICategory } from "../../../../../domain/entities/ICategory ";
+import { AddCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
 
 @injectable()
 export class AddCategory implements IAddCategory {
@@ -11,9 +11,9 @@ export class AddCategory implements IAddCategory {
     private categoryRepository: ICategoryRepository
   ) {}
 
-  async execute(category: object): Promise<ICategory | void> {
+  async execute(data: AddCategoryDTO): Promise<CategoryResponseDTO> {
     try {
-      return await this.categoryRepository.addCategory(category);
+      return await this.categoryRepository.addCategory(data.category);
     } catch (error) {
       console.log(error);
     }

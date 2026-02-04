@@ -1,3 +1,5 @@
+import { DeleteCategoryDTO, CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryDTO";
+
 export interface IDeleteCategory {
-  execute(categoryId: string): Promise<string>;
+  execute(data: DeleteCategoryDTO): Promise<CategoryResponseDTO>;
 }
