@@ -4,100 +4,135 @@ import { ISiteSettingRepository } from "../../../../domain/repositories/ISiteSet
 import { ICloudinaryService } from "../../../../services/cloudinary/ICloudinaryService";
 import { IFooterBanner, IHomeBanner, ITheme } from "../../../../domain/entities/ISiteSettings";
 import { IAdminSiteSettingsUseCase } from "./IAdminSiteSettings.usecase";
+import {
+  AddFooterBannerRequestDTO,
+  FooterBannerResponseDTO,
+  UpdateFooterBannerRequestDTO,
+} from "../../../dtos/admin/site-settings/FooterBannerDTO";
+import {
+  AddHomeBannerRequestDTO,
+  HomeBannerResponseDTO,
+  UpdateHomeBannerRequestDTO,
+} from "../../../dtos/admin/site-settings/HomeBannerDTO";
+import { AddThemeRequestDTO } from "../../../dtos/admin/site-settings/ThemeDTO";
 
 
 @injectable()
-export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase
- {
-
+export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
   constructor(
-    
     @inject(REPOSITORY_TOKENS.SiteSettingRepository)
     private siteSettingRepository: ISiteSettingRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
     private cloudinaryService: ICloudinaryService
   ) {}
 
-  addHomeBanner = async (bannerData: IHomeBanner) => {
+  addHomeBanner = async (bannerData: AddHomeBannerRequestDTO): Promise<HomeBannerResponseDTO | null> => {
     if (!bannerData.image) {
       throw new Error("Image is required for home banner");
     }
-    bannerData.imageUrl = await this.cloudinaryService.uploadHomeBanner(
-      bannerData.image
-    );
-    console.log(bannerData);
+    const imageUrl = await this.cloudinaryService.uploadHomeBanner(bannerData.image);
 
-    return this.siteSettingRepository.addHomeBanner(bannerData);
+    const bannerEntity: IHomeBanner = {
+      image: bannerData.image,
+      imageUrl: imageUrl,
+      title: bannerData.title,
+      subtitle: bannerData.subtitle,
+      isActive: true, // Default to active on creation
+    };
+
+    const result = await this.siteSettingRepository.addHomeBanner(bannerEntity);
+    return result as unknown as HomeBannerResponseDTO;
   };
 
-  addFooterBanner = async (bannerData: IFooterBanner) => {
-    console.log(bannerData);
-
+  addFooterBanner = async (bannerData: AddFooterBannerRequestDTO): Promise<FooterBannerResponseDTO | null> => {
     if (!bannerData.image) {
       throw new Error("Image is required for footer banner");
     }
-    bannerData.imageUrl = await this.cloudinaryService.uploadFooterBanner(
-      bannerData.image
-    );
-    console.log(bannerData);
-    return this.siteSettingRepository.addFooterBanner(bannerData);
+    const imageUrl = await this.cloudinaryService.uploadFooterBanner(bannerData.image);
+
+    const bannerEntity: IFooterBanner = {
+      image: bannerData.image,
+      imageUrl: imageUrl,
+      title: bannerData.title,
+      subtitle: bannerData.subtitle,
+      isActive: true, // Default to active
+    };
+
+    const result = await this.siteSettingRepository.addFooterBanner(bannerEntity);
+    return result as unknown as FooterBannerResponseDTO;
   };
 
-  addTheme = async (theme: ITheme) => {
-    return this.siteSettingRepository.addTheme(theme);
+  addTheme = async (theme: AddThemeRequestDTO): Promise<string> => {
+     const themeEntity: ITheme = {
+        name: theme.name,
+        isActive: theme.isActive ?? false
+     }
+    return this.siteSettingRepository.addTheme(themeEntity);
   };
 
-  findAllHomeBanners = async () => {
-    return this.siteSettingRepository.findAllHomeBanners();
+  findAllHomeBanners = async (): Promise<HomeBannerResponseDTO[]> => {
+    const result = await this.siteSettingRepository.findAllHomeBanners();
+    return result as unknown as HomeBannerResponseDTO[];
   };
 
-  findAllFooterBanners = async () => {
-    return this.siteSettingRepository.findAllFooterBanners();
+  findAllFooterBanners = async (): Promise<FooterBannerResponseDTO[]> => {
+    const result = await this.siteSettingRepository.findAllFooterBanners();
+    return result as unknown as FooterBannerResponseDTO[];
   };
 
-  findAllThemes = async () => {
+  findAllThemes = async (): Promise<string[]> => {
     return this.siteSettingRepository.findAllThemes();
   };
 
-  findActiveHomeBanners = async () => {
-    return this.siteSettingRepository.findActiveHomeBanner();
+  findActiveHomeBanners = async (): Promise<HomeBannerResponseDTO | null> => {
+    const result = await this.siteSettingRepository.findActiveHomeBanner();
+    return result as unknown as HomeBannerResponseDTO;
   };
 
-  findActiveFooterBanners = async () => {
-    return this.siteSettingRepository.findActiveFooterBanner();
+  findActiveFooterBanners = async (): Promise<FooterBannerResponseDTO | null> => {
+     const result = await this.siteSettingRepository.findActiveFooterBanner();
+     return result as unknown as FooterBannerResponseDTO;
   };
 
   updateHomeBanner = async (
     bannerId: string,
-    updateData: Partial<IHomeBanner>
-  ) => {
-    return this.siteSettingRepository.updateHomeBanner(bannerId, updateData);
+    updateData: UpdateHomeBannerRequestDTO
+  ): Promise<HomeBannerResponseDTO | null> => {
+    // Map DTO to partial entity
+    const entityUpdate: Partial<IHomeBanner> = {
+        ...updateData
+    }
+    const result = await this.siteSettingRepository.updateHomeBanner(bannerId, entityUpdate);
+    return result as unknown as HomeBannerResponseDTO;
   };
 
   updateFooterBanner = async (
     bannerId: string,
-    updateData: Partial<IFooterBanner>
-  ) => {
-    return this.siteSettingRepository.updateFooterBanner(bannerId, updateData);
+    updateData: UpdateFooterBannerRequestDTO
+  ): Promise<FooterBannerResponseDTO | null> => {
+      const entityUpdate: Partial<IFooterBanner> = {
+        ...updateData
+    }
+    return (await this.siteSettingRepository.updateFooterBanner(bannerId, entityUpdate)) as unknown as FooterBannerResponseDTO;
   };
 
-  updateTheme = async (themeName: string, isActive: boolean) => {
+  updateTheme = async (themeName: string, isActive: boolean): Promise<string> => {
     return this.siteSettingRepository.updateTheme(themeName, isActive);
   };
 
-  deleteHomeBanner = async (bannerId: string) => {
+  deleteHomeBanner = async (bannerId: string): Promise<void> => {
     return this.siteSettingRepository.deleteHomeBanner(bannerId);
   };
 
-  deleteFooterBanner = async (bannerId: string) => {
+  deleteFooterBanner = async (bannerId: string): Promise<void> => {
     return this.siteSettingRepository.deleteFooterBanner(bannerId);
   };
 
-  deleteTheme = async (themeName: string) => {
+  deleteTheme = async (themeName: string): Promise<void> => {
     return this.siteSettingRepository.deleteTheme(themeName);
   };
 
-  makeHomeBannerActive = async (bannerId: string) => {
+  makeHomeBannerActive = async (bannerId: string): Promise<HomeBannerResponseDTO | null> => {
     const activeHomeBanner =
       await this.siteSettingRepository.findActiveHomeBanner();
     if (activeHomeBanner) {
@@ -106,14 +141,16 @@ export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase
       );
     }
 
-    return this.siteSettingRepository.makeHomeBannerActive(bannerId);
+    const result = await this.siteSettingRepository.makeHomeBannerActive(bannerId);
+    return result as unknown as HomeBannerResponseDTO;
   };
 
-  makeHomeBannerInactive = async (bannerId: string) => {
-    return this.siteSettingRepository.makeHomeBannerInactive(bannerId);
+  makeHomeBannerInactive = async (bannerId: string): Promise<HomeBannerResponseDTO | null> => {
+    const result = await this.siteSettingRepository.makeHomeBannerInactive(bannerId);
+     return result as unknown as HomeBannerResponseDTO;
   };
 
-  makeFooterBannerActive = async (bannerId: string) => {
+  makeFooterBannerActive = async (bannerId: string): Promise<FooterBannerResponseDTO | null> => {
     const activeFooterBanner =
       await this.siteSettingRepository.findActiveFooterBanner();
     if (activeFooterBanner) {
@@ -122,10 +159,12 @@ export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase
       );
     }
 
-    return this.siteSettingRepository.makeFooterBannerActive(bannerId);
+    const result = await this.siteSettingRepository.makeFooterBannerActive(bannerId);
+     return result as unknown as FooterBannerResponseDTO;
   };
 
-  makeFooterBannerInactive = async (bannerId: string) => {
-    return this.siteSettingRepository.makeFooterBannerInactive(bannerId);
+  makeFooterBannerInactive = async (bannerId: string): Promise<FooterBannerResponseDTO | null> => {
+    const result = await this.siteSettingRepository.makeFooterBannerInactive(bannerId);
+     return result as unknown as FooterBannerResponseDTO;
   };
 }

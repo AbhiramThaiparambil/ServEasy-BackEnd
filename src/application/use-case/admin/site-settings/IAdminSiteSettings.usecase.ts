@@ -1,32 +1,38 @@
 import {
-  IHomeBanner,
-  ITheme,
-  IFooterBanner,
-} from "../../../../domain/entities/ISiteSettings";
+  AddFooterBannerRequestDTO,
+  FooterBannerResponseDTO,
+  UpdateFooterBannerRequestDTO,
+} from "../../../dtos/admin/site-settings/FooterBannerDTO";
+import {
+  AddHomeBannerRequestDTO,
+  HomeBannerResponseDTO,
+  UpdateHomeBannerRequestDTO,
+} from "../../../dtos/admin/site-settings/HomeBannerDTO";
+import { AddThemeRequestDTO } from "../../../dtos/admin/site-settings/ThemeDTO";
 
 export interface IAdminSiteSettingsUseCase {
-  addHomeBanner(bannerData: IHomeBanner): Promise<IHomeBanner | null>;
-  addFooterBanner(bannerData: IFooterBanner): Promise<IFooterBanner | null>;
-  addTheme(theme: ITheme): Promise<string>;
-  findAllHomeBanners(): Promise<IHomeBanner[]>;
-  findAllFooterBanners(): Promise<IFooterBanner[]>;
-  findAllThemes(): Promise<string[]>;
-  findActiveHomeBanners(): Promise<IHomeBanner | null>;
-  findActiveFooterBanners(): Promise<IFooterBanner | null>;
+  addHomeBanner(bannerData: AddHomeBannerRequestDTO): Promise<HomeBannerResponseDTO | null>;
+  addFooterBanner(bannerData: AddFooterBannerRequestDTO): Promise<FooterBannerResponseDTO | null>;
+  addTheme(theme: AddThemeRequestDTO): Promise<string>;
+  findAllHomeBanners(): Promise<HomeBannerResponseDTO[]>;
+  findAllFooterBanners(): Promise<FooterBannerResponseDTO[]>;
+  findAllThemes(): Promise<string[]>; // Or ThemeResponseDTO[] if you want full objects
+  findActiveHomeBanners(): Promise<HomeBannerResponseDTO | null>;
+  findActiveFooterBanners(): Promise<FooterBannerResponseDTO | null>;
   updateHomeBanner(
     bannerId: string,
-    updateData: Partial<IHomeBanner>,
-  ): Promise<IHomeBanner | null>;
+    updateData: UpdateHomeBannerRequestDTO,
+  ): Promise<HomeBannerResponseDTO | null>;
   updateFooterBanner(
     bannerId: string,
-    updateData: Partial<IFooterBanner>,
-  ): Promise<IFooterBanner | null>;
+    updateData: UpdateFooterBannerRequestDTO,
+  ): Promise<FooterBannerResponseDTO | null>;
   updateTheme(themeName: string, isActive: boolean): Promise<string>;
   deleteHomeBanner(bannerId: string): Promise<void>;
   deleteFooterBanner(bannerId: string): Promise<void>;
   deleteTheme(themeName: string): Promise<void>;
-  makeHomeBannerActive(bannerId: string): Promise<IHomeBanner | null>;
-  makeHomeBannerInactive(bannerId: string): Promise<IHomeBanner | null>;
-  makeFooterBannerActive(bannerId: string): Promise<IFooterBanner | null>;
-  makeFooterBannerInactive(bannerId: string): Promise<IFooterBanner | null>;
+  makeHomeBannerActive(bannerId: string): Promise<HomeBannerResponseDTO | null>;
+  makeHomeBannerInactive(bannerId: string): Promise<HomeBannerResponseDTO | null>;
+  makeFooterBannerActive(bannerId: string): Promise<FooterBannerResponseDTO | null>;
+  makeFooterBannerInactive(bannerId: string): Promise<FooterBannerResponseDTO | null>;
 }
