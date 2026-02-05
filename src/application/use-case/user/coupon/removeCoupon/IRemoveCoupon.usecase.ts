@@ -1,3 +1,5 @@
+import { RemoveCouponRequestDTO, RemoveCouponResponseDTO } from "../../../../dtos/user/coupon/CouponDTO";
+
 export interface IRemoveCouponToBookingUseCase {
-  execute( bookingId: string): Promise<any>;
+  execute(data: RemoveCouponRequestDTO): Promise<RemoveCouponResponseDTO>;
 }

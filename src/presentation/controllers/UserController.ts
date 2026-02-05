@@ -36,6 +36,8 @@ import { IUserProfileUpdateUseCase } from "../../application/use-case/user/profi
 import { IProfileUpdateOtpUseCase } from "../../application/use-case/user/profile/updateProfile/IProfileUpdateOtp.usecase";
 import { IGetUserProfileUseCase } from "../../application/use-case/user/profile/getProfile/IGetUserProfile.usecase";
 import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
+import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
 import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
 import {
   UpdateProfileRequestDTO,
@@ -56,6 +58,12 @@ import {
   GetAddressRequestDTO,
   DeleteAddressRequestDTO,
 } from "../../application/dtos/user/address/AddressDTO";
+import {
+  GetFeaturedCouponsRequestDTO,
+  GetAllActiveCouponsResponseDTO,
+  ApplyCouponRequestDTO,
+  RemoveCouponRequestDTO,
+} from "../../application/dtos/user/coupon/CouponDTO";
 
 @injectable()
 export class UserController {
@@ -126,6 +134,12 @@ export class UserController {
 
     @inject(USE_CASE_TOKENS.FindAllActiveCouponsUseCase)
     private findActiveCouponsusecase: IFindAllActiveCouponsUseCase,
+
+    @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
+    private applyCouponUseCase: IApplyCouponToBookingUseCase,
+
+    @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
+    private removeCouponUseCase: IRemoveCouponToBookingUseCase,
   ) {}
   refreshToken = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -1144,6 +1158,46 @@ export class UserController {
         .json({ message: "Internal server error" });
     }
   };
+
+  public removeCoupon = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { bookingId } = req.params;
+      const dto: RemoveCouponRequestDTO = { bookingId };
+
+      const result = await this.removeCouponUseCase.execute(dto);
+      
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
+    } catch (err) {
+      console.error("Error removing coupon:", err);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Failed to remove coupon" });
+    }
+  };
+
+  public applyCoupon = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { couponCode, bookingId } = req.body;
+      const dto: ApplyCouponRequestDTO = { couponCode, bookingId };
+
+      const result = await this.applyCouponUseCase.execute(dto);
+
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to apply coupon" });
+    }
+  };
   public getSiteBanners = async (
     req: Request,
     res: Response,
@@ -1167,8 +1221,9 @@ export class UserController {
   ): Promise<void> => {
     try {
       const skip = Number(req.query.skip) || 0;
+      const dto: GetFeaturedCouponsRequestDTO = { skip };
 
-      const data = await this.findFeatureCouponsUseCase.execute(skip);
+      const data = await this.findFeatureCouponsUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching featured coupons:", error);
@@ -1183,12 +1238,12 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const coupons = await this.findActiveCouponsusecase.execute();
+      const result: GetAllActiveCouponsResponseDTO = await this.findActiveCouponsusecase.execute();
 
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Active coupons fetched successfully",
-        data: coupons,
+        data: result.coupons,
       });
       return;
     } catch (error) {

@@ -204,7 +204,7 @@ export class ServiceController {
         });
         return;
       }
-      const updatedBooking = await this.removeCouponUseCase.execute(bookingId);
+      const updatedBooking = await this.removeCouponUseCase.execute({ bookingId });
       console.log(updatedBooking);
       res.status(200).json({
         message: "Coupon removed successfully",

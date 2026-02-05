@@ -4,16 +4,19 @@ import { ICouponRepository } from "../../../../../domain/repositories/IcouponRep
 import { IFindAllActiveCouponsUseCase } from "./IFindAllActiveCoupons.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
+import { GetAllActiveCouponsResponseDTO } from "../../../../dtos/user/coupon/CouponDTO";
+
 @injectable()
 export class FindAllActiveCouponsUseCase
   implements IFindAllActiveCouponsUseCase
 {
   constructor(
     @inject(REPOSITORY_TOKENS.CouponRepository)
-    private couponRepo: ICouponRepository
+    private couponRepository: ICouponRepository
   ) {}
 
-  async execute(): Promise<ICoupon[]> {
-    return await this.couponRepo.findAllActiveCoupons();
+  async execute(): Promise<GetAllActiveCouponsResponseDTO> {
+    const coupons = await this.couponRepository.findAllActiveCoupons();
+    return { coupons };
   }
 }

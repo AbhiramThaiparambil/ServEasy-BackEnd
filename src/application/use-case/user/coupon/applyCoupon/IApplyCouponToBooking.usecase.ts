@@ -1,3 +1,8 @@
+import {
+  ApplyCouponRequestDTO,
+  ApplyCouponResponseDTO,
+} from "../../../../dtos/user/coupon/CouponDTO";
+
 export interface IApplyCouponToBookingUseCase {
-  execute(data: { bookingId: string; couponCode: string }): Promise<any>;
+  execute(data: ApplyCouponRequestDTO): Promise<ApplyCouponResponseDTO>;
 }

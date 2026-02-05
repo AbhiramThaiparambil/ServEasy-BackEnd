@@ -4,10 +4,10 @@ import { IServiceBookingRepository } from "../../../../../domain/repositories/Is
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
 import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+import { RemoveCouponRequestDTO, RemoveCouponResponseDTO } from "../../../../dtos/user/coupon/CouponDTO";
+
 @injectable()
-export class RemoveCouponToBookingUseCase
-  implements IRemoveCouponToBookingUseCase
-{
+export class RemoveCouponToBookingUseCase implements IRemoveCouponToBookingUseCase {
   constructor(
     @inject(ServiceBookingRepository)
     private bookingRepository: IServiceBookingRepository,
@@ -15,23 +15,35 @@ export class RemoveCouponToBookingUseCase
     private couponRepo: ICouponRepository
   ) {}
 
-  async execute(bookingId: string): Promise<any> {
-    const booking = await this.bookingRepository.findById(bookingId);
-    if (!booking) {
-      throw new Error("Booking not found");
+  async execute(data: RemoveCouponRequestDTO): Promise<RemoveCouponResponseDTO> {
+    try {
+      const { bookingId } = data;
+      const booking = await this.bookingRepository.findById(bookingId);
+      if (!booking) {
+        throw new Error("Booking not found");
+      }
+
+      if (!booking.coupon) {
+        throw new Error("No coupon applied to this booking");
+      }
+
+      await this.couponRepo.removeCoupon(booking.userId, booking.coupon._id + "");
+
+      const updatedBooking = await this.bookingRepository.removeCouponAndUpdatePayment(
+        bookingId
+      );
+
+      console.log(updatedBooking);
+
+      return {
+        success: true,
+        message: "Coupon removed successfully",
+      };
+    } catch (error: any) {
+       return {
+         success: false,
+         message: error.message || "Failed to remove coupon",
+       }
     }
-
-    if (!booking.coupon) {
-      throw new Error("No coupon applied to this booking");
-    }
-
-    this.couponRepo.removeCoupon(booking.userId, booking.coupon._id + "");
-
-    const updatedBooking =
-      await this.bookingRepository.removeCouponAndUpdatePayment(bookingId);
-
-    console.log(updatedBooking);
-
-    return updatedBooking;
   }
 }

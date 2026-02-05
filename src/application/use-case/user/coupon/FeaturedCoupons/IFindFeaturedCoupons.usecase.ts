@@ -1,5 +1,8 @@
-import { IBannerCouponResponse } from "../../../../../domain/entities/ICoupon";
+import {
+  GetFeaturedCouponsRequestDTO,
+  GetFeaturedCouponsResponseDTO,
+} from "../../../../dtos/user/coupon/CouponDTO";
 
 export interface IFindFeaturedCouponsUseCase {
-  execute(skip:number): Promise<IBannerCouponResponse>;
+  execute(data: GetFeaturedCouponsRequestDTO): Promise<GetFeaturedCouponsResponseDTO>;
 }
