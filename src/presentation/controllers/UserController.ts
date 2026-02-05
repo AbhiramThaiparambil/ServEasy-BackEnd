@@ -64,6 +64,8 @@ import {
   ApplyCouponRequestDTO,
   RemoveCouponRequestDTO,
 } from "../../application/dtos/user/coupon/CouponDTO";
+import { IAutoSuggestion } from "../../application/use-case/user/location/IAutoSuggestion";
+import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
 
 @injectable()
 export class UserController {
@@ -140,6 +142,9 @@ export class UserController {
 
     @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
     private removeCouponUseCase: IRemoveCouponToBookingUseCase,
+
+    @inject(USE_CASE_TOKENS.AutoSuggestion)
+    private autoSuggestionUseCase: IAutoSuggestion
   ) {}
   refreshToken = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -1298,6 +1303,28 @@ export class UserController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ success: false, message: err });
+    }
+  };
+
+  public getAutoSuggestions = async (req: Request, res: Response) => {
+    try {
+      const { query } = req.query;
+      if (!query || typeof query !== "string") {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Query parameter is required" });
+        return;
+      }
+
+      const dto: GetAutoSuggestionRequestDTO = { query };
+      const result = await this.autoSuggestionUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, suggestions: result.suggestions });
+    } catch (error: any) {
+      console.error("Error fetching auto suggestions:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: error.message || "Something went wrong" });
     }
   };
 }

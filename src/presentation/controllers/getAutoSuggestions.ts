@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { AutoSuggestion } from "../../application/use-case/user/location/autoSuggestion";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
 
 export const getAutoSuggestions = async (req: Request, res: Response) => {
   try {
@@ -13,8 +14,10 @@ export const getAutoSuggestions = async (req: Request, res: Response) => {
        return
     }
 
+
     const auto = container.resolve(AutoSuggestion);
-    const suggestions = await auto.execute(query as string);
+    const dto: GetAutoSuggestionRequestDTO = { query: query as string };
+    const suggestions = await auto.execute(dto);
 
     console.log(suggestions);
      res.status(HttpStatus.OK).json(suggestions); 

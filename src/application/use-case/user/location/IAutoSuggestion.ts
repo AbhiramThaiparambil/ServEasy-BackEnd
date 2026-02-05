@@ -1,3 +1,5 @@
+import { GetAutoSuggestionRequestDTO, GetAutoSuggestionResponseDTO } from "../../../dtos/user/location/LocationDTO";
+
 export interface IAutoSuggestion {
-  execute(query: string): Promise<any>;
+  execute(data: GetAutoSuggestionRequestDTO): Promise<GetAutoSuggestionResponseDTO>;
 }

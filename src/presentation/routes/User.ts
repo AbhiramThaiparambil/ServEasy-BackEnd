@@ -97,4 +97,6 @@ userRouter.get("/coupons/featured", userController.findFeatureCoupons);
 
 userRouter.get("/coupons/", userController.findActiveCoupons);
 
+userRouter.get("/location/suggestions", userController.getAutoSuggestions);
+
 export default userRouter;
