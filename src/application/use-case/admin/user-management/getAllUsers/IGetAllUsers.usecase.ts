@@ -1,9 +1,7 @@
-import { SafeUser } from "../../../../../utils/sanitizers/userSanitizer";
+import { GetUserListRequestDTO, UserListResponseDTO } from "../../../../dtos/admin/user/UserManagementDTO";
 
 export interface IGetAllUsers {
   execute(
-    skip: number,
-    limit: number,
-    search: string
-  ): Promise<{ users: SafeUser[]; count: number }>;
+    request: GetUserListRequestDTO
+  ): Promise<UserListResponseDTO>;
 }

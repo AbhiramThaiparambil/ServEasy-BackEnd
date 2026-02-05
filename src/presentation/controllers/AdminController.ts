@@ -62,6 +62,23 @@ import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyP
 import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
 import { GetServiceListRequestDTO } from "../../application/dtos/admin/service/GetServiceListDTO";
 import { BlockUnblockServiceRequestDTO } from "../../application/dtos/admin/service/BlockUnblockServiceDTO";
+import {
+  AddFooterBannerRequestDTO,
+  FooterBannerResponseDTO,
+  UpdateFooterBannerRequestDTO,
+} from "../../application/dtos/admin/site-settings/FooterBannerDTO";
+import {
+  AddHomeBannerRequestDTO,
+  HomeBannerResponseDTO,
+  UpdateHomeBannerRequestDTO,
+} from "../../application/dtos/admin/site-settings/HomeBannerDTO";
+import { AddThemeRequestDTO } from "../../application/dtos/admin/site-settings/ThemeDTO";
+import {
+  CreateSubscriptionPlanRequestDTO,
+  SubscriptionPlanResponseDTO,
+  UpdateSubscriptionPlanRequestDTO,
+} from "../../application/dtos/admin/subscription/SubscriptionPlanDTO";
+import { GetUserListRequestDTO } from "../../application/dtos/admin/user/UserManagementDTO";
 
 @injectable()
 export class AdminController {
@@ -250,12 +267,15 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const search = req.query.search || "";
-      const { users, count } = await this.getAllUsersUseCase.execute(
+      const search = (req.query.search as string) || "";
+
+      const dto: GetUserListRequestDTO = {
         skip,
         limit,
-        search as string,
-      );
+        search
+      };
+
+      const { users, count } = await this.getAllUsersUseCase.execute(dto);
       res.status(200).json({ users, count });
       return;
     } catch (error) {
@@ -321,22 +341,36 @@ export class AdminController {
     try {
       console.log("Received request to add site settings:", req.body);
       if (req.body.type === "addBanner") {
-        const banner = await this.adminSiteSettingsUseCase.addHomeBanner(
-          req.body,
-        );
+        const dto: AddHomeBannerRequestDTO = {
+            image: req.body.image,
+            title: req.body.title,
+            subtitle: req.body.subtitle,
+            imageUrl: req.body.imageUrl
+        };
+        const banner = await this.adminSiteSettingsUseCase.addHomeBanner(dto);
         res.status(HttpStatus.CREATED).json({ banner });
         return;
       }
 
       if (req.body.type === "addTheme") {
-        const theme = await this.adminSiteSettingsUseCase.addTheme(req.body);
+        const dto: AddThemeRequestDTO = {
+            name: req.body.name,
+            isActive: req.body.isActive
+        };
+        const theme = await this.adminSiteSettingsUseCase.addTheme(dto);
         res.status(HttpStatus.CREATED).json({ theme });
         return;
       }
 
       if (req.body.type === "addFooterBanner") {
+        const dto: AddFooterBannerRequestDTO = {
+            image: req.body.image,
+            title: req.body.title,
+            subtitle: req.body.subtitle,
+            imageUrl: req.body.imageUrl
+        };
         const footerBanner =
-          await this.adminSiteSettingsUseCase.addFooterBanner(req.body);
+          await this.adminSiteSettingsUseCase.addFooterBanner(dto);
         res.status(HttpStatus.CREATED).json({ footerBanner });
         return;
       }
@@ -1136,7 +1170,7 @@ export class AdminController {
         return;
       }
 
-      const newPlan = await this.createSubscriptionPlan.execute({
+      const dto: CreateSubscriptionPlanRequestDTO = {
         name,
         price,
         validityDays,
@@ -1144,7 +1178,9 @@ export class AdminController {
         adLimitPerMonth: adLimitPerMonth || 0,
         payoutSpeedDays: payoutSpeedDays || 0,
         description: description || "",
-      });
+      }
+
+      const newPlan = await this.createSubscriptionPlan.execute(dto);
 
       res.status(201).json({
         success: true,
@@ -1183,7 +1219,7 @@ export class AdminController {
         return;
       }
 
-      const updatedPlan = await this.updateSubscriptionPlan.execute(id, {
+      const dto: UpdateSubscriptionPlanRequestDTO = {
         name,
         price,
         validityDays,
@@ -1191,7 +1227,9 @@ export class AdminController {
         adLimitPerMonth,
         payoutSpeedDays,
         description,
-      });
+      };
+
+      const updatedPlan = await this.updateSubscriptionPlan.execute(id, dto);
 
       if (!updatedPlan) {
         res.status(404).json({
