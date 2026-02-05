@@ -6,6 +6,7 @@ import { ReviewRepository } from "../../../../../infrastructure/repositories/Rev
 import { IReviewRepository } from "../../../../../domain/repositories/IReviewRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
+import { AddReviewRequestDTO, AddReviewResponseDTO } from "../../../../../application/dtos/user/review/ReviewDTO";
 
 @injectable()
 export class AddReviewUseCase implements IAddReviewUseCase {
@@ -17,12 +18,10 @@ export class AddReviewUseCase implements IAddReviewUseCase {
   ) {}
 
   async execute(
-    bookedServiceId: string,
-    serviceId: string,
-    rating: number,
-    comment: string,
-    userId: string
-  ): Promise<void> {
+    data: AddReviewRequestDTO
+  ): Promise<AddReviewResponseDTO> {
+    const { bookedServiceId, serviceId, rating, comment, userId } = data;
+    
     const review = await this.reviewRepository.create({
       userId: new Types.ObjectId(userId),
       bookingId: new Types.ObjectId(bookedServiceId),
@@ -39,5 +38,10 @@ export class AddReviewUseCase implements IAddReviewUseCase {
       new Types.ObjectId(bookedServiceId),
       review._id
     );
+
+    return {
+        success: true,
+        message: "Review added successfully"
+    };
   }
 }

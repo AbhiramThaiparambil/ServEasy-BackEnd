@@ -1,9 +1,5 @@
+import { AddReviewRequestDTO, AddReviewResponseDTO } from "../../../../dtos/user/review/ReviewDTO";
+
 export interface IAddReviewUseCase {
-  execute(
-    bookedServiceId: string,
-    serviceId: string,
-    rating: number,
-    comment: string,
-    userId: string
-  ): Promise<void>;
+  execute(data: AddReviewRequestDTO): Promise<AddReviewResponseDTO>;
 }

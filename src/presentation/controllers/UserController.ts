@@ -67,6 +67,8 @@ import {
 import { IAutoSuggestion } from "../../application/use-case/user/location/IAutoSuggestion";
 import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
 
+import { AddReviewRequestDTO } from "../../application/dtos/user/review/ReviewDTO";
+
 @injectable()
 export class UserController {
   constructor(
@@ -1105,13 +1107,15 @@ export class UserController {
         return;
       }
 
-      await this.addReviewUseCase.execute(
+      const reviewData: AddReviewRequestDTO = {
         bookedServiceId,
         serviceId,
         rating,
         comment,
         userId,
-      );
+      };
+
+      await this.addReviewUseCase.execute(reviewData);
 
       res
         .status(HttpStatus.CREATED)
