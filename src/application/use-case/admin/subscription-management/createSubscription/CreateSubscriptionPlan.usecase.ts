@@ -3,6 +3,7 @@ import { ICreateSubscriptionPlanUseCase } from "./ICreateSubscriptionPlan.usecas
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ISubscriptionPlanRepository } from "../../../../../domain/repositories/ISubscriptionPlanRepository";
 import { ISubscriptionPlan } from "../../../../../domain/entities/ISubscriptionPlan";
+import { CreateSubscriptionPlanRequestDTO, SubscriptionPlanResponseDTO } from "../../../../dtos/admin/subscription/SubscriptionPlanDTO";
 
 @injectable()
 export class CreateSubscriptionPlanUseCase
@@ -14,11 +15,28 @@ export class CreateSubscriptionPlanUseCase
   ) {}
 
   async execute(
-    data: Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">
-  ): Promise<ISubscriptionPlan | null> {
-    const createdPlan =
-      await this.subscriptionPlanRepository.createSubscriptionPlan(data);
+    data: CreateSubscriptionPlanRequestDTO
+  ): Promise<SubscriptionPlanResponseDTO | null> {
+    
+    const planEntity: ISubscriptionPlan = {
+      ...data,
+      // features: data.features // Assuming direct mapping works 
+    } as unknown as ISubscriptionPlan
 
-    return createdPlan;
+    const createdPlan =
+      await this.subscriptionPlanRepository.createSubscriptionPlan(planEntity);
+
+    if (!createdPlan) return null;
+
+    return {
+      _id: createdPlan._id?.toString() || "",
+      name: createdPlan.name,
+      price: createdPlan.price,
+      validityDays: createdPlan.validityDays,
+      features: createdPlan.features,
+      adLimitPerMonth: createdPlan.adLimitPerMonth,
+      payoutSpeedDays: createdPlan.payoutSpeedDays,
+      description: createdPlan.description,
+    };
   }
 }

@@ -1,8 +1,8 @@
-import { ISubscriptionPlan } from "../../../../../domain/entities/ISubscriptionPlan";
+import { SubscriptionPlanResponseDTO, UpdateSubscriptionPlanRequestDTO } from "../../../../dtos/admin/subscription/SubscriptionPlanDTO";
 
 export interface IUpdateSubscriptionPlanUseCase {
   execute(
     id: string,
-    data: Partial<Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">>
-  ): Promise<ISubscriptionPlan | null>;
+    data: UpdateSubscriptionPlanRequestDTO
+  ): Promise<SubscriptionPlanResponseDTO | null>;
 }

@@ -1,7 +1,7 @@
-import { ISubscriptionPlan } from "../../../../../domain/entities/ISubscriptionPlan";
+import { CreateSubscriptionPlanRequestDTO, SubscriptionPlanResponseDTO } from "../../../../dtos/admin/subscription/SubscriptionPlanDTO";
 
 export interface ICreateSubscriptionPlanUseCase {
   execute(
-    data: Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">
-  ): Promise<ISubscriptionPlan | null>;
+    data: CreateSubscriptionPlanRequestDTO
+  ): Promise<SubscriptionPlanResponseDTO | null>;
 }

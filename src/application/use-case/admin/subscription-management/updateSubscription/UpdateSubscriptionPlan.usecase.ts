@@ -3,6 +3,7 @@ import { IUpdateSubscriptionPlanUseCase } from "./IUpdateSubscriptionPlan.usecas
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ISubscriptionPlanRepository } from "../../../../../domain/repositories/ISubscriptionPlanRepository";
 import { ISubscriptionPlan } from "../../../../../domain/entities/ISubscriptionPlan";
+import { SubscriptionPlanResponseDTO, UpdateSubscriptionPlanRequestDTO } from "../../../../dtos/admin/subscription/SubscriptionPlanDTO";
 
 @injectable()
 export class UpdateSubscriptionPlanUseCase
@@ -15,18 +16,27 @@ export class UpdateSubscriptionPlanUseCase
 
   async execute(
     id: string,
-    data: Partial<Omit<ISubscriptionPlan, "_id" | "createdAt" | "updatedAt">>
-  ): Promise<ISubscriptionPlan | null> {
-    console.log(
-      "++++++++++++++++++++++++++++++++============++++++++++++++++++++++++"
-    );
-    console.log(data);
+    data: UpdateSubscriptionPlanRequestDTO
+  ): Promise<SubscriptionPlanResponseDTO | null> {
+    const planEntity: Partial<ISubscriptionPlan> = { ...data };
+    
     const updatedPlan =
       await this.subscriptionPlanRepository.updateSubscriptionPlanById(
         id,
-        data
+        planEntity
       );
 
-    return updatedPlan;
+    if (!updatedPlan) return null;
+
+    return {
+      _id: updatedPlan._id?.toString() || "",
+      name: updatedPlan.name,
+      price: updatedPlan.price,
+      validityDays: updatedPlan.validityDays,
+      features: updatedPlan.features,
+      adLimitPerMonth: updatedPlan.adLimitPerMonth,
+      payoutSpeedDays: updatedPlan.payoutSpeedDays,
+      description: updatedPlan.description,
+    };
   }
 }
