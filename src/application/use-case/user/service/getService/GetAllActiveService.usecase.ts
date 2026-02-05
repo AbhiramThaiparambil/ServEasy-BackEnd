@@ -2,7 +2,14 @@ import { inject, injectable } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
+import {
+  GetNearbyServicesRequestDTO,
+  GetNearbyServicesResponseDTO,
+  GetAllActiveServicesRequestDTO,
+  GetAllActiveServicesResponseDTO,
+} from "../../../../../application/dtos/user/service/getService/GetAllActiveServiceDTO";
 import { IGetAllActiveServiceUseCase } from "./IGetAllActiveService.usecase";
+
 @injectable()
 export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
   constructor(
@@ -13,18 +20,9 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
   ) {}
 
   async getNearByServices(
-    userId: string,
-    skip: number,
-    limit: number,
-    userLongitude: number | null,
-    userLatitude: number | null,
-    filters?: {
-      category?: string;
-      experience?: number;
-      priceSort?: "gtToLow" | "lowTogt";
-      searchQuery?: string;
-    },
-  ) {
+    data: GetNearbyServicesRequestDTO
+  ): Promise<GetNearbyServicesResponseDTO> {
+    const { userId, skip, limit, userLongitude, userLatitude, filters } = data;
     try {
       const allFilterServices =
         await this.serviceRepository.findNearestServicesFilter(
@@ -51,7 +49,8 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
     }
   }
 
-  async execute(skip: number, limit: number) {
+  async execute(data: GetAllActiveServicesRequestDTO): Promise<GetAllActiveServicesResponseDTO> {
+    const { skip, limit } = data;
     try {
       const categories =
         await this.serviceRepository.findActiveServiceCategories();

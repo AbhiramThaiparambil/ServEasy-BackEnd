@@ -1,9 +1,8 @@
-import { IReviewWithUser } from "../../../../../domain/entities/IReview";
-import { ISingleServiceWithProvider } from "../../../../../utils/types/ISingleServiceWithProvider";
+import {
+  GetSingleServiceRequestDTO,
+  GetSingleServiceResponseDTO,
+} from "../../../../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
 
 export interface IGetSingleServiceUseCase {
-  execute(serviceId: string): Promise<{
-    service: ISingleServiceWithProvider[];
-    reviews: IReviewWithUser[];
-  }>;
+  execute(data: GetSingleServiceRequestDTO): Promise<GetSingleServiceResponseDTO>;
 }

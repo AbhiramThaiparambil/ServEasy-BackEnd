@@ -30,7 +30,9 @@ export interface IServiceProviderRepository {
     limit: number,
     search: string,
   ): Promise<IServiceProvider[]>;
-  findByUserID(userId: string): Promise<IServiceProvider | null>;
+  findByUserID(
+    userId: string,
+  ): Promise<(IServiceProvider & { isProServiceProvider: boolean }) | null>;
   unblockService(ServiceProviderId: string): Promise<boolean>;
   findServiceProvidersCount(): Promise<number>;
   blockService(ProviderId: string): Promise<boolean>;

@@ -4,6 +4,10 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { IReviewRepository } from "../../../../../domain/repositories/IReviewRepository";
 import { IGetSingleServiceUseCase } from "./IGetSingleServics.usecase";
+import {
+  GetSingleServiceRequestDTO,
+  GetSingleServiceResponseDTO,
+} from "../../../../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
 import { ISingleServiceWithProvider } from "../../../../../utils/types/ISingleServiceWithProvider";
 import { IReviewWithUser } from "../../../../../domain/entities/IReview";
 
@@ -17,10 +21,8 @@ export class GetSingleServiceUseCase implements IGetSingleServiceUseCase {
     private reviewRepository: IReviewRepository,
   ) {}
 
-  async execute(serviceId: string): Promise<{
-    service: ISingleServiceWithProvider[];
-    reviews: IReviewWithUser[];
-  }> {
+  async execute(data: GetSingleServiceRequestDTO): Promise<GetSingleServiceResponseDTO> {
+    const { serviceId } = data;
     try {
       const service =
         await this.serviceRepository.getSingleServiceWithProviderDetails(

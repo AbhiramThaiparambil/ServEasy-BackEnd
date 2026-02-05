@@ -69,6 +69,9 @@ import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/locatio
 
 import { AddReviewRequestDTO } from "../../application/dtos/user/review/ReviewDTO";
 import { GetThemesResponseDTO, GetBannersResponseDTO } from "../../application/dtos/user/site-settings/SiteSettingsDTO";
+import { GetSingleServiceRequestDTO } from "../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
+import { GetNearbyServicesRequestDTO, GetAllActiveServicesRequestDTO } from "../../application/dtos/user/service/getService/GetAllActiveServiceDTO";
+import { GetServiceProviderInfoRequestDTO } from "../../application/dtos/user/service/getProviderInfo/GetServiceProviderInfoDTO";
 
 @injectable()
 export class UserController {
@@ -773,7 +776,8 @@ export class UserController {
         return;
       }
 
-      const data = await this.getServics.execute(id);
+      const dto: GetSingleServiceRequestDTO = { serviceId: id };
+      const data = await this.getServics.execute(dto);
 
       if (!data) {
         res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
@@ -835,7 +839,8 @@ export class UserController {
       const skip = (page - 1) * limit;
       console.log(limit);
       console.log(skip);
-      const result = await this.getAllActiveService.execute(skip, limit);
+      const dto: GetAllActiveServicesRequestDTO = { skip, limit };
+      const result = await this.getAllActiveService.execute(dto);
 
       res.status(HttpStatus.OK).json(result);
       return;
@@ -897,14 +902,16 @@ export class UserController {
       //   return;
       // }
 
-      const result = await this.getAllActiveService.getNearByServices(
+      const dto: GetNearbyServicesRequestDTO = {
         userId,
         skip,
         limit,
-        longitude,
-        latitude,
-        parsedFilters,
-      );
+        userLongitude: longitude,
+        userLatitude: latitude,
+        filters: parsedFilters
+      };
+
+      const result = await this.getAllActiveService.getNearByServices(dto);
 
       res.status(HttpStatus.OK).json(result);
       return;
@@ -1135,9 +1142,8 @@ export class UserController {
   ): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getServiceProviderInfoUseCase.execute(
-          req.params.id,
-        );
+        const dto: GetServiceProviderInfoRequestDTO = { userId: req.params.id };
+        const user = await this.getServiceProviderInfoUseCase.execute(dto);
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.serviceProviderName,
