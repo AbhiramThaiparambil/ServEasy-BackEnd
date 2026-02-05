@@ -18,6 +18,12 @@ export class CreateCouponUseCase implements ICreateCouponUseCase {
         showInBanner: coupon.showInBanner || false,
         isActive: coupon.isActive || true
     };
-    return (await this.couponRepo.createCoupon(couponEntity)) as CouponResponseDTO;
+    const couponresponse = await this.couponRepo.createCoupon(couponEntity)
+       return{
+        ...couponresponse,
+        showInBanner: couponresponse.showInBanner,
+        isActive: couponresponse.isActive
+       }
+     
   }
 }

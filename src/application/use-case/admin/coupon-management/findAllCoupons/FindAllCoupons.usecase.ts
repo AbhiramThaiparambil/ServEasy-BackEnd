@@ -10,6 +10,11 @@ export class FindAllCouponsUseCase implements IFindAllCouponsUseCase {
   ) {}
 
   async execute(): Promise<CouponResponseDTO[]> {
-    return (await this.couponRepo.findAllCoupons()) as CouponResponseDTO[];
+     const coupons= await this.couponRepo.findAllCoupons();
+     return coupons.map((coupon) => ({
+        ...coupon,
+        showInBanner: coupon.showInBanner,
+        isActive: coupon.isActive
+     }));
   }
 }
