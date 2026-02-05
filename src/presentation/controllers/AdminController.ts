@@ -54,6 +54,12 @@ import { CreateCouponDTO } from "../../application/dtos/admin/coupon/CreateCoupo
 import { MakeCouponInactiveDTO } from "../../application/dtos/admin/coupon/MakeCouponInactiveDTO";
 import { ToggleShowInBannerDTO } from "../../application/dtos/admin/coupon/ToggleShowInBannerDTO";
 import { AdminProfileResponseDTO } from "../../application/dtos/admin/profile/AdminProfileResponseDTO";
+import { BlockUnblockProviderDTO } from "../../application/dtos/admin/provider/BlockUnblockProviderDTO";
+import { GetProvidersDTO } from "../../application/dtos/admin/provider/GetProvidersDTO";
+import { ProviderResponseDTO } from "../../application/dtos/admin/provider/ProviderResponseDTO";
+import { RejectProviderDTO } from "../../application/dtos/admin/provider/RejectProviderDTO";
+import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyProviderDTO";
+import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
 
 @injectable()
 export class AdminController {
@@ -83,6 +89,8 @@ export class AdminController {
 
     @inject(USE_CASE_TOKENS.BlockUnblockSericeProvider)
     private blockUnblockProviderUseCase: IBlockUnblockProviderUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderVerificationDetailsUseCase)
+    private getProviderVerificationDetailsUseCase: IGetProviderVerificationDetailsUseCase,
     @inject(USE_CASE_TOKENS.AddCategory)
     private addCategoryUseCase: IAddCategory,
     @inject(USE_CASE_TOKENS.GetCategory)
@@ -255,21 +263,25 @@ export class AdminController {
     }
   }
 
-  async getServiceProviders(req: Request, res: Response): Promise<void> {
+  async allServiceProviders(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
-      const skip = page * limit;
-      const search = req.query.search || "";
-      const verification = req.query.verification;
-      const { data, count } = await this.getServiceProvidersUseCase.execute(
-        skip,
-        limit,
-        search as string,
-        verification ? true : false,
-      );
+      const page: number = parseInt(req.query.page as string) || 1;
+      const limit: number = parseInt(req.query.limit as string) || 10;
+      const search: string = (req.query.search as string) || "";
+      const serviceProviderVerfication: boolean =
+        req.query.serviceProviderVerfication === "true";
+      const skip = (page - 1) * limit;
 
-      res.status(HttpStatus.OK).json({ data, count });
+      const dto: GetProvidersDTO = {
+          skip,
+          limit,
+          search,
+          serviceProviderVerfication
+      };
+
+      const data = await this.getServiceProvidersUseCase.execute(dto);
+      
+      res.status(HttpStatus.OK).json({ data: data.data, count: data.count });
       return;
     } catch (error) {
       console.error("AdminController::getServiceProviders error", error);
@@ -436,6 +448,7 @@ export class AdminController {
     }
   }
 
+
   async blockUnblockUser(req: Request, res: Response) {
     try {
       const { userId, action } = req.body;
@@ -458,33 +471,6 @@ export class AdminController {
       }
     } catch (error) {
       console.error("AdminController::blockUnblockUser error", error);
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-      return;
-    }
-  }
-
-  async serviceProviderReject(req: Request, res: Response): Promise<void> {
-    try {
-      const { serviceProviderId, reason } = req.body;
-
-      const data = await this.serviceProviderRejectVerify.rejectServiceProvider(
-        serviceProviderId,
-        reason,
-      );
-
-      if (data) {
-        res.status(HttpStatus.OK).json({ data });
-        return;
-      } else {
-        res
-          .status(HttpStatus.NOT_FOUND)
-          .json({ message: "User not found or update failed." });
-        return;
-      }
-    } catch (error) {
-      console.error("AdminController::serviceProviderReject error", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -590,7 +576,7 @@ export class AdminController {
     res: Response,
   ): Promise<void> {
     try {
-      const { providerId, action } = req.body;
+      const { action,providerId } = req.body;
 
       if (!providerId || !action) {
         res
@@ -599,17 +585,22 @@ export class AdminController {
         return;
       }
 
+      const dto: BlockUnblockProviderDTO = {
+          serviceProviderId: providerId,
+          action: action === "Block"
+      };
+
       let result: boolean;
 
       if (action === "Block") {
         result =
           await this.blockUnblockProviderUseCase.blockServiceProvider(
-            providerId,
+            dto,
           );
       } else if (action === "Unblock") {
         result =
           await this.blockUnblockProviderUseCase.unblockServiceProvider(
-            providerId,
+            dto,
           );
       } else {
         res
@@ -985,6 +976,55 @@ export class AdminController {
       res.status(HttpStatus.OK).json({ data });
     } catch {}
   }
+
+  public async rejectServiceProvider(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { id } = req.params;
+    const { reason } = req.body;
+    
+    const dto: RejectProviderDTO = { userid: id, reason };
+    
+    await this.serviceProviderRejectVerify.rejectServiceProvider(dto);
+    
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "Provider rejected successfully" });
+  }
+
+
+
+  public async verifyServiceProvider(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { id } = req.params;
+
+    const dto: VerifyProviderDTO = { userid: id };
+
+    await this.serviceProviderRejectVerify.verifyServiceProvider(dto);
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "Verification success" });
+  }
+
+  public async getProviderVerificationDetails(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { id } = req.params;
+    const provider =
+      await this.getProviderVerificationDetailsUseCase.execute(id);
+
+    if (!provider) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: "Provider not found" });
+      return;
+    }
+    
+    res.status(HttpStatus.OK).json({ success: true,  data: provider });
+  }
+
 
   public async getWalletById(req: Request, res: Response): Promise<void> {
     try {

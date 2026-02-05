@@ -1,14 +1,9 @@
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
-import { SafeServiceProvider } from "../../../../../utils/sanitizers/serviceProviderSanitrizer";
+import { GetProvidersDTO } from "../../../../dtos/admin/provider/GetProvidersDTO";
+import { ProviderResponseDTO } from "../../../../dtos/admin/provider/ProviderResponseDTO";
 
 export interface IGetServiceProviders {
-  execute(
-    skip: number,
-    limit: number,
-    search: string,
-    serviceProviderVerfication?: boolean
-  ): Promise<{
-    data: SafeServiceProvider[] | IServiceProvider[];
+  execute(data: GetProvidersDTO): Promise<{
+    data: ProviderResponseDTO[];
     count: number;
   }>;
 }

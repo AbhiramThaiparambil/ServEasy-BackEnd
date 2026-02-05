@@ -281,6 +281,8 @@ import { GetSubscriptionPlansUseCase } from "./application/use-case/serviceProvi
 import { IAdminSiteSettingsUseCase } from "./application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
 import { AdminSiteSettingsUseCase } from "./application/use-case/admin/site-settings/AdminSiteSettingsUseCase";
 import { UserSiteSettings } from "./application/use-case/user/site-settings/UserSiteSettingsUseCase";
+import { IGetProviderVerificationDetailsUseCase } from "./application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
+import { GetProviderVerificationDetailsUseCase } from "./application/use-case/admin/provider-management/getProviderVerificationDetails/GetProviderVerificationDetails.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -795,6 +797,14 @@ container.register<IUploadChatImageUseCase>(
 container.register<IAdminSignin>(USE_CASE_TOKENS.AdminSignin, {
   useClass: AdminSignin,
 });
+
+
+container.register<IGetProviderVerificationDetailsUseCase>(
+  USE_CASE_TOKENS.GetProviderVerificationDetailsUseCase,
+  {
+    useClass: GetProviderVerificationDetailsUseCase,
+  },
+);
 
 container.register<IGetNotificationUseCase>(
   USE_CASE_TOKENS.GetNotificationUseCase,

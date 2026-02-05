@@ -1,4 +1,6 @@
+import { BlockUnblockProviderDTO } from "../../../../dtos/admin/provider/BlockUnblockProviderDTO";
+
 export interface IBlockUnblockProviderUseCase {
-  blockServiceProvider(serviceProviderId: string): Promise<boolean>;
-  unblockServiceProvider(serviceProviderId: string): Promise<boolean>;
+  blockServiceProvider(data: BlockUnblockProviderDTO): Promise<boolean>;
+  unblockServiceProvider(data: BlockUnblockProviderDTO): Promise<boolean>;
 }

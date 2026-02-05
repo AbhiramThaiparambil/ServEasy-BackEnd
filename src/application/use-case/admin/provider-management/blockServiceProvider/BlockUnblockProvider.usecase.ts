@@ -1,4 +1,5 @@
 import { inject, injectable } from "tsyringe";
+import { BlockUnblockProviderDTO } from "../../../../dtos/admin/provider/BlockUnblockProviderDTO";
 
 import { IBlockUnblockProviderUseCase } from "./IBlockUnblockProvider.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
@@ -15,25 +16,25 @@ export class BlockUnblockProviderUseCase implements IBlockUnblockProviderUseCase
     private serviceRepo: ServiceRepository
   ) {}
 
-  async blockServiceProvider(serviceProviderId: string): Promise<boolean> {
-    await this.serviceRepo.blockAllserviceServiceProvider(serviceProviderId);
+  async blockServiceProvider(data: BlockUnblockProviderDTO): Promise<boolean> {
+    await this.serviceRepo.blockAllserviceServiceProvider(data.serviceProviderId);
 
     const res = await this.serviceProviderRepository.blockService(
-      serviceProviderId
+      data.serviceProviderId
     );
     console.log(res);
 
     return res;
   }
 
-  async unblockServiceProvider(serviceProviderId: string): Promise<boolean> {
+  async unblockServiceProvider(data: BlockUnblockProviderDTO): Promise<boolean> {
     try {
       await this.serviceRepo.activateAllServicesByServiceProvider(
-        serviceProviderId
+        data.serviceProviderId
       );
 
       const res = await this.serviceProviderRepository.unblockService(
-        serviceProviderId
+        data.serviceProviderId
       );
       return res;
     } catch (error: any) {

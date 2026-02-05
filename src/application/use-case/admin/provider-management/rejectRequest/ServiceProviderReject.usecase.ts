@@ -1,11 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { IEmailService } from "../../../../../services/mailService/IEmailService";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
+import { ProviderResponseDTO } from "../../../../dtos/admin/provider/ProviderResponseDTO";
+import { RejectProviderDTO } from "../../../../dtos/admin/provider/RejectProviderDTO";
+import { VerifyProviderDTO } from "../../../../dtos/admin/provider/VerifyProviderDTO";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
-  USE_CASE_TOKENS,
 } from "../../../../../constants/tokens";
 
 import { IServiceProviderRejectVerify } from "./IServiceProviderReject.usecase";
@@ -19,28 +20,28 @@ export class ServiceProviderRejectVerify implements IServiceProviderRejectVerify
     private serviceProviderRepository: IServiceProviderRepository
   ) {}
   async rejectServiceProvider(
-    userid: string,
-    reason: string
-  ): Promise<IServiceProvider | null> {
+    data: RejectProviderDTO
+  ): Promise<ProviderResponseDTO | null> {
     const serviceProvider = await this.serviceProviderRepository.update(
-      userid,
+      data.userid,
       { isVerified: "rejected" }
     );
     if (serviceProvider) {
       this.email.sendProviderRejectedEmail(
         serviceProvider?.serviceProviderEmail,
         "",
-        reason
+        data.reason
       );
     }
-    return serviceProvider;
+    return serviceProvider as ProviderResponseDTO | null;
   }
 
   async verifyServiceProvider(
-    userid: string
-  ): Promise<IServiceProvider | null> {
-    return await this.serviceProviderRepository.update(userid, {
+    data: VerifyProviderDTO
+  ): Promise<ProviderResponseDTO | null> {
+    const result = await this.serviceProviderRepository.update(data.userid, {
       isVerified: "verified",
     });
+    return result as ProviderResponseDTO | null;
   }
 }

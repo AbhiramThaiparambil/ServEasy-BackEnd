@@ -22,10 +22,16 @@ router.patch("/users/block-unblock", authMiddleware("Admin"), (req, res) =>
   adminController.blockUnblockUser(req, res)
 );
 router.get("/serviceProvider", authMiddleware("Admin"), (req, res) =>
-  adminController.getServiceProviders(req, res)
+  adminController.allServiceProviders(req, res)
 );
 router.patch("/serviceProvider/reject", authMiddleware("Admin"), (req, res) =>
-  adminController.serviceProviderReject(req, res)
+  adminController.rejectServiceProvider(req, res)
+);
+
+router.get(
+  "/serviceProvider/verification/:id",
+  authMiddleware("Admin"),
+  (req, res) => adminController.getProviderVerificationDetails(req, res)
 );
 
 router.patch("/serviceProvider/verify", authMiddleware("Admin"), (req, res) =>
