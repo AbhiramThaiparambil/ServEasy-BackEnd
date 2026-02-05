@@ -39,10 +39,10 @@ import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/co
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
 import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
+import { GetUserProfileResponseDTO } from "../../application/dtos/user/profile/GetProfileDTO";
 import {
   UpdateProfileRequestDTO,
-  UserProfileResponseDTO,
-} from "../../application/dtos/user/profile/UserProfileDTO";
+} from "../../application/dtos/user/profile/UpdateProfileDTO";
 import { SignUpRequestDTO } from "../../application/dtos/user/auth/signUp/SignUpDTO";
 import { SignInRequestDTO } from "../../application/dtos/user/auth/signIn/SignInDTO";
 import { AuthResponseDTO } from "../../application/dtos/user/auth/common/AuthResponseDTO";

@@ -15,7 +15,7 @@ import {
 import {
   UpdateProfileRequestDTO,
   ProfileOtpResponseDTO,
-} from "../../../../../application/dtos/user/profile/UserProfileDTO";
+} from "../../../../../application/dtos/user/profile/UpdateProfileDTO";
 
 @injectable()
 export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {

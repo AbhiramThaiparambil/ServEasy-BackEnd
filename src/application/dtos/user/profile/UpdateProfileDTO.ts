@@ -1,5 +1,3 @@
-import { SafeUser } from "../../../../utils/sanitizers/userSanitizer";
-
 export interface UpdateProfileRequestDTO {
   userId: string;
   newUserName?: string;
@@ -14,6 +12,8 @@ export interface ProfileOtpResponseDTO {
   auth?: string;
 }
 
-export interface UserProfileResponseDTO {
-  user: SafeUser | null;
+export interface UpdateProfileResponseDTO {
+    success: boolean;
+    message: string;
+    data?: any; 
 }

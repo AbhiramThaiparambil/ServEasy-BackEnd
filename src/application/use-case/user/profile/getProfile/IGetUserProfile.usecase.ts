@@ -1,5 +1,5 @@
-import { UserProfileResponseDTO } from "../../../../../application/dtos/user/profile/UserProfileDTO";
+import { GetUserProfileResponseDTO } from "../../../../../application/dtos/user/profile/GetProfileDTO";
 
 export interface IGetUserProfileUseCase {
-  execute(userId: string): Promise<UserProfileResponseDTO>;
+  execute(userId: string): Promise<GetUserProfileResponseDTO>;
 }

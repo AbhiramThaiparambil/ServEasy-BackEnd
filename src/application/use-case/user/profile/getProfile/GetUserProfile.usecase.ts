@@ -5,7 +5,7 @@ import {
   userSanitizer,
 } from "../../../../../utils/sanitizers/userSanitizer";
 import { IGetUserProfileUseCase } from "./IGetUserProfile.usecase";
-import { UserProfileResponseDTO } from "../../../../../application/dtos/user/profile/UserProfileDTO";
+import { GetUserProfileResponseDTO } from "../../../../../application/dtos/user/profile/GetProfileDTO";
 
 @injectable()
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {
@@ -13,7 +13,7 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
   ) {}
-  async execute(userId: string): Promise<UserProfileResponseDTO> {
+  async execute(userId: string): Promise<GetUserProfileResponseDTO> {
     const data = await this.userRepository.findById(userId);
     if (!data) return { user: null };
 

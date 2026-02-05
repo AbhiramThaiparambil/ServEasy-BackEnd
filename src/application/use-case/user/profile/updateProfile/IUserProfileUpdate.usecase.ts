@@ -1,7 +1,7 @@
 import {
   UpdateProfileRequestDTO,
   ProfileOtpResponseDTO,
-} from "../../../../../application/dtos/user/profile/UserProfileDTO";
+} from "../../../../../application/dtos/user/profile/UpdateProfileDTO";
 
 export type IUpdateProfileResult =
   | {
