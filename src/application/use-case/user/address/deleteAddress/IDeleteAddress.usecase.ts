@@ -1,3 +1,5 @@
+import { DeleteAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
+
 export interface IDeleteAddress {
-  execute(userId: string, addressId: string): Promise<boolean>;
+  execute(data: DeleteAddressRequestDTO): Promise<boolean>;
 }

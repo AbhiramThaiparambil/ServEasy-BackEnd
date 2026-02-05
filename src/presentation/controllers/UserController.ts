@@ -50,6 +50,12 @@ import { SendOtpRequestDTO } from "../../application/dtos/user/auth/resendOtp/Re
 import { VerifyOtpRequestDTO } from "../../application/dtos/user/auth/verifyOtp/VerifyOtpDTO";
 import { IncreaseAdClicksRequestDTO } from "../../application/dtos/user/ads/increaseAdClicks/IncreaseAdClicksDTO";
 import { GetRecommendedAdsRequestDTO } from "../../application/dtos/user/ads/recommendAds/RecommendAdsDTO";
+import {
+  AddAddressRequestDTO,
+  EditAddressRequestDTO,
+  GetAddressRequestDTO,
+  DeleteAddressRequestDTO,
+} from "../../application/dtos/user/address/AddressDTO";
 
 @injectable()
 export class UserController {
@@ -958,7 +964,8 @@ export class UserController {
         return;
       }
 
-      const allAddress = await this.getAddressUseCase.execute(userId);
+      const dto: GetAddressRequestDTO = { userId };
+      const allAddress = await this.getAddressUseCase.execute(dto);
 
       res.status(200).json({ allAddress });
       return;
@@ -986,7 +993,8 @@ export class UserController {
         return;
       }
 
-      const result = await this.addNewAddressUseCase.execute(userId, address);
+      const dto: AddAddressRequestDTO = { userId, address };
+      const result = await this.addNewAddressUseCase.execute(dto);
       console.log(result);
 
       res.status(200).json({ message: "Address added successfully" });
@@ -1018,7 +1026,8 @@ export class UserController {
         return;
       }
 
-      await this.editAddressUseCase.execute(userId, address);
+      const dto: EditAddressRequestDTO = { userId, address };
+      await this.editAddressUseCase.execute(dto);
 
       res.status(200).json({ message: "Address updated successfully" });
       return;
@@ -1046,7 +1055,8 @@ export class UserController {
         return;
       }
 
-      await this.deleteAddressUseCase.execute(userId, id);
+      const dto: DeleteAddressRequestDTO = { userId, addressId: id };
+      await this.deleteAddressUseCase.execute(dto);
 
       res.status(200).json({ message: "Address deleted successfully" });
       return;

@@ -1,5 +1,5 @@
-import { IAddress } from "../../../../../domain/entities/IAddress";
+import { AddAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
 
 export interface IAddNewAddress {
-  execute(userId: string, newAddress: IAddress): Promise<boolean>;
+  execute(data: AddAddressRequestDTO): Promise<boolean>;
 }

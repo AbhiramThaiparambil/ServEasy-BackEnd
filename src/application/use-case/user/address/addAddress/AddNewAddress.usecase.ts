@@ -4,6 +4,7 @@ import { IAddress } from "../../../../../domain/entities/IAddress";
 import { ObjectId } from "mongodb";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAddNewAddress } from "./IAddNewAddress.usecase";
+import { AddAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
 @injectable()
 export class AddNewAddress implements IAddNewAddress {
   constructor(
@@ -11,7 +12,8 @@ export class AddNewAddress implements IAddNewAddress {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(userId: string, newAddress: IAddress): Promise<boolean> {
+  async execute(data: AddAddressRequestDTO): Promise<boolean> {
+    const { userId, address: newAddress } = data;
     const user = await this.userRepository.findById(userId);
 
     if (!user) throw new Error("User does not exist");

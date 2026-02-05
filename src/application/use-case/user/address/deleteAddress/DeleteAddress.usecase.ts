@@ -3,6 +3,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { IDeleteAddress } from "./IDeleteAddress.usecase";
 
+import { DeleteAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
+
 @injectable()
 export class DeleteAddress implements IDeleteAddress {
   constructor(
@@ -10,7 +12,8 @@ export class DeleteAddress implements IDeleteAddress {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(userId: string, addressId: string): Promise<boolean> {
+  async execute(data: DeleteAddressRequestDTO): Promise<boolean> {
+    const { userId, addressId } = data;
     const user = await this.userRepository.findById(userId);
     if (!user) throw new Error("User does not exist");
 

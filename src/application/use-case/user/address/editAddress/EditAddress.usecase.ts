@@ -3,6 +3,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { IAddress } from "../../../../../domain/entities/IAddress";
 
+import { EditAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
+
 @injectable()
 export class EditAddress {
   constructor(
@@ -10,7 +12,8 @@ export class EditAddress {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(userId: string, newAddress: IAddress): Promise<boolean> {
+  async execute(data: EditAddressRequestDTO): Promise<boolean> {
+    const { userId, address: newAddress } = data;
     const user = await this.userRepository.findById(userId);
     if (!user) throw new Error("User does not exist");
 
