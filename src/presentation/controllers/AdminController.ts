@@ -79,6 +79,11 @@ import {
   UpdateSubscriptionPlanRequestDTO,
 } from "../../application/dtos/admin/subscription/SubscriptionPlanDTO";
 import { GetUserListRequestDTO } from "../../application/dtos/admin/user/UserManagementDTO";
+import {
+  GetWalletByIdRequestDTO,
+  GetWalletListRequestDTO,
+  WithdrawRequestDTO,
+} from "../../application/dtos/admin/wallet/WalletManagementDTO";
 
 @injectable()
 export class AdminController {
@@ -1013,9 +1018,12 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const data = await this.getWalletUseCase.execute(skip, limit);
+
+      const dto: GetWalletListRequestDTO = { skip, limit };
+
+      const data = await this.getWalletUseCase.execute(dto);
       console.log(data);
-      res.status(HttpStatus.OK).json({ data });
+      res.status(HttpStatus.OK).json({ data: data.wallets });
     } catch {}
   }
 
@@ -1078,7 +1086,10 @@ export class AdminController {
           .json({ message: "provider Id is missing" });
         return;
       }
-      const data = await this.getWalletByIdUseCase.execute(id);
+
+      const dto: GetWalletByIdRequestDTO = { providerId: id };
+
+      const data = await this.getWalletByIdUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
     } catch {}
   }
@@ -1095,12 +1106,14 @@ export class AdminController {
         return;
       }
 
-      const success = await this.withDrawProviderWallet.execute({
+      const dto: WithdrawRequestDTO = {
         walletId,
         transactionId,
         newStatus,
         reason,
-      });
+      };
+
+      const success = await this.withDrawProviderWallet.execute(dto);
 
       if (!success) {
         res.status(404).json({

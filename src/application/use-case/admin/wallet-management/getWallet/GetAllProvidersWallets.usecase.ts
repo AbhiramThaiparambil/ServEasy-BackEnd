@@ -2,8 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IGetAllProvidersWalletsUseCase } from "./IGetAllProvidersWallets.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
-import { IProviderWalletView } from "../../../../../utils/types/dto/IProviderWalletView";
-import { ISubscriptionPlanRepository } from "../../../../../domain/repositories/ISubscriptionPlanRepository";
+import { GetWalletListRequestDTO, WalletListResponseDTO } from "../../../../dtos/admin/wallet/WalletManagementDTO";
+
 
 @injectable()
 export class GetAllProvidersWallets implements IGetAllProvidersWalletsUseCase {
@@ -12,7 +12,9 @@ export class GetAllProvidersWallets implements IGetAllProvidersWalletsUseCase {
     private walletRepository: IProviderWalletRepository
   ) {}
 
-  async execute(skip: number, limit: number): Promise<IProviderWalletView[]> {
-    return this.walletRepository.findPaginatedProviderWallets(skip, limit);
+  async execute(request: GetWalletListRequestDTO): Promise<WalletListResponseDTO> {
+    const { skip, limit } = request;
+    const wallets = await this.walletRepository.findPaginatedProviderWallets(skip, limit);
+    return { wallets };
   }
 }

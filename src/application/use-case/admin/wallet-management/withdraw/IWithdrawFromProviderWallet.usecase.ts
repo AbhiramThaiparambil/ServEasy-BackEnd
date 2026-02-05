@@ -1,6 +1,6 @@
-import { IWithdrawFromProviderWallet } from "../../../../../utils/types/dto/IWithdrawFromProviderWallet";
+import { WithdrawRequestDTO } from "../../../../dtos/admin/wallet/WalletManagementDTO";
 
 
 export interface IWithdrawFromProviderWalletUseCase {
-  execute(data: IWithdrawFromProviderWallet): Promise<boolean>;
+  execute(data: WithdrawRequestDTO): Promise<boolean>;
 }

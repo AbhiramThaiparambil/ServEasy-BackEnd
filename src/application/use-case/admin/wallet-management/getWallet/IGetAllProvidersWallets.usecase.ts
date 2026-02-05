@@ -1,5 +1,5 @@
-import { IProviderWalletView } from "../../../../../utils/types/dto/IProviderWalletView";
+import { GetWalletListRequestDTO, WalletListResponseDTO } from "../../../../dtos/admin/wallet/WalletManagementDTO";
 
 export interface IGetAllProvidersWalletsUseCase {
-  execute(skip: number, limit: number): Promise<IProviderWalletView[]>;
+  execute(request: GetWalletListRequestDTO): Promise<WalletListResponseDTO>;
 }

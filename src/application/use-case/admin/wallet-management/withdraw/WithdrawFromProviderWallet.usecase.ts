@@ -1,10 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { IWithdrawFromProviderWallet } from "../../../../../utils/types/dto/IWithdrawFromProviderWallet";
 import { IWithdrawFromProviderWalletUseCase } from "./IWithdrawFromProviderWallet.usecase";
 import { IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
-import { Types } from "mongoose";
+import { WithdrawRequestDTO } from "../../../../dtos/admin/wallet/WalletManagementDTO";
 
 @injectable()
 export class WithdrawFromProviderWalletUseCase
@@ -15,41 +14,7 @@ export class WithdrawFromProviderWalletUseCase
     private walletRepository: IProviderWalletRepository
   ) {}
 
-  //   async execute(data: IWithdrawFromProviderWallet): Promise<boolean> {
-  //    try{
-  //  const { walletId, transactionId, newStatus,reason } = data;
-
-  //         const transaction = await this.walletRepository.findByTransactionId(walletId,transactionId)
-  // if(!transaction){
-  //     throw new Error('transaction not found')
-  // }
-
-  //     const updatedTransaction = await this.walletRepository.updateTransactionStatus(
-  //       walletId,
-  //       transactionId,
-  //       newStatus
-  //     );
-  //       if(newStatus==='rejected'){
-  //         this.walletRepository.updateTransactionRejectionReason(walletId,transactionId,reason??"Your transaction has been rejected by the admin")
-
-  //         const newTransaction:IWalletTransaction={amount:transaction.amount,type:'debit',status:'pending',date:new Date()}
-  //         this.walletRepository.addTransaction(new Types.ObjectId(walletId),newTransaction)
-
-  //     }
-
-  //     if (!updatedTransaction) {
-  //       return false;
-  //     }
-
-  //     return true;
-  //    }catch(e){
-  //       console.log(e)
-
-  //     return false
-  //    }
-  //   }
-
-  async execute(data: IWithdrawFromProviderWallet): Promise<boolean> {
+  async execute(data: WithdrawRequestDTO): Promise<boolean> {
     const { walletId, transactionId, newStatus, reason } = data;
 
     const transaction = await this.walletRepository.findByTransactionId(
