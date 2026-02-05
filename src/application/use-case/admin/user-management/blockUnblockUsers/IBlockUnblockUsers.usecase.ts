@@ -1,6 +1,5 @@
+import { BlockUnblockUserRequestDTO } from "../../../../dtos/admin/user/UserManagementDTO";
+
 export interface IBlockUnblockUsers {
-
-       unblockUser(userId: string): Promise<boolean> 
-   blockUser(userId: string): Promise<boolean> 
-
+       execute(request: BlockUnblockUserRequestDTO): Promise<boolean> 
 }

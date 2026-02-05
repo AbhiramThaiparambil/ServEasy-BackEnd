@@ -78,7 +78,10 @@ import {
   SubscriptionPlanResponseDTO,
   UpdateSubscriptionPlanRequestDTO,
 } from "../../application/dtos/admin/subscription/SubscriptionPlanDTO";
-import { GetUserListRequestDTO } from "../../application/dtos/admin/user/UserManagementDTO";
+import {
+  GetUserListRequestDTO,
+  BlockUnblockUserRequestDTO,
+} from "../../application/dtos/admin/user/UserManagementDTO";
 import {
   GetWalletByIdRequestDTO,
   GetWalletListRequestDTO,
@@ -494,12 +497,12 @@ export class AdminController {
     try {
       const { userId, action } = req.body;
 
-      let data;
-      if (action === "Block") {
-        data = await this.blockUnblockUsersUseCase.blockUser(userId);
-      } else {
-        data = await this.blockUnblockUsersUseCase.unblockUser(userId);
+      const dto: BlockUnblockUserRequestDTO = {
+        userId,
+        action
       }
+
+      const data = await this.blockUnblockUsersUseCase.execute(dto);
 
       if (data) {
         res.status(HttpStatus.OK).json({ data });

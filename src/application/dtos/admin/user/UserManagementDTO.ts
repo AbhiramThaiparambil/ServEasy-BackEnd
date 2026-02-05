@@ -19,3 +19,8 @@ export interface UserListResponseDTO {
   users: UserResponseDTO[];
   count: number;
 }
+
+export interface BlockUnblockUserRequestDTO {
+  userId: string;
+  action: "Block" | "Unblock";
+}
