@@ -60,6 +60,8 @@ import { ProviderResponseDTO } from "../../application/dtos/admin/provider/Provi
 import { RejectProviderDTO } from "../../application/dtos/admin/provider/RejectProviderDTO";
 import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyProviderDTO";
 import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
+import { GetServiceListRequestDTO } from "../../application/dtos/admin/service/GetServiceListDTO";
+import { BlockUnblockServiceRequestDTO } from "../../application/dtos/admin/service/BlockUnblockServiceDTO";
 
 @injectable()
 export class AdminController {
@@ -510,13 +512,15 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const search = req.query.search || "";
+      const search = (req.query.search as string) || "";
 
-      const { allServices, count } = await this.getAllServicesUseCase.execute(
+      const dto: GetServiceListRequestDTO = {
         skip,
         limit,
-        search as string,
-      );
+        search
+      };
+
+      const { allServices, count } = await this.getAllServicesUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;
@@ -538,13 +542,17 @@ export class AdminController {
         return;
       }
 
+      const dto: BlockUnblockServiceRequestDTO = {
+        serviceId
+      };
+
       let result: boolean;
 
       if (action === "Block") {
-        result = await this.blockUnblockServiceUseCase.blockService(serviceId);
+        result = await this.blockUnblockServiceUseCase.blockService(dto);
       } else if (action === "Unblock") {
         result =
-          await this.blockUnblockServiceUseCase.unblockService(serviceId);
+          await this.blockUnblockServiceUseCase.unblockService(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)

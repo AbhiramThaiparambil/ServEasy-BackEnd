@@ -1,3 +1,5 @@
+import { GetServiceListRequestDTO, GetServiceListResponseDTO } from "../../../../dtos/admin/service/GetServiceListDTO";
+
 export interface IGetAllServices {
-  execute(skip: number, limit: number, search: string): Promise<any>;
+  execute(data: GetServiceListRequestDTO): Promise<GetServiceListResponseDTO>;
 }

@@ -3,6 +3,7 @@ import {
   INearbyServicePagination,
   INearbyServiceResult,
 } from "../../utils/types/dto/INearbyServiceResult";
+import { IServiceWithProviderDetails } from "../../utils/types/IServiceWithProviderDetails";
 import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
 import { IOnlineService, IService } from "../entities/IService";
 import { Types } from "mongoose";
@@ -33,7 +34,7 @@ export interface IServiceRepository {
     skip: number,
     limit: number,
     search: string,
-  ): Promise<any>;
+  ): Promise<IServiceWithProviderDetails[]>;
 
   activateAllServicesByServiceProvider(
     serviceProviderId: string,

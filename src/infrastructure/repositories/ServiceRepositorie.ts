@@ -9,6 +9,7 @@ import {
   INearbyServiceResult,
 } from "../../utils/types/dto/INearbyServiceResult";
 import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
+import { IServiceWithProviderDetails } from "../../utils/types/IServiceWithProviderDetails";
 @injectable()
 export class ServiceRepository implements IServiceRepository {
   async create(service: IService): Promise<IService> {
@@ -95,7 +96,7 @@ export class ServiceRepository implements IServiceRepository {
     skip: number,
     limit: number,
     search: string,
-  ) {
+  ): Promise<IServiceWithProviderDetails[]> {
     return await ServiceModel.aggregate([
       {
         $match: {
