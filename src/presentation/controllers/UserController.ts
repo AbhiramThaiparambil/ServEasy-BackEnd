@@ -48,6 +48,8 @@ import { ResetPasswordRequestDTO } from "../../application/dtos/user/auth/forgot
 import { GoogleAuthRequestDTO } from "../../application/dtos/user/auth/googleAuth/GoogleAuthDTO";
 import { SendOtpRequestDTO } from "../../application/dtos/user/auth/resendOtp/ResendOtpDTO";
 import { VerifyOtpRequestDTO } from "../../application/dtos/user/auth/verifyOtp/VerifyOtpDTO";
+import { IncreaseAdClicksRequestDTO } from "../../application/dtos/user/ads/increaseAdClicks/IncreaseAdClicksDTO";
+import { GetRecommendedAdsRequestDTO } from "../../application/dtos/user/ads/recommendAds/RecommendAdsDTO";
 
 @injectable()
 export class UserController {
@@ -1195,14 +1197,15 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const ads = await this.recommendAdsUseCase.execute({
+      const dto: GetRecommendedAdsRequestDTO = {
         count: req.query.count ? Number(req.query.count) : 1,
         category: req.query.category as string | undefined,
         providerId: req.query.providerId as string | undefined,
         lat: req.query.lat ? Number(req.query.lat) : undefined,
         lng: req.query.lng ? Number(req.query.lng) : undefined,
         radius: req.query.radius ? Number(req.query.radius) : undefined,
-      });
+      };
+      const ads = await this.recommendAdsUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         success: true,
@@ -1217,8 +1220,9 @@ export class UserController {
   public increaseClicks = async (req: Request, res: Response) => {
     try {
       const { adId } = req.params;
+      const dto: IncreaseAdClicksRequestDTO = { adId };
 
-      const result = await this.increaseAdClicksUseCase.execute(adId);
+      const result = await this.increaseAdClicksUseCase.execute(dto);
 
       res.status(200).json({
         success: true,

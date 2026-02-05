@@ -4,9 +4,9 @@ import { IRecommendAdsUseCase } from "./IRecommendAdsUseCase";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
 import { IAd } from "../../../../../domain/entities/IAd";
 import {
-  IGetRecommendedAdsRequestDTO,
-  IRecommendedAdDTO,
-} from "../../../../../utils/types/dto/IRecommendAdsDTO";
+  GetRecommendedAdsRequestDTO,
+  RecommendedAdDTO,
+} from "../../../../dtos/user/ads/recommendAds/RecommendAdsDTO";
 
 @injectable()
 export class RecommendAdsUseCase implements IRecommendAdsUseCase {
@@ -16,8 +16,8 @@ export class RecommendAdsUseCase implements IRecommendAdsUseCase {
   ) {}
 
   async execute(
-    data: IGetRecommendedAdsRequestDTO
-  ): Promise<IRecommendedAdDTO[]> {
+    data: GetRecommendedAdsRequestDTO
+  ): Promise<RecommendedAdDTO[]> {
     const { count = 1, category, providerId, lat, lng, radius = 10000 } = data;
 
     return await this.adsRepository.findRecommendedAds({

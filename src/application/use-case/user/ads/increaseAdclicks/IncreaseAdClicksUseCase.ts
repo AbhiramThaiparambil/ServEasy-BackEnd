@@ -3,6 +3,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
 import { IIncreaseAdClicksUseCase } from "./IIncreaseAdClicksUseCase";
 
+import { IncreaseAdClicksRequestDTO } from "../../../../dtos/user/ads/increaseAdClicks/IncreaseAdClicksDTO";
+
 @injectable()
 export class IncreaseAdClicksUseCase implements IIncreaseAdClicksUseCase {
   constructor(
@@ -10,7 +12,7 @@ export class IncreaseAdClicksUseCase implements IIncreaseAdClicksUseCase {
     private adsRepository: IAdRepository
   ) {}
 
-  async execute(adId: string): Promise<number> {
-    return await this.adsRepository.incrementClicks(adId);
+  async execute(data: IncreaseAdClicksRequestDTO): Promise<number> {
+    return await this.adsRepository.incrementClicks(data.adId);
   }
 }

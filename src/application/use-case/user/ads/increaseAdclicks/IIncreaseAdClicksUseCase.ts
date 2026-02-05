@@ -1,5 +1,5 @@
-export  interface IIncreaseAdClicksUseCase {
+import { IncreaseAdClicksRequestDTO } from "../../../../dtos/user/ads/increaseAdClicks/IncreaseAdClicksDTO";
 
-
-   execute(adId: string): Promise<number> 
-  }
+export interface IIncreaseAdClicksUseCase {
+   execute(data: IncreaseAdClicksRequestDTO): Promise<number>;
+}
