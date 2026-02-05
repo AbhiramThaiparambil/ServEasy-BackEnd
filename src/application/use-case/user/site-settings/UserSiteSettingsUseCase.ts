@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { IUserSiteSettings } from "./IUserSiteSettings";
 import { ISiteSettingRepository } from "../../../../domain/repositories/ISiteSetting";
+import { GetBannersResponseDTO, GetThemesResponseDTO } from "../../../dtos/user/site-settings/SiteSettingsDTO";
 
 @injectable()
 export class UserSiteSettings implements IUserSiteSettings {
@@ -9,14 +10,12 @@ export class UserSiteSettings implements IUserSiteSettings {
     @inject(REPOSITORY_TOKENS.SiteSettingRepository)
     private siteSetting: ISiteSettingRepository,
   ) {}
-    async getThemes():Promise<string[]|[]>{
-      return await this.siteSetting.findAllThemes()
-    
-      
-       
+    async getThemes(): Promise<GetThemesResponseDTO> {
+      const themes = await this.siteSetting.findAllThemes();
+      return { themes };
     }
 
-   async getBanners() {
+   async getBanners(): Promise<GetBannersResponseDTO> {
   const [activeFooterBanner, activeHomeBanner] = await Promise.all([
     this.siteSetting.findActiveFooterBanner(),
     this.siteSetting.findActiveHomeBanner()

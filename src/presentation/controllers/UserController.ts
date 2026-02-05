@@ -68,6 +68,7 @@ import { IAutoSuggestion } from "../../application/use-case/user/location/IAutoS
 import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
 
 import { AddReviewRequestDTO } from "../../application/dtos/user/review/ReviewDTO";
+import { GetThemesResponseDTO, GetBannersResponseDTO } from "../../application/dtos/user/site-settings/SiteSettingsDTO";
 
 @injectable()
 export class UserController {
@@ -1156,9 +1157,9 @@ export class UserController {
 
   public getSiteThemes = async (req: Request, res: Response): Promise<void> => {
     try {
-      const themes = await this.userSiteSettings.getThemes();
-      console.log(themes);
-      res.status(HttpStatus.OK).json({ themes });
+      const result: GetThemesResponseDTO = await this.userSiteSettings.getThemes();
+      console.log(result.themes);
+      res.status(HttpStatus.OK).json(result);
       return;
     } catch (error) {
       console.error("Error in getServiceProviderInfoChat:", error);
@@ -1212,9 +1213,9 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const banners = await this.userSiteSettings.getBanners();
+      const result: GetBannersResponseDTO = await this.userSiteSettings.getBanners();
 
-      res.status(HttpStatus.OK).json(banners);
+      res.status(HttpStatus.OK).json(result);
       return;
     } catch (error) {
       console.error("Error in getServiceProviderInfoChat:", error);
