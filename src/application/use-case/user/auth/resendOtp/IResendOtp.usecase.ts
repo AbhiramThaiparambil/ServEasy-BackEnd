@@ -1,4 +1,6 @@
+import { SendOtpRequestDTO } from "../../../../dtos/user/auth/resendOtp/ResendOtpDTO";
+
 export interface IResendOtp {
-  sendEmailOtp(email: string): Promise<string>;
-  sendSmsOtp(phone: string): Promise<string>;
+  sendEmailOtp(data: SendOtpRequestDTO): Promise<string>;
+  sendSmsOtp(data: SendOtpRequestDTO): Promise<string>;
 }

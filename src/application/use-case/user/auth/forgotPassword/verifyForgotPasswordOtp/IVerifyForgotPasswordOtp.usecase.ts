@@ -1,3 +1,5 @@
+import { VerifyOtpRequestDTO } from "../../../../../dtos/user/auth/verifyOtp/VerifyOtpDTO";
+
 export interface IVerifyForgotPasswordOtpUseCase {
-  execute(otp: string, key: string): Promise<boolean>;
+  execute(data: VerifyOtpRequestDTO): Promise<boolean>;
 }

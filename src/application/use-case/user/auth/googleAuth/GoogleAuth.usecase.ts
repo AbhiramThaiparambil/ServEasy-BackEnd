@@ -10,6 +10,7 @@ import { IUserRepository } from "../../../../../domain/repositories/IuserReposit
 import { ITokenService } from "../../../../../services/token/ITokenService";
 import { IUser } from "../../../../../domain/entities/IUser";
 import { IGoogleAuthUseCase } from "./IGoogleAuth.usecase";
+import { GoogleAuthRequestDTO } from "../../../../dtos/user/auth/googleAuth/GoogleAuthDTO";
 
 config();
 
@@ -25,7 +26,8 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
     this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
 
-  async execute(googleToken: string) {
+  async execute(data: GoogleAuthRequestDTO) {
+    const { googleToken } = data;
     try {
       console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
 

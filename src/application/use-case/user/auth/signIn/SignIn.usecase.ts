@@ -7,7 +7,7 @@ import {
 import { ITokenService } from "../../../../../services/token/ITokenService";
 import { ISignInUseCase } from "./ISignIn.usecase";
 
-import { SignInRequestDTO } from "../../../../../application/dtos/user/auth/UserAuthDTO";
+import { SignInRequestDTO } from "../../../../dtos/user/auth/signIn/SignInDTO";
 
 @injectable()
 export class SignIn implements ISignInUseCase {

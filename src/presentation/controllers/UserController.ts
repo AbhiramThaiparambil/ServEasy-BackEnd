@@ -38,14 +38,16 @@ import { IGetUserProfileUseCase } from "../../application/use-case/user/profile/
 import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
 import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
 import {
-  SignUpRequestDTO,
-  SignInRequestDTO,
-  AuthResponseDTO,
-} from "../../application/dtos/user/auth/UserAuthDTO";
-import {
   UpdateProfileRequestDTO,
   UserProfileResponseDTO,
 } from "../../application/dtos/user/profile/UserProfileDTO";
+import { SignUpRequestDTO } from "../../application/dtos/user/auth/signUp/SignUpDTO";
+import { SignInRequestDTO } from "../../application/dtos/user/auth/signIn/SignInDTO";
+import { AuthResponseDTO } from "../../application/dtos/user/auth/common/AuthResponseDTO";
+import { ResetPasswordRequestDTO } from "../../application/dtos/user/auth/forgotPassword/ResetPasswordDTO";
+import { GoogleAuthRequestDTO } from "../../application/dtos/user/auth/googleAuth/GoogleAuthDTO";
+import { SendOtpRequestDTO } from "../../application/dtos/user/auth/resendOtp/ResendOtpDTO";
+import { VerifyOtpRequestDTO } from "../../application/dtos/user/auth/verifyOtp/VerifyOtpDTO";
 
 @injectable()
 export class UserController {
@@ -295,7 +297,8 @@ export class UserController {
         return;
       }
 
-      const result = await this.googleAuthUseCase.execute(googleToken);
+      const dto: GoogleAuthRequestDTO = { googleToken };
+      const result = await this.googleAuthUseCase.execute(dto);
 
       setAuthCookies(res, "refreshToken", result.refreshToken);
 
@@ -392,7 +395,8 @@ export class UserController {
     try {
       const { otp, sender } = req.body;
 
-      const result = await this.verifyOtpUseCase.execute(sender, otp);
+      const dto: VerifyOtpRequestDTO = { otp, sender };
+      const result = await this.verifyOtpUseCase.execute(dto);
       console.log(result);
 
       if ("errorMessage" in result) {
@@ -418,12 +422,14 @@ export class UserController {
   resendOtpController = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.body.email) {
-        const result = await this.resendOtpUseCase.sendEmailOtp(req.body.email);
+        const dto: SendOtpRequestDTO = { email: req.body.email };
+        const result = await this.resendOtpUseCase.sendEmailOtp(dto);
         console.log(result);
         res.status(HttpStatus.OK).json({ message: result });
         return;
       } else if (req.body.phone) {
-        const result = await this.resendOtpUseCase.sendSmsOtp(req.body.phone);
+        const dto: SendOtpRequestDTO = { phone: req.body.phone };
+        const result = await this.resendOtpUseCase.sendSmsOtp(dto);
         res.status(HttpStatus.OK).json({ message: result });
         return;
       } else {
@@ -491,7 +497,8 @@ export class UserController {
       }
 
       if (email) {
-        const message = await this.sendOtpUseCase.sendEmailOtp(email);
+        const dto: SendOtpRequestDTO = { email };
+        const message = await this.sendOtpUseCase.sendEmailOtp(dto);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
         }
@@ -503,7 +510,8 @@ export class UserController {
       }
 
       if (phone) {
-        const message = await this.sendOtpUseCase.sendSmsOtp(phone);
+        const dto: SendOtpRequestDTO = { phone };
+        const message = await this.sendOtpUseCase.sendSmsOtp(dto);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
         }
@@ -534,7 +542,8 @@ export class UserController {
         return;
       }
 
-      const result = await this.forgotVerifyOtpUseCase.execute(otp, key);
+      const dto: VerifyOtpRequestDTO = { otp, sender: key };
+      const result = await this.forgotVerifyOtpUseCase.execute(dto);
 
       if (result === true) {
         res
@@ -573,15 +582,11 @@ export class UserController {
       let result;
 
       if (email) {
-        result = await this.resetPasswordUseCase.resetPasswordEmail(
-          password,
-          email,
-        );
+        const dto: ResetPasswordRequestDTO = { newPassword: password, email };
+        result = await this.resetPasswordUseCase.resetPasswordEmail(dto);
       } else {
-        result = await this.resetPasswordUseCase.resetPasswordPhone(
-          password,
-          phone,
-        );
+        const dto: ResetPasswordRequestDTO = { newPassword: password, phone };
+        result = await this.resetPasswordUseCase.resetPasswordPhone(dto);
       }
 
       res.status(HttpStatus.OK).json({ Message: result });

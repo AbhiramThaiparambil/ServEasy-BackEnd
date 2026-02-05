@@ -1,10 +1,12 @@
+import { SendOtpRequestDTO } from "../../../../../dtos/user/auth/resendOtp/ResendOtpDTO";
+
 export interface ISendForgotPasswordOtpUseCase {
-  sendEmailOtp(email: string): Promise<{
+  sendEmailOtp(data: SendOtpRequestDTO): Promise<{
     successMessage?: string;
     errorMessage?: string;
   }>;
 
-  sendSmsOtp(phone: string): Promise<{
+  sendSmsOtp(data: SendOtpRequestDTO): Promise<{
     successMessage?: string;
     errorMessage?: string;
   }>;

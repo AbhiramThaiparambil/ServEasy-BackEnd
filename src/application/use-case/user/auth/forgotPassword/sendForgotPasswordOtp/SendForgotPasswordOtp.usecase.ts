@@ -10,6 +10,7 @@ import { IEmailService } from "../../../../../../services/mailService/IEmailServ
 import { IOtpService } from "../../../../../../services/otp/IOtpService";
 import { ISmsOtpService } from "../../../../../../services/otp/ISmsOtpService";
 import { ISendForgotPasswordOtpUseCase } from "./ISendForgotPasswordOtp.usecase";
+import { SendOtpRequestDTO } from "../../../../../dtos/user/auth/resendOtp/ResendOtpDTO";
 
 @injectable()
 export class SendForgotPasswordOtpUseCase
@@ -24,8 +25,10 @@ export class SendForgotPasswordOtpUseCase
   ) {}
 
   async sendEmailOtp(
-    email: string
+    data: SendOtpRequestDTO
   ): Promise<{ successMessage?: string; errorMessage?: string }> {
+    const { email } = data;
+    if (!email) return { errorMessage: "Email is required" };
     try {
       const user = await this.userRepository.findByEmail(email);
       if (!user)
@@ -43,8 +46,10 @@ export class SendForgotPasswordOtpUseCase
   }
 
   async sendSmsOtp(
-    phone: string
+    data: SendOtpRequestDTO
   ): Promise<{ successMessage?: string; errorMessage?: string }> {
+    const { phone } = data;
+    if (!phone) return { errorMessage: "Phone is required" };
     try {
       const user = await this.userRepository.findByPhone(phone);
       if (!user)

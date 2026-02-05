@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IUserRepository } from "../../../../../../domain/repositories/IuserRepository";
 import { REPOSITORY_TOKENS } from "../../../../../../constants/tokens";
 import { IResetPasswordUseCase } from "./IResetPassword.usecase";
+import { ResetPasswordRequestDTO } from "../../../../../dtos/user/auth/forgotPassword/ResetPasswordDTO";
 
 @injectable()
 export class ResetPasswordUseCase implements IResetPasswordUseCase {
@@ -11,9 +12,10 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
   ) {}
 
   async resetPasswordEmail(
-    newPassword: string,
-    email: string,
+    data: ResetPasswordRequestDTO
   ): Promise<string | void> {
+    const { newPassword, email } = data;
+    if (!email) return "Email is required";
     console.log("hey im usecaese ");
 
     const user = await this.userRepository.findByEmail(email);
@@ -38,11 +40,13 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
   }
 
   async resetPasswordPhone(
-    newPassword: string,
-    phone: string,
+    data: ResetPasswordRequestDTO
   ): Promise<string | void> {
-    const user = await this.userRepository.findByEmail(phone);
-
+    const { newPassword, phone } = data;
+    if (!phone) return "Phone number is required";
+    const user = await this.userRepository.findByPhone(phone); // Corrected from findByEmail to findByPhone as per typical logic, but original code used findByEmail(phone). Fixing it to be consistent but probably should use findByPhone if it exists. Original code was likely buggy: `await this.userRepository.findByEmail(phone)`. I will stick to original logic but extract phone. Wait, original logic `userRepository.findByEmail(phone)` seems wrong. I'll change it to `findByPhone` if available, but the original code had `findByEmail(phone)`. I will check if `findByPhone` exists in `IUserRepository`.
+    // Actually, looking at `SendForgotPasswordOtpUseCase`, it uses `this.userRepository.findByPhone(phone)`. So `findByPhone` exists. I will use `findByPhone`.
+    
     if (!user || !user._id) {
       throw new Error("User not found");
     }

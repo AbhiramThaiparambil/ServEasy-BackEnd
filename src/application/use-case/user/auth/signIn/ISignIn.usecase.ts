@@ -1,4 +1,4 @@
-import { SignInRequestDTO } from "../../../../../application/dtos/user/auth/UserAuthDTO";
+import { SignInRequestDTO } from "../../../../dtos/user/auth/signIn/SignInDTO";
 
 export interface ISignInUseCase {
   signInWithEmail(

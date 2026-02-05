@@ -1,11 +1,11 @@
+import { ResetPasswordRequestDTO } from "../../../../../dtos/user/auth/forgotPassword/ResetPasswordDTO";
+
 export interface IResetPasswordUseCase {
   resetPasswordEmail(
-    newPassword: string,
-    email: string
+    data: ResetPasswordRequestDTO
   ): Promise<string | void>;
 
   resetPasswordPhone(
-    newPassword: string,
-    phone: string
+    data: ResetPasswordRequestDTO
   ): Promise<string | void>;
 }

@@ -9,6 +9,7 @@ import { IUser } from "../../../../../domain/entities/IUser";
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { IOtpService } from "../../../../../services/otp/IOtpService";
 import { IVerifyOtpUseCase } from "./IVerifyOtp.usecase";
+import { VerifyOtpRequestDTO } from "../../../../dtos/user/auth/verifyOtp/VerifyOtpDTO";
 
 @injectable()
 export class VerifyOtp implements IVerifyOtpUseCase {
@@ -21,8 +22,7 @@ export class VerifyOtp implements IVerifyOtpUseCase {
   ) {}
 
   async execute(
-    key: string,
-    enteredOtp: string
+    data: VerifyOtpRequestDTO
   ): Promise<
     | {
         success: string;
@@ -33,6 +33,7 @@ export class VerifyOtp implements IVerifyOtpUseCase {
         errorMessage: string;
       }
   > {
+    const { sender: key, otp: enteredOtp } = data;
     const isValidOtp = await this.otpSErvice.verifyOtp(key, enteredOtp);
     console.log(isValidOtp);
 

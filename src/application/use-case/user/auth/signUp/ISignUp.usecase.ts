@@ -1,5 +1,5 @@
 import { IUser } from "../../../../../domain/entities/IUser";
-import { SignUpRequestDTO } from "../../../../../application/dtos/user/auth/UserAuthDTO";
+import { SignUpRequestDTO } from "../../../../dtos/user/auth/signUp/SignUpDTO";
 
 export interface ISignUpUseCase {
   execute(data: SignUpRequestDTO): Promise<{ user: IUser } | { errorMessage: string }>;

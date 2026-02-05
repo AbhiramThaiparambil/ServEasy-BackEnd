@@ -1,7 +1,8 @@
+import { VerifyOtpRequestDTO } from "../../../../dtos/user/auth/verifyOtp/VerifyOtpDTO";
+
 export interface IVerifyOtpUseCase {
   execute(
-    key: string,
-    enteredOtp: string
+    data: VerifyOtpRequestDTO
   ): Promise<
     | {
         success: string;
