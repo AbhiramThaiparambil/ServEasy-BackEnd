@@ -2,10 +2,10 @@ import { inject, injectable } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import {
-  SafeUser,
   userSanitizer,
 } from "../../../../../utils/sanitizers/userSanitizer";
 import { IGetUserProfileUseCase } from "./IGetUserProfile.usecase";
+import { UserProfileResponseDTO } from "../../../../../application/dtos/user/profile/UserProfileDTO";
 
 @injectable()
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {
@@ -13,10 +13,10 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
     @inject(REPOSITORY_TOKENS.UserRepository)
     private userRepository: IUserRepository,
   ) {}
-  async execute(userId: string): Promise<SafeUser | null> {
+  async execute(userId: string): Promise<UserProfileResponseDTO> {
     const data = await this.userRepository.findById(userId);
-    if (!data) return data;
+    if (!data) return { user: null };
 
-    return userSanitizer(data);
+    return { user: userSanitizer(data) };
   }
 }

@@ -1,14 +1,14 @@
+import { SignInRequestDTO } from "../../../../../application/dtos/user/auth/UserAuthDTO";
+
 export interface ISignInUseCase {
   signInWithEmail(
-    email: string,
-    password: string
+    data: SignInRequestDTO
   ): Promise<
     { accessToken: string; refreshToken: string } | { errorMessage: string }
   >;
 
   signInWithPhone(
-    phone: string,
-    password: string
+    data: SignInRequestDTO
   ): Promise<
     { accessToken: string; refreshToken: string } | { errorMessage: string }
   >;

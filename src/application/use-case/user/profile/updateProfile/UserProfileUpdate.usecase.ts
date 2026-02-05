@@ -12,6 +12,10 @@ import {
   IUpdateProfileResult,
   IUserProfileUpdateUseCase,
 } from "./IUserProfileUpdate.usecase";
+import {
+  UpdateProfileRequestDTO,
+  ProfileOtpResponseDTO,
+} from "../../../../../application/dtos/user/profile/UserProfileDTO";
 
 @injectable()
 export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
@@ -25,12 +29,16 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
     @inject(SERVICE_TOKENS.SmsOtpService) private smsOtp: ISmsOtpService,
   ) {}
   async updateProfile(
-    userId: string,
-    newUserName?: string,
-    newProfileImage?: string,
-    newPassword?: string,
-    oldPassword?: string,
+    request: UpdateProfileRequestDTO
   ): Promise<IUpdateProfileResult> {
+    const {
+      userId,
+      newUserName,
+      newProfileImage,
+      newPassword,
+      oldPassword,
+    } = request;
+
     let profile = "";
 
     if (newProfileImage) {
@@ -86,11 +94,7 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
     return { updated: true, result: result };
   }
 
-  async sendEmailOtp(email: string): Promise<{
-    successMessage?: string;
-    errorMessage?: string;
-    auth?: string;
-  }> {
+  async sendEmailOtp(email: string): Promise<ProfileOtpResponseDTO> {
     try {
       const user = await this.userRepository.findByEmail(email);
       if (user) {
@@ -113,11 +117,7 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
     }
   }
 
-  async sendSmsOtp(phone: string): Promise<{
-    successMessage?: string;
-    errorMessage?: string;
-    auth?: string;
-  }> {
+  async sendSmsOtp(phone: string): Promise<ProfileOtpResponseDTO> {
     try {
       const user = await this.userRepository.findByPhone(phone);
       if (user) {

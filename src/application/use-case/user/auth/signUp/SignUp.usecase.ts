@@ -11,6 +11,8 @@ import { ISmsOtpService } from "../../../../../services/otp/ISmsOtpService";
 import { IOtpService } from "../../../../../services/otp/IOtpService";
 import { IUser } from "../../../../../domain/entities/IUser";
 import { ISignUpUseCase } from "./ISignUp.usecase";
+import { SignUpRequestDTO } from "../../../../dtos/user/auth/UserAuthDTO";
+
 
 @injectable()
 export class SignUpUseCase implements ISignUpUseCase {
@@ -36,12 +38,7 @@ export class SignUpUseCase implements ISignUpUseCase {
     await this.smsOtp.SendOtp(phone, otp);
   }
 
-  async execute(userData: {
-    userName: string;
-    email?: string;
-    phone?: string;
-    password: string;
-  }) {
+  async execute(userData: SignUpRequestDTO) {
     const { userName, email, phone, password } = userData;
     if (email) {
       delete userData?.phone;

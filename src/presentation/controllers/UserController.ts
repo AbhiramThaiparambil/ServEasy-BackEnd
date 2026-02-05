@@ -37,6 +37,15 @@ import { IProfileUpdateOtpUseCase } from "../../application/use-case/user/profil
 import { IGetUserProfileUseCase } from "../../application/use-case/user/profile/getProfile/IGetUserProfile.usecase";
 import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
 import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
+import {
+  SignUpRequestDTO,
+  SignInRequestDTO,
+  AuthResponseDTO,
+} from "../../application/dtos/user/auth/UserAuthDTO";
+import {
+  UpdateProfileRequestDTO,
+  UserProfileResponseDTO,
+} from "../../application/dtos/user/profile/UserProfileDTO";
 
 @injectable()
 export class UserController {
@@ -127,7 +136,8 @@ export class UserController {
         return;
       }
 
-      const user = await this.getUserProfileUseCase.execute(decoded.userId);
+      const response = await this.getUserProfileUseCase.execute(decoded.userId);
+      const user = response.user;
 
       if (!user) {
         res.status(HttpStatus.NOT_FOUND).json({ error: "User not found" });
@@ -234,28 +244,21 @@ export class UserController {
         return;
       }
 
-      const data: {
-        userName: string;
-        password: string;
-        phone?: string;
-        email?: string;
-      } = {
+      const dto: SignUpRequestDTO = {
         userName,
         password,
+        phone,
+        email,
       };
 
-      if (phone) {
-        data.phone = phone;
-      } else if (email) {
-        data.email = email;
-      } else {
+      if (!dto.phone && !dto.email) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Either phone or email is required" });
         return;
       }
 
-      const result = await this.registerUser.execute(data);
+      const result = await this.registerUser.execute(dto);
       if ("errorMessage" in result) {
         res
           .status(HttpStatus.UNAUTHORIZED)
@@ -321,10 +324,12 @@ export class UserController {
           return;
         }
 
-        const result = await this.signInUseCase.signInWithEmail(
-          email,
-          password,
-        );
+        const dto: SignInRequestDTO = {
+            email,
+            password
+        };
+
+        const result = await this.signInUseCase.signInWithEmail(dto);
 
         if ("errorMessage" in result) {
           res
@@ -350,10 +355,12 @@ export class UserController {
           return;
         }
 
-        const result = await this.signInUseCase.signInWithPhone(
-          phone,
-          password,
-        );
+        const dto: SignInRequestDTO = {
+            phone,
+            password
+        };
+
+        const result = await this.signInUseCase.signInWithPhone(dto);
 
         if ("errorMessage" in result) {
           res
@@ -438,7 +445,8 @@ export class UserController {
   ): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getUserProfileUseCase.execute(req.params.id);
+        const response = await this.getUserProfileUseCase.execute(req.params.id);
+        const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.userName,
@@ -462,8 +470,8 @@ export class UserController {
         return;
       }
 
-      const user = await this.getUserProfileUseCase.execute(decoded.userId);
-      res.status(HttpStatus.OK).json({ user });
+      const response = await this.getUserProfileUseCase.execute(decoded.userId);
+      res.status(HttpStatus.OK).json({ user: response.user });
     } catch (error) {
       console.error("Error in userProfile:", error);
       res
@@ -605,13 +613,15 @@ export class UserController {
       }
 
       if (newUserName || NewProfileImage || newPassword || oldPassword) {
-        const update = await this.userProfileUpdate.updateProfile(
-          userId,
-          newUserName,
-          NewProfileImage,
-          newPassword,
-          oldPassword,
-        );
+        const dto: UpdateProfileRequestDTO = {
+            userId,
+            newUserName,
+            newProfileImage: NewProfileImage,
+            newPassword,
+            oldPassword
+        };
+
+        const update = await this.userProfileUpdate.updateProfile(dto);
 
         if (!update.updated) {
           res.status(HttpStatus.BAD_REQUEST).json({ message: update.message });
@@ -747,7 +757,8 @@ export class UserController {
   public userProfile = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getUserProfileUseCase.execute(req.params.id);
+        const response = await this.getUserProfileUseCase.execute(req.params.id);
+        const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.userName,
@@ -767,9 +778,9 @@ export class UserController {
           return;
         }
 
-        const user = await this.getUserProfileUseCase.execute(decoded.userId);
+        const response = await this.getUserProfileUseCase.execute(decoded.userId);
 
-        res.status(200).json({ user });
+        res.status(200).json({ user: response.user });
       }
     } catch (error) {
       console.error("Error in userProfile:", error);

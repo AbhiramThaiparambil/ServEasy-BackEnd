@@ -7,6 +7,8 @@ import {
 import { ITokenService } from "../../../../../services/token/ITokenService";
 import { ISignInUseCase } from "./ISignIn.usecase";
 
+import { SignInRequestDTO } from "../../../../../application/dtos/user/auth/UserAuthDTO";
+
 @injectable()
 export class SignIn implements ISignInUseCase {
   constructor(
@@ -25,12 +27,14 @@ export class SignIn implements ISignInUseCase {
   }
 
   async signInWithEmail(
-    email: string,
-    password: string
+    data: SignInRequestDTO
   ): Promise<
     { accessToken: string; refreshToken: string } | { errorMessage: string }
   > {
     try {
+      const { email, password } = data;
+      if (!email) return { errorMessage: "Email is required" };
+
       const user = await this.userRepository.findByEmail(email);
       if (!user) return { errorMessage: "User does not exist" };
       if (user.isBlocked == true)
@@ -64,12 +68,14 @@ export class SignIn implements ISignInUseCase {
   }
 
   async signInWithPhone(
-    phone: string,
-    password: string
+    data: SignInRequestDTO
   ): Promise<
     { accessToken: string; refreshToken: string } | { errorMessage: string }
   > {
     try {
+      const { phone, password } = data;
+      if (!phone) return { errorMessage: "Phone is required" };
+
       const user = await this.userRepository.findByPhone(phone);
       if (!user) return { errorMessage: "User does not exist" };
       if (user.isBlocked == true)

@@ -1,10 +1,8 @@
-import { IUser } from "../../../../../domain/entities/IUser";
+import {
+  UpdateProfileRequestDTO,
+  ProfileOtpResponseDTO,
+} from "../../../../../application/dtos/user/profile/UserProfileDTO";
 
-export interface IProfileOtpResponse {
-  successMessage?: string;
-  errorMessage?: string;
-  auth?: string; // email or phone
-}
 export type IUpdateProfileResult =
   | {
       updated: true;
@@ -16,14 +14,10 @@ export type IUpdateProfileResult =
     };
 export interface IUserProfileUpdateUseCase {
   updateProfile(
-    userId: string,
-    newUserName?: string,
-    newProfileImage?: string,
-    newPassword?: string,
-    oldPassword?: string,
+    request: UpdateProfileRequestDTO
   ): Promise<IUpdateProfileResult>;
 
-  sendEmailOtp(email: string): Promise<IProfileOtpResponse>;
+  sendEmailOtp(email: string): Promise<ProfileOtpResponseDTO>;
 
-  sendSmsOtp(phone: string): Promise<IProfileOtpResponse>;
+  sendSmsOtp(phone: string): Promise<ProfileOtpResponseDTO>;
 }
