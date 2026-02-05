@@ -53,6 +53,7 @@ import { BlockUnblockCategoryServiceDTO } from "../../application/dtos/admin/cat
 import { CreateCouponDTO } from "../../application/dtos/admin/coupon/CreateCouponDTO";
 import { MakeCouponInactiveDTO } from "../../application/dtos/admin/coupon/MakeCouponInactiveDTO";
 import { ToggleShowInBannerDTO } from "../../application/dtos/admin/coupon/ToggleShowInBannerDTO";
+import { AdminProfileResponseDTO } from "../../application/dtos/admin/profile/AdminProfileResponseDTO";
 
 @injectable()
 export class AdminController {
@@ -159,12 +160,26 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ adminToken: newAccessToken });
     } catch (error) {
-      console.error("Admin RefreshToken error:", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: "Internal Server Error" });
+        .json({ error: "Internal server error" });
     }
-  };
+  }
+
+  public async getAdminProfile(req: Request, res: Response): Promise<void> {
+    try {
+      const { adminId } = req.params;
+      const data: AdminProfileResponseDTO | null = await this.getAdminProfileUseCase.execute(adminId);
+      if (!data) {
+        res.status(HttpStatus.BAD_REQUEST);
+        return;
+      }
+      res.status(HttpStatus.OK).json(data);
+    } catch (error) {
+      console.error("AdminController::getAdminProfile error", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+    }
+  }
 
   async signIn(req: Request, res: Response) {
     try {
