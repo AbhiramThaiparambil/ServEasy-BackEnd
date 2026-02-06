@@ -10,6 +10,8 @@ import { IAdRepository } from "../../../../../domain/repositories/IAdRepository"
 import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudinaryService";
 import { IAd } from "../../../../../domain/entities/IAd";
 
+import { CreateAdRequestDTO } from "../../../../dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
+
 @injectable()
 export class CreateAdUseCase implements ICreateAdUseCase {
   constructor(
@@ -18,20 +20,27 @@ export class CreateAdUseCase implements ICreateAdUseCase {
     private cloudinaryService: ICloudinaryService
   ) {}
 
-  async execute(data: IAd): Promise<IAd | null> {
+  async execute(data: CreateAdRequestDTO): Promise<IAd | null> {
     try {
+      // Map DTO to IAd structure partial where necessary or pass directly if compatible.
+      // DTO has same structure minus _id, created_at etc which are generated.
+      // The repository expects IAd, so we construct it.
+      
+      const adData: Partial<IAd> = {
+          ...data,
+          serviceId: new Types.ObjectId(data.serviceId),
+          providerId: new Types.ObjectId(data.providerId),
+          status: data.status as any,
+      };
+
       if (data.image) {
         const imageUrl = await this.cloudinaryService.uploadAdImage(data.image);
         return await this.adRepository.createAd({
-          ...data,
-          serviceId: new Types.ObjectId(data.serviceId),
+          ...adData,
           image: imageUrl,
-        });
+        } as IAd);
       } else {
-        return await this.adRepository.createAd({
-          ...data,
-          serviceId: new Types.ObjectId(data.serviceId),
-        });
+        return await this.adRepository.createAd(adData as IAd);
       }
     } catch (e) {
       console.log(e);

@@ -1,5 +1,6 @@
 import { IAd } from "../../../../../domain/entities/IAd";
+import { EditAdRequestDTO } from "../../../../dtos/serviceProvider/ads/editAd/EditAdRequestDTO";
 
 export interface IEditAdUseCase {
-  execute(adId: string, data: Partial<IAd>): Promise<IAd | null>;
+  execute(data: EditAdRequestDTO): Promise<IAd | null>;
 }

@@ -27,6 +27,9 @@ import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/
 import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
 import { IEditAdUseCase } from "../../application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
 import { GetCategoryRequestDTO } from "../../application/dtos/common/category/getCategory/GetCategoryDTO";
+import { CreateAdRequestDTO } from "../../application/dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
+import { EditAdRequestDTO } from "../../application/dtos/serviceProvider/ads/editAd/EditAdRequestDTO";
+import { GetProviderAdsRequestDTO } from "../../application/dtos/serviceProvider/ads/getAd/GetProviderAdsRequestDTO";
 import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
 import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
@@ -215,6 +218,30 @@ export class ServiceProviderController {
     }
   }
 
+  async createAd(req: Request, res: Response): Promise<void> {
+    try {
+      const data: CreateAdRequestDTO = req.body;
+      const createdAd = await this.createAdUseCase.execute(data);
+
+      if (createdAd) {
+        res.status(HttpStatus.OK).json({
+          message:
+            "Ad creation request submitted successfully. Waiting for admin approval.",
+          adObject: createdAd,
+        });
+      } else {
+        res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Failed to create ad." });
+      }
+    } catch (error) {
+      console.error("Error creating ad:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
   async updateServiceProvider(req: Request, res: Response): Promise<void> {
     try {
       console.log(req.body);
@@ -237,6 +264,28 @@ export class ServiceProviderController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async editAd(req: Request, res: Response): Promise<void> {
+    try {
+      const { adId } = req.params;
+      const updateData = req.body;
+      const dto: EditAdRequestDTO = { adId, updateData };
+      const updatedAd = await this.editAdUseCase.execute(dto);
+
+      if (updatedAd) {
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "Ad updated successfully.", adObject: updatedAd });
+      } else {
+        res.status(HttpStatus.NOT_FOUND).json({ message: "Ad not found." });
+      }
+    } catch (error) {
+      console.error("Error editing ad:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
     }
   }
 
@@ -603,65 +652,28 @@ export class ServiceProviderController {
     }
   }
 
-  async createAd(req: Request, res: Response): Promise<void> {
-    try {
-      console.log(req.body);
-
-      const serviceProviderId = res.locals.serviceProvider_id;
-
-      const adData = req.body.data;
-
-      console.log(req.body + "--formData");
-      const createdAd = await this.createAdUseCase.execute({
-        ...adData,
-        providerId: serviceProviderId,
-      });
-
-      res.status(HttpStatus.CREATED).json(createdAd);
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: "Error creating ad",
-        error,
-      });
-    }
-  }
-
-  async editAd(req: Request, res: Response): Promise<void> {
-    try {
-      const { adId } = req.params;
-      const updateData = req.body;
-
-      console.log(req.body);
-
-      const updatedAd = await this.editAdUseCase.execute(adId, updateData);
-
-      res.status(HttpStatus.OK).json(updatedAd);
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: "Error updating ad",
-        error,
-      });
-    }
-  }
 
   async getProviderAds(req: Request, res: Response): Promise<void> {
     try {
       const { providerId } = req.params;
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
-      const skip = page * limit;
-      const data = await this.getProviderAdsUseCase.execute(
-        providerId,
-        skip,
-        limit,
-      );
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+      const skip = (page - 1) * limit;
 
-      res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: "Error fetching provider ads",
-        error,
+      const dto: GetProviderAdsRequestDTO = { providerId, skip, limit };
+      const { ads, count } = await this.getProviderAdsUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({
+        ads,
+        total: count,
+        page,
+        totalPages: Math.ceil(count / limit),
       });
+    } catch (error) {
+      console.error("Error fetching ads:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
     }
   }
 
