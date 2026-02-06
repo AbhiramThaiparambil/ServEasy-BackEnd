@@ -13,7 +13,7 @@ import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wa
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/wallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
 import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
@@ -53,6 +53,8 @@ import { IGetServiceProvider } from "../../application/use-case/serviceProvider/
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
 import { GetProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/getProfile/GetProfileRequestDTO";
 import { EditProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/editProfile/EditProfileRequestDTO";
+import { GetWalletRequestDTO } from "../../application/dtos/serviceProvider/wallet/getWallet/GetWalletRequestDTO";
+import { WithdrawPaymentRequestDTO } from "../../application/dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentRequestDTO";
 
 @injectable()
 export class ServiceProviderController {
@@ -689,22 +691,35 @@ export class ServiceProviderController {
   async getWallet(req: Request, res: Response) {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
-      console.log(req.query);
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.skip as string) || 0;
       const skip = page * limit;
 
-      const data = await this.getWalletUseCase.execute(
+      const dto: GetWalletRequestDTO = {
         serviceProviderId,
         limit,
-        skip,
-      );
+        skip
+      };
+
+      const data = await this.getWalletUseCase.execute(dto);
+      
       if (!data) {
-        res.status(HttpStatus.BAD_REQUEST);
+        res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: "Wallet not found" });
+        return;
       }
+      
       res
         .status(HttpStatus.OK)
-        .json({ success: true, data: data?.wallet, count: data?.count });
+        .json({ 
+          success: true, 
+          data: {
+            wallet: {
+              balance: data.balance,
+              transactions: data.transactions
+            },
+            count: data.totalTransactions
+          }
+        });
     } catch (error: any) {
       res
         .status(HttpStatus.OK)
@@ -723,12 +738,19 @@ export class ServiceProviderController {
           .json({ message: "Amount and Service Provider ID are required" });
         return;
       }
-      const result = await this.withdrawPaymentUseCase.execute(
+      
+      const dto: WithdrawPaymentRequestDTO = {
         serviceProviderId,
-        amount,
-      );
+        amount
+      };
+      
+      const result = await this.withdrawPaymentUseCase.execute(dto);
 
-      res.status(HttpStatus.OK).json({ success: true, data: result });
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
     } catch (error: any) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

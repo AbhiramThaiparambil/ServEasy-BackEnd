@@ -104,8 +104,8 @@ import { RescheduleOnlineServiceSlotUseCase } from "./application/use-case/servi
 import { IRescheduleOnlineServiceSlotUseCase } from "./application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { GetServiceProviderRegistrationDetailsUseCase } from "./application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/GetServiceProviderRegistrationDetailsUseCase";
-import { IGetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/wallet/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
-import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/wallet/getServiceProviderStatus/GetServiceProviderStatusUseCase";
+import { IGetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { GetServiceProviderStatusUseCase } from "./application/use-case/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusUseCase";
 import { ReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/ReapplyServiceProviderUseCase";
 import { IReapplyServiceProviderUseCase } from "./application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 import { ITokenService } from "./services/token/ITokenService";

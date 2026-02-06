@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { IGetServiceProviderStatusUseCase } from "./IGetServiceProviderStatusUseCase";
-import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
-import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
+import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class GetServiceProviderStatusUseCase

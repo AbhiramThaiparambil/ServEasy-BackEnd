@@ -3,10 +3,9 @@ import { IProviderWalletRepository } from "../../../../../domain/repositories/Ip
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IWithdrawPaymentUseCase } from "./IWithdrawPaymentUseCase";
 import { Types } from "mongoose";
-import {
-  IProviderWallet,
-  IWalletTransaction,
-} from "../../../../../domain/entities/IproviderWallet";
+import { IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
+import { WithdrawPaymentRequestDTO } from "../../../../dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentRequestDTO";
+import { WithdrawPaymentResponseDTO } from "../../../../dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentResponseDTO";
 
 @injectable()
 export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
@@ -15,29 +14,43 @@ export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
     private walletRepository: IProviderWalletRepository
   ) {}
 
-  async execute(
-    serviceProviderId: Types.ObjectId,
-    amount: number
-  ): Promise<IProviderWallet | null> {
+  async execute(data: WithdrawPaymentRequestDTO): Promise<WithdrawPaymentResponseDTO> {
+    const serviceProviderId = new Types.ObjectId(data.serviceProviderId);
+    
     const wallet = await this.walletRepository.findByProviderId(
       serviceProviderId
     );
 
     if (!wallet) {
-      throw new Error("Wallet not found");
+      return {
+        success: false,
+        message: "Wallet not found"
+      };
     }
 
-    if (wallet.balance < amount) {
-      throw new Error("Debit amount greater than balance");
+    if (wallet.balance < data.amount) {
+      return {
+        success: false,
+        message: "Insufficient balance"
+      };
     }
 
     const transaction: IWalletTransaction = {
-      amount,
+      amount: data.amount,
       type: "debit",
       status: "pending",
       date: new Date(),
     };
 
-    return this.walletRepository.addTransaction(serviceProviderId, transaction);
+    const updatedWallet = await this.walletRepository.addTransaction(
+      serviceProviderId, 
+      transaction
+    );
+    
+    return {
+      success: true,
+      message: "Withdrawal request submitted successfully",
+      newBalance: updatedWallet?.balance
+    };
   }
 }
