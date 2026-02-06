@@ -5,6 +5,9 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ISlotRepository } from "../../../../../domain/repositories/ISlotRepository";
 import { ISlot } from "../../../../../domain/entities/ISlot";
 
+import { CreateSlotRequestDTO } from "../../../../dtos/serviceProvider/slot/createSlot/CreateSlotRequestDTO";
+import { Types } from "mongoose";
+
 @injectable()
 export class CreateSlotUseCase implements ICreateSlotUseCase {
   constructor(
@@ -12,7 +15,14 @@ export class CreateSlotUseCase implements ICreateSlotUseCase {
     private slotRepository: ISlotRepository
   ) {}
 
-  async execute(slot: ISlot): Promise<ISlot> {
+  async execute(data: CreateSlotRequestDTO): Promise<ISlot> {
+    const { serviceId, startTime, endTime, booked } = data;
+    const slot: ISlot = {
+      serviceId: new Types.ObjectId(serviceId),
+      startTime,
+      endTime,
+      booked: booked || false,
+    };
     return await this.slotRepository.createSlot(slot);
   }
 }

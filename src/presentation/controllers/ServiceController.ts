@@ -21,6 +21,10 @@ import { GetProviderServicesRequestDTO } from "../../application/dtos/servicePro
 import { EditServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
 import { BlockUnblockServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/blockUnblockService/BlockUnblockServiceRequestDTO";
 
+import { CreateSlotRequestDTO } from "../../application/dtos/serviceProvider/slot/createSlot/CreateSlotRequestDTO";
+import { DeleteSlotRequestDTO } from "../../application/dtos/serviceProvider/slot/deleteSlot/DeleteSlotRequestDTO";
+import { GetSlotsRequestDTO } from "../../application/dtos/serviceProvider/slot/getSlots/GetSlotsRequestDTO";
+
 @injectable()
 export class ServiceController {
   constructor(
@@ -113,7 +117,8 @@ export class ServiceController {
     try {
       const id = req.params.id;
 
-      const data = await this.getServiceSlotUseCase.execute(id);
+      const dto: GetSlotsRequestDTO = { serviceId: id };
+      const data = await this.getServiceSlotUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("Error fetching online services with slots:", error);
@@ -134,7 +139,8 @@ export class ServiceController {
         return;
       }
 
-      await this.deleteSlotUseCase!.execute(id);
+      const dto: DeleteSlotRequestDTO = { slotId: id };
+      await this.deleteSlotUseCase!.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: "Slot deleted successfully",
@@ -158,12 +164,14 @@ export class ServiceController {
         return;
       }
 
-      const slot = await this.createSlotUseCase!.execute({
+      const dto: CreateSlotRequestDTO = {
         serviceId,
         startTime,
         endTime,
         booked: false,
-      });
+      };
+
+      const slot = await this.createSlotUseCase!.execute(dto);
 
       res.status(HttpStatus.CREATED).json({
         message: "Slot created successfully",

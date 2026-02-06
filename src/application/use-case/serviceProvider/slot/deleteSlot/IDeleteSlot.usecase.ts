@@ -1,3 +1,5 @@
+import { DeleteSlotRequestDTO } from "../../../../dtos/serviceProvider/slot/deleteSlot/DeleteSlotRequestDTO";
+
 export interface IDeleteSlotUseCase {
-  execute(id: string): Promise<boolean>;
+  execute(data: DeleteSlotRequestDTO): Promise<boolean>;
 }

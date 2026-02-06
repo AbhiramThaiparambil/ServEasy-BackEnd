@@ -5,6 +5,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ISlotRepository } from "../../../../../domain/repositories/ISlotRepository";
 import { ISlot } from "../../../../../domain/entities/ISlot";
 
+import { GetSlotsRequestDTO } from "../../../../dtos/serviceProvider/slot/getSlots/GetSlotsRequestDTO";
+
 @injectable()
 export class GetSlotUseCase implements IGetSlotUseCase {
   constructor(
@@ -12,7 +14,8 @@ export class GetSlotUseCase implements IGetSlotUseCase {
     private slotRepository: ISlotRepository
   ) {}
 
-  async execute(serviceId: string): Promise<ISlot[]> {
+  async execute(data: GetSlotsRequestDTO): Promise<ISlot[]> {
+    const { serviceId } = data;
     console.log(serviceId);
     const slots = await this.slotRepository.getActiveSlotsByServiceId(
       serviceId
