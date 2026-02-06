@@ -13,6 +13,9 @@ import { IGetBookedServicesUseCase } from "../../application/use-case/common/boo
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/common/booking/fetchByid/IGetBookedServiceById.usecase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IUploadBillsUseCase } from "../../application/use-case/serviceProvider/booking/billing/IUploadBills.usecase";
+import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
+import { CreateOnlineBookingRequestDTO } from "../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
+import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 
 @injectable()
 export class BookingController {
@@ -52,13 +55,15 @@ export class BookingController {
         req.body;
       console.log(serviceId, address, preferredServiceTime, liveLocation);
 
-      const booking = await this.createBookingUseCase.execute(
+      const dto: CreateBookingRequestDTO = {
         userId,
-        new mongoose.Types.ObjectId(serviceId),
+        serviceId,
         address,
         preferredServiceTime,
         liveLocation,
-      );
+      };
+
+      const booking = await this.createBookingUseCase.execute(dto);
 
       res.status(201).json({
         success: true,
@@ -82,11 +87,13 @@ export class BookingController {
 
       const { serviceId, slotId } = req.body;
 
-      const booking = await this.createOnlineBookingUseCase.execute(
+      const dto: CreateOnlineBookingRequestDTO = {
         userId,
-        new mongoose.Types.ObjectId(serviceId),
-        slotId,
-      );
+        serviceId,
+        slotId
+      };
+
+      const booking = await this.createOnlineBookingUseCase.execute(dto);
 
       res.status(201).json({
         success: true,
@@ -226,11 +233,13 @@ export class BookingController {
         });
       }
 
-      const data = await this.cancelBookingUseCase.execute(
-        id,
-        serviceStatus,
-        cancellationReason,
-      );
+      const dto: CancelBookingRequestDTO = {
+        bookingId: id,
+        status: serviceStatus,
+        reason: cancellationReason,
+      };
+
+      const data = await this.cancelBookingUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: "Booking cancelled successfully",

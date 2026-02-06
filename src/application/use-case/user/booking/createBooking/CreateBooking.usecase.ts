@@ -20,6 +20,11 @@ import { SocketService } from "../../../../../services/socket/SocketService";
 import { ISystemNotification } from "../../../../../domain/entities/INotification";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 
+import {
+  CreateBookingRequestDTO,
+  CreateBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/createBooking/CreateBookingDTO";
+
 @injectable()
 export class CreateBookingUseCase implements ICreateBookingUseCase {
   constructor(
@@ -34,13 +39,10 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private serviceProviderRepo: IServiceProviderRepository,
   ) {}
 
-  async execute(
-    userId: mongoose.Types.ObjectId,
-    serviceId: mongoose.Types.ObjectId,
-    address: IAddress,
-    preferredServiceTime: IPreferredServiceDateTime,
-    liveLocation?: IliveLocation,
-  ): Promise<IServiceBooking> {
+  async execute(data: CreateBookingRequestDTO): Promise<IServiceBooking> {
+    const { userId: userIdStr, serviceId: serviceIdStr, address, preferredServiceTime, liveLocation } = data;
+    const userId = new mongoose.Types.ObjectId(userIdStr);
+    const serviceId = new mongoose.Types.ObjectId(serviceIdStr);
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
     try {

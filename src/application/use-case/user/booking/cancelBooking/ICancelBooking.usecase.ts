@@ -1,3 +1,8 @@
+import {
+  CancelBookingRequestDTO,
+  CancelBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
+
 export interface ICancelBookingUseCase {
-  execute(bookingId: string, status: string, reason: string): Promise<any>;
+  execute(data: CancelBookingRequestDTO): Promise<CancelBookingResponseDTO["booking"]>;
 }

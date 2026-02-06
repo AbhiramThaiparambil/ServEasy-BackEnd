@@ -7,6 +7,7 @@ import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/co
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
 import { IUpdateBookingStatusUseCase } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { ICancelBookingUseCase } from "../../application/use-case/user/booking/cancelBooking/ICancelBooking.usecase";
+import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import { IDeleteSlotUseCase } from "../../application/use-case/serviceProvider/slot/deleteSlot/IDeleteSlot.usecase";
 import { ICreateSlotUseCase } from "../../application/use-case/serviceProvider/slot/createSlot/ICreateSlot.usecase";
 import { IGetSlotUseCase } from "../../application/use-case/serviceProvider/slot/getSlots/IGetSlot.usecase";
@@ -57,11 +58,13 @@ export class ServiceController {
         return;
       }
 
-      const result = await this.cancelBookingUseCase.execute(
-        id,
-        "cancelled",
-        cancellationReason,
-      );
+      const dto: CancelBookingRequestDTO = {
+        bookingId: id,
+        status: "cancelled",
+        reason: cancellationReason,
+      };
+
+      const result = await this.cancelBookingUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: "Booking cancelled successfully.",

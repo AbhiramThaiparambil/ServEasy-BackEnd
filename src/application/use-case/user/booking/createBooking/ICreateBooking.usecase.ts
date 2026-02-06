@@ -1,17 +1,8 @@
-import mongoose from "mongoose";
 import {
-  IServiceBooking,
-  IPreferredServiceDateTime,
-  IliveLocation,
-} from "../../../../../domain/entities/IServiceBooking";
-import { IAddress } from "../../../../../domain/entities/IAddress";
+  CreateBookingRequestDTO,
+  CreateBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 
 export interface ICreateBookingUseCase {
-  execute(
-    userId: mongoose.Types.ObjectId,
-    serviceId: mongoose.Types.ObjectId,
-    address: IAddress,
-    preferredServiceTime: IPreferredServiceDateTime,
-    liveLocation?: IliveLocation,
-  ): Promise<IServiceBooking>;
+  execute(data: CreateBookingRequestDTO): Promise<CreateBookingResponseDTO["booking"]>;
 }

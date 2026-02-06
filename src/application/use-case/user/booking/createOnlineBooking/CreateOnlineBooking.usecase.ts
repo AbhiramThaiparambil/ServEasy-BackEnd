@@ -10,6 +10,11 @@ import { ServiceBookingRepository } from "../../../../../infrastructure/reposito
 import { ISlotRepository } from "../../../../../domain/repositories/ISlotRepository";
 import { ICreateOnlineBookingUseCase } from "./ICreateOnlineBooking.usecase";
 
+import {
+  CreateOnlineBookingRequestDTO,
+  CreateOnlineBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
+
 @injectable()
 export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
   constructor(
@@ -23,11 +28,10 @@ export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
     private slotRepository: ISlotRepository
   ) {}
 
-  async execute(
-    userId: mongoose.Types.ObjectId,
-    serviceId: mongoose.Types.ObjectId,
-    slotId: string
-  ): Promise<IServiceBooking> {
+  async execute(data: CreateOnlineBookingRequestDTO): Promise<IServiceBooking> {
+    const { userId: userIdStr, serviceId: serviceIdStr, slotId } = data;
+    const userId = new mongoose.Types.ObjectId(userIdStr);
+    const serviceId = new mongoose.Types.ObjectId(serviceIdStr);
     const service = await this.serviceRepository.findById(serviceId);
     if (!service || !slotId) {
       throw new Error("Service not found or slot ID is missing");

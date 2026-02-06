@@ -2,6 +2,11 @@ import { inject, injectable } from "tsyringe";
 import mongoose from "mongoose";
 import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
+import {
+  CancelBookingRequestDTO,
+  CancelBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
+import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 import { ICancelBookingUseCase } from "./ICancelBooking.usecase";
 
 @injectable()
@@ -13,10 +18,11 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(bookingId: string, status: string, reason: string) {
+  async execute(data: CancelBookingRequestDTO): Promise<IServiceBooking | null> {
+    const { bookingId, status, reason } = data;
     const id = new mongoose.Types.ObjectId(bookingId);
 
-    const data = await this.serviceBookingRepository.cancelBooking(
+    const cancelledBooking = await this.serviceBookingRepository.cancelBooking(
       id,
       status,
       reason,
@@ -29,8 +35,8 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     );
 
     this.socketService.sendNotificationToUser(
-      data?.userId + "",
-      data?.userId + "",
+      cancelledBooking?.userId + "",
+      cancelledBooking?.userId + "",
       {
         type: "notification",
         targetRole:"USER",
@@ -39,6 +45,6 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
       },
     );
 
-    return data;
+    return cancelledBooking;
   }
 }

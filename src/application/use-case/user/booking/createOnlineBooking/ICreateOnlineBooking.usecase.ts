@@ -1,13 +1,8 @@
-import mongoose from "mongoose";
 import {
-  IServiceBooking,
-  IPreferredServiceDateTime,
-} from "../../../../../domain/entities/IServiceBooking";
+  CreateOnlineBookingRequestDTO,
+  CreateOnlineBookingResponseDTO,
+} from "../../../../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
 
 export interface ICreateOnlineBookingUseCase {
-  execute(
-    userId: mongoose.Types.ObjectId,
-    serviceId: mongoose.Types.ObjectId,
-    slotId: string
-  ): Promise<IServiceBooking>;
+  execute(data: CreateOnlineBookingRequestDTO): Promise<CreateOnlineBookingResponseDTO["booking"]>;
 }
