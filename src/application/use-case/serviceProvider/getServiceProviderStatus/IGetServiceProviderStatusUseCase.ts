@@ -1,8 +1,6 @@
+import { GetServiceProviderStatusRequestDTO } from "../../../dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusRequestDTO";
+import { GetServiceProviderStatusResponseDTO } from "../../../dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusResponseDTO";
+
 export interface IGetServiceProviderStatusUseCase {
-  execute(
-    userId: string
-  ): Promise<
-    | { hasProvider: boolean; status?: undefined }
-    | { hasProvider: boolean; status: "verified" | "pending" | "rejected" }
-  >;
+  execute(data: GetServiceProviderStatusRequestDTO): Promise<GetServiceProviderStatusResponseDTO>;
 }

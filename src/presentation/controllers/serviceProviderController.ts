@@ -55,6 +55,7 @@ import { GetProfileRequestDTO } from "../../application/dtos/serviceProvider/pro
 import { EditProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/editProfile/EditProfileRequestDTO";
 import { GetWalletRequestDTO } from "../../application/dtos/serviceProvider/wallet/getWallet/GetWalletRequestDTO";
 import { WithdrawPaymentRequestDTO } from "../../application/dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentRequestDTO";
+import { GetServiceProviderStatusRequestDTO } from "../../application/dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusRequestDTO";
 
 @injectable()
 export class ServiceProviderController {
@@ -151,17 +152,17 @@ export class ServiceProviderController {
     }
   }
 
-  async getStatus(req: Request, res: Response): Promise<void> {
+  async getServiceProviderStatus(req: Request, res: Response): Promise<void> {
     try {
-      console.log("status called ");
       const userId = res.locals.user?.userId;
 
       if (!userId) {
         res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized" });
         return;
       }
-
-      const result = await this.getServiceProviderStatusUseCase.execute(userId);
+      
+      const dto: GetServiceProviderStatusRequestDTO = { userId };
+      const result = await this.getServiceProviderStatusUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json(result);
       return;
@@ -169,7 +170,6 @@ export class ServiceProviderController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Unable to fetch service provider status",
       });
-      return;
     }
   }
 

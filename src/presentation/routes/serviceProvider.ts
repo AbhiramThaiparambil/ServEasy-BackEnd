@@ -21,8 +21,10 @@ router.put("/reapply", authMiddleware("User"), (req, res) =>
   serviceController.reapplyServiceProvider(req, res)
 );
 
-router.get("/status", authMiddleware("User"), (req, res) =>
-  serviceController.getStatus(req, res)
+router.get(
+  "/status",
+  authMiddleware("User"),
+  (req, res) => serviceController.getServiceProviderStatus(req, res)
 );
 
 router.get("/verify", authMiddleware("User"), (req, res) =>

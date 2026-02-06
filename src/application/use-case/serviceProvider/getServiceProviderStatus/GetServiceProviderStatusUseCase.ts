@@ -2,6 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IGetServiceProviderStatusUseCase } from "./IGetServiceProviderStatusUseCase";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { GetServiceProviderStatusRequestDTO } from "../../../dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusRequestDTO";
+import { GetServiceProviderStatusResponseDTO } from "../../../dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusResponseDTO";
 
 @injectable()
 export class GetServiceProviderStatusUseCase
@@ -12,9 +14,9 @@ export class GetServiceProviderStatusUseCase
     private serviceProviderRepository: IServiceProviderRepository
   ) {}
 
-  async execute(userId: string) {
+  async execute(data: GetServiceProviderStatusRequestDTO): Promise<GetServiceProviderStatusResponseDTO> {
     const provider = await this.serviceProviderRepository.findStatusByUserId(
-      userId
+      data.userId
     );
 
     if (!provider) {
