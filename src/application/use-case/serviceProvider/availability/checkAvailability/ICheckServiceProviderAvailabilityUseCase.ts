@@ -1,3 +1,5 @@
+import { CheckAvailabilityRequestDTO } from "../../../../dtos/serviceProvider/availability/CheckAvailabilityDTO";
+
 export interface ICheckServiceProviderAvailabilityUseCase {
-  execute(serviceProviderId: string): Promise<any>;
+  execute(data: CheckAvailabilityRequestDTO): Promise<any>;
 }

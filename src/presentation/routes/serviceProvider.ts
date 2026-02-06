@@ -56,7 +56,7 @@ router.put("/services/deactivate-all/:id", (req, res) =>
   serviceController.makeInactiveAllService(req, res)
 );
 router.get("/availability/:serviceProviderId", (req, res) =>
-  serviceController.getAvailability(req, res)
+  serviceController.checkServiceProviderAvailability(req, res)
 );
 
 router.get("/wallet", authMiddleware("User"), serviceProviderAuth, (req, res) =>

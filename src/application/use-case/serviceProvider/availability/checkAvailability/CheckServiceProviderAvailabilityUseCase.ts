@@ -3,6 +3,7 @@ import { IServiceBookingRepository } from "../../../../../domain/repositories/Is
 import { Types } from "mongoose";
 import { ICheckServiceProviderAvailabilityUseCase } from "./ICheckServiceProviderAvailabilityUseCase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { CheckAvailabilityRequestDTO } from "../../../../dtos/serviceProvider/availability/CheckAvailabilityDTO";
 
 @injectable()
 export class CheckServiceProviderAvailabilityUseCase implements ICheckServiceProviderAvailabilityUseCase {
@@ -12,10 +13,10 @@ export class CheckServiceProviderAvailabilityUseCase implements ICheckServicePro
   ) {}
 
   async execute(
-   serviceProviderId: string,
+   data: CheckAvailabilityRequestDTO
   ) {
 
-  const availability = await this.serviceBookingRepository.checkAvailability(new Types.ObjectId(serviceProviderId));
+  const availability = await this.serviceBookingRepository.checkAvailability(new Types.ObjectId(data.serviceProviderId));
  return availability
   }
 }

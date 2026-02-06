@@ -14,6 +14,8 @@ import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
 import { RegisterServiceProviderRequestDTO, ReapplyServiceProviderRequestDTO, UpdateUserWithProviderRequestDTO, GetRegistrationDetailsRequestDTO } from "../../application/dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+import { CheckAvailabilityRequestDTO } from "../../application/dtos/serviceProvider/availability/CheckAvailabilityDTO";
+import { MarkSlotBookedRequestDTO } from "../../application/dtos/serviceProvider/slot/MarkSlotAsBookedDTO";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
@@ -51,6 +53,7 @@ import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { IMarkSlotAsBookedUseCase } from "../../application/use-case/serviceProvider/slot/markAsBooked/IMarkSlotAsBooked.usecase";
 import { IEditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/profile/editProfile/IEditProfile";
 import { IGetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
@@ -127,6 +130,8 @@ export class ServiceProviderController {
     private editServiceUseCase: IEditServiceUseCase,
     @inject(USE_CASE_TOKENS.GetService)
     private getServicesUseCase: IGetServicesUseCase,
+    @inject(USE_CASE_TOKENS.MarkSlotAsBookedUseCase)
+    private markSlotAsBookedUseCase: IMarkSlotAsBookedUseCase,
   ) {}
 
   async getRegistrationDetails(req: Request, res: Response): Promise<void> {
@@ -589,6 +594,29 @@ export class ServiceProviderController {
     }
   }
 
+  async markSlotAsBooked(req: Request, res: Response): Promise<void> {
+    try {
+      const slotId = req.params.slotId;
+      
+      if (!slotId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "Slot ID is required" });
+        return;
+      }
+
+      const dto: MarkSlotBookedRequestDTO = { slotId };
+      const updatedSlot = await this.markSlotAsBookedUseCase.execute(dto);
+
+      if (updatedSlot) {
+        res.status(HttpStatus.OK).json({ message: "Slot marked as booked", slot: updatedSlot });
+      } else {
+        res.status(HttpStatus.NOT_FOUND).json({ message: "Slot not found" });
+      }
+    } catch (error) {
+      console.error("Error marking slot as booked:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+    }
+  }
+
   async getServiceProvider(req: Request, res: Response): Promise<void> {
     try {
       const user = res.locals.user;
@@ -686,28 +714,23 @@ export class ServiceProviderController {
   // }
   // }
 
-  async getAvailability(req: Request, res: Response): Promise<void> {
+  async checkServiceProviderAvailability(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
-      const serviceProviderId = req.params.serviceProviderId;
-
-      if (!serviceProviderId) {
-        res
-          .status(HttpStatus.BAD_REQUEST)
-          .json({ message: "Service provider ID is required" });
-        return;
-      }
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const dto: CheckAvailabilityRequestDTO = { serviceProviderId };
 
       const availability =
-        await this.checkServiceProviderAvailabilityUseCase.execute(
-          serviceProviderId,
-        );
+        await this.checkServiceProviderAvailabilityUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ availability });
     } catch (error) {
-      console.error("Error fetching availability:", error);
+      console.error("Error checking availability:", error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal server error" });
+        .json({ message: "Internal server error." });
     }
   }
 

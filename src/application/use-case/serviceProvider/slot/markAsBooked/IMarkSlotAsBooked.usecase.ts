@@ -1,5 +1,6 @@
 import { ISlot } from "../../../../../domain/entities/ISlot";
+import { MarkSlotBookedRequestDTO } from "../../../../dtos/serviceProvider/slot/MarkSlotAsBookedDTO";
 
 export interface IMarkSlotAsBookedUseCase {
-  execute(id: string): Promise<ISlot | null>;
+  execute(data: MarkSlotBookedRequestDTO): Promise<ISlot | null>;
 }
