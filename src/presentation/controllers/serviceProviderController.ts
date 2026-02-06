@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { GetPaymentInfoUseCaseServiceProvider } from "../../application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
-import { EditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/EditProfile";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { RegisterServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
 import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
-import { GetServiceProvider } from "../../application/use-case/serviceProvider/auth/getServiceProvider";
 import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
@@ -50,6 +48,9 @@ import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { IEditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/profile/editProfile/IEditProfile";
+import { IGetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
+import { GetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
 
 @injectable()
 export class ServiceProviderController {
@@ -57,9 +58,9 @@ export class ServiceProviderController {
     @inject(GetPaymentInfoUseCaseServiceProvider)
     private getPaymentInfo: GetPaymentInfoUseCaseServiceProvider,
     @inject(GetServiceProvider)
-    private getServiceProviderUseCase: GetServiceProvider,
-    @inject(EditServiceProviderProfileUseCase)
-    private editServiceProviderProfileUseCase: EditServiceProviderProfileUseCase,
+    private getServiceProviderUseCase: IGetServiceProvider,
+    @inject(USE_CASE_TOKENS.EditServiceProviderProfileUseCase)
+    private editServiceProviderProfileUseCase: IEditServiceProviderProfileUseCase,
     @inject(RegisterServiceProviderUseCase)
     private registerServiceProviderUseCase: RegisterServiceProviderUseCase,
     @inject(UpdateUserWithServiceProviderUseCase)

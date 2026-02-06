@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
-import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
-import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 import { IGetServiceProvider } from "./IGetServiceProvider";
 
 @injectable()

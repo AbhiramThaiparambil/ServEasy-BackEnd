@@ -257,16 +257,13 @@ import { IServiceProviderRejectVerify } from "./application/use-case/admin/provi
 import { ServiceProviderRejectVerify } from "./application/use-case/admin/provider-management/rejectRequest/ServiceProviderReject.usecase";
 import { IManageAllServiceUseCase } from "./application/use-case/admin/dashboard/IManageAllService.usecase";
 import { ManageAllServiceUseCase } from "./application/use-case/admin/dashboard/ManageAllService.usecase";
-import { IEditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/IEditProfile";
-import { EditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/EditProfile";
 import { IGetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/IGetPaymentInfoServiceProvider";
 import { GetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
 import { ICheckServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/ICheckServiceProviderAvailability";
 import { checkServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
 import { IVerifyServiceProvider } from "./application/use-case/serviceProvider/IVerifyServiceProvider";
 import { VerifyServiceProvider } from "./application/use-case/serviceProvider/VerifyServiceProvider";
-import { IGetServiceProvider } from "./application/use-case/serviceProvider/auth/IGetServiceProvider";
-import { GetServiceProvider } from "./application/use-case/serviceProvider/auth/getServiceProvider";
+import { IGetServiceProvider } from "./application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
 import { IAutoSuggestion } from "./application/use-case/user/location/IAutoSuggestion";
 import { AutoSuggestion } from "./application/use-case/user/location/autoSuggestion";
 import { IUserSiteSettings } from "./application/use-case/user/site-settings/IUserSiteSettings";
@@ -283,6 +280,9 @@ import { AdminSiteSettingsUseCase } from "./application/use-case/admin/site-sett
 import { UserSiteSettings } from "./application/use-case/user/site-settings/UserSiteSettingsUseCase";
 import { IGetProviderVerificationDetailsUseCase } from "./application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
 import { GetProviderVerificationDetailsUseCase } from "./application/use-case/admin/provider-management/getProviderVerificationDetails/GetProviderVerificationDetails.usecase";
+import { IEditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/profile/editProfile/IEditProfile";
+import { EditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/profile/editProfile/EditProfile";
+import { GetServiceProvider } from "./application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
