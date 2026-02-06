@@ -9,6 +9,8 @@ import { IUserRepository } from "../../../../../domain/repositories/IuserReposit
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IGetBookedServiceByIdUseCase } from "./IGetBookedServiceById.usecase";
 
+import { GetBookedServiceByIdRequestDTO } from "../../../../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
+
 @injectable()
 export class GetBookedServiceByIdUseCase
   implements IGetBookedServiceByIdUseCase
@@ -41,7 +43,8 @@ export class GetBookedServiceByIdUseCase
     return bookedService;
   }
 
-  async getForUser(bookingId: mongoose.Types.ObjectId) {
+  async getForUser(data: GetBookedServiceByIdRequestDTO) {
+    const { bookingId } = data;
     const id = new mongoose.Types.ObjectId(bookingId);
 
     const bookedService = await this.getBookedServiceOrThrow(id);
@@ -60,7 +63,8 @@ export class GetBookedServiceByIdUseCase
     };
   }
 
-  async getForServiceProvider(bookingId: mongoose.Types.ObjectId) {
+  async getForServiceProvider(data: GetBookedServiceByIdRequestDTO) {
+    const { bookingId } = data;
     const id = new mongoose.Types.ObjectId(bookingId);
 
     const bookedService = await this.getBookedServiceOrThrow(id);

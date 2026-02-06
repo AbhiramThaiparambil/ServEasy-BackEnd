@@ -1,18 +1,16 @@
-import mongoose from "mongoose";
+import {
+  GetUserBookedServicesRequestDTO,
+  GetServiceProviderBookedServicesRequestDTO,
+  GetUserBookedServiceCountRequestDTO,
+} from "../../../../../application/dtos/common/booking/fetchBookings/GetBookedServicesDTO";
 
 export interface IGetBookedServicesUseCase {
-  getUserBookedServices(
-    userId: mongoose.Types.ObjectId,
-    skip: number,
-    limit: number
-  ): Promise<any>;
+  getUserBookedServices(data: GetUserBookedServicesRequestDTO): Promise<any>;
 
-  getUserBookedServiceCount(userId: mongoose.Types.ObjectId): Promise<number>;
+  getUserBookedServiceCount(data: GetUserBookedServiceCountRequestDTO): Promise<number>;
 
   getServiceProviderBookedServices(
-    serviceProviderId: mongoose.Types.ObjectId,
-    skip: number,
-    limit: number
+    data: GetServiceProviderBookedServicesRequestDTO,
   ): Promise<{
     services: any;
     count: number;

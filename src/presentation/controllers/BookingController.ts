@@ -16,6 +16,12 @@ import { IUploadBillsUseCase } from "../../application/use-case/serviceProvider/
 import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 import { CreateOnlineBookingRequestDTO } from "../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
 import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
+import {
+  GetUserBookedServicesRequestDTO,
+  GetServiceProviderBookedServicesRequestDTO,
+  GetUserBookedServiceCountRequestDTO,
+} from "../../application/dtos/common/booking/fetchBookings/GetBookedServicesDTO";
+import { GetBookedServiceByIdRequestDTO } from "../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
 
 @injectable()
 export class BookingController {
@@ -285,8 +291,9 @@ export class BookingController {
       console.log("hello");
       const userId = new mongoose.Types.ObjectId(res.locals.user.userId);
       if (req.query.count) {
+        const dto: GetUserBookedServiceCountRequestDTO = { userId: userId.toString() };
         const count =
-          await this.getBookedServicesUseCase.getUserBookedServiceCount(userId);
+          await this.getBookedServicesUseCase.getUserBookedServiceCount(dto);
         res.status(HttpStatus.OK).json({ count });
         return;
       }
@@ -295,12 +302,14 @@ export class BookingController {
       const page = Number(req.query.page ?? 0);
       const skip = page * limit;
 
+      const dto: GetUserBookedServicesRequestDTO = {
+        userId: userId.toString(),
+        skip,
+        limit,
+      };
+
       const services =
-        await this.getBookedServicesUseCase.getUserBookedServices(
-          userId,
-          skip,
-          limit,
-        );
+        await this.getBookedServicesUseCase.getUserBookedServices(dto);
 
       res.status(HttpStatus.OK).json({ services });
     } catch (error) {
@@ -323,10 +332,9 @@ export class BookingController {
         });
       }
 
+      const dto: GetBookedServiceByIdRequestDTO = { bookingId: id };
       const service =
-        await this.getBookedServiceByIdUseCase.getForServiceProvider(
-          new mongoose.Types.ObjectId(id),
-        );
+        await this.getBookedServiceByIdUseCase.getForServiceProvider(dto);
 
       res.status(HttpStatus.OK).json({ service });
     } catch (error) {
@@ -349,9 +357,8 @@ export class BookingController {
         });
       }
 
-      const service = await this.getBookedServiceByIdUseCase.getForUser(
-        new mongoose.Types.ObjectId(id),
-      );
+      const dto: GetBookedServiceByIdRequestDTO = { bookingId: id };
+      const service = await this.getBookedServiceByIdUseCase.getForUser(dto);
 
       res.status(HttpStatus.OK).json({ service });
     } catch (error) {
@@ -378,12 +385,14 @@ export class BookingController {
       const page = Number(req.query.page ?? 0);
       const skip = page * limit;
 
+      const dto: GetServiceProviderBookedServicesRequestDTO = {
+        serviceProviderId,
+        skip,
+        limit,
+      };
+
       const { services, count } =
-        await this.getBookedServicesUseCase.getServiceProviderBookedServices(
-          new mongoose.Types.ObjectId(serviceProviderId),
-          skip,
-          limit,
-        );
+        await this.getBookedServicesUseCase.getServiceProviderBookedServices(dto);
 
       res.status(HttpStatus.OK).json({
         services,

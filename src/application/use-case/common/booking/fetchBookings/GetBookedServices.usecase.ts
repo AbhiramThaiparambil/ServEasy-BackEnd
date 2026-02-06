@@ -4,6 +4,12 @@ import { ServiceBookingRepository } from "../../../../../infrastructure/reposito
 import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
 import { IGetBookedServicesUseCase } from "./IGetBookedServices.usecase";
 
+import {
+  GetUserBookedServicesRequestDTO,
+  GetServiceProviderBookedServicesRequestDTO,
+  GetUserBookedServiceCountRequestDTO,
+} from "../../../../../application/dtos/common/booking/fetchBookings/GetBookedServicesDTO";
+
 @injectable()
 export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
   constructor(
@@ -14,11 +20,8 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
     private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
-  async getUserBookedServices(
-    userId: mongoose.Types.ObjectId,
-    skip: number,
-    limit: number
-  ) {
+  async getUserBookedServices(data: GetUserBookedServicesRequestDTO) {
+    const { userId, skip, limit } = data;
     const uId = new mongoose.Types.ObjectId(userId);
 
     return this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
@@ -29,18 +32,18 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
   }
 
   async getUserBookedServiceCount(
-    userId: mongoose.Types.ObjectId
+    data: GetUserBookedServiceCountRequestDTO
   ): Promise<number> {
+    const { userId } = data;
     const uId = new mongoose.Types.ObjectId(userId);
 
     return this.serviceBookingRepository.findCountBookedServicebyUserId(uId);
   }
 
   async getServiceProviderBookedServices(
-    serviceProviderId: mongoose.Types.ObjectId,
-    skip: number,
-    limit: number
+    data: GetServiceProviderBookedServicesRequestDTO
   ) {
+    const { serviceProviderId, skip, limit } = data;
     const sId = new mongoose.Types.ObjectId(serviceProviderId);
 
     const services =
