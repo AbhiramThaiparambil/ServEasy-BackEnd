@@ -1,5 +1,5 @@
-import { IUpdateProfile } from "../../../domain/entities/IServiceProvider";
+import { EditProfileRequestDTO } from "../../../../dtos/serviceProvider/profile/editProfile/EditProfileRequestDTO";
 
 export interface IEditServiceProviderProfileUseCase {
-  execute(data: IUpdateProfile): Promise<any>;
+  execute(data: EditProfileRequestDTO): Promise<boolean>;
 }

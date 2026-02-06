@@ -51,6 +51,8 @@ import { IGetSubscriptionPlansUseCase } from "../../application/use-case/service
 import { IEditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/profile/editProfile/IEditProfile";
 import { IGetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
 import { GetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
+import { GetProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/getProfile/GetProfileRequestDTO";
+import { EditProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/editProfile/EditProfileRequestDTO";
 
 @injectable()
 export class ServiceProviderController {
@@ -331,11 +333,19 @@ export class ServiceProviderController {
 
   async updateServiceProvider(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.body);
+      const serviceProviderId = res.locals.serviceProvider_id;
+      
+      if (!serviceProviderId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized" });
+        return;
+      }
 
-      const updated = await this.editServiceProviderProfileUseCase.execute(
-        req.body,
-      );
+      const dto: EditProfileRequestDTO = {
+        serviceProviderId,
+        ...req.body
+      };
+
+      const updated = await this.editServiceProviderProfileUseCase.execute(dto);
 
       if (updated) {
         res
@@ -558,9 +568,10 @@ export class ServiceProviderController {
     try {
       const user = res.locals.user;
 
-      const result = await this.getServiceProviderUseCase.execute(user.userId);
+      const dto: GetProfileRequestDTO = { userId: user.userId };
+      const result = await this.getServiceProviderUseCase.execute(dto);
 
-      res.status(HttpStatus.CREATED).json({ serviceProvider: result });
+      res.status(HttpStatus.OK).json({ serviceProvider: result });
     } catch (error) {
       console.error("Error fetching service provider:", error);
       res

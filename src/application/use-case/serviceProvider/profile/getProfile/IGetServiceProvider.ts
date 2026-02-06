@@ -1,5 +1,6 @@
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
+import { GetProfileRequestDTO } from "../../../../dtos/serviceProvider/profile/getProfile/GetProfileRequestDTO";
+import { GetProfileResponseDTO } from "../../../../dtos/serviceProvider/profile/getProfile/GetProfileResponseDTO";
 
 export interface IGetServiceProvider {
-  execute(userId: string): Promise<IServiceProvider>;
+  execute(data: GetProfileRequestDTO): Promise<GetProfileResponseDTO>;
 }

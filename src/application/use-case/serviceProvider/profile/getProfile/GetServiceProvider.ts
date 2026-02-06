@@ -1,8 +1,9 @@
 import { injectable, inject } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
-import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 import { IGetServiceProvider } from "./IGetServiceProvider";
+import { GetProfileRequestDTO } from "../../../../dtos/serviceProvider/profile/getProfile/GetProfileRequestDTO";
+import { GetProfileResponseDTO } from "../../../../dtos/serviceProvider/profile/getProfile/GetProfileResponseDTO";
 
 @injectable()
 export class GetServiceProvider implements IGetServiceProvider {
@@ -11,12 +12,23 @@ export class GetServiceProvider implements IGetServiceProvider {
     private serviceProviderRepository: IServiceProviderRepository
   ) {}
 
-  async execute(userId: string): Promise<IServiceProvider> {
-    const result = await this.serviceProviderRepository.findByUserID(userId);
-    console.log(result);
+  async execute(data: GetProfileRequestDTO): Promise<GetProfileResponseDTO> {
+    const result = await this.serviceProviderRepository.findByUserID(data.userId);
+    
     if (!result) {
-      throw new Error("service providr not exist");
+      throw new Error("Service provider not found");
     }
-    return result;
+    
+    return {
+      _id: result._id?.toString() || "",
+      serviceProviderName: result.serviceProviderName,
+      serviceProviderEmail: result.serviceProviderEmail,
+      serviceProviderPhone: result.serviceProviderPhone,
+      location: result.location,
+      bio: result.description,
+      profileImage: result.profileImage,
+      isActive: !result.isBlocked,
+      createdAt: result.createdAt || new Date()
+    };
   }
 }
