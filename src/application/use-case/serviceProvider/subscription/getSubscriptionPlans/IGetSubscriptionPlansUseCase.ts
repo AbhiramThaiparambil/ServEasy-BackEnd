@@ -1,5 +1,5 @@
-import { ISubscriptionPlan } from "../../../../../domain/entities/ISubscriptionPlan";
+import { SubscriptionPlanResponseDTO } from "../../../../dtos/admin/subscription/SubscriptionPlanDTO";
 
 export interface IGetSubscriptionPlansUseCase {
-  execute(): Promise<ISubscriptionPlan[]>;
+  execute(): Promise<SubscriptionPlanResponseDTO[]>;
 }
