@@ -1,9 +1,6 @@
 import { AiChatResponse } from "../../../../../utils/types/dto/IAiChatResponse";
+import { CreateAiChatRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
 
 export interface ICreateAiChatUseCase {
-  execute(
-    serviceProviderId: string,
-    prompt: string,
-    activeChatId?: string
-  ): Promise<AiChatResponse | void>;
+  execute(data: CreateAiChatRequestDTO): Promise<AiChatResponse>;
 }

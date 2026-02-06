@@ -7,6 +7,10 @@ import { ConversationWithParticipantsListInstance } from "twilio/lib/rest/conver
 import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
 import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
 import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
+import { CreateAiChatRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
+import { GetAIChatByIdRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
+import { GetProviderAIChatsRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getByServiceProvidersId/GetProviderAIChatsRequestDTO";
+
 @injectable()
 export class ServiceProviderSubscriptionController {
   constructor(
@@ -41,11 +45,13 @@ export class ServiceProviderSubscriptionController {
       return;
     }
 
-    const response = await this.createAiChatUseCase.execute(
+    const dto: CreateAiChatRequestDTO = {
       serviceProviderId,
-      message,
-      activeChatId
-    );
+      prompt: message,
+      activeChatId,
+    };
+
+    const response = await this.createAiChatUseCase.execute(dto);
     console.log(response);
     console.log(
       "----------------------------====-------------===----------===--------"
@@ -78,7 +84,8 @@ export class ServiceProviderSubscriptionController {
           .json({ error: "chat id is required" });
         return;
       }
-      const data = await this.getAIChatByIdUseCase.execute(chatId);
+      const dto: GetAIChatByIdRequestDTO = { id: chatId };
+      const data = await this.getAIChatByIdUseCase.execute(dto);
 
       if (!data) {
         res.status(HttpStatus.NOT_FOUND).json({ error: "Chat not found" });
@@ -107,7 +114,8 @@ export class ServiceProviderSubscriptionController {
         return;
       }
 
-      const data = await this.getProviderChats.execute(providerId);
+      const dto: GetProviderAIChatsRequestDTO = { providerId };
+      const data = await this.getProviderChats.execute(dto);
 
       if (!data) {
         res.status(HttpStatus.NOT_FOUND).json({ error: "Chat not found" });

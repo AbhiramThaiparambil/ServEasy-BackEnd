@@ -5,6 +5,8 @@ import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiA
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
 
+import { GetAIChatByIdRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
+
 @injectable()
 export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
   constructor(
@@ -12,7 +14,8 @@ export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
     private readonly aiAssistance: IAiAssistanceRepository
   ) {}
 
-  async execute(id: string): Promise<IAiAssistanceChatSession | null> {
+  async execute(data: GetAIChatByIdRequestDTO): Promise<IAiAssistanceChatSession | null> {
+    const { id } = data;
     try {
       if (!isValidObjectId(id)) {
         console.error(` ${id} is not valid objectId`);

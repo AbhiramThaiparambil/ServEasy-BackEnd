@@ -10,6 +10,8 @@ import { AiChatResponse } from "../../../../../utils/types/dto/IAiChatResponse";
 import { isValidObjectId, Types } from "mongoose";
 import { IAiAssistanceMessage } from "../../../../../domain/entities/IAiAssistance";
 
+import { CreateAiChatRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
+
 @injectable()
 export class CreateAiChatUseCase implements ICreateAiChatUseCase {
   constructor(
@@ -20,10 +22,9 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
   ) {}
 
   async execute(
-    serviceProviderId: string,
-    prompt: string,
-    activeChatId?: string
+    data: CreateAiChatRequestDTO
   ): Promise<AiChatResponse> {
+    const { serviceProviderId, prompt, activeChatId } = data;
     try {
       let chatId: string | undefined;
 

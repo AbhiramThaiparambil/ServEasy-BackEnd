@@ -30,8 +30,14 @@ import { GetCategoryRequestDTO } from "../../application/dtos/common/category/ge
 import { CreateAdRequestDTO } from "../../application/dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
 import { EditAdRequestDTO } from "../../application/dtos/serviceProvider/ads/editAd/EditAdRequestDTO";
 import { GetProviderAdsRequestDTO } from "../../application/dtos/serviceProvider/ads/getAd/GetProviderAdsRequestDTO";
+import { CreateAiChatRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
+import { GetAIChatByIdRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
+import { GetProviderAIChatsRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getByServiceProvidersId/GetProviderAIChatsRequestDTO";
 import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
 import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
+import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
+import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
+import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
@@ -87,6 +93,12 @@ export class ServiceProviderController {
     private getNotificationUsecase: IGetNotificationUseCase,
     @inject(USE_CASE_TOKENS.MarkNotificationAsReadUseCase)
     private markAsRead: IMarkNotificationAsReadUseCase,
+    @inject(USE_CASE_TOKENS.CreateAiChatUseCase)
+    private createAiChatUseCase: ICreateAiChatUseCase,
+    @inject(USE_CASE_TOKENS.GetAIChatByIdUseCase)
+    private getAIChatByIdUseCase: IGetAIChatByIdUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderAIChatsUseCase)
+    private getProviderAIChatsUseCase: IGetProviderAIChatsUseCase,
   ) {}
 
   async getRegistrationDetails(req: Request, res: Response): Promise<void> {
@@ -215,6 +227,63 @@ export class ServiceProviderController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
       return;
+    }
+  }
+
+  async handleChat(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const { prompt, activeChatId } = req.body;
+
+      const dto: CreateAiChatRequestDTO = {
+        serviceProviderId,
+        prompt,
+        activeChatId,
+      };
+
+      const result = await this.createAiChatUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, data: result });
+    } catch (error) {
+      console.error("Error in AI Assistance Controller:", error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  async getChatHistory(req: Request, res: Response): Promise<void> {
+    try {
+      const { chatId } = req.params;
+      const dto: GetAIChatByIdRequestDTO = { id: chatId };
+      const chat = await this.getAIChatByIdUseCase.execute(dto);
+
+      if (!chat) {
+        res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ success: false, message: "Chat not found" });
+        return;
+      }
+
+      res.status(HttpStatus.OK).json({ success: true, data: chat });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  async getProviderChats(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = res.locals.serviceProvider_id;
+      const dto: GetProviderAIChatsRequestDTO = { providerId };
+      const chats = await this.getProviderAIChatsUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, data: chats });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
     }
   }
 

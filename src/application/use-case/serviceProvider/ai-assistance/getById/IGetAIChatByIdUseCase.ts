@@ -1,5 +1,6 @@
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
+import { GetAIChatByIdRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
 
 export interface IGetAIChatByIdUseCase {
-  execute(id: string): Promise<IAiAssistanceChatSession | null>;
+  execute(data: GetAIChatByIdRequestDTO): Promise<IAiAssistanceChatSession | null>;
 }

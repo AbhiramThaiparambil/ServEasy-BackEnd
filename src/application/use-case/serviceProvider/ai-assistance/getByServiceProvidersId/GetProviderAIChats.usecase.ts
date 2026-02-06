@@ -6,6 +6,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiAssistanceRepository";
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
 
+import { GetProviderAIChatsRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/getByServiceProvidersId/GetProviderAIChatsRequestDTO";
+
 @injectable()
 export class GetProviderAIChatsUseCase implements IGetProviderAIChatsUseCase {
   constructor(
@@ -14,8 +16,9 @@ export class GetProviderAIChatsUseCase implements IGetProviderAIChatsUseCase {
   ) {}
 
   async execute(
-    providerId: string
+    data: GetProviderAIChatsRequestDTO
   ): Promise<IAiAssistanceChatSession[] | null> {
+    const { providerId } = data;
     try {
       if (!isValidObjectId(providerId)) {
         console.error(` ${providerId} is not valid objectId`);
