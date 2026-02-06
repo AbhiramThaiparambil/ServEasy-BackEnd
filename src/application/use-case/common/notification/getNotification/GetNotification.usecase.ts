@@ -4,6 +4,8 @@ import { INotificationRepository } from "../../../../../domain/repositories/INot
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IGetNotificationUseCase } from "./IGetNotification.usecase";
 
+import { GetNotificationsRequestDTO } from "../../../../../application/dtos/common/notification/getNotification/GetNotificationDTO";
+
 @injectable()
 export class GetNotificationUseCase implements IGetNotificationUseCase {
   constructor(
@@ -11,7 +13,8 @@ export class GetNotificationUseCase implements IGetNotificationUseCase {
     private notificationRepository: INotificationRepository
   ) {}
 
-  async execute(userId: string) {
+  async execute(data: GetNotificationsRequestDTO) {
+    const { userId } = data;
     const objectId = new Types.ObjectId(userId);
 
     const notifications =

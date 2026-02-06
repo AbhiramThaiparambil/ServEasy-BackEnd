@@ -5,6 +5,7 @@ import {
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
 import { ICreateNotificationUseCase } from "../use-case/common/notification/createNotification/ICreateNotification.usecase";
+import { CreateNotificationRequestDTO } from "../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
 
 export class NotificationHandler {
   constructor(
@@ -34,9 +35,14 @@ export class NotificationHandler {
     if (notification.type === "chat") {
       const content = `${notification.senderName} sent you a message: "${notification.content}"`;
 
-      this.notificationUseCase.execute(content, userId);
+      const dto: CreateNotificationRequestDTO = { content, userId };
+      this.notificationUseCase.execute(dto);
     } else {
-      this.notificationUseCase.execute(notification.content, userId);
+      const dto: CreateNotificationRequestDTO = {
+        content: notification.content,
+        userId,
+      };
+      this.notificationUseCase.execute(dto);
     }
   }
 }

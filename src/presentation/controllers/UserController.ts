@@ -15,6 +15,10 @@ import { AddReviewUseCase } from "../../application/use-case/user/review/addRevi
 import { IDeleteAllNotificationUseCase } from "../../application/use-case/common/notification/deleteAllNotification/IDeleteAllNotification.usecase";
 import { IDeleteSingleNotificationUseCase } from "../../application/use-case/common/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { GetNotificationsRequestDTO } from "../../application/dtos/common/notification/getNotification/GetNotificationDTO";
+import { DeleteAllNotificationsRequestDTO } from "../../application/dtos/common/notification/deleteAllNotification/DeleteAllNotificationDTO";
+import { DeleteSingleNotificationRequestDTO } from "../../application/dtos/common/notification/deleteSingleNotification/DeleteSingleNotificationDTO";
+import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
 import { IAddReviewUseCase } from "../../application/use-case/user/review/addReview/IAddReviewUseCase";
 import { IGetAddress } from "../../application/use-case/user/address/getAddress/IGetAddress.usecase";
 import { IAddNewAddress } from "../../application/use-case/user/address/addAddress/IAddNewAddress.usecase";
@@ -201,7 +205,8 @@ export class UserController {
         return;
       }
 
-      const notification = await this.getNotificationUsecase.execute(userId);
+      const dto: GetNotificationsRequestDTO = { userId: userId };
+      const notification = await this.getNotificationUsecase.execute(dto);
       res.status(HttpStatus.OK).json(notification);
     } catch (error) {
       console.error(error);
@@ -224,12 +229,14 @@ export class UserController {
       }
 
       if (id === "deleteAll") {
-        await this.delteAllNotification.execute(userId);
+        const dto: DeleteAllNotificationsRequestDTO = { userId };
+        await this.delteAllNotification.execute(dto);
         res
           .status(HttpStatus.OK)
           .json({ message: "All notifications deleted" });
       } else {
-        await this.deleteSingleNotification.execute(id);
+        const dto: DeleteSingleNotificationRequestDTO = { notificationId: id };
+        await this.deleteSingleNotification.execute(dto);
         res.status(HttpStatus.OK).json({ message: "Notification deleted" });
       }
     } catch (error) {
@@ -253,7 +260,8 @@ export class UserController {
         return;
       }
 
-      await this.markAsRead.execute(id);
+      const dto: MarkNotificationAsReadRequestDTO = { notificationId: id };
+      await this.markAsRead.execute(dto);
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });

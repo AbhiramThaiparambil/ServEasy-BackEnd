@@ -4,6 +4,8 @@ import { INotificationRepository } from "../../../../../domain/repositories/INot
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IDeleteSingleNotificationUseCase } from "./IDeleteSingleNotification.usecase";
 
+import { DeleteSingleNotificationRequestDTO } from "../../../../../application/dtos/common/notification/deleteSingleNotification/DeleteSingleNotificationDTO";
+
 @injectable()
 export class DeleteSingleNotificationUseCase
   implements IDeleteSingleNotificationUseCase
@@ -13,7 +15,8 @@ export class DeleteSingleNotificationUseCase
     private notificationRepository: INotificationRepository
   ) {}
 
-  async execute(notificationId: string): Promise<void> {
+  async execute(data: DeleteSingleNotificationRequestDTO): Promise<void> {
+    const { notificationId } = data;
     await this.notificationRepository.delteSingleNotification(
       new Types.ObjectId(notificationId)
     );

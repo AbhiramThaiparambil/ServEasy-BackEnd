@@ -1,3 +1,5 @@
+import { DeleteAllNotificationsRequestDTO } from "../../../../../application/dtos/common/notification/deleteAllNotification/DeleteAllNotificationDTO";
+
 export interface IDeleteAllNotificationUseCase {
-  execute(userId: string): Promise<void>;
+  execute(data: DeleteAllNotificationsRequestDTO): Promise<void>;
 }

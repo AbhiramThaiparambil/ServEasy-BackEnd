@@ -21,6 +21,8 @@ import { IReapplyServiceProviderUseCase } from "../../application/use-case/servi
 import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
 import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { GetNotificationsRequestDTO } from "../../application/dtos/common/notification/getNotification/GetNotificationDTO";
+import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
 import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
 import { IEditAdUseCase } from "../../application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
 import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
@@ -140,8 +142,9 @@ export class ServiceProviderController {
         return;
       }
 
+      const dto: GetNotificationsRequestDTO = { userId: serviceProviderId };
       const notification =
-        await this.getNotificationUsecase.execute(serviceProviderId);
+        await this.getNotificationUsecase.execute(dto);
       res.status(HttpStatus.OK).json(notification);
     } catch (error) {
       console.error(error);
@@ -164,7 +167,8 @@ export class ServiceProviderController {
         return;
       }
 
-      await this.markAsRead.execute(id);
+      const dto: MarkNotificationAsReadRequestDTO = { notificationId: id };
+      await this.markAsRead.execute(dto);
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });

@@ -12,6 +12,7 @@ import {
 } from "../../domain/entities/INotification";
 import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
 import { ICreateNotificationUseCase } from "../../application/use-case/common/notification/createNotification/ICreateNotification.usecase";
+import { CreateNotificationRequestDTO } from "../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { ISaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/ISaveMessage.uescase";
 @singleton()
@@ -72,7 +73,11 @@ export class SocketService {
       const content = `${notification.senderName} sent you a message: "${notification.content}"`;
       // this.notificationUseCase.create(content, userId);
     } else if (notification.type === "notification") {
-      this.notificationUseCase.execute(notification.content, referenceId);
+      const dto: CreateNotificationRequestDTO = {
+        content: notification.content,
+        userId: referenceId,
+      };
+      this.notificationUseCase.execute(dto);
     }
   }
 }

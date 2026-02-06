@@ -4,6 +4,8 @@ import { INotificationRepository } from "../../../../../domain/repositories/INot
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICreateNotificationUseCase } from "./ICreateNotification.usecase";
 
+import { CreateNotificationRequestDTO } from "../../../../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
+
 @injectable()
 export class CreateNotificationUseCase implements ICreateNotificationUseCase {
   constructor(
@@ -11,7 +13,8 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
     private notificationRepository: INotificationRepository
   ) {}
 
-  async execute(content: string, userId: string): Promise<void> {
+  async execute(data: CreateNotificationRequestDTO): Promise<void> {
+    const { content, userId } = data;
     await this.notificationRepository.createNotification({
       content,
       userId: new Types.ObjectId(userId),

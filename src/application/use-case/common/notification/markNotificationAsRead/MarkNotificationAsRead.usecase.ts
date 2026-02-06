@@ -4,6 +4,8 @@ import { INotificationRepository } from "../../../../../domain/repositories/INot
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IMarkNotificationAsReadUseCase } from "./IMarkNotificationAsRead.usecase";
 
+import { MarkNotificationAsReadRequestDTO } from "../../../../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
+
 @injectable()
 export class MarkNotificationAsReadUseCase
   implements IMarkNotificationAsReadUseCase
@@ -13,7 +15,8 @@ export class MarkNotificationAsReadUseCase
     private notificationRepository: INotificationRepository
   ) {}
 
-  async execute(notificationId: string): Promise<void> {
+  async execute(data: MarkNotificationAsReadRequestDTO): Promise<void> {
+    const { notificationId } = data;
     await this.notificationRepository.markNotificationAsRead(
       new Types.ObjectId(notificationId)
     );

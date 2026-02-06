@@ -1,3 +1,5 @@
+import { CreateNotificationRequestDTO } from "../../../../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
+
 export interface ICreateNotificationUseCase {
-  execute(content: string, userId: string): Promise<void>;
+  execute(data: CreateNotificationRequestDTO): Promise<void>;
 }

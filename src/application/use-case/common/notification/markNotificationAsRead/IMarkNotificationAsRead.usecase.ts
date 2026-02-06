@@ -1,3 +1,5 @@
+import { MarkNotificationAsReadRequestDTO } from "../../../../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
+
 export interface IMarkNotificationAsReadUseCase {
-  execute(notificationId: string): Promise<void>;
+  execute(data: MarkNotificationAsReadRequestDTO): Promise<void>;
 }
