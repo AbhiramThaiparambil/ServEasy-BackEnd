@@ -3,6 +3,7 @@ import { IServiceProviderRepository } from "../../../../../domain/repositories/I
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
 import { ITokenService } from "../../../../../services/token/ITokenService";
+import { VerifyServiceProviderRequestDTO, VerifyServiceProviderResponseDTO } from "../../../../dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
 
 import { IVerifyServiceProvider } from "./IVerifyServiceProvider";
 
@@ -16,12 +17,15 @@ export class VerifyServiceProvider implements IVerifyServiceProvider {
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
   ) {}
 
-  async execute(userId: string): Promise<string | false> {
+  async execute(data: VerifyServiceProviderRequestDTO): Promise<VerifyServiceProviderResponseDTO> {
     try {
-      const userData = await this.userRepository.findById(userId);
+      const userData = await this.userRepository.findById(data.userId);
 
       if (!userData) {
-        throw new Error("User not found");
+        return {
+          success: false,
+          message: "User not found"
+        };
       }
 
       if (userData.serviceProvider) {
@@ -33,21 +37,36 @@ export class VerifyServiceProvider implements IVerifyServiceProvider {
           serviceProvider?.isVerified == "pending" ||
           serviceProvider?.isVerified == "rejected"
         ) {
-          return false;
+          return {
+            success: false,
+            message: "Service provider verification is pending or rejected"
+          };
         }
 
         if (serviceProvider && serviceProvider._id) {
-          return this.tokenService.generateRefreshToken(
+          const refreshToken = this.tokenService.generateRefreshToken(
             serviceProvider._id.toString(),
             "serviceProvider",
           );
+
+          return {
+            success: true,
+            refreshToken,
+            message: "Service provider verified successfully"
+          };
         }
       }
 
-      return false;
+      return {
+        success: false,
+        message: "Service provider not found for this user"
+      };
     } catch (error) {
       console.error("Error verifying service provider:", error);
-      throw new Error("Internal server error while verifying service provider");
+      return {
+        success: false,
+        message: "Internal server error while verifying service provider"
+      };
     }
   }
 }

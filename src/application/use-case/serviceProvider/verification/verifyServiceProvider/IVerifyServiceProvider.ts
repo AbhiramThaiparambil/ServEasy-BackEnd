@@ -1,3 +1,5 @@
+import { VerifyServiceProviderRequestDTO, VerifyServiceProviderResponseDTO } from "../../../../dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
+
 export interface IVerifyServiceProvider {
-  execute(userId: string): Promise<string | false>;
+  execute(data: VerifyServiceProviderRequestDTO): Promise<VerifyServiceProviderResponseDTO>;
 }

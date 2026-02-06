@@ -8,6 +8,7 @@ import { IServiceProviderRegistration } from "../../domain/entities/IServiceProv
 import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/verification/verifyServiceProvider/VerifyServiceProvider";
 import { CheckServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/availability/checkAvailability/CheckServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
+import { VerifyServiceProviderRequestDTO } from "../../application/dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
@@ -534,19 +535,29 @@ export class ServiceProviderController {
         return;
       }
 
-      const refreshToken = await this.verifyServiceProviderUseCase.execute(
-        user.userId,
-      );
+      const dto: VerifyServiceProviderRequestDTO = {
+        userId: user.userId
+      };
 
-      if (!refreshToken) {
+      const result = await this.verifyServiceProviderUseCase.execute(dto);
+
+      if (!result.success) {
         res
           .status(HttpStatus.BAD_REQUEST)
-          .json({ message: "Not a valid service provider" });
+          .json({ message: result.message || "Not a valid service provider" });
         return;
       }
 
-      setAuthCookies(res, "serviceProviderToken", refreshToken);
-      res.status(HttpStatus.OK).json({ message: "Service provider verified" });
+      if (result.refreshToken) {
+        setAuthCookies(res, "serviceProviderToken", result.refreshToken);
+        res.status(HttpStatus.OK).json({ 
+          message: result.message || "Service provider verified" 
+        });
+      } else {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Failed to generate refresh token" });
+      }
     } catch (error) {
       console.error("Error verifying service provider:", error);
       res
