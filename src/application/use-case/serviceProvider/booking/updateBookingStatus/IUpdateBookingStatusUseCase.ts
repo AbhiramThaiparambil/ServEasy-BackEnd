@@ -1,3 +1,5 @@
+import { UpdateBookingStatusRequestDTO } from "../../../../dtos/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusRequestDTO";
+
 export interface IUpdateBookingStatusUseCase {
-  execute(bookingId: string, status: string): Promise<any>;
+  execute(data: UpdateBookingStatusRequestDTO): Promise<any>;
 }

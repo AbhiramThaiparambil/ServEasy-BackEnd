@@ -13,7 +13,6 @@ import { IGetBookedServicesUseCase } from "../../application/use-case/common/boo
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/common/booking/fetchByid/IGetBookedServiceById.usecase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IUploadBillsUseCase } from "../../application/use-case/serviceProvider/booking/billing/IUploadBills.usecase";
-import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 import { CreateOnlineBookingRequestDTO } from "../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
 import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import {
@@ -22,6 +21,9 @@ import {
   GetUserBookedServiceCountRequestDTO,
 } from "../../application/dtos/common/booking/fetchBookings/GetBookedServicesDTO";
 import { GetBookedServiceByIdRequestDTO } from "../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
+import { UpdateBookingStatusRequestDTO } from "../../application/dtos/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusRequestDTO";
+import { ConfirmBookingRequestDTO } from "../../application/dtos/serviceProvider/booking/confirmBooking/ConfirmBookingRequestDTO";
+import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 
 @injectable()
 export class BookingController {
@@ -123,12 +125,15 @@ export class BookingController {
         res.status(HttpStatus.BAD_REQUEST).json({
           error: "Missing booking id or serviceStatus",
         });
+        return;
       }
+      
+      const dto: UpdateBookingStatusRequestDTO = {
+        bookingId: id,
+        status: serviceStatus
+      };
 
-      const data = await this.updateBookingStatusUseCase.execute(
-        id,
-        serviceStatus,
-      );
+      const data = await this.updateBookingStatusUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: "Booking status updated successfully",
@@ -178,20 +183,23 @@ export class BookingController {
         res.status(HttpStatus.BAD_REQUEST).json({
           error: "Missing required fields",
         });
+        return;
       }
-
-      const data = await this.confirmBookingUseCase.execute(
-        id,
-        serviceStatus,
+      
+      const dto: ConfirmBookingRequestDTO = {
+        bookingId: id,
+        status: serviceStatus,
         estimatedServiceTime,
         serviceProviderId,
-        Boolean(reschedule),
-        reschedReason,
-      );
+        reschedule: Boolean(reschedule),
+        rescheduleReason: reschedReason
+      };
+
+      const data = await this.confirmBookingUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
-        message: "Booking confirmed successfully",
-        data,
+        message: data.message || "Booking confirmed successfully",
+        success: data.success,
       });
     } catch (error) {
       res.status(HttpStatus.CONFLICT).json({

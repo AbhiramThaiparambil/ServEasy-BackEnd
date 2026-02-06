@@ -1,10 +1,6 @@
+import { ConfirmBookingRequestDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingRequestDTO";
+import { ConfirmBookingResponseDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingResponseDTO";
+
 export interface IConfirmBookingUseCase {
-  execute(
-    bookingId: string,
-    status: string,
-    estimatedServiceTime: string,
-    serviceProviderId: string,
-    reschedule: boolean,
-    rescheduleReason?: string
-  ): Promise<any>;
+  execute(data: ConfirmBookingRequestDTO): Promise<ConfirmBookingResponseDTO>;
 }

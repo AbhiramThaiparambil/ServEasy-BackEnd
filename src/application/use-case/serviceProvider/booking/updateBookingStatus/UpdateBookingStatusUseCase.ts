@@ -211,6 +211,7 @@ import { ISystemNotification } from "../../../../../domain/entities/INotificatio
 import { IUpdateBookingStatusUseCase } from "./IUpdateBookingStatusUseCase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
+import { UpdateBookingStatusRequestDTO } from "../../../../dtos/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusRequestDTO";
 
 @injectable()
 export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
@@ -221,35 +222,35 @@ export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(bookingId: string, status: string) {
-    const id = new mongoose.Types.ObjectId(bookingId);
+  async execute(data: UpdateBookingStatusRequestDTO) {
+    const id = new mongoose.Types.ObjectId(data.bookingId);
 
-    const data = await this.serviceBookingRepository.updateServiceStatus(
+    const result = await this.serviceBookingRepository.updateServiceStatus(
       id,
-      status,
+      data.status,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       id,
       "status-updated",
-      `Booking status updated to ${status}`,
+      `Booking status updated to ${data.status}`,
     );
 
     const notification: ISystemNotification = {
       type: "notification",
       targetRole:"USER",
-      content: data?.isOnlineService
+      content: result?.isOnlineService
         ? "Your service has been confirmed. Please complete payment."
-        : `Your booking status has been updated to ${status}`,
+        : `Your booking status has been updated to ${data.status}`,
       timestamp: new Date().toISOString(),
     };
 
     this.socketService.sendNotificationToUser(
-      data?.userId + "",
-      data?.userId + "",
+      result?.userId + "",
+      result?.userId + "",
       notification,
     );
 
-    return data;
+    return result;
   }
 }

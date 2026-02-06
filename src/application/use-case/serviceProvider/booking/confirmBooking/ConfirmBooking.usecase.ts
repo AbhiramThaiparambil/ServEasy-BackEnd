@@ -5,6 +5,8 @@ import { SocketService } from "../../../../../services/socket/SocketService";
 import { ISystemNotification } from "../../../../../domain/entities/INotification";
 import { formatDateTime } from "../../../../../utils/formatDateTime";
 import { IConfirmBookingUseCase } from "./IConfirmBooking.usecase";
+import { ConfirmBookingRequestDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingRequestDTO";
+import { ConfirmBookingResponseDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingResponseDTO";
 
 @injectable()
 export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
@@ -15,21 +17,14 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(
-    bookingId: string,
-    status: string,
-    estimatedServiceTime: string,
-    serviceProviderId: string,
-    reschedule: boolean,
-    rescheduleReason?: string,
-  ) {
-    const bookingObjectId = new mongoose.Types.ObjectId(bookingId);
-    const providerId = new mongoose.Types.ObjectId(serviceProviderId);
+  async execute(data: ConfirmBookingRequestDTO): Promise<ConfirmBookingResponseDTO> {
+    const bookingObjectId = new mongoose.Types.ObjectId(data.bookingId);
+    const providerId = new mongoose.Types.ObjectId(data.serviceProviderId);
 
     const isConflicting =
       await this.serviceBookingRepository.isServiceTimeConflicting(
         providerId,
-        estimatedServiceTime,
+        data.estimatedServiceTime,
       );
 
     if (isConflicting) {
@@ -45,23 +40,23 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
 
     let notification: ISystemNotification;
 
-    if (reschedule) {
+    if (data.reschedule) {
       await this.serviceBookingRepository.rescheduleBooking(
         bookingObjectId,
-        estimatedServiceTime,
+        data.estimatedServiceTime,
       );
 
       await this.serviceBookingRepository.addBookingHistory(
         bookingObjectId,
         "rescheduled",
-        `Rescheduled to ${formatDateTime(estimatedServiceTime)}`,
+        `Rescheduled to ${formatDateTime(data.estimatedServiceTime)}`,
       );
 
       notification = {
         type: "notification",
         targetRole: "USER",
         content: `Your booking has been rescheduled to ${formatDateTime(
-          estimatedServiceTime,
+          data.estimatedServiceTime,
         )}`,
         timestamp: new Date().toISOString(),
       };
@@ -72,23 +67,23 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
         notification,
       );
 
-      return { success: true };
+      return { success: true, message: "Booking rescheduled successfully" };
     }
 
     if (booking.serviceStatus === "confirmed") {
       throw new Error("Booking already confirmed");
     }
 
-    const data = await this.serviceBookingRepository.confirmBooking(
+    await this.serviceBookingRepository.confirmBooking(
       bookingObjectId,
-      status,
-      estimatedServiceTime,
+      data.status,
+      data.estimatedServiceTime,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
       bookingObjectId,
       "confirmed",
-      `Booking confirmed for ${formatDateTime(estimatedServiceTime)}`,
+      `Booking confirmed for ${formatDateTime(data.estimatedServiceTime)}`,
     );
 
     notification = {
@@ -104,6 +99,6 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
       notification,
     );
 
-    return data;
+    return { success: true, message: "Booking confirmed successfully" };
   }
 }
