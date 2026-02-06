@@ -257,12 +257,12 @@ import { IServiceProviderRejectVerify } from "./application/use-case/admin/provi
 import { ServiceProviderRejectVerify } from "./application/use-case/admin/provider-management/rejectRequest/ServiceProviderReject.usecase";
 import { IManageAllServiceUseCase } from "./application/use-case/admin/dashboard/IManageAllService.usecase";
 import { ManageAllServiceUseCase } from "./application/use-case/admin/dashboard/ManageAllService.usecase";
-import { IGetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/IGetPaymentInfoServiceProvider";
-import { GetPaymentInfoUseCaseServiceProvider } from "./application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
-import { ICheckServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/ICheckServiceProviderAvailability";
-import { checkServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
-import { IVerifyServiceProvider } from "./application/use-case/serviceProvider/IVerifyServiceProvider";
-import { VerifyServiceProvider } from "./application/use-case/serviceProvider/VerifyServiceProvider";
+import { IGetPaymentInfoUseCase as IServiceProviderGetPaymentInfoUseCase } from "./application/use-case/serviceProvider/payments/getPaymentInfo/IGetPaymentInfoUseCase";
+import { GetPaymentInfoUseCase as ServiceProviderGetPaymentInfoUseCase } from "./application/use-case/serviceProvider/payments/getPaymentInfo/GetPaymentInfoUseCase";
+import { ICheckServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/availability/checkAvailability/ICheckServiceProviderAvailabilityUseCase";
+import { CheckServiceProviderAvailabilityUseCase } from "./application/use-case/serviceProvider/availability/checkAvailability/CheckServiceProviderAvailabilityUseCase";
+import { IVerifyServiceProvider } from "./application/use-case/serviceProvider/verification/verifyServiceProvider/IVerifyServiceProvider";
+import { VerifyServiceProvider } from "./application/use-case/serviceProvider/verification/verifyServiceProvider/VerifyServiceProvider";
 import { IGetServiceProvider } from "./application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
 import { IAutoSuggestion } from "./application/use-case/user/location/IAutoSuggestion";
 import { AutoSuggestion } from "./application/use-case/user/location/autoSuggestion";
@@ -888,17 +888,17 @@ container.register<IEditServiceProviderProfileUseCase>(
   },
 );
 
-container.register<IGetPaymentInfoUseCaseServiceProvider>(
-  USE_CASE_TOKENS.GetPaymentInfoUseCaseServiceProvider,
+container.register<IServiceProviderGetPaymentInfoUseCase>(
+  USE_CASE_TOKENS.ServiceProviderGetPaymentInfo,
   {
-    useClass: GetPaymentInfoUseCaseServiceProvider,
+    useClass: ServiceProviderGetPaymentInfoUseCase,
   },
 );
 
 container.register<ICheckServiceProviderAvailabilityUseCase>(
-  USE_CASE_TOKENS.CheckServiceProviderAvailabilityUseCase,
+  USE_CASE_TOKENS.CheckServiceProviderAvailability,
   {
-    useClass: checkServiceProviderAvailabilityUseCase,
+    useClass: CheckServiceProviderAvailabilityUseCase,
   },
 );
 

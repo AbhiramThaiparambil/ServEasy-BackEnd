@@ -1,8 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { IServiceProviderRepository } from "../../../domain/repositories/IserviceProviderRepository";
-import { IUserRepository } from "../../../domain/repositories/IuserRepository";
-import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../constants/tokens";
-import { ITokenService } from "../../../services/token/ITokenService";
+import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
+import { ITokenService } from "../../../../../services/token/ITokenService";
 
 import { IVerifyServiceProvider } from "./IVerifyServiceProvider";
 

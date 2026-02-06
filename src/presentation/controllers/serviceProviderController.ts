@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { GetPaymentInfoUseCaseServiceProvider } from "../../application/use-case/serviceProvider/GetPaymentInfoUseCaseServiceProvider";
+import { GetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/GetPaymentInfoUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { RegisterServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
 import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
 import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
-import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/VerifyServiceProvider";
-import { checkServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/checkServiceProviderAvailabilityUseCase";
+import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/verification/verifyServiceProvider/VerifyServiceProvider";
+import { CheckServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/availability/checkAvailability/CheckServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
@@ -60,16 +60,18 @@ import { GetServiceProviderStatusRequestDTO } from "../../application/dtos/servi
 @injectable()
 export class ServiceProviderController {
   constructor(
-    @inject(GetPaymentInfoUseCaseServiceProvider)
-    private getPaymentInfo: GetPaymentInfoUseCaseServiceProvider,
+    @inject(GetPaymentInfoUseCase)
+    private getPaymentInfo: GetPaymentInfoUseCase,
     @inject(GetServiceProvider)
     private getServiceProviderUseCase: IGetServiceProvider,
     @inject(USE_CASE_TOKENS.EditServiceProviderProfileUseCase)
     private editServiceProviderProfileUseCase: IEditServiceProviderProfileUseCase,
+    @inject(USE_CASE_TOKENS.GetSubscriptionPlansUseCase)
+    private getSubscriptionPlanUseCase: IGetSubscriptionPlansUseCase,
     @inject(RegisterServiceProviderUseCase)
     private registerServiceProviderUseCase: RegisterServiceProviderUseCase,
     @inject(UpdateUserWithServiceProviderUseCase)
-    private updateUserWithServiceProviderUseCase: UpdateUserWithServiceProviderUseCase,
+    private updateUserWithServiceProvider: UpdateUserWithServiceProviderUseCase,
 
     @inject(VerifyServiceProvider)
     private verifyServiceProviderUseCase: VerifyServiceProvider,
@@ -78,8 +80,8 @@ export class ServiceProviderController {
 
     @inject(USE_CASE_TOKENS.ManageAllServiceUseCase)
     private manageAllServiceUseCase: IManageAllServiceUseCase,
-    @inject(checkServiceProviderAvailabilityUseCase)
-    private checkServiceProviderAvailabilityUseCase: checkServiceProviderAvailabilityUseCase,
+    @inject(CheckServiceProviderAvailabilityUseCase)
+    private checkServiceProviderAvailabilityUseCase: CheckServiceProviderAvailabilityUseCase,
     @inject(USE_CASE_TOKENS.GetWalletUseCase)
     private getWalletUseCase: IGetWalletUseCase,
     @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase)
@@ -441,7 +443,7 @@ export class ServiceProviderController {
       const user = res.locals.user;
 
       if (user.userId && serviceProvider._id) {
-        await this.updateUserWithServiceProviderUseCase.execute(
+        await this.updateUserWithServiceProvider.execute(
           user.userId,
           serviceProvider._id.toString(),
         );

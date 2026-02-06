@@ -5,7 +5,7 @@ import { IVerifySubscriptionPaymentUseCase } from "../../application/use-case/co
 import { inject, injectable } from "tsyringe";
 import { ICreatePaymentSubscriptionOrderUseCase } from "../../application/use-case/common/payment/ICreatePaymentSubscriptionOrderUseCase";
 import { ICreateServiceOrderUseCase } from "../../application/use-case/common/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
-import { IGetPaymentInfoUseCaseServiceProvider } from "../../application/use-case/serviceProvider/IGetPaymentInfoServiceProvider";
+import { IGetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/IGetPaymentInfoUseCase";
 import { IVerifyPaymentUseCase } from "../../application/use-case/common/payment/verifyPayment/IVerfypayment.usecase";
 import { CreatePaymentSubscriptionOrderRequestDTO } from "../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";
 import { CreateServiceOrderRequestDTO } from "../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
@@ -21,8 +21,8 @@ export class PaymentController {
 
     @inject(USE_CASE_TOKENS.CreateServiceOrderUseCase)
     private createServiceOrderUseCase: ICreateServiceOrderUseCase,
-    @inject(USE_CASE_TOKENS.GetPaymentInfoUseCaseServiceProvider)
-    private getPaymentInfoUseCaseServiceProvider: IGetPaymentInfoUseCaseServiceProvider,
+    @inject(USE_CASE_TOKENS.ServiceProviderGetPaymentInfo)
+    private getPaymentInfoUseCase: IGetPaymentInfoUseCase,
 
     @inject(USE_CASE_TOKENS.VerifyPaymentUseCase)
     private verifyPaymentUseCase: IVerifyPaymentUseCase,
@@ -200,7 +200,7 @@ export class PaymentController {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
       const data =
-        await this.getPaymentInfoUseCaseServiceProvider.execute(
+        await this.getPaymentInfoUseCase.execute(
           serviceProviderId,
         );
 

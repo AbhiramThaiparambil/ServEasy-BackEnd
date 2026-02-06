@@ -1,10 +1,10 @@
 import { inject, injectable } from "tsyringe";
-import { IServiceBookingRepository } from "../../../domain/repositories/IserviceBookingRepository";
-import { IGetPaymentInfoUseCaseServiceProvider } from "./IGetPaymentInfoServiceProvider";
-import { REPOSITORY_TOKENS } from "../../../constants/tokens";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
+import { IGetPaymentInfoUseCase } from "./IGetPaymentInfoUseCase";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 @injectable()
-export class GetPaymentInfoUseCaseServiceProvider implements IGetPaymentInfoUseCaseServiceProvider {
+export class GetPaymentInfoUseCase implements IGetPaymentInfoUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private serviceBooking: IServiceBookingRepository,

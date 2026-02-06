@@ -1,12 +1,11 @@
-
 import { injectable, inject } from "tsyringe";
-import { IServiceBookingRepository } from "../../../domain/repositories/IserviceBookingRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { Types } from "mongoose";
-import { ICheckServiceProviderAvailabilityUseCase } from "./ICheckServiceProviderAvailability";
-import { REPOSITORY_TOKENS } from "../../../constants/tokens";
+import { ICheckServiceProviderAvailabilityUseCase } from "./ICheckServiceProviderAvailabilityUseCase";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 @injectable()
-export class checkServiceProviderAvailabilityUseCase implements ICheckServiceProviderAvailabilityUseCase {
+export class CheckServiceProviderAvailabilityUseCase implements ICheckServiceProviderAvailabilityUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private serviceBookingRepository: IServiceBookingRepository,

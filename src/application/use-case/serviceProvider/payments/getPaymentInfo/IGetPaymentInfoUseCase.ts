@@ -1,4 +1,4 @@
-export interface IGetPaymentInfoUseCaseServiceProvider {
+export interface IGetPaymentInfoUseCase {
   execute(
     serviceProviderId: string,
     startDate?: Date,
