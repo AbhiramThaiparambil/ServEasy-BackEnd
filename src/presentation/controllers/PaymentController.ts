@@ -6,6 +6,7 @@ import { inject, injectable } from "tsyringe";
 import { ICreatePaymentSubscriptionOrderUseCase } from "../../application/use-case/common/payment/ICreatePaymentSubscriptionOrderUseCase";
 import { ICreateServiceOrderUseCase } from "../../application/use-case/common/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/IGetPaymentInfoUseCase";
+import { GetPaymentInfoRequestDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
 import { IVerifyPaymentUseCase } from "../../application/use-case/common/payment/verifyPayment/IVerfypayment.usecase";
 import { CreatePaymentSubscriptionOrderRequestDTO } from "../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";
 import { CreateServiceOrderRequestDTO } from "../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
@@ -199,10 +200,12 @@ export class PaymentController {
   getPaymentDetailsServiceProvider = async (req: Request, res: Response) => {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
-      const data =
-        await this.getPaymentInfoUseCase.execute(
-          serviceProviderId,
-        );
+
+      const dto: GetPaymentInfoRequestDTO = {
+        serviceProviderId
+      };
+
+      const data = await this.getPaymentInfoUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json(data);
     } catch (error) {

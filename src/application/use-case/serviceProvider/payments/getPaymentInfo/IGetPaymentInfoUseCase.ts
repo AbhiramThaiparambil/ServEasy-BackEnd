@@ -1,7 +1,5 @@
+import { GetPaymentInfoRequestDTO, GetPaymentInfoResponseDTO } from "../../../../dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
+
 export interface IGetPaymentInfoUseCase {
-  execute(
-    serviceProviderId: string,
-    startDate?: Date,
-    endDate?: Date,
-  ): Promise<any>;
+  execute(data: GetPaymentInfoRequestDTO): Promise<GetPaymentInfoResponseDTO>;
 }

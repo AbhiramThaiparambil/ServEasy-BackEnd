@@ -9,6 +9,7 @@ import { VerifyServiceProvider } from "../../application/use-case/serviceProvide
 import { CheckServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/availability/checkAvailability/CheckServiceProviderAvailabilityUseCase";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { VerifyServiceProviderRequestDTO } from "../../application/dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
+import { GetPaymentInfoRequestDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
@@ -237,12 +238,14 @@ export class ServiceProviderController {
         ? new Date(req.query.endDate as string)
         : undefined;
       const serviceProviderId = res.locals.serviceProvider_id;
-      console.log("getPaymentInfo is:", this.getPaymentInfo);
-      const paymentData = await this.getPaymentInfo.execute(
+
+      const dto: GetPaymentInfoRequestDTO = {
         serviceProviderId,
         startDate,
         endDate,
-      );
+      };
+
+      const paymentData = await this.getPaymentInfo.execute(dto);
 
       res.status(HttpStatus.OK).json({ paymentData });
       return;
