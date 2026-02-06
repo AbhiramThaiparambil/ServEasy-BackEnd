@@ -6,6 +6,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { IServiceNameDTO } from "../../../../../utils/types/dto/IServiceNameDTO";
 
+import { GetServiceNamesRequestDTO } from "../../../../dtos/serviceProvider/service-management/getServiceNames/GetServiceNamesRequestDTO";
+
 @injectable()
 export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
   constructor(
@@ -13,8 +15,9 @@ export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
     private serviceRepo: IServiceRepository
   ) {}
 
-  async execute(providerId: string): Promise<IServiceNameDTO[]> {
+  async execute(data: GetServiceNamesRequestDTO): Promise<IServiceNameDTO[]> {
     try {
+      const { providerId } = data;
       const services = await this.serviceRepo.findAllServiceProviderId(
         new Types.ObjectId(providerId)
       );

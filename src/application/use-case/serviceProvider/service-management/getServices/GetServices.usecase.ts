@@ -4,16 +4,19 @@ import { IGetServicesUseCase } from "./IGetServices.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 
+import { GetProviderServicesRequestDTO } from "../../../../dtos/serviceProvider/service-management/getServices/GetProviderServicesRequestDTO";
+
 @injectable()
 export class GetServicesUseCase implements IGetServicesUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: IServiceRepository
   ) {}
 
-  async execute(id: string) {
+  async execute(data: GetProviderServicesRequestDTO) {
     try {
+      const { providerId } = data;
       const allServices = await this.serviceRepository.findAllServiceProviderId(
-        id
+        providerId
       );
 
       return allServices;

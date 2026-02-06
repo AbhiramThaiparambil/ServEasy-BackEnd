@@ -6,6 +6,8 @@ import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudina
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { IService } from "../../../../../domain/entities/IService";
 
+import { AddNewServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
+
 @injectable()
 export class AddNewServiceUseCase implements IAddNewServiceUseCase {
   constructor(
@@ -14,7 +16,7 @@ export class AddNewServiceUseCase implements IAddNewServiceUseCase {
     private cloudinaryService: ICloudinaryService
   ) {}
 
-  async execute(service: IService) {
+  async execute(service: AddNewServiceRequestDTO) {
     try {
       const img_url = await this.cloudinaryService.uploadServiceImg(
         service.serviceImage

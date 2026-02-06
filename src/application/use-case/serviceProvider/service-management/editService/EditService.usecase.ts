@@ -6,6 +6,8 @@ import { IServiceRepository } from "../../../../../domain/repositories/IServiceR
 import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudinaryService";
 import { IService } from "../../../../../domain/entities/IService";
 
+import { EditServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
+
 @injectable()
 export class EditServiceUseCase implements IEditServiceUseCase {
   constructor(
@@ -14,11 +16,8 @@ export class EditServiceUseCase implements IEditServiceUseCase {
     private cloudinaryService: ICloudinaryService
   ) {}
 
-  async execute(
-    serviceId: string,
-    serviceData: IService,
-    serviceNewImg?: string
-  ): Promise<IService | null> {
+  async execute(data: EditServiceRequestDTO): Promise<IService | null> {
+    const { serviceId, serviceData, serviceNewImg } = data;
     try {
       let imgeUrl = "";
       if (

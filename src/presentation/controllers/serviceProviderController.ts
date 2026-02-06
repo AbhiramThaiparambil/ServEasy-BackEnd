@@ -38,6 +38,15 @@ import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvid
 import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
 import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
 import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { GetServiceNamesRequestDTO } from "../../application/dtos/serviceProvider/service-management/getServiceNames/GetServiceNamesRequestDTO";
+import { AddNewServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
+import { BlockUnblockServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/blockUnblockService/BlockUnblockServiceRequestDTO";
+import { EditServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
+import { GetProviderServicesRequestDTO } from "../../application/dtos/serviceProvider/service-management/getServices/GetProviderServicesRequestDTO";
+import { IAddNewServiceUseCase } from "../../application/use-case/serviceProvider/service-management/addNewService/IAddNewService.usecase";
+import { IBlockUnblockServiceUseCase } from "../../application/use-case/serviceProvider/service-management/blockUnblockService/IBlockUnblockService.usecase";
+import { IEditServiceUseCase } from "../../application/use-case/serviceProvider/service-management/editService/IEditService.usecase";
+import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/service-management/getServices/IGetServices.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
 import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
 import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
@@ -99,6 +108,14 @@ export class ServiceProviderController {
     private getAIChatByIdUseCase: IGetAIChatByIdUseCase,
     @inject(USE_CASE_TOKENS.GetProviderAIChatsUseCase)
     private getProviderAIChatsUseCase: IGetProviderAIChatsUseCase,
+    @inject(USE_CASE_TOKENS.AddNewService)
+    private addNewServiceUseCase: IAddNewServiceUseCase,
+    @inject(USE_CASE_TOKENS.BlockUnblockSericeUseCase)
+    private blockUnblockServiceUseCase: IBlockUnblockServiceUseCase,
+    @inject(USE_CASE_TOKENS.EditService)
+    private editServiceUseCase: IEditServiceUseCase,
+    @inject(USE_CASE_TOKENS.GetService)
+    private getServicesUseCase: IGetServicesUseCase,
   ) {}
 
   async getRegistrationDetails(req: Request, res: Response): Promise<void> {
@@ -780,8 +797,8 @@ export class ServiceProviderController {
   async getServiceNames(req: Request, res: Response): Promise<void> {
     try {
       const { providerId } = req.params;
-
-      const result = await this.getServiceNamesUseCase.execute(providerId);
+      const dto: GetServiceNamesRequestDTO = { providerId };
+      const result = await this.getServiceNamesUseCase.execute(dto);
       console.log(result);
       res.status(200).json({
         success: true,
@@ -797,6 +814,74 @@ export class ServiceProviderController {
       });
 
       return;
+    }
+  }
+
+  async addNewService(req: Request, res: Response): Promise<void> {
+    try {
+      const dto: AddNewServiceRequestDTO = req.body;
+      const result = await this.addNewServiceUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong",
+      });
+    }
+  }
+
+  async blockService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId } = req.body;
+      const dto: BlockUnblockServiceRequestDTO = { serviceId };
+      const result = await this.blockUnblockServiceUseCase.blockService(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong",
+      });
+    }
+  }
+
+  async unblockService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId } = req.body;
+      const dto: BlockUnblockServiceRequestDTO = { serviceId };
+      const result = await this.blockUnblockServiceUseCase.unblockService(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong",
+      });
+    }
+  }
+
+  async editService(req: Request, res: Response): Promise<void> {
+    try {
+      const dto: EditServiceRequestDTO = req.body;
+      const result = await this.editServiceUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong",
+      });
+    }
+  }
+
+  async getServices(req: Request, res: Response): Promise<void> {
+    try {
+      const { providerId } = req.params;
+      const dto: GetProviderServicesRequestDTO = { providerId };
+      const result = await this.getServicesUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Something went wrong",
+      });
     }
   }
 }

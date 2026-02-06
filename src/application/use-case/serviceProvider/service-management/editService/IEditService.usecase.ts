@@ -1,9 +1,6 @@
 import { IService } from "../../../../../domain/entities/IService";
+import { EditServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
 
 export interface IEditServiceUseCase {
-  execute(
-    serviceId: string,
-    serviceData: IService,
-    serviceNewImg?: string
-  ): Promise<IService | null>;
+  execute(data: EditServiceRequestDTO): Promise<IService | null>;
 }

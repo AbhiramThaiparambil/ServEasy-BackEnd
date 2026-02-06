@@ -16,6 +16,10 @@ import { IAddNewServiceUseCase } from "../../application/use-case/serviceProvide
 import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/service-management/getServices/IGetServices.usecase";
 import { IEditServiceUseCase } from "../../application/use-case/serviceProvider/service-management/editService/IEditService.usecase";
 import { IBlockUnblockServiceUseCase } from "../../application/use-case/serviceProvider/service-management/blockUnblockService/IBlockUnblockService.usecase";
+import { AddNewServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
+import { GetProviderServicesRequestDTO } from "../../application/dtos/serviceProvider/service-management/getServices/GetProviderServicesRequestDTO";
+import { EditServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
+import { BlockUnblockServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/blockUnblockService/BlockUnblockServiceRequestDTO";
 
 @injectable()
 export class ServiceController {
@@ -259,7 +263,7 @@ export class ServiceController {
         coordinates: [location.longitude, location.latitude],
         address: location.address,
       };
-      const serviceData: any = {
+      const serviceData: AddNewServiceRequestDTO = {
         serviceName,
         description,
         serviceType,
@@ -293,7 +297,8 @@ export class ServiceController {
         return;
       }
 
-      const result = await this.getServiceUseCase.execute(serviceProviderId);
+      const dto: GetProviderServicesRequestDTO = { providerId: serviceProviderId };
+      const result = await this.getServiceUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ allServices: result });
     } catch (e) {
@@ -354,11 +359,13 @@ export class ServiceController {
         serviceProviderId,
       };
 
-      const updatedService = await this.editServiceUseCase.execute(
+      const dto: EditServiceRequestDTO = {
         serviceId,
         serviceData,
-        serviceImage,
-      );
+        serviceNewImg: serviceImage,
+      };
+
+      const updatedService = await this.editServiceUseCase.execute(dto);
 
       if (!updatedService) {
         res
@@ -391,11 +398,12 @@ export class ServiceController {
       }
 
       let result: boolean;
+      const dto: BlockUnblockServiceRequestDTO = { serviceId };
 
       if (action === "Block") {
-        result = await this.blockUnblockServiceUseCase.blockService(serviceId);
+        result = await this.blockUnblockServiceUseCase.blockService(dto);
       } else if (action === "Unblock") {
-        result = await this.blockUnblockServiceUseCase.unblockService(serviceId);
+        result = await this.blockUnblockServiceUseCase.unblockService(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
