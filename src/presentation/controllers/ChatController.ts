@@ -5,6 +5,10 @@ import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IUploadChatImageUseCase } from "../../application/use-case/common/chat/uploadChatMedia/IUploadChatImage.usecase";
 import { IGetAllChats } from "../../application/use-case/common/chat/getAllchats/IGetAllChats.usecase";
 import { ISaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/ISaveMessage.uescase";
+import { UploadChatImageRequestDTO } from "../../application/dtos/common/chat/uploadChatMedia/UploadChatImageDTO";
+import { GetChatsRequestDTO } from "../../application/dtos/common/chat/getAllchats/GetAllChatsDTO";
+import { GetSpecificChatRequestDTO } from "../../application/dtos/common/chat/saveMessage/SaveMessageDTO";
+
 @injectable()
 export class ChatController {
   constructor(
@@ -27,7 +31,8 @@ export class ChatController {
         return;
       }
 
-      const result = await this.uploadImageUseCase.uploadImage(image);
+      const dto: UploadChatImageRequestDTO = { image };
+      const result = await this.uploadImageUseCase.uploadImage(dto);
       res.status(HttpStatus.OK).json(result);
     } catch (error) {
       res
@@ -43,12 +48,12 @@ export class ChatController {
       let chats;
 
       if (serviceProviderId) {
+        const dto: GetChatsRequestDTO = { id: serviceProviderId };
         chats =
-          await this.getAllChatsUseCase.getServiceProviderChats(
-            serviceProviderId,
-          );
+          await this.getAllChatsUseCase.getServiceProviderChats(dto);
       } else if (userId) {
-        chats = await this.getAllChatsUseCase.getUserChats(userId);
+        const dto: GetChatsRequestDTO = { id: userId };
+        chats = await this.getAllChatsUseCase.getUserChats(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -78,10 +83,12 @@ export class ChatController {
         return;
       }
 
-      const data = await this.saveMessageUseCase.getSpecificChat(
-        sender as string,
-        reciver as string,
-      );
+      const dto: GetSpecificChatRequestDTO = {
+        user1: sender as string,
+        user2: reciver as string,
+      };
+
+      const data = await this.saveMessageUseCase.getSpecificChat(dto);
 
       res.status(HttpStatus.OK).json({ data });
       return;

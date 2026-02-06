@@ -3,6 +3,8 @@ import { IChatRepository } from "../../../../../domain/repositories/IChatReposit
 import { IGetAllChats } from "./IGetAllChats.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
+import { GetChatsRequestDTO } from "../../../../../application/dtos/common/chat/getAllchats/GetAllChatsDTO";
+
 @injectable()
 export class GetAllChatsUseCase implements IGetAllChats {
   constructor(
@@ -10,14 +12,16 @@ export class GetAllChatsUseCase implements IGetAllChats {
     private chatRepository: IChatRepository,
   ) {}
 
-  async getServiceProviderChats(id: string) {
+  async getServiceProviderChats(data: GetChatsRequestDTO) {
+    const { id } = data;
     const chats = await this.chatRepository.findUsersChats(id);
     console.log(chats);
 
     return chats;
   }
 
-  async getUserChats(id: string) {
+  async getUserChats(data: GetChatsRequestDTO) {
+    const { id } = data;
     return this.chatRepository.findServiceProvidersChat(id);
   }
 }

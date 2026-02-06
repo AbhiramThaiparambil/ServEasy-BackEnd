@@ -4,6 +4,13 @@ import { IChat, IMessage } from "../../../../../domain/entities/IChat";
 import mongoose from "mongoose";
 import { ISaveMessageUseCase } from "./ISaveMessage.uescase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import {
+  GetSpecificChatRequestDTO,
+  SaveMessageRequestDTO,
+  MakeChatOnlineRequestDTO,
+  MakeChatOfflineRequestDTO,
+} from "../../../../../application/dtos/common/chat/saveMessage/SaveMessageDTO";
+
 @injectable()
 export class SaveMessageUseCase implements ISaveMessageUseCase {
   constructor(
@@ -12,12 +19,12 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
   ) {}
 
   async getSpecificChat(
-    user1: string,
-    user2: string
+    data: GetSpecificChatRequestDTO
   ): Promise<{
     data: Promise<IChat> | null;
     message: "success" | "noMessages";
   }> {
+    const { user1, user2 } = data;
     const user1Id = new mongoose.Types.ObjectId(user1);
     const user2Id = new mongoose.Types.ObjectId(user2);
 
@@ -36,11 +43,8 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
     };
   }
 
-  async execute(
-    user1: string,
-    user2: string,
-    message: IMessage
-  ): Promise<IMessage> {
+  async execute(dto: SaveMessageRequestDTO): Promise<IMessage> {
+    const { user1, user2, message } = dto;
     const isExist = await this.chatRepository.findByIds(
       new mongoose.Types.ObjectId(user1),
       new mongoose.Types.ObjectId(user2)
@@ -63,7 +67,8 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
     }
   }
 
-  async makeItOnline(onlineId: string, receiverId: string): Promise<void> {
+  async makeItOnline(data: MakeChatOnlineRequestDTO): Promise<void> {
+    const { onlineId, receiverId } = data;
     this.chatRepository.makeItOnline(
       new mongoose.Types.ObjectId(receiverId),
       new mongoose.Types.ObjectId(onlineId)
@@ -71,10 +76,9 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
   }
 
   async makeItOffline(
-    senderId: string,
-    receiverId: string,
-    offlineId: string
+    data: MakeChatOfflineRequestDTO
   ): Promise<void> {
+    const { senderId, receiverId, offlineId } = data;
     this.chatRepository.makeItOffline(
       new mongoose.Types.ObjectId(receiverId),
       new mongoose.Types.ObjectId(senderId),

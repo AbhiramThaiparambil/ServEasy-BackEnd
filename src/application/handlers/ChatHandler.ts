@@ -2,6 +2,11 @@ import { Socket, Server } from "socket.io";
 import { IMessage } from "../../domain/entities/IChat";
 import { SocketService } from "../../services/socket/SocketService";
 import { SaveMessageUseCase } from "../use-case/common/chat/saveMessage/SaveMessage.usecase";
+import {
+  SaveMessageRequestDTO,
+  MakeChatOfflineRequestDTO,
+  MakeChatOnlineRequestDTO,
+} from "../dtos/common/chat/saveMessage/SaveMessageDTO";
 
 export class ChatHandler {
   constructor(
@@ -43,11 +48,12 @@ export class ChatHandler {
         targetRole?: "SERVICE_PROVIDER" | "USER";
       }) => {
         const roomId = this.createRoomId(senderId, receiverId);
-        const savedMessage = await this.saveMessageUseCase.execute(
-          senderId,
-          receiverId,
+        const dto: SaveMessageRequestDTO = {
+          user1: senderId,
+          user2: receiverId,
           message,
-        );
+        };
+        const savedMessage = await this.saveMessageUseCase.execute(dto);
 
         const room = this.io.sockets.adapter.rooms.get(roomId);
         const socketsInRoom = room ? Array.from(room) : [];
@@ -72,11 +78,13 @@ export class ChatHandler {
     socket.on("leave_chat", ({ senderId, receiverId, offlineId }) => {
       const roomId = this.createRoomId(senderId, receiverId);
       socket.leave(roomId);
-      this.saveMessageUseCase.makeItOffline(senderId, receiverId, offlineId);
+      const dto: MakeChatOfflineRequestDTO = { senderId, receiverId, offlineId };
+      this.saveMessageUseCase.makeItOffline(dto);
     });
 
     socket.on("makeItOnline", async ({ onlineId, receiverId }) => {
-      await this.saveMessageUseCase.makeItOnline(onlineId, receiverId);
+      const dto: MakeChatOnlineRequestDTO = { onlineId, receiverId };
+      await this.saveMessageUseCase.makeItOnline(dto);
     });
   }
 

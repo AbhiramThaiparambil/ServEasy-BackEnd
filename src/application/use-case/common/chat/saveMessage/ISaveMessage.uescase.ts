@@ -1,21 +1,24 @@
+import {
+  GetSpecificChatRequestDTO,
+  SaveMessageRequestDTO,
+  MakeChatOnlineRequestDTO,
+  MakeChatOfflineRequestDTO,
+} from "../../../../../application/dtos/common/chat/saveMessage/SaveMessageDTO";
 import { IChat, IMessage } from "../../../../../domain/entities/IChat";
 
 export interface ISaveMessageUseCase {
   getSpecificChat(
-    user1: string,
-    user2: string
+    data: GetSpecificChatRequestDTO
   ): Promise<{
     data: Promise<IChat> | null;
     message: "success" | "noMessages";
   }>;
 
-  execute(user1: string, user2: string, message: IMessage): Promise<IMessage>;
+  execute(data: SaveMessageRequestDTO): Promise<IMessage>;
 
-  makeItOnline(onlineId: string, receiverId: string): Promise<void>;
+  makeItOnline(data: MakeChatOnlineRequestDTO): Promise<void>;
 
   makeItOffline(
-    senderId: string,
-    receiverId: string,
-    offlineId: string
+    data: MakeChatOfflineRequestDTO
   ): Promise<void>;
 }
