@@ -4,6 +4,7 @@ import { ServiceBookingRepository } from "../../../../../infrastructure/reposito
 import mongoose from "mongoose";
 import { SERVICE_TOKENS } from "../../../../../constants/tokens";
 import { IUploadBillsUseCase } from "./IUploadBills.usecase";
+import { UploadBillsRequestDTO } from "../../../../dtos/serviceProvider/booking/billing/UploadBillsRequestDTO";
 
 @injectable()
 export class UploadBillsUseCase implements IUploadBillsUseCase {
@@ -14,12 +15,12 @@ export class UploadBillsUseCase implements IUploadBillsUseCase {
     private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
-  async execute(id: string, images: string[]): Promise<void> {
-    const objId = new mongoose.Types.ObjectId(id);
+  async execute(data: UploadBillsRequestDTO): Promise<void> {
+    const objId = new mongoose.Types.ObjectId(data.bookingId);
 
     const uploadedBills: string[] = [];
 
-    for (const image of images) {
+    for (const image of data.images) {
       const uploadedUrl = await this.cloudinaryService.uploadBillsImg(image);
       uploadedBills.push(uploadedUrl);
     }

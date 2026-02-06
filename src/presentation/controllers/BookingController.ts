@@ -23,6 +23,9 @@ import {
 import { GetBookedServiceByIdRequestDTO } from "../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
 import { UpdateBookingStatusRequestDTO } from "../../application/dtos/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusRequestDTO";
 import { ConfirmBookingRequestDTO } from "../../application/dtos/serviceProvider/booking/confirmBooking/ConfirmBookingRequestDTO";
+import { UploadBillsRequestDTO } from "../../application/dtos/serviceProvider/booking/billing/UploadBillsRequestDTO";
+import { RequestPaymentRequestDTO } from "../../application/dtos/serviceProvider/booking/requestPayment/RequestPaymentRequestDTO";
+import { RescheduleOnlineServiceRequestDTO } from "../../application/dtos/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineServiceRequestDTO";
 import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 
 @injectable()
@@ -157,8 +160,13 @@ export class BookingController {
           .json({ message: "No invoice images provided." });
         return;
       }
+      
+      const dto: UploadBillsRequestDTO = {
+        bookingId: id,
+        images: invoices
+      };
 
-      await this.uploadBillsUseCase.execute(id, invoices);
+      await this.uploadBillsUseCase.execute(dto);
 
       res
         .status(HttpStatus.CREATED)
@@ -216,16 +224,20 @@ export class BookingController {
         res.status(HttpStatus.BAD_REQUEST).json({
           error: "Missing required fields",
         });
+        return;
       }
-      const data = await this.rescheduleOnlineServiceSlotUseCase.execute(
+      
+      const dto: RescheduleOnlineServiceRequestDTO = {
         bookingId,
         date,
         startTime,
-        endTime,
-      );
+        endTime
+      };
+      
+      const data = await this.rescheduleOnlineServiceSlotUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
-        message: "Booking confirmed successfully",
+        message: "Booking rescheduled successfully",
         data,
       });
     } catch (error) {
@@ -275,13 +287,16 @@ export class BookingController {
         res.status(HttpStatus.BAD_REQUEST).json({
           error: "Missing payment data",
         });
+        return;
       }
-
-      const data = await this.requestPaymentUseCase.execute(
-        id,
+      
+      const dto: RequestPaymentRequestDTO = {
+        bookingId: id,
         payment,
-        paymentStatus,
-      );
+        paymentStatus
+      };
+
+      const data = await this.requestPaymentUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: "Payment requested successfully",

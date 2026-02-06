@@ -1,10 +1,5 @@
-import mongoose from "mongoose";
+import { RescheduleOnlineServiceRequestDTO } from "../../../../dtos/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineServiceRequestDTO";
 
 export interface IRescheduleOnlineServiceSlotUseCase {
-  execute(
-    serviceId: string,
-    date: Date,
-    startTime: Date,
-    endTime: Date
-  ): Promise<boolean>;
+  execute(data: RescheduleOnlineServiceRequestDTO): Promise<boolean>;
 }

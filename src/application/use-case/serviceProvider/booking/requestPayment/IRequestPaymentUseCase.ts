@@ -1,9 +1,5 @@
-import { IPayment } from "../../../../../domain/entities/IPayment";
+import { RequestPaymentRequestDTO } from "../../../../dtos/serviceProvider/booking/requestPayment/RequestPaymentRequestDTO";
 
 export interface IRequestPaymentUseCase {
-  execute(
-    bookingId: string,
-    payment: IPayment,
-    paymentStatus: string
-  ): Promise<any>;
+  execute(data: RequestPaymentRequestDTO): Promise<any>;
 }

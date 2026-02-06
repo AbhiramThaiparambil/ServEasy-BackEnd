@@ -6,6 +6,7 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
 import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
+import { RescheduleOnlineServiceRequestDTO } from "../../../../dtos/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineServiceRequestDTO";
 
 @injectable()
 export class RescheduleOnlineServiceSlotUseCase implements IRescheduleOnlineServiceSlotUseCase {
@@ -16,24 +17,19 @@ export class RescheduleOnlineServiceSlotUseCase implements IRescheduleOnlineServ
     private socketService: SocketService,
   ) {}
 
-  async execute(
-    bookingId: string,
-    date: Date,
-    startTime: Date,
-    endTime: Date,
-  ): Promise<boolean> {
-    const data = await this.serviceBookingRepository.rescheduleOnlineService(
-      new Types.ObjectId(bookingId),
-      date,
-      startTime,
-      endTime,
+  async execute(data: RescheduleOnlineServiceRequestDTO): Promise<boolean> {
+    const result = await this.serviceBookingRepository.rescheduleOnlineService(
+      new Types.ObjectId(data.bookingId),
+      data.date,
+      data.startTime,
+      data.endTime,
     );
-    if (!data) {
+    if (!result) {
       return false;
     }
     this.socketService.sendNotificationToUser(
-      data.userId.toString(),
-      data.userId.toString(),
+      result.userId.toString(),
+      result.userId.toString(),
       {
         type: "notification",
         targetRole: "USER",

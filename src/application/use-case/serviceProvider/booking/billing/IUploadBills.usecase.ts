@@ -1,3 +1,5 @@
+import { UploadBillsRequestDTO } from "../../../../dtos/serviceProvider/booking/billing/UploadBillsRequestDTO";
+
 export interface IUploadBillsUseCase {
-  execute(id: string, images: string[]): Promise<void>;
+  execute(data: UploadBillsRequestDTO): Promise<void>;
 }

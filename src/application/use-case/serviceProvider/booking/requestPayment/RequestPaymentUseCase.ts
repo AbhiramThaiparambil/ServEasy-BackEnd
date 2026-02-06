@@ -4,6 +4,7 @@ import { ServiceBookingRepository } from "../../../../../infrastructure/reposito
 import { SocketService } from "../../../../../services/socket/SocketService";
 import { IPayment } from "../../../../../domain/entities/IPayment";
 import { IRequestPaymentUseCase } from "./IRequestPaymentUseCase";
+import { RequestPaymentRequestDTO } from "../../../../dtos/serviceProvider/booking/requestPayment/RequestPaymentRequestDTO";
 
 @injectable()
 export class RequestPaymentUseCase implements IRequestPaymentUseCase {
@@ -14,26 +15,22 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(
-    bookingId: string,
-    paymentData: IPayment,
-    paymentStatus: string,
-  ) {
-    const id = new mongoose.Types.ObjectId(bookingId);
+  async execute(data: RequestPaymentRequestDTO) {
+    const id = new mongoose.Types.ObjectId(data.bookingId);
 
     const convenienceFee =
-      paymentData.total > 100 ? paymentData.total * 0.1 : 0;
+      data.payment.total > 100 ? data.payment.total * 0.1 : 0;
 
     const payment: IPayment = {
-      ...paymentData,
+      ...data.payment,
       convenienceFee,
       discountAmount: 0,
-      finalTotal: paymentData.total,
+      finalTotal: data.payment.total,
     };
 
-    const data = await this.serviceBookingRepository.requestPayment(
+    const result = await this.serviceBookingRepository.requestPayment(
       id,
-      paymentStatus,
+      data.paymentStatus,
       payment,
     );
 
@@ -44,8 +41,8 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     );
 
     this.socketService.sendNotificationToUser(
-      data?.userId + "",
-      data?.userId + "",
+      result?.userId + "",
+      result?.userId + "",
       {
         type: "notification",
         targetRole:"USER",
@@ -54,6 +51,6 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
       },
     );
 
-    return data;
+    return result;
   }
 }
