@@ -5,9 +5,12 @@ import { IServiceProviderRepository } from "../../../../domain/repositories/Iser
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { ISkill } from "../../../../domain/entities/IServiceProvider";
 import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { ReapplyServiceProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+
+import { IReapplyServiceProviderUseCase } from "./IReapplyServiceProviderUseCase";
 
 @injectable()
-export class ReapplyServiceProviderUseCase {
+export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUseCase {
   constructor(
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
@@ -17,11 +20,9 @@ export class ReapplyServiceProviderUseCase {
   ) {}
 
   async execute(
-    serviceProviderData: IServiceProviderRegistration,
-    profileImageRow: string | null,
-    documentRow: string | null,
-    document2Row: string | null
+    data: ReapplyServiceProviderRequestDTO
   ): Promise<IServiceProvider> {
+    const { serviceProviderData, profileImageRow, documentRow, document2Row } = data;
     const existingProvider = await this.serviceProviderRepository.findByUserID(
       serviceProviderData.userId
     );
@@ -71,7 +72,7 @@ export class ReapplyServiceProviderUseCase {
     /* ---------- Skills Mapping (FIXED) ---------- */
 
     const mappedSkills: ISkill[] = serviceProviderData.skills.map(
-      (skillName) => ({
+      (skillName: string) => ({
         name: skillName,
         level: "beginner", // default level (business rule)
       })

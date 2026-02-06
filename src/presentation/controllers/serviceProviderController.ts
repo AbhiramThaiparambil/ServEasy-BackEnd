@@ -13,6 +13,7 @@ import { GetPaymentInfoRequestDTO } from "../../application/dtos/serviceProvider
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
 import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
+import { RegisterServiceProviderRequestDTO, ReapplyServiceProviderRequestDTO, UpdateUserWithProviderRequestDTO, GetRegistrationDetailsRequestDTO } from "../../application/dtos/serviceProvider/auth/ServiceProviderAuthDTO";
 
 import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
 import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
@@ -137,7 +138,8 @@ export class ServiceProviderController {
         return;
       }
 
-      const provider = await this.getRegistrationDetailsUseCase.execute(userId);
+      const dto: GetRegistrationDetailsRequestDTO = { userId };
+      const provider = await this.getRegistrationDetailsUseCase.execute(dto);
       console.log(provider);
       if (provider) {
         res.status(200).json(provider);
@@ -437,20 +439,23 @@ export class ServiceProviderController {
         bankDetails,
       };
 
-      const serviceProvider = await this.registerServiceProviderUseCase.execute(
+      const registerDTO: RegisterServiceProviderRequestDTO = {
         serviceProviderData,
-        profileImage,
-        documentImg,
-        documentImg2,
-      );
+        profileImageRow: profileImage || "",
+        documentRow: documentImg || "",
+        document2Row: documentImg2 || null,
+      };
+
+      const serviceProvider = await this.registerServiceProviderUseCase.execute(registerDTO);
 
       const user = res.locals.user;
 
       if (user.userId && serviceProvider._id) {
-        await this.updateUserWithServiceProvider.execute(
-          user.userId,
-          serviceProvider._id.toString(),
-        );
+        const updateDTO: UpdateUserWithProviderRequestDTO = {
+          userId: user.userId,
+          serviceProviderId: serviceProvider._id.toString(),
+        };
+        await this.updateUserWithServiceProvider.execute(updateDTO);
       }
 
       res.status(HttpStatus.CREATED).json({
@@ -508,12 +513,14 @@ export class ServiceProviderController {
         bankDetails,
       };
 
-      const serviceProvider = await this.reapplyServiceProviderUseCase.execute(
+      const reapplyDTO: ReapplyServiceProviderRequestDTO = {
         serviceProviderData,
-        profileImage,
-        documentImg,
-        documentImg2,
-      );
+        profileImageRow: profileImage || null,
+        documentRow: documentImg || null,
+        document2Row: documentImg2 || null,
+      };
+
+      const serviceProvider = await this.reapplyServiceProviderUseCase.execute(reapplyDTO);
 
       res.status(HttpStatus.OK).json({
         message: "Service provider reapplied successfully.",

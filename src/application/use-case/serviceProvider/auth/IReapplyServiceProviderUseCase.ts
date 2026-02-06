@@ -1,13 +1,6 @@
-import {
-  IServiceProvider,
-  IServiceProviderRegistration,
-} from "../../../../domain/entities/IServiceProvider";
+import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
+import { ReapplyServiceProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
 
 export interface IReapplyServiceProviderUseCase {
-  execute(
-    serviceProviderData: IServiceProviderRegistration,
-    profileImageRow: string | null,
-    documentRow: string | null,
-    document2Row: string | null
-  ): Promise<IServiceProvider>;
+  execute(data: ReapplyServiceProviderRequestDTO): Promise<IServiceProvider>;
 }
