@@ -19,6 +19,7 @@ import { IGetServiceProviderStatusUseCase } from "../../application/use-case/ser
 import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
 
 import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { ChangeAdStatusRequestDTO } from "../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
 import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
 import { GetNotificationsRequestDTO } from "../../application/dtos/common/notification/getNotification/GetNotificationDTO";
@@ -671,7 +672,8 @@ export class ServiceProviderController {
         return;
       }
 
-      const updated = await this.changeAdStatusUseCase.execute(adId, status);
+      const dto: ChangeAdStatusRequestDTO = { adId, status };
+      const updated = await this.changeAdStatusUseCase.execute(dto);
 
       if (!updated) {
         res.status(404).json({ message: "Ad not found or status unchanged" });

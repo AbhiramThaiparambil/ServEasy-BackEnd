@@ -7,6 +7,10 @@ import { ICreatePaymentSubscriptionOrderUseCase } from "../../application/use-ca
 import { ICreateServiceOrderUseCase } from "../../application/use-case/common/payment/CreateServiceOrderUseCase/ICreateServiceOrderUseCase";
 import { IGetPaymentInfoUseCaseServiceProvider } from "../../application/use-case/serviceProvider/IGetPaymentInfoServiceProvider";
 import { IVerifyPaymentUseCase } from "../../application/use-case/common/payment/verifyPayment/IVerfypayment.usecase";
+import { CreatePaymentSubscriptionOrderRequestDTO } from "../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";
+import { CreateServiceOrderRequestDTO } from "../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
+import { VerifyPaymentRequestDTO } from "../../application/dtos/common/payment/verifyPayment/VerifyPaymentDTO";
+import { VerifySubscriptionPaymentRequestDTO } from "../../application/dtos/common/payment/verifySubscriptionPayment/VerifySubscriptionPaymentDTO";
 @injectable()
 export class PaymentController {
   constructor(
@@ -47,13 +51,14 @@ export class PaymentController {
     }
 
     try {
-      const result = await this.verifySubscriptionPaymentUseCase.execute({
+      const dto: VerifySubscriptionPaymentRequestDTO = {
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
         userId: serviceProviderId,
         planId,
-      });
+      };
+      const result = await this.verifySubscriptionPaymentUseCase.execute(dto);
 
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
@@ -79,9 +84,12 @@ export class PaymentController {
     }
 
     try {
-      const result = await this.createPaymentSubscriptionOrderUseCase.execute(
-        serviceProviderId,
+      const dto: CreatePaymentSubscriptionOrderRequestDTO = {
+        userId: serviceProviderId,
         planId,
+      };
+      const result = await this.createPaymentSubscriptionOrderUseCase.execute(
+        dto
       );
 
       if (!result || result.success === false) {
@@ -110,7 +118,8 @@ export class PaymentController {
     }
 
     try {
-      const result = await this.createServiceOrderUseCase.execute(serviceId);
+      const dto: CreateServiceOrderRequestDTO = { serviceBookingId: serviceId };
+      const result = await this.createServiceOrderUseCase.execute(dto);
       console.log(result);
       if (!result || result.success === false) {
         res.status(HttpStatus.BAD_REQUEST).json(result);
@@ -169,12 +178,13 @@ export class PaymentController {
     }
 
     try {
-      const result = await this.verifyPaymentUseCase.execute(
-        serviceId,
+      const dto: VerifyPaymentRequestDTO = {
+        serviceBookingId: serviceId,
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
-      );
+      };
+      const result = await this.verifyPaymentUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json(result);
     } catch (error) {

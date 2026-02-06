@@ -1,5 +1,5 @@
-import { IAdStatus } from "../../../../dtos/admin/GetAdsAdminDTO";
+import { ChangeAdStatusRequestDTO } from "../../../../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
 
 export interface IChangeAdStatusUseCase {
-  execute(id: string, status: IAdStatus): Promise<boolean>;
+  execute(data: ChangeAdStatusRequestDTO): Promise<boolean>;
 }

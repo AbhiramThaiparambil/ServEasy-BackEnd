@@ -22,6 +22,7 @@ import { userInfo } from "os";
 import path from "path";
 
 import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { ChangeAdStatusRequestDTO } from "../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
 import { IGetAllUsers } from "../../application/use-case/admin/user-management/getAllUsers/IGetAllUsers.usecase";
 import { IBlockUnblockUsers } from "../../application/use-case/admin/user-management/blockUnblockUsers/IBlockUnblockUsers.usecase";
 import { IGetServiceProviders } from "../../application/use-case/admin/provider-management/getServiceProvider/IGetServiceProviders.usecase";
@@ -1299,7 +1300,8 @@ export class AdminController {
       }
       console.log("called");
 
-      const updated = await this.changeAdStatusUseCase.execute(adId, status);
+      const dto: ChangeAdStatusRequestDTO = { adId, status };
+      const updated = await this.changeAdStatusUseCase.execute(dto);
 
       if (!updated) {
         res.status(404).json({ message: "Ad not found or status unchanged" });

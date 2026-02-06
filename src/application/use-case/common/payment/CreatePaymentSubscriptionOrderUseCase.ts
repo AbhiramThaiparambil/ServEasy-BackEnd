@@ -10,6 +10,8 @@ import {
 import { RedisService } from "../../../../services/redis/RedisService";
 import { IRedisService } from "../../../../services/redis/IRedisService";
 
+import { CreatePaymentSubscriptionOrderRequestDTO } from "../../../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";
+
 @injectable()
 export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubscriptionOrderUseCase {
   constructor(
@@ -20,7 +22,8 @@ export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubs
     @inject(SERVICE_TOKENS.RedisService) private redisService: IRedisService,
   ) {}
 
-  async execute(userId: string, planId: string): Promise<PaymentOrder> {
+  async execute(data: CreatePaymentSubscriptionOrderRequestDTO): Promise<PaymentOrder> {
+    const { userId, planId } = data;
     const lockKey = `order-lock:${planId}:${userId}`;
     const ttl = 60; // seconds
 

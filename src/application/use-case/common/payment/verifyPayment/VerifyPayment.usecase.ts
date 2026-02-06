@@ -8,6 +8,8 @@ import { IProviderWalletRepository } from "../../../../../domain/repositories/Ip
 import { IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
 import { IVerifyPaymentUseCase, VerifyPaymentResponseDTO } from "./IVerfypayment.usecase";
+import { VerifyPaymentRequestDTO } from "../../../../../application/dtos/common/payment/verifyPayment/VerifyPaymentDTO";
+
 @injectable()
 export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
   constructor(
@@ -22,12 +24,13 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
     private walletRepository: IProviderWalletRepository
   ) {}
 
-  async execute(
-    id: string,
-    razorpay_order_id: string,
-    razorpay_payment_id: string,
-    razorpay_signature: string
-  ):Promise<VerifyPaymentResponseDTO>{
+  async execute(data: VerifyPaymentRequestDTO): Promise<VerifyPaymentResponseDTO> {
+    const {
+        serviceBookingId: id,
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+    } = data;
     try {
       const serviceObjId = new Types.ObjectId(id);
       const bookedService =

@@ -4,6 +4,8 @@ export interface PaymentOrder {
   order?: {};
 }
 
+import { CreateServiceOrderRequestDTO } from "../../../../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
+
 export interface ICreateServiceOrderUseCase {
-  execute(serviceBookingId: string): Promise<PaymentOrder>;
+  execute(data: CreateServiceOrderRequestDTO): Promise<PaymentOrder>;
 }

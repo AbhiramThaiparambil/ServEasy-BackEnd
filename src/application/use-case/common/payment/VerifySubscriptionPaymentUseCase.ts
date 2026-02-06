@@ -1,7 +1,7 @@
 import {
   IVerifySubscriptionPaymentUseCase,
-  VerifyPaymentDTO,
 } from "./IVerifySubscriptionPaymentUseCase";
+import { VerifySubscriptionPaymentRequestDTO } from "../../../../application/dtos/common/payment/verifySubscriptionPayment/VerifySubscriptionPaymentDTO";
 import { RazorpayService } from "../../../../services/payment/RazorpayService";
 import { inject, injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
@@ -30,7 +30,7 @@ export class VerifySubscriptionPaymentUseCase
     private subscriptionPlanRepository: ISubscriptionPlanRepository
   ) {}
   async execute(
-    data: VerifyPaymentDTO
+    data: VerifySubscriptionPaymentRequestDTO
   ): Promise<{ success: boolean; message: string }> {
     const {
       razorpay_order_id,

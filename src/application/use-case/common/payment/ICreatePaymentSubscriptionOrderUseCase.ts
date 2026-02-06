@@ -5,8 +5,10 @@ export interface PaymentOrder {
 }
 
 
+import { CreatePaymentSubscriptionOrderRequestDTO } from "../../../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";
+
 export interface ICreatePaymentSubscriptionOrderUseCase {
-  execute(userId: string, planId: string): Promise<PaymentOrder>;
+  execute(data: CreatePaymentSubscriptionOrderRequestDTO): Promise<PaymentOrder>;
 }
 
 

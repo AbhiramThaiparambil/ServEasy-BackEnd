@@ -16,12 +16,14 @@ import { IServiceBookingRepository } from "../../../../../domain/repositories/Is
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 import { IRedisService } from "../../../../../services/redis/IRedisService";
 
+import { CreateServiceOrderRequestDTO } from "../../../../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
+
 @injectable()
 export class CreateServiceOrderUseCase implements ICreateServiceOrderUseCase {
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
-
+    
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private readonly serviceBookingRepository: IServiceBookingRepository,
 
@@ -32,7 +34,8 @@ export class CreateServiceOrderUseCase implements ICreateServiceOrderUseCase {
     private readonly redisService: IRedisService,
   ) {}
 
-  async execute(serviceBookingId: string): Promise<PaymentOrder> {
+  async execute(data: CreateServiceOrderRequestDTO): Promise<PaymentOrder> {
+    const { serviceBookingId } = data;
     const lockKey = `order-lock:${serviceBookingId}`;
     const lockTTL = 60;
 
