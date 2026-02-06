@@ -1,7 +1,7 @@
 
 
-export interface IManageServiceProviderSubscriptionsUseCase{
+import { ManageSubscriptionsRequestDTO, ManageSubscriptionsResponseDTO } from "../../../../dtos/serviceProvider/subscription/manageSubscription/ManageSubscriptionsDTO";
 
- execute():Promise<number>
-
+export interface IManageServiceProviderSubscriptionsUseCase {
+  execute(data?: ManageSubscriptionsRequestDTO): Promise<ManageSubscriptionsResponseDTO>;
 }

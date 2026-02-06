@@ -17,7 +17,8 @@ export class SubscriptionCheckJob {
     cron.schedule("27 13 * * *", async () => {
       console.log(" Running subscription check... (test every second)");
 
-      await this.manageSubscriptionUseCase.execute();
+      const result = await this.manageSubscriptionUseCase.execute();
+      console.log(`Processed ${result.processedCount} subscriptions.`);
     });
   }
 }

@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ISubscriptionPlanRepository } from "../../../../../domain/repositories/ISubscriptionPlanRepository";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 
+import { ManageSubscriptionsRequestDTO, ManageSubscriptionsResponseDTO } from "../../../../dtos/serviceProvider/subscription/manageSubscription/ManageSubscriptionsDTO";
+
 @injectable()
 export class ManageServiceProviderSubscriptionsUseCase
   implements IManageServiceProviderSubscriptionsUseCase
@@ -15,7 +17,8 @@ export class ManageServiceProviderSubscriptionsUseCase
     private serviceProviderRepo: IServiceProviderRepository
   ) {}
 
-  async execute(): Promise<number> {
-    return this.serviceProviderRepo.expireSubscriptions();
+  async execute(data?: ManageSubscriptionsRequestDTO): Promise<ManageSubscriptionsResponseDTO> {
+    const count = await this.serviceProviderRepo.expireSubscriptions();
+    return { processedCount: count };
   }
 }
