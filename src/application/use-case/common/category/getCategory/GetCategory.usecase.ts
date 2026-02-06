@@ -4,15 +4,16 @@ import { IGetCategory } from "./IGetCategory.usecase";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { ICategory } from "../../../../../domain/entities/ICategory ";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { GetCategoryRequestDTO } from "../../../../dtos/common/category/getCategory/GetCategoryDTO";
 
 @injectable()
-export class GetCategory implements IGetCategory {
+export class GetCategoryUseCase implements IGetCategory {
   constructor(
     @inject(REPOSITORY_TOKENS.CategoryRepository)
     private categoryRepository: ICategoryRepository
   ) {}
 
-  async execute(): Promise<void | ICategory[]> {
+  async execute(data?: GetCategoryRequestDTO): Promise<void | ICategory[]> {
     try {
       return this.categoryRepository.getAllCategories();
     } catch (error) {
@@ -20,7 +21,7 @@ export class GetCategory implements IGetCategory {
     }
   }
 
-  async getActiveCategory() {
+  async getActiveCategory(data?: GetCategoryRequestDTO) {
     return await this.categoryRepository.getActiveCategories();
   }
 }

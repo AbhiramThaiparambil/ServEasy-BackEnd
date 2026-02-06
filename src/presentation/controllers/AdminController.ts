@@ -61,6 +61,7 @@ import { ProviderResponseDTO } from "../../application/dtos/admin/provider/Provi
 import { RejectProviderDTO } from "../../application/dtos/admin/provider/RejectProviderDTO";
 import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyProviderDTO";
 import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
+import { GetCategoryRequestDTO } from "../../application/dtos/common/category/getCategory/GetCategoryDTO";
 import { GetServiceListRequestDTO } from "../../application/dtos/admin/service/GetServiceListDTO";
 import { BlockUnblockServiceRequestDTO } from "../../application/dtos/admin/service/BlockUnblockServiceDTO";
 import {
@@ -711,7 +712,8 @@ export class AdminController {
 
   async getCategory(req: Request, res: Response): Promise<void> {
     try {
-      const categories = await this.getCategoryUseCase.execute();
+      const dto: GetCategoryRequestDTO = {};
+      const categories = await this.getCategoryUseCase.execute(dto);
 
       console.log(categories);
 

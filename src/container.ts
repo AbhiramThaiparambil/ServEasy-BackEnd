@@ -194,7 +194,7 @@ import { BlockUnblockService } from "./application/use-case/admin/service-manage
 import { IAddCategory } from "./application/use-case/admin/category-management/addCategoryy.ts/IAddCategory.usecase";
 import { AddCategory } from "./application/use-case/admin/category-management/addCategoryy.ts/AddCategory.usecase";
 import { IGetCategory } from "./application/use-case/common/category/getCategory/IGetCategory.usecase";
-import { GetCategory } from "./application/use-case/common/category/getCategory/GetCategory.usecase";
+import { GetCategoryUseCase } from "./application/use-case/common/category/getCategory/GetCategory.usecase";
 import { IEditCategory } from "./application/use-case/admin/category-management/editCategory/IEditCategory.usecase";
 import { EditCategory } from "./application/use-case/admin/category-management/editCategory/EditCategory.usecase";
 import { IBlockUnblockCategory } from "./application/use-case/admin/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
@@ -753,7 +753,7 @@ container.register<IAddCategory>(USE_CASE_TOKENS.AddCategory, {
 });
 
 container.register<IGetCategory>(USE_CASE_TOKENS.GetCategory, {
-  useClass: GetCategory,
+  useClass: GetCategoryUseCase,
 });
 
 container.register<IEditCategory>(USE_CASE_TOKENS.EditCategory, {

@@ -26,6 +26,7 @@ import { GetNotificationsRequestDTO } from "../../application/dtos/common/notifi
 import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
 import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
 import { IEditAdUseCase } from "../../application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
+import { GetCategoryRequestDTO } from "../../application/dtos/common/category/getCategory/GetCategoryDTO";
 import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
 import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
 import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
@@ -406,7 +407,8 @@ export class ServiceProviderController {
 
   async getActiveCategories(req: Request, res: Response): Promise<void> {
     try {
-      const categories = await this.getCategoryUseCase.execute();
+      const dto: GetCategoryRequestDTO = {};
+      const categories = await this.getCategoryUseCase.execute(dto);
       res.status(HttpStatus.OK).json(categories);
     } catch (error) {
       console.error("Error fetching categories:", error);
