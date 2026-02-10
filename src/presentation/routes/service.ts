@@ -126,4 +126,11 @@ router.patch(
   bookingController.RescheduleOnlineService.bind(bookingController)
 );
 
+router.get(
+  "/bookings/serviceProvider/payment-summary/:id",
+  authMiddleware("User"),
+  serviceProviderAuth,
+  bookingController.getBookingPaymentSummary.bind(bookingController)
+);
+
 export default router;

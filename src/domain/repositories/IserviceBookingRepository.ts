@@ -80,6 +80,8 @@ export interface IServiceBookingRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<IServiceBooking | null>;
+  
+  findCompletedByProvider(serviceProviderId: string): Promise<any[]>;
   updateReviewId(
     bookingId: Types.ObjectId,
     reviewId: Types.ObjectId,

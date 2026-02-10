@@ -283,6 +283,8 @@ import { GetProviderVerificationDetailsUseCase } from "./application/use-case/ad
 import { IEditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/profile/editProfile/IEditProfile";
 import { EditServiceProviderProfileUseCase } from "./application/use-case/serviceProvider/profile/editProfile/EditProfile";
 import { GetServiceProvider } from "./application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
+import { IGetBookingPaymentSummaryUseCase } from "./application/use-case/serviceProvider/booking/getBookingPaymentSummary/IGetBookingPaymentSummaryUseCase";
+import { GetBookingPaymentSummaryUseCase } from "./application/use-case/serviceProvider/booking/getBookingPaymentSummary/GetBookingPaymentSummaryUseCase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -797,6 +799,13 @@ container.register<IUploadChatImageUseCase>(
 container.register<IAdminSignin>(USE_CASE_TOKENS.AdminSignin, {
   useClass: AdminSignin,
 });
+
+container.register<IGetBookingPaymentSummaryUseCase>(
+    USE_CASE_TOKENS.GetBookingPaymentSummaryUseCase,
+    {
+        useClass: GetBookingPaymentSummaryUseCase,
+    }
+);
 
 
 container.register<IGetProviderVerificationDetailsUseCase>(

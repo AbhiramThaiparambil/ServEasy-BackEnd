@@ -43,6 +43,7 @@ export class ChatController {
 
   async getAllChats(req: Request, res: Response): Promise<void> {
     try {
+      console.log('chat controller called')
       const { serviceProviderId, userId } = req.body;
 
       let chats;

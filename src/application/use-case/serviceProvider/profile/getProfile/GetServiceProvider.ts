@@ -24,11 +24,12 @@ export class GetServiceProvider implements IGetServiceProvider {
       serviceProviderName: result.serviceProviderName,
       serviceProviderEmail: result.serviceProviderEmail,
       serviceProviderPhone: result.serviceProviderPhone,
-      location: result.location,
-      bio: result.description,
-      profileImage: result.profileImage,
-      isActive: !result.isBlocked,
-      createdAt: result.createdAt || new Date()
+       userId:result.userId.toString(),
+       description:result.description||"",
+      profileImage: result.profileImage||"",
+      isBlocked:result.isBlocked,
+  
+    
     };
   }
 }

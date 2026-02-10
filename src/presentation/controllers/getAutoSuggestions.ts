@@ -6,7 +6,7 @@ import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/locatio
 
 export const getAutoSuggestions = async (req: Request, res: Response) => {
   try {
-    const { query } = req.query; // Fixed typo: "query" instead of "qurey"
+    const { query } = req.query;
     console.log(req.query);
 
     if (!query) {

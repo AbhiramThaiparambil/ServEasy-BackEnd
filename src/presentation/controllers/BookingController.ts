@@ -13,6 +13,7 @@ import { IGetBookedServicesUseCase } from "../../application/use-case/common/boo
 import { IGetBookedServiceByIdUseCase } from "../../application/use-case/common/booking/fetchByid/IGetBookedServiceById.usecase";
 import { IRescheduleOnlineServiceSlotUseCase } from "../../application/use-case/serviceProvider/booking/rescheduleOnlineService/IRescheduleOnlineService.usecase";
 import { IUploadBillsUseCase } from "../../application/use-case/serviceProvider/booking/billing/IUploadBills.usecase";
+import { IGetBookingPaymentSummaryUseCase } from "../../application/use-case/serviceProvider/booking/getBookingPaymentSummary/IGetBookingPaymentSummaryUseCase";
 import { CreateOnlineBookingRequestDTO } from "../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
 import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import {
@@ -26,6 +27,7 @@ import { ConfirmBookingRequestDTO } from "../../application/dtos/serviceProvider
 import { UploadBillsRequestDTO } from "../../application/dtos/serviceProvider/booking/billing/UploadBillsRequestDTO";
 import { RequestPaymentRequestDTO } from "../../application/dtos/serviceProvider/booking/requestPayment/RequestPaymentRequestDTO";
 import { RescheduleOnlineServiceRequestDTO } from "../../application/dtos/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineServiceRequestDTO";
+import { GetBookingPaymentSummaryRequestDTO } from "../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
 import { CreateBookingRequestDTO } from "../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 
 @injectable()
@@ -57,6 +59,8 @@ export class BookingController {
     private rescheduleOnlineServiceSlotUseCase: IRescheduleOnlineServiceSlotUseCase,
     @inject(USE_CASE_TOKENS.UploadBillsUseCase)
     private uploadBillsUseCase: IUploadBillsUseCase,
+    @inject(USE_CASE_TOKENS.GetBookingPaymentSummaryUseCase)
+    private getBookingPaymentSummaryUseCase: IGetBookingPaymentSummaryUseCase,
   ) {}
 
   async createBooking(req: Request, res: Response) {
@@ -429,6 +433,35 @@ export class BookingController {
       );
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        error: "Internal Server Error",
+        details: (error as Error).message,
+      });
+    }
+  }
+  async getBookingPaymentSummary(req: Request, res: Response) {
+    try { 
+      console.log(res.locals)
+      console.log(req.params.id)
+      console.log("______________________________________________________________________")
+       console.log(res.locals.serviceProvider_id)
+              console.log("serviceProviderId:"+res.locals.serviceProvider_id)
+
+      const serviceProviderId = req.params.id;
+              console.log("serviceProviderId:"+serviceProviderId)
+      const dto: GetBookingPaymentSummaryRequestDTO = {
+        serviceProviderId: serviceProviderId,
+      };
+
+      const data = await this.getBookingPaymentSummaryUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      console.error("Error in getBookingPaymentSummary:", error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
         error: "Internal Server Error",
         details: (error as Error).message,
       });

@@ -794,4 +794,59 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
     return await booking.save();
   }
+
+  async findCompletedByProvider(serviceProviderId: string): Promise<any[]> {
+    try {
+      const match: any = {
+        serviceProviderId: new ObjectId(serviceProviderId),
+        serviceStatus: "completed",
+        paymentStatus: "completed",
+      };
+
+      const result = await ServiceBooking.aggregate([
+        { $match: match },
+        {
+          $lookup: {
+            from: "services",
+            localField: "serviceId",
+            foreignField: "_id",
+            as: "serviceDetails",
+          },
+        },
+        { $unwind: { path: "$serviceDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userDetails",
+          },
+        },
+        { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
+        {
+            $project: {
+                _id: 1,
+                payment: 1,
+                paymentType: 1,
+                paymentStatus: 1,
+                serviceStatus: 1,
+                address: 1,
+                serviceImage: "$serviceDetails.serviceImage",
+                serviceName: "$serviceDetails.serviceName",
+                serviceType: "$serviceDetails.serviceType",
+                userEmail: "$userDetails.email",
+                userName: "$userDetails.userName",
+                userProfile: "$userDetails.profileImage",
+                userPhone: "$userDetails.phone",
+            }
+        },
+        { $sort: { bookedTime: -1 } }
+      ]);
+
+      return result;
+    } catch (error) {
+      console.error("Error fetching completed services by provider:", error);
+      throw error;
+    }
+  }
 }
