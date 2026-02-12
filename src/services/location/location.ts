@@ -2,6 +2,7 @@ import axios from "axios";
 import { config } from "dotenv";
 import { injectable } from "tsyringe";
 import { ILocationService } from "./ILocationService";
+import { getErrorMessage } from "../../utils/errorUtils";
 config();
 interface ILocationIQResponse {
   lat: string;
@@ -35,8 +36,11 @@ export class LocationService implements ILocationService {
         latitude: parseFloat(result.lat),
         longitude: parseFloat(result.lon),
       };
-    } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : "An error occurred";
+    } catch (error: unknown) {
+             const errorMessage =getErrorMessage(error)
+            console.error("Error in getLocation:", errorMessage);
+      
+
       throw new Error(errorMessage);
     }
   }
@@ -68,12 +72,10 @@ export class LocationService implements ILocationService {
       console.log("Auto-suggestions:", suggestions);
 
       return suggestions;
-    } catch (error: any) {
-      console.error(
-        "Error in getAutoSuggestions:",
-        (error as any)?.response?.data || (error instanceof Error ? error.message : error)
-      );
-      throw new Error(error instanceof Error ? error.message : "Failed to fetch auto suggestions");
+    } catch (error: unknown) {
+      const errorMessage =getErrorMessage(error)
+      console.error("Error in getAutoSuggestions:", errorMessage);
+      throw new Error(errorMessage);
     }
   }
 }

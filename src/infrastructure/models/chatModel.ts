@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { IChat } from '../../domain/entities/IChat';
 interface IPresence {
     userId: Types.ObjectId;

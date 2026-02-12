@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ILocation } from "../../../../domain/entities/IService";
 
 export interface ServiceProviderDetailsDTO {

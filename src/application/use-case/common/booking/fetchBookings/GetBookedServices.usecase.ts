@@ -8,7 +8,9 @@ import {
   GetUserBookedServicesRequestDTO,
   GetServiceProviderBookedServicesRequestDTO,
   GetUserBookedServiceCountRequestDTO,
+  GetServiceProviderBookedServiceResponseDTO,
 } from "../../../../../application/dtos/common/booking/fetchBookings/GetBookedServicesDTO";
+import { IBookedServiceWithDetails } from "../../../../../domain/entities/IServiceBooking";
 
 @injectable()
 export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
@@ -20,7 +22,7 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
     private serviceBookingRepository: ServiceBookingRepository
   ) {}
 
-  async getUserBookedServices(data: GetUserBookedServicesRequestDTO) {
+  async getUserBookedServices(data: GetUserBookedServicesRequestDTO): Promise<IBookedServiceWithDetails[]> {
     const { userId, skip, limit } = data;
     const uId = new mongoose.Types.ObjectId(userId);
 
@@ -42,7 +44,7 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
 
   async getServiceProviderBookedServices(
     data: GetServiceProviderBookedServicesRequestDTO
-  ) {
+  ): Promise<GetServiceProviderBookedServiceResponseDTO> {
     const { serviceProviderId, skip, limit } = data;
     const sId = new mongoose.Types.ObjectId(serviceProviderId);
 
@@ -56,6 +58,9 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
     const count = await this.serviceBookingRepository.findCountBookedService(
       sId
     );
+
+ 
+     
 
     return { services, count };
   }

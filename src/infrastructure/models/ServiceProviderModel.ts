@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IBankDetails, IServiceProvider } from '../../domain/entities/IServiceProvider';
 import { ISubscription } from '../../domain/entities/ISubscription';
 

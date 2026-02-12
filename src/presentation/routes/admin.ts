@@ -85,7 +85,7 @@ router.get("/logout", authMiddleware("Admin"), (req, res) =>
   adminController.logoutAdmin(req, res),
 );
 
-router.get("/dashboard/payment-info", authMiddleware("Admin"), (req, res) =>
+router.get("/dashboard/payment-info", (req, res) =>
   adminController.getPaymentInfoForChart(req, res),
 );
 

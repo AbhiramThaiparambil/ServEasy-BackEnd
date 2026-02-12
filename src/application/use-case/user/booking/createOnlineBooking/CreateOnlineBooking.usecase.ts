@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import {
   IServiceBooking,
   IServiceSlot,
-  IPreferredServiceDateTime,
 } from "../../../../../domain/entities/IServiceBooking";
 import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
 import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
@@ -12,7 +11,6 @@ import { ICreateOnlineBookingUseCase } from "./ICreateOnlineBooking.usecase";
 
 import {
   CreateOnlineBookingRequestDTO,
-  CreateOnlineBookingResponseDTO,
 } from "../../../../../application/dtos/user/booking/createOnlineBooking/CreateOnlineBookingDTO";
 
 @injectable()
@@ -67,7 +65,7 @@ export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
       serviceSlot,
       payment: {
         serviceCost: 0,
-        metaialCost: 0,
+        materialCost: 0,
         travelCost: 0,
         inspectionCost: 0,
         total: service.estimatedPrice,

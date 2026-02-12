@@ -5,9 +5,10 @@ export interface GetPaymentInfoRequestDTO {
 }
 
 export interface GetPaymentInfoResponseDTO {
-  totalRevenue: number;
-  totalBookings: number;
-  pendingPayments: number;
-  completedPayments: number;
-  bookings: any[];
+
+    totalRevenue: number;
+  totalConvenienceFee: number;
+  count: number;
+
+  
 }

@@ -1,11 +1,9 @@
 import { injectable, inject } from "tsyringe";
-import mongoose, { Types } from "mongoose";
-import dayjs from "dayjs";
+import { Types } from "mongoose";
 import { IRescheduleOnlineServiceSlotUseCase } from "./IRescheduleOnlineService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
-import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 import { RescheduleOnlineServiceRequestDTO } from "../../../../dtos/serviceProvider/booking/rescheduleOnlineService/RescheduleOnlineServiceRequestDTO";
 
 @injectable()

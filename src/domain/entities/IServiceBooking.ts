@@ -29,6 +29,8 @@ export interface IServiceBooking {
   serviceSlot?: IServiceSlot;
   bookingHistory?: IServiceBookingHistory[];
   coupon?: ICouponApplied;
+  createdAt?:Date;
+  updatedAt?:Date;
 }
 
 export interface ICouponApplied {

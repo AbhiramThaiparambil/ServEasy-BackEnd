@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { ICoupon } from "../../../../../domain/entities/ICoupon";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
 import { IFindAllActiveCouponsUseCase } from "./IFindAllActiveCoupons.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";

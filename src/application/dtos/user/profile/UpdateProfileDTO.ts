@@ -13,7 +13,7 @@ export interface ProfileOtpResponseDTO {
 }
 
 export interface UpdateProfileResponseDTO {
-    success: boolean;
-    message: string;
-    data?: any; 
+    success?: string;
+    errorMessage?: string;
 }
+

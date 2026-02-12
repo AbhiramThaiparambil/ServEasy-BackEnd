@@ -8,7 +8,7 @@ import {
 } from "../../../../../constants/tokens";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
 import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudinaryService";
-import { IAd } from "../../../../../domain/entities/IAd";
+import { AdStatus, IAd } from "../../../../../domain/entities/IAd";
 
 import { CreateAdRequestDTO } from "../../../../dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
 
@@ -26,7 +26,7 @@ export class CreateAdUseCase implements ICreateAdUseCase {
           ...data,
           serviceId: new Types.ObjectId(data.serviceId),
           providerId: new Types.ObjectId(data.providerId),
-          status: data.status as any,
+          status: data.status as AdStatus,
       };
 
       if (data.image) {

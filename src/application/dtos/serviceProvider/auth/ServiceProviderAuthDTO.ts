@@ -1,4 +1,4 @@
-import { IServiceProvider, IServiceProviderRegistration } from "../../../../domain/entities/IServiceProvider";
+import { IServiceProviderRegistration } from "../../../../domain/entities/IServiceProvider";
 
 export interface RegisterServiceProviderRequestDTO {
   serviceProviderData: IServiceProviderRegistration;

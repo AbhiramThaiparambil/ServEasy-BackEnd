@@ -4,7 +4,6 @@ import { IAddNewServiceUseCase } from "./IAddNewService.usecase";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
 import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudinaryService";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
-import { IService } from "../../../../../domain/entities/IService";
 
 import { AddNewServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
 import { getErrorMessage } from "../../../../../utils/errorUtils";

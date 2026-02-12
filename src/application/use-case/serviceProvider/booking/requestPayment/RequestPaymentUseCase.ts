@@ -5,6 +5,7 @@ import { SocketService } from "../../../../../services/socket/SocketService";
 import { IPayment } from "../../../../../domain/entities/IPayment";
 import { IRequestPaymentUseCase } from "./IRequestPaymentUseCase";
 import { RequestPaymentRequestDTO } from "../../../../dtos/serviceProvider/booking/requestPayment/RequestPaymentRequestDTO";
+import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 
 @injectable()
 export class RequestPaymentUseCase implements IRequestPaymentUseCase {
@@ -15,7 +16,7 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(data: RequestPaymentRequestDTO) {
+  async execute(data: RequestPaymentRequestDTO):Promise<IServiceBooking|null> {
     const id = new mongoose.Types.ObjectId(data.bookingId);
 
     const convenienceFee =

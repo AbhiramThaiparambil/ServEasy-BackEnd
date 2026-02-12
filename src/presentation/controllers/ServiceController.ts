@@ -7,7 +7,6 @@ import { HttpStatus } from "../../constants/HttpStatus";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
-import { IUpdateBookingStatusUseCase } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/IUpdateBookingStatusUseCase";
 import { ICancelBookingUseCase } from "../../application/use-case/user/booking/cancelBooking/ICancelBooking.usecase";
 import { CancelBookingRequestDTO } from "../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import { IDeleteSlotUseCase } from "../../application/use-case/serviceProvider/slot/deleteSlot/IDeleteSlot.usecase";

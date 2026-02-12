@@ -14,7 +14,7 @@ export class CheckServiceProviderAvailabilityUseCase implements ICheckServicePro
 
   async execute(
    data: CheckAvailabilityRequestDTO
-  ) {
+  ):Promise<{ available: boolean; reason?: string }> {
 
   const availability = await this.serviceBookingRepository.checkAvailability(new Types.ObjectId(data.serviceProviderId));
  return availability

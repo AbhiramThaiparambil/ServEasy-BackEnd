@@ -1,6 +1,5 @@
 import { IUserRepository } from "../../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { EmailService } from "../../../../../../services/mailService/MailService";
 
 import {
   REPOSITORY_TOKENS,

@@ -1,12 +1,13 @@
 import { inject, injectable } from "tsyringe";
-import mongoose from "mongoose";
 import { IGetBookingPaymentSummaryUseCase } from "./IGetBookingPaymentSummaryUseCase";
 import {
   GetBookingPaymentSummaryRequestDTO,
+  ICompletedServiceByProvider,
   ServiceBooking,
 } from "../../../../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
 import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
+import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 
 @injectable()
 export class GetBookingPaymentSummaryUseCase implements IGetBookingPaymentSummaryUseCase {
@@ -25,9 +26,9 @@ export class GetBookingPaymentSummaryUseCase implements IGetBookingPaymentSummar
         serviceProviderId,
       );
 
-    const serviceBookings: ServiceBooking[] = bookings.map((booking: any) => {
+    const serviceBookings: ServiceBooking[] = bookings.map((booking: ICompletedServiceByProvider) => {
       const materialCost =
-        booking.payment?.metaialCost ?? booking.payment?.materialCost ?? null;
+        booking.payment?.materialCost ?? booking.payment?.materialCost ?? null;
 
       return {
         _id: booking._id?.toString() ?? "",
@@ -45,7 +46,7 @@ export class GetBookingPaymentSummaryUseCase implements IGetBookingPaymentSummar
           houseName: booking.address?.houseName ?? "",
           landmark: booking.address?.landmark ?? "",
           name: booking.address?.name ?? "",
-          phone: booking.userPhone ?? "",
+          phone: booking.address?.phone ?? "",
           pincode: booking.address?.pincode ?? "",
           state: booking.address?.state ?? "",
           _id: booking.address?._id?.toString() ?? "",

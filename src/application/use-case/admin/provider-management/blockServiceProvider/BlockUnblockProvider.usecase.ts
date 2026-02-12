@@ -4,7 +4,6 @@ import { BlockUnblockProviderDTO } from "../../../../dtos/admin/provider/BlockUn
 import { IBlockUnblockProviderUseCase } from "./IBlockUnblockProvider.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
-import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
 import { getErrorMessage } from "../../../../../utils/errorUtils";
 

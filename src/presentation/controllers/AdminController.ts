@@ -21,7 +21,6 @@ import { IGetProviderWalletUseCase } from "../../application/use-case/admin/wall
 import { IAdminGetAdsUseCase } from "../../application/use-case/admin/ad-management/getAds/IAdminGetAds.usecase";
 import { ITokenService } from "../../services/token/ITokenService";
 
-import { userInfo } from "os";
 
 import path from "path";
 
@@ -61,7 +60,6 @@ import { ToggleShowInBannerDTO } from "../../application/dtos/admin/coupon/Toggl
 import { AdminProfileResponseDTO } from "../../application/dtos/admin/profile/AdminProfileResponseDTO";
 import { BlockUnblockProviderDTO } from "../../application/dtos/admin/provider/BlockUnblockProviderDTO";
 import { GetProvidersDTO } from "../../application/dtos/admin/provider/GetProvidersDTO";
-import { ProviderResponseDTO } from "../../application/dtos/admin/provider/ProviderResponseDTO";
 import { RejectProviderDTO } from "../../application/dtos/admin/provider/RejectProviderDTO";
 import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyProviderDTO";
 import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
@@ -70,18 +68,13 @@ import { GetServiceListRequestDTO } from "../../application/dtos/admin/service/G
 import { BlockUnblockServiceRequestDTO } from "../../application/dtos/admin/service/BlockUnblockServiceDTO";
 import {
   AddFooterBannerRequestDTO,
-  FooterBannerResponseDTO,
-  UpdateFooterBannerRequestDTO,
 } from "../../application/dtos/admin/site-settings/FooterBannerDTO";
 import {
   AddHomeBannerRequestDTO,
-  HomeBannerResponseDTO,
-  UpdateHomeBannerRequestDTO,
 } from "../../application/dtos/admin/site-settings/HomeBannerDTO";
 import { AddThemeRequestDTO } from "../../application/dtos/admin/site-settings/ThemeDTO";
 import {
   CreateSubscriptionPlanRequestDTO,
-  SubscriptionPlanResponseDTO,
   UpdateSubscriptionPlanRequestDTO,
 } from "../../application/dtos/admin/subscription/SubscriptionPlanDTO";
 import {
@@ -95,7 +88,6 @@ import {
 } from "../../application/dtos/admin/wallet/WalletManagementDTO";
 import { IGetAdminBookingHistoryUseCase } from "../../application/use-case/admin/bookings/IGetAdminBookingHistory.usecase";
 import {
-  IFindPaymentInfoAdminDTO,
   IFindPaymentInfoAdminRequestDTO,
 } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
 

@@ -1,6 +1,5 @@
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
-import { IAddress } from "../../../../../domain/entities/IAddress";
 
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAddNewAddress } from "./IAddNewAddress.usecase";

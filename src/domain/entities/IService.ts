@@ -24,6 +24,8 @@ export interface IService {
   isActive?: boolean;
   review?: Review[];
   serviceImage: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface IOnlineService extends IService {

@@ -6,6 +6,7 @@ import {
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { IOtpService } from "../../../../../services/otp/IOtpService";
 import { IProfileUpdateOtpUseCase } from "./IProfileUpdateOtp.usecase";
+import { UpdateProfileResponseDTO } from "../../../../dtos/user/profile/UpdateProfileDTO";
 
 @injectable()
 export class ProfileUpdateOtpUseCase implements IProfileUpdateOtpUseCase {
@@ -15,7 +16,7 @@ export class ProfileUpdateOtpUseCase implements IProfileUpdateOtpUseCase {
     @inject(SERVICE_TOKENS.OtpService) private otpService: IOtpService,
   ) {}
 
-  async execute(userId: string, key: string, enteredOtp: string) {
+  async execute(userId: string, key: string, enteredOtp: string): Promise<UpdateProfileResponseDTO> {
     const isValidOtp = await this.otpService.verifyOtp(key, enteredOtp);
     console.log(isValidOtp);
 

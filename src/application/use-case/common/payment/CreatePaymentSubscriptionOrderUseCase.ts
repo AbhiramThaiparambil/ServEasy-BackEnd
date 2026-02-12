@@ -7,7 +7,6 @@ import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
 } from "../../../../constants/tokens";
-import { RedisService } from "../../../../services/redis/RedisService";
 import { IRedisService } from "../../../../services/redis/IRedisService";
 
 import { CreatePaymentSubscriptionOrderRequestDTO } from "../../../../application/dtos/common/payment/createPaymentSubscriptionOrder/CreatePaymentSubscriptionOrderDTO";

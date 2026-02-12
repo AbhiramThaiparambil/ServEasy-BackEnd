@@ -70,7 +70,6 @@ import { aiAssistanceRepository } from "./infrastructure/repositories/AiAssistan
 
 import { ManageServiceProviderSubscriptionsUseCase } from "./application/use-case/serviceProvider/subscription/manageSubscription/ManageServiceProviderSubscriptionsUseCase";
 import { IManageServiceProviderSubscriptionsUseCase } from "./application/use-case/serviceProvider/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
-import { connect } from "http2";
 
 import { AdRepository } from "./infrastructure/repositories/AdRepository";
 

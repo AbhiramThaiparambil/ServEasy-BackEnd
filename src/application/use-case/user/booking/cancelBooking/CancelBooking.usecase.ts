@@ -4,7 +4,6 @@ import { ServiceBookingRepository } from "../../../../../infrastructure/reposito
 import { SocketService } from "../../../../../services/socket/SocketService";
 import {
   CancelBookingRequestDTO,
-  CancelBookingResponseDTO,
 } from "../../../../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 import { ICancelBookingUseCase } from "./ICancelBooking.usecase";

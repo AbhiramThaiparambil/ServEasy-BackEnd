@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 import { ISlot } from "../../domain/entities/ISlot";
 
 const SlotSchema = new Schema<ISlot>(

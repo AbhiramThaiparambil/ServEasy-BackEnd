@@ -9,6 +9,8 @@ import {
 import { IPayment } from "../../domain/entities/IPayment";
 import { IFindPaymentInfoAdminDTO } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
 import { getErrorMessage } from "../../utils/errorUtils";
+import { GetPaymentInfoResponseDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
+import { ICompletedServiceByProvider } from "../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
 
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
@@ -248,7 +250,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
-  async requestPayment(id: Types.ObjectId, status: string, payment: IPayment) {
+  async requestPayment(id: Types.ObjectId, status: string, payment: IPayment):Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       id,
       {
@@ -464,51 +466,54 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
-  async getPaymentInfo(
-    startDate?: Date | null,
-    endDate?: Date | null,
-  ): Promise<unknown> {
-    try {
-      const match: any = {
-        serviceStatus: "completed",
-        paymentStatus: "completed",
-      };
+async getPaymentInfo(
+  startDate?: Date | null,
+  endDate?: Date | null,
+): Promise<GetPaymentInfoResponseDTO> {
 
-      if (startDate && endDate) {
-        match.bookedTime = {
-          $gte: startDate,
-          $lte: endDate,
-        };
-      }
+  const match: any = {
+    serviceStatus: "completed",
+    paymentStatus: "completed",
+  };
 
-      const result = await ServiceBooking.aggregate([
-        { $match: match },
-        {
-          $group: {
-            _id: null,
-            totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
-            totalConvenienceFee: {
-              $sum: { $ifNull: ["$payment.convenienceFee", 0] },
-            },
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            totalRevenue: 1,
-            totalConvenienceFee: 1,
-            count: 1,
-          },
-        },
-      ]);
-
-      return result;
-    } catch (error: unknown) {
-      console.error("Error fetching payment info:", getErrorMessage(error));
-      throw error;
-    }
+  if (startDate && endDate) {
+    match.bookedTime = {
+      $gte: startDate,
+      $lte: endDate,
+    };
   }
+
+  const result = await ServiceBooking.aggregate([
+    { $match: match },
+    {
+      $group: {
+        _id: null,
+        totalRevenue: { $sum: { $ifNull: ["$payment.total", 0] } },
+        totalConvenienceFee: {
+          $sum: { $ifNull: ["$payment.convenienceFee", 0] },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totalRevenue: 1,
+        totalConvenienceFee: 1,
+        count: 1,
+      },
+    },
+  ]);
+
+  const data = result[0] || {
+    totalRevenue: 0,
+    totalConvenienceFee: 0,
+    count: 0,
+  };
+
+  return data;
+}
+
 
   async getPaymentInfoServiceProvider(
     serviceProviderId: string,
@@ -552,6 +557,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return result;
+      console.log(result)
     } catch (error: unknown) {
       console.error("Error fetching payment info:", getErrorMessage(error));
       throw error;
@@ -750,7 +756,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
   async findCompletedByProvider(
     serviceProviderId: string,
-  ): Promise<IServiceBooking[]> {
+  ): Promise<ICompletedServiceByProvider[]> {
     try {
       const match: any = {
         serviceProviderId: new Types.ObjectId(serviceProviderId),
@@ -785,7 +791,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
         {
           $project: {
-            _id: 1,
+            _id: { $toString: "$_id" },
             payment: 1,
             paymentType: 1,
             paymentStatus: 1,

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
-import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { getErrorMessage } from "../../utils/errorUtils";
 
@@ -13,7 +12,6 @@ import { IFindFeaturedCouponsUseCase } from "../../application/use-case/user/cou
 import { IIncreaseAdClicksUseCase } from "../../application/use-case/user/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
 import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
-import { AddReviewUseCase } from "../../application/use-case/user/review/addReview/AddReviewUseCase";
 import { IDeleteAllNotificationUseCase } from "../../application/use-case/common/notification/deleteAllNotification/IDeleteAllNotification.usecase";
 import { IDeleteSingleNotificationUseCase } from "../../application/use-case/common/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
 import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
@@ -27,7 +25,6 @@ import { IAddNewAddress } from "../../application/use-case/user/address/addAddre
 import { IEditAddress } from "../../application/use-case/user/address/editAddress/IEditAddress.usecase";
 import { IDeleteAddress } from "../../application/use-case/user/address/deleteAddress/IDeleteAddress.usecase";
 import { IRecommendAdsUseCase } from "../../application/use-case/user/ads/recommendAds/IRecommendAdsUseCase";
-import { ISignInUseCase } from "../../application/use-case/user/auth/signIn/ISignIn.usecase";
 import { ISignUpUseCase } from "../../application/use-case/user/auth/signUp/ISignUp.usecase";
 import { IVerifyOtpUseCase } from "../../application/use-case/user/auth/verifyOtp/IVerifyOtp.usecase";
 import { IResendOtp } from "../../application/use-case/user/auth/resendOtp/IResendOtp.usecase";
@@ -45,13 +42,11 @@ import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/co
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
 import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
-import { GetUserProfileResponseDTO } from "../../application/dtos/user/profile/GetProfileDTO";
 import {
   UpdateProfileRequestDTO,
 } from "../../application/dtos/user/profile/UpdateProfileDTO";
 import { SignUpRequestDTO } from "../../application/dtos/user/auth/signUp/SignUpDTO";
 import { SignInRequestDTO } from "../../application/dtos/user/auth/signIn/SignInDTO";
-import { AuthResponseDTO } from "../../application/dtos/user/auth/common/AuthResponseDTO";
 import { ResetPasswordRequestDTO } from "../../application/dtos/user/auth/forgotPassword/ResetPasswordDTO";
 import { GoogleAuthRequestDTO } from "../../application/dtos/user/auth/googleAuth/GoogleAuthDTO";
 import { SendOtpRequestDTO } from "../../application/dtos/user/auth/resendOtp/ResendOtpDTO";
@@ -872,14 +867,12 @@ export class UserController {
       const skip = (page - 1) * limit;
       console.log(limit);
       console.log(skip);
-      /* -------------------- LOCATION -------------------- */
       const longitude =
         req.query.longitude !== undefined ? Number(req.query.longitude) : null;
 
       const latitude =
         req.query.latitude !== undefined ? Number(req.query.latitude) : null;
 
-      /* -------------------- FILTERS (FLAT QUERY) -------------------- */
       const parsedFilters = {
         category: req.query.category as string | undefined,
 

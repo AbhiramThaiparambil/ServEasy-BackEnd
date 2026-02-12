@@ -2,7 +2,6 @@ import { inject, injectable } from "tsyringe";
 import { IChangeAdStatusUseCase } from "./IChangeAdStatus.usecase";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
-import { IAdStatus } from "../../../../dtos/admin/GetAdsAdminDTO";
 
 import { ChangeAdStatusRequestDTO } from "../../../../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
 

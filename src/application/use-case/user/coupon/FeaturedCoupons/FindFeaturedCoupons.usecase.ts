@@ -1,8 +1,6 @@
 import { injectable, inject } from "tsyringe";
-import {
-  IBannerCouponResponse,
-  ICoupon,
-} from "../../../../../domain/entities/ICoupon";
+
+
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
 import { IFindFeaturedCouponsUseCase } from "./IFindFeaturedCoupons.usecase";

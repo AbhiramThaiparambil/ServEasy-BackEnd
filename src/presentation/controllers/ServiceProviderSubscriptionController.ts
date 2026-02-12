@@ -2,11 +2,9 @@ import { inject, injectable } from "tsyringe";
 import { getString } from "../../utils/requestUtils";
 import { getErrorMessage } from "../../utils/errorUtils";
 
-import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIService";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
-import { ConversationWithParticipantsListInstance } from "twilio/lib/rest/conversations/v1/conversationWithParticipants";
 import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
 import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
 import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
@@ -25,7 +23,7 @@ export class ServiceProviderSubscriptionController {
     private getProviderChats: IGetProviderAIChatsUseCase
   ) {}
 
-  async handleChatRequest(req: Request, res: Response): Promise<any> {
+  async handleChatRequest(req: Request, res: Response): Promise<void> {
     const { message, activeChatId } = req.body;
     console.log(req.body);
     const serviceProviderId = res.locals.serviceProvider_id;
@@ -57,7 +55,6 @@ export class ServiceProviderSubscriptionController {
     const response = await this.createAiChatUseCase.execute(dto);
     console.log(response);
     console.log(
-      "----------------------------====-------------===----------===--------"
     );
     if (!response) {
       res.status(HttpStatus.BAD_REQUEST).json({

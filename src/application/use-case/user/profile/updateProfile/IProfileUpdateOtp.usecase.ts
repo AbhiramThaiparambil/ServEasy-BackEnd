@@ -1,11 +1,9 @@
-export interface IProfileUpdateOtpResult {
-  success?: string;
-  errorMessage?: string;
-}
+import { UpdateProfileResponseDTO } from "../../../../dtos/user/profile/UpdateProfileDTO";
+
 export interface IProfileUpdateOtpUseCase {
   execute(
     userId: string,
     key: string,
     enteredOtp: string,
-  ): Promise<IProfileUpdateOtpResult>;
+  ): Promise<UpdateProfileResponseDTO>;
 }

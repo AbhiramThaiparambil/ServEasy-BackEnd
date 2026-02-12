@@ -4,6 +4,9 @@ import {
   IServiceBooking,
 } from "../entities/IServiceBooking";
 import { IFindPaymentInfoAdminDTO } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
+import { GetPaymentInfoResponseDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
+import { ICompletedServiceByProvider } from "../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
+import { IPayment } from "../entities/IPayment";
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(
     userId: Types.ObjectId,
@@ -84,7 +87,7 @@ export interface IServiceBookingRepository {
 
   findCompletedByProvider(
     serviceProviderId: string,
-  ): Promise<IServiceBooking[]>;
+  ): Promise<ICompletedServiceByProvider[]>;
   updateReviewId(
     bookingId: Types.ObjectId,
     reviewId: Types.ObjectId,
@@ -93,7 +96,7 @@ export interface IServiceBookingRepository {
   getPaymentInfo(
     startDate?: Date | null,
     endDate?: Date | null,
-  ): Promise<unknown>;
+  ): Promise<GetPaymentInfoResponseDTO>;
 
   getPaymentInfoServiceProvider(
     serviceProviderId: string,
@@ -112,4 +115,7 @@ export interface IServiceBookingRepository {
     status: string,
     statusField: "serviceStatus" | "paymentStatus",
   ): Promise<IFindPaymentInfoAdminDTO[]>;
+
+     requestPayment(id: Types.ObjectId, status: string, payment: IPayment):Promise<IServiceBooking|null> 
+  
 }

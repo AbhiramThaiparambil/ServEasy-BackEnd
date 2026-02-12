@@ -9,5 +9,6 @@ import mongoose from "mongoose";
   state: string;
   description: string;
   isDefault?: boolean
+  phone?: string
 
 }

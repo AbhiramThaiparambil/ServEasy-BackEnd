@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
 import { TokenService } from "../../services/token/TokenService";
 import { JwtPayload } from "jsonwebtoken";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 export const serviceProviderAuth = async (
   req: Request,
@@ -53,8 +54,11 @@ export const serviceProviderAuth = async (
     res.locals.user = decoded;
 
     next();
-  } catch (error: any) {
-    console.log("Token verification failed:", error.message);
+  } catch (error: unknown) {
+
+  
+    
+    console.log("Token verification failed:", getErrorMessage(error));
     res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
     return;
   }

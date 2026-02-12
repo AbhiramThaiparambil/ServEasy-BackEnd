@@ -2,7 +2,6 @@ import { inject, injectable } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IRecommendAdsUseCase } from "./IRecommendAdsUseCase";
 import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
-import { IAd } from "../../../../../domain/entities/IAd";
 import {
   GetRecommendedAdsRequestDTO,
   RecommendedAdDTO,

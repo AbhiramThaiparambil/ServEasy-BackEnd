@@ -1,3 +1,6 @@
+import { ICategory } from "../../../../../domain/entities/ICategory ";
+import { INearbyServicePagination, INearbyServiceResult } from "../../../../../utils/types/dto/INearbyServiceResult";
+
 export interface GetNearbyServicesRequestDTO {
   userId: string;
   skip: number;
@@ -13,9 +16,9 @@ export interface GetNearbyServicesRequestDTO {
 }
 
 export interface GetNearbyServicesResponseDTO {
-  allFilterServices: any;
-  categories: any;
-  activeServiceNames: any;
+  allFilterServices: INearbyServicePagination;
+  categories: ICategory[];
+  activeServiceNames:string[];
 }
 
 export interface GetAllActiveServicesRequestDTO {
@@ -24,6 +27,6 @@ export interface GetAllActiveServicesRequestDTO {
 }
 
 export interface GetAllActiveServicesResponseDTO {
-  allServices: any;
-  categories: any;
+  allServices: INearbyServiceResult[];
+  categories: { categoryId: string; category: string }[];
 }

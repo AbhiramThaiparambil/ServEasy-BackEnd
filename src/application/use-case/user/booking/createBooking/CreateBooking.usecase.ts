@@ -2,18 +2,12 @@ import { injectable, inject, container } from "tsyringe";
 import mongoose, { ClientSession, Types } from "mongoose";
 import {
   IServiceBooking,
-  IPreferredServiceDateTime,
-  IliveLocation,
 } from "../../../../../domain/entities/IServiceBooking";
-import { IAddress } from "../../../../../domain/entities/IAddress";
-import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
 import { ICreateBookingUseCase } from "./ICreateBooking.usecase";
 import { BookingQueueService } from "../../../../../infrastructure/jobs/queue/BookingQueueService";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import {
   REPOSITORY_TOKENS,
-  SERVICE_TOKENS,
 } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
@@ -22,7 +16,6 @@ import { IServiceProviderRepository } from "../../../../../domain/repositories/I
 
 import {
   CreateBookingRequestDTO,
-  CreateBookingResponseDTO,
 } from "../../../../../application/dtos/user/booking/createBooking/CreateBookingDTO";
 
 @injectable()

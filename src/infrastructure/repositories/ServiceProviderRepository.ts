@@ -1,7 +1,6 @@
 import { injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../domain/repositories/IserviceProviderRepository";
 import {
-  IBankDetails,
   IServiceProvider,
   IServiceProviderRegistration,
   IUpdateProfile,
@@ -11,10 +10,8 @@ import mongoose, { isValidObjectId, ObjectId } from "mongoose";
 import { ISubscription } from "../../domain/entities/ISubscription";
 import {
   IFindSubscriptionsResult,
-  ISubscriptionWithPlan,
 } from "../../utils/types/dto/ISubscriptionWithPlan";
 import { Types } from "mongoose";
-import { getErrorMessage } from "../../utils/errorUtils";
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {

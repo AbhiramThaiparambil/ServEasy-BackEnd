@@ -1,19 +1,9 @@
-import { GetBookedServiceByIdRequestDTO } from "../../../../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
-import mongoose from "mongoose";
+import { BookedServiceForServiceProviderDTO, GetBookedServiceByIdForServiceProviderResponseDTO, GetBookedServiceByIdForUserResponseDTO, GetBookedServiceByIdRequestDTO } from "../../../../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
 
 export interface IGetBookedServiceByIdUseCase {
-  getForUser(data: GetBookedServiceByIdRequestDTO): Promise<{
-    bookedService: any;
-    serviceProvider: any;
-    service: any;
-    review: any;
-  }>;
+  getForUser(data: GetBookedServiceByIdRequestDTO): Promise<GetBookedServiceByIdForUserResponseDTO>;
 
-  getForServiceProvider(data: GetBookedServiceByIdRequestDTO): Promise<{
-    bookedService: any;
-    serviceProvider: any;
-    service: any;
-    user: any;
-    review: any;
-  }>;
+  getForServiceProvider(data: GetBookedServiceByIdRequestDTO): Promise<
+  GetBookedServiceByIdForServiceProviderResponseDTO
+  >;
 }

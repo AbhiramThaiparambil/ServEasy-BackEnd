@@ -1,3 +1,6 @@
+import { IAddress } from "../../../../../domain/entities/IAddress";
+import { IPayment } from "../../../../../domain/entities/IPayment";
+
 export interface PaymentDetails {
   convenienceFee: number;
   inspectionCost: number;
@@ -34,4 +37,33 @@ export interface ServiceBooking {
 
 export interface GetBookingPaymentSummaryRequestDTO {
   serviceProviderId: string;
+}
+
+
+export interface ICompletedServiceByProvider {
+  _id: string;
+
+  payment?: IPayment;
+
+  paymentType?: "cash" | "card" | "online" | "pending" | "wallet";
+
+  paymentStatus: "pending" | "paid" | "failed" | "completed";
+
+  serviceStatus:
+    | "pending"
+    | "in-progress"
+    | "completed"
+    | "cancelled"
+    | "confirmed";
+
+  address?: IAddress;
+
+  serviceImage?: string;
+  serviceName?: string;
+  serviceType?: string;
+
+  userEmail?: string;
+  userName?: string;
+  userProfile?: string;
+  userPhone?: string;
 }

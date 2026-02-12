@@ -1,7 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import {
   IServiceProvider,
-  IServiceProviderRegistration,
 } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";

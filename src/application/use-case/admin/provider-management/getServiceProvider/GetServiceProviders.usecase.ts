@@ -5,7 +5,6 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 import { GetProvidersDTO } from "../../../../dtos/admin/provider/GetProvidersDTO";
 import { ProviderResponseDTO } from "../../../../dtos/admin/provider/ProviderResponseDTO";
-import { serviceProviderSanitizer } from "../../../../../utils/sanitizers/serviceProviderSanitrizer";
 import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 
 @injectable()

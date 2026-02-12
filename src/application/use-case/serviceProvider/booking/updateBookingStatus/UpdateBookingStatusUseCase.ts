@@ -6,6 +6,7 @@ import { IUpdateBookingStatusUseCase } from "./IUpdateBookingStatusUseCase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { UpdateBookingStatusRequestDTO } from "../../../../dtos/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusRequestDTO";
+import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 
 @injectable()
 export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
@@ -16,7 +17,7 @@ export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(data: UpdateBookingStatusRequestDTO) {
+  async execute(data: UpdateBookingStatusRequestDTO):Promise<IServiceBooking|null> {
     const id = new mongoose.Types.ObjectId(data.bookingId);
 
     const result = await this.serviceBookingRepository.updateServiceStatus(

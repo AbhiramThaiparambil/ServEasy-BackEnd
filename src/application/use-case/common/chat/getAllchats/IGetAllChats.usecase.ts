@@ -1,11 +1,10 @@
-import {
-  IServiceProviderChat,
-  IUserChat,
-} from "../../../../../domain/entities/IChat";
+
+
 
 import { GetChatsRequestDTO } from "../../../../../application/dtos/common/chat/getAllchats/GetAllChatsDTO";
+import { IServiceProviderChat, IUserChat } from "../../../../../domain/entities/IChat";
 
 export interface IGetAllChats {
-  getServiceProviderChats(data: GetChatsRequestDTO): Promise<any>;
-  getUserChats(data: GetChatsRequestDTO): Promise<any>;
+  getServiceProviderChats(data: GetChatsRequestDTO): Promise<IUserChat[]>;
+  getUserChats(data: GetChatsRequestDTO): Promise<IServiceProviderChat[]>;
 }

@@ -6,7 +6,6 @@ import { injectable } from "tsyringe";
 import {INearbyServiceResult,} from "../../utils/types/dto/INearbyServiceResult";
 import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
 import { IServiceWithProviderDetails } from "../../utils/types/IServiceWithProviderDetails";
-import { getErrorMessage } from "../../utils/errorUtils";
 @injectable()
 export class ServiceRepository implements IServiceRepository {
   async create(service: IService): Promise<IService> {

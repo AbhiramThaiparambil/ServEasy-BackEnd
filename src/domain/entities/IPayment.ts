@@ -1,6 +1,6 @@
 export interface IPayment {
   serviceCost: number;
-  metaialCost: number;
+  materialCost: number;
   travelCost: number;
   inspectionCost: number;
   convenienceFee: number;
