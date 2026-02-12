@@ -24,7 +24,7 @@ export class RedisService implements IRedisService {
   }
 
   async set(key: string, otp: string, expiry: number): Promise<void> {
-    const res = await this.client.set(key, otp, "EX", expiry);
+    await this.client.set(key, otp, "EX", expiry);
   }
 
   async get(key: string): Promise<string | null> {

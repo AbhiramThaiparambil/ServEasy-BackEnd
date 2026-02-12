@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { container } from "tsyringe";

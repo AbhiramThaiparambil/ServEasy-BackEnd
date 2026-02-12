@@ -37,7 +37,7 @@ export class VideoCallHandler {
         const socketsInRoom = room ? Array.from(room) : [];
         const isReceiverInRoom = socketsInRoom.some(
           (socketId) => socketId !== socket.id,
-        ); // exclude sender socket
+        ); 
 
         if (!isReceiverInRoom) {
           console.log("_____________________________________");

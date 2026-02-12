@@ -10,7 +10,7 @@ export interface ISaveMessageUseCase {
   getSpecificChat(
     data: GetSpecificChatRequestDTO
   ): Promise<{
-    data: Promise<IChat> | null;
+    data: IChat | null;
     message: "success" | "noMessages";
   }>;
 

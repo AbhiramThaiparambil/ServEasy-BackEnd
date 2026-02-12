@@ -31,7 +31,6 @@ export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUse
       throw new Error("Service provider not found");
     }
 
-    /* ---------- Profile Image ---------- */
 
     let profileImage: string | undefined = existingProvider.profileImage;
 
@@ -48,7 +47,6 @@ export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUse
       );
     }
 
-    /* ---------- Documents ---------- */
 
     const documents: string[] = [];
 
@@ -69,16 +67,14 @@ export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUse
       documents.push(existingProvider.document[1]);
     }
 
-    /* ---------- Skills Mapping (FIXED) ---------- */
 
     const mappedSkills: ISkill[] = serviceProviderData.skills.map(
       (skillName: string) => ({
         name: skillName,
-        level: "beginner", // default level (business rule)
+        level: "beginner", 
       })
     );
 
-    /* ---------- Build Update Payload ---------- */
 
     const updatePayload: Partial<IServiceProvider> = {
       serviceProviderName: serviceProviderData.serviceProviderName,
@@ -99,8 +95,6 @@ export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUse
       document: documents,
       isVerified: "pending",
     };
-
-    /* ---------- Update ---------- */
 
     return await this.serviceProviderRepository.updateRegistration(
       existingProvider._id,

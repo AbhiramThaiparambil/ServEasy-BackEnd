@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
 import mongoose from "mongoose";
 import { ICreateBookingUseCase } from "../../application/use-case/user/booking/createBooking/ICreateBooking.usecase";
@@ -105,7 +106,7 @@ export class BookingController {
       const dto: CreateOnlineBookingRequestDTO = {
         userId,
         serviceId,
-        slotId
+        slotId,
       };
 
       const booking = await this.createOnlineBookingUseCase.execute(dto);
@@ -125,7 +126,7 @@ export class BookingController {
 
   async updateBookingStatus(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { serviceStatus } = req.body;
 
       if (!id || !serviceStatus) {
@@ -134,10 +135,10 @@ export class BookingController {
         });
         return;
       }
-      
+
       const dto: UpdateBookingStatusRequestDTO = {
         bookingId: id,
-        status: serviceStatus
+        status: serviceStatus,
       };
 
       const data = await this.updateBookingStatusUseCase.execute(dto);
@@ -155,7 +156,7 @@ export class BookingController {
 
   uploadBills = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { invoices } = req.body;
 
       if (!Array.isArray(invoices) || invoices.length === 0) {
@@ -164,10 +165,10 @@ export class BookingController {
           .json({ message: "No invoice images provided." });
         return;
       }
-      
+
       const dto: UploadBillsRequestDTO = {
         bookingId: id,
-        images: invoices
+        images: invoices,
       };
 
       await this.uploadBillsUseCase.execute(dto);
@@ -185,7 +186,7 @@ export class BookingController {
 
   async confirmBooking(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { serviceStatus, estimatedServiceTime, reschedule, reschedReason } =
         req.body;
 
@@ -197,14 +198,14 @@ export class BookingController {
         });
         return;
       }
-      
+
       const dto: ConfirmBookingRequestDTO = {
         bookingId: id,
         status: serviceStatus,
         estimatedServiceTime,
         serviceProviderId,
         reschedule: Boolean(reschedule),
-        rescheduleReason: reschedReason
+        rescheduleReason: reschedReason,
       };
 
       const data = await this.confirmBookingUseCase.execute(dto);
@@ -230,14 +231,14 @@ export class BookingController {
         });
         return;
       }
-      
+
       const dto: RescheduleOnlineServiceRequestDTO = {
         bookingId,
         date,
         startTime,
-        endTime
+        endTime,
       };
-      
+
       const data = await this.rescheduleOnlineServiceSlotUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
@@ -254,7 +255,7 @@ export class BookingController {
 
   async cancelBooking(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { serviceStatus, cancellationReason } = req.body;
 
       if (!id || !serviceStatus || !cancellationReason) {
@@ -284,7 +285,7 @@ export class BookingController {
 
   async requestPayment(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { payment, paymentStatus } = req.body;
 
       if (!id || !payment || !paymentStatus) {
@@ -293,11 +294,11 @@ export class BookingController {
         });
         return;
       }
-      
+
       const dto: RequestPaymentRequestDTO = {
         bookingId: id,
         payment,
-        paymentStatus
+        paymentStatus,
       };
 
       const data = await this.requestPaymentUseCase.execute(dto);
@@ -318,15 +319,17 @@ export class BookingController {
       console.log("hello");
       const userId = new mongoose.Types.ObjectId(res.locals.user.userId);
       if (req.query.count) {
-        const dto: GetUserBookedServiceCountRequestDTO = { userId: userId.toString() };
+        const dto: GetUserBookedServiceCountRequestDTO = {
+          userId: userId.toString(),
+        };
         const count =
           await this.getBookedServicesUseCase.getUserBookedServiceCount(dto);
         res.status(HttpStatus.OK).json({ count });
         return;
       }
 
-      const limit = Number(req.query.limit ?? 10);
-      const page = Number(req.query.page ?? 0);
+      const limit = Number(getString(req.query.limit) || 10);
+      const page = Number(getString(req.query.page) || 0);
       const skip = page * limit;
 
       const dto: GetUserBookedServicesRequestDTO = {
@@ -351,7 +354,7 @@ export class BookingController {
 
   async getBookedServiceDetailsForProvider(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -376,7 +379,7 @@ export class BookingController {
 
   async getBookedServiceDetailsForUser(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -408,8 +411,8 @@ export class BookingController {
         });
       }
 
-      const limit = Number(req.query.limit ?? 10);
-      const page = Number(req.query.page ?? 0);
+      const limit = Number(getString(req.query.limit) || 10);
+      const page = Number(getString(req.query.page) || 0);
       const skip = page * limit;
 
       const dto: GetServiceProviderBookedServicesRequestDTO = {
@@ -419,7 +422,9 @@ export class BookingController {
       };
 
       const { services, count } =
-        await this.getBookedServicesUseCase.getServiceProviderBookedServices(dto);
+        await this.getBookedServicesUseCase.getServiceProviderBookedServices(
+          dto,
+        );
 
       res.status(HttpStatus.OK).json({
         services,
@@ -439,15 +444,14 @@ export class BookingController {
     }
   }
   async getBookingPaymentSummary(req: Request, res: Response) {
-    try { 
-      console.log(res.locals)
-      console.log(req.params.id)
-      console.log("______________________________________________________________________")
-       console.log(res.locals.serviceProvider_id)
-              console.log("serviceProviderId:"+res.locals.serviceProvider_id)
+    try {
+      console.log(res.locals);
+      console.log(req.params.id);
+      console.log(res.locals.serviceProvider_id);
+      console.log("serviceProviderId:" + res.locals.serviceProvider_id);
 
-      const serviceProviderId = req.params.id;
-              console.log("serviceProviderId:"+serviceProviderId)
+      const serviceProviderId = getString(req.params.id);
+      console.log("serviceProviderId:" + serviceProviderId);
       const dto: GetBookingPaymentSummaryRequestDTO = {
         serviceProviderId: serviceProviderId,
       };

@@ -3,7 +3,6 @@ import { IProviderWallet, IWalletTransaction } from '../entities/IproviderWallet
 import { IProviderWalletView } from '../../utils/types/dto/IProviderWalletView';
 import { IProviderWalletDetailsView } from '../../utils/types/dto/IProviderWalletDetailsView';
 
-// interface/db/IProviderWalletRepository.ts
 export interface IProviderWalletRepository {
   createWallet(providerId: Types.ObjectId): Promise<IProviderWallet>;
   addTransaction(

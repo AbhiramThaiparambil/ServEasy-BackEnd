@@ -18,7 +18,7 @@ export interface IService {
   description: string;
   serviceType: string;
   category: Types.ObjectId;
-  location: any;
+  location: ILocation;
   estimatedPrice: number;
   serviceProviderId: Types.ObjectId;
   isActive?: boolean;

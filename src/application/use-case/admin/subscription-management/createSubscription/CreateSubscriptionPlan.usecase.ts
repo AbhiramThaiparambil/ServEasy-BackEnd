@@ -20,7 +20,6 @@ export class CreateSubscriptionPlanUseCase
     
     const planEntity: ISubscriptionPlan = {
       ...data,
-      // features: data.features // Assuming direct mapping works 
     } as unknown as ISubscriptionPlan
 
     const createdPlan =

@@ -22,6 +22,7 @@ export class GetPaymentInfoUseCase implements IGetPaymentInfoUseCase {
     );
 
     console.log(res);
-    return res;
+    const response = res as GetPaymentInfoResponseDTO;
+    return response;
   }
 }

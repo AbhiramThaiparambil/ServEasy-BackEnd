@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
 import { inject, injectable } from "tsyringe";
 import { GetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/GetPaymentInfoUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
@@ -209,7 +210,7 @@ export class ServiceProviderController {
     res: Response,
   ): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       if (!id) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -238,11 +239,11 @@ export class ServiceProviderController {
     console.log("getPaymentInfo is:", this.getPaymentInfo);
 
     try {
-      const startDate = req.query.startDate
-        ? new Date(req.query.startDate as string)
-        : undefined;
       const endDate = req.query.endDate
-        ? new Date(req.query.endDate as string)
+        ? new Date(getString(req.query.endDate))
+        : undefined;
+      const startDate = req.query.startDate
+        ? new Date(getString(req.query.startDate))
         : undefined;
       const serviceProviderId = res.locals.serviceProvider_id;
 
@@ -289,7 +290,7 @@ export class ServiceProviderController {
 
   async getChatHistory(req: Request, res: Response): Promise<void> {
     try {
-      const { chatId } = req.params;
+      const chatId = getString(req.params.chatId);
       const dto: GetAIChatByIdRequestDTO = { id: chatId };
       const chat = await this.getAIChatByIdUseCase.execute(dto);
 
@@ -381,7 +382,7 @@ export class ServiceProviderController {
 
   async editAd(req: Request, res: Response): Promise<void> {
     try {
-      const { adId } = req.params;
+      const adId = getString(req.params.adId);
       const updateData = req.body;
       const dto: EditAdRequestDTO = { adId, updateData };
       const updatedAd = await this.editAdUseCase.execute(dto);
@@ -596,7 +597,7 @@ export class ServiceProviderController {
 
   async markSlotAsBooked(req: Request, res: Response): Promise<void> {
     try {
-      const slotId = req.params.slotId;
+      const slotId = getString(req.params.slotId);
       
       if (!slotId) {
         res.status(HttpStatus.BAD_REQUEST).json({ message: "Slot ID is required" });
@@ -635,7 +636,7 @@ export class ServiceProviderController {
 
   async makeItactiveAllService(req: Request, res: Response) {
     try {
-      const serviceProviderId = req.params.id;
+      const serviceProviderId = getString(req.params.id);
 
       if (!serviceProviderId) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -664,7 +665,7 @@ export class ServiceProviderController {
 
   async makeInactiveAllService(req: Request, res: Response) {
     try {
-      const serviceProviderId = req.params.id;
+      const serviceProviderId = getString(req.params.id);
 
       if (!serviceProviderId) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -737,8 +738,8 @@ export class ServiceProviderController {
   async getWallet(req: Request, res: Response) {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.skip as string) || 0;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.skip)) || 0;
       const skip = page * limit;
 
       const dto: GetWalletRequestDTO = {
@@ -821,7 +822,7 @@ export class ServiceProviderController {
 
   async getProviderAds(req: Request, res: Response): Promise<void> {
     try {
-      const { providerId } = req.params;
+      const providerId = getString(req.params.providerId);
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 5;
       const skip = (page - 1) * limit;
@@ -845,7 +846,7 @@ export class ServiceProviderController {
 
   async changeAdStatus(req: Request, res: Response): Promise<void> {
     try {
-      const { adId } = req.params;
+      const adId = getString(req.params.adId);
       const { status } = req.body;
       if (!adId || !status) {
         res.status(400).json({ message: "adId and status are required" });
@@ -876,7 +877,7 @@ export class ServiceProviderController {
 
   async getServiceNames(req: Request, res: Response): Promise<void> {
     try {
-      const { providerId } = req.params;
+      const providerId = getString(req.params.providerId);
       const dto: GetServiceNamesRequestDTO = { providerId };
       const result = await this.getServiceNamesUseCase.execute(dto);
       console.log(result);
@@ -953,7 +954,7 @@ export class ServiceProviderController {
 
   async getServices(req: Request, res: Response): Promise<void> {
     try {
-      const { providerId } = req.params;
+      const providerId = getString(req.params.providerId);
       const dto: GetProviderServicesRequestDTO = { providerId };
       const result = await this.getServicesUseCase.execute(dto);
       res.status(200).json({ success: true, data: result });

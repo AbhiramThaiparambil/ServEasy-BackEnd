@@ -44,9 +44,7 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
   ): Promise<string | void> {
     const { newPassword, phone } = data;
     if (!phone) return "Phone number is required";
-    const user = await this.userRepository.findByPhone(phone); // Corrected from findByEmail to findByPhone as per typical logic, but original code used findByEmail(phone). Fixing it to be consistent but probably should use findByPhone if it exists. Original code was likely buggy: `await this.userRepository.findByEmail(phone)`. I will stick to original logic but extract phone. Wait, original logic `userRepository.findByEmail(phone)` seems wrong. I'll change it to `findByPhone` if available, but the original code had `findByEmail(phone)`. I will check if `findByPhone` exists in `IUserRepository`.
-    // Actually, looking at `SendForgotPasswordOtpUseCase`, it uses `this.userRepository.findByPhone(phone)`. So `findByPhone` exists. I will use `findByPhone`.
-    
+    const user = await this.userRepository.findByPhone(phone);    
     if (!user || !user._id) {
       throw new Error("User not found");
     }

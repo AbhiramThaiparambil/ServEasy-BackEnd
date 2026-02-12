@@ -21,7 +21,7 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
   async getSpecificChat(
     data: GetSpecificChatRequestDTO
   ): Promise<{
-    data: Promise<IChat> | null;
+    data: IChat | null;
     message: "success" | "noMessages";
   }> {
     const { user1, user2 } = data;
@@ -59,7 +59,15 @@ export class SaveMessageUseCase implements ISaveMessageUseCase {
       );
       return data.messages[data.messages.length - 1];
     } else {
-      const data = await this.chatRepository.addMessage(isExist._id, message);
+      const chatId = typeof isExist._id === 'string' 
+        ? new mongoose.Types.ObjectId(isExist._id)
+        : isExist._id;
+        
+      if (!chatId) {
+        throw new Error("Chat ID is required");
+      }
+      
+      const data = await this.chatRepository.addMessage(chatId, message);
       if (!data) {
         return message;
       }

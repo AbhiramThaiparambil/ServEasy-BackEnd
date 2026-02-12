@@ -1,5 +1,3 @@
-// services/jobs/CleanupExpiredSlotsJob.ts
-
 import cron from "node-cron";
 import { inject, injectable } from "tsyringe";
 import { USE_CASE_TOKENS } from "../../../constants/tokens";

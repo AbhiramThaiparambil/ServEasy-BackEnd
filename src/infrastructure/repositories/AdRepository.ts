@@ -115,7 +115,7 @@ export class AdRepository implements IAdRepository {
       return await AdModel.find({ providerId: id })
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit);
+        .limit(limit).lean()
     } catch (error) {
       console.log(error);
       throw error;

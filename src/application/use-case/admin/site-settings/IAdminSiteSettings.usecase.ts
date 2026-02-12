@@ -16,7 +16,7 @@ export interface IAdminSiteSettingsUseCase {
   addTheme(theme: AddThemeRequestDTO): Promise<string>;
   findAllHomeBanners(): Promise<HomeBannerResponseDTO[]>;
   findAllFooterBanners(): Promise<FooterBannerResponseDTO[]>;
-  findAllThemes(): Promise<string[]>; // Or ThemeResponseDTO[] if you want full objects
+  findAllThemes(): Promise<string[]>; 
   findActiveHomeBanners(): Promise<HomeBannerResponseDTO | null>;
   findActiveFooterBanners(): Promise<FooterBannerResponseDTO | null>;
   updateHomeBanner(

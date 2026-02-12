@@ -37,7 +37,7 @@ export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
       imageUrl: imageUrl,
       title: bannerData.title,
       subtitle: bannerData.subtitle,
-      isActive: true, // Default to active on creation
+      isActive: true, 
     };
 
     const result = await this.siteSettingRepository.addHomeBanner(bannerEntity);
@@ -55,7 +55,7 @@ export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
       imageUrl: imageUrl,
       title: bannerData.title,
       subtitle: bannerData.subtitle,
-      isActive: true, // Default to active
+      isActive: true, 
     };
 
     const result = await this.siteSettingRepository.addFooterBanner(bannerEntity);
@@ -98,7 +98,6 @@ export class AdminSiteSettingsUseCase implements IAdminSiteSettingsUseCase {
     bannerId: string,
     updateData: UpdateHomeBannerRequestDTO
   ): Promise<HomeBannerResponseDTO | null> => {
-    // Map DTO to partial entity
     const entityUpdate: Partial<IHomeBanner> = {
         ...updateData
     }

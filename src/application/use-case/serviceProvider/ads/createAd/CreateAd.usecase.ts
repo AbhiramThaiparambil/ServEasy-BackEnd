@@ -22,10 +22,6 @@ export class CreateAdUseCase implements ICreateAdUseCase {
 
   async execute(data: CreateAdRequestDTO): Promise<IAd | null> {
     try {
-      // Map DTO to IAd structure partial where necessary or pass directly if compatible.
-      // DTO has same structure minus _id, created_at etc which are generated.
-      // The repository expects IAd, so we construct it.
-      
       const adData: Partial<IAd> = {
           ...data,
           serviceId: new Types.ObjectId(data.serviceId),

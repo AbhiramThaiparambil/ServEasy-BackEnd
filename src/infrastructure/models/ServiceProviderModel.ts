@@ -61,7 +61,7 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     isBlocked: { type: Boolean, default: false },
     bankDetails: { type: BankDetailsSchema, required: true },
-    subscriptions: [SubscriptionSchema],
+    subscription: [SubscriptionSchema],
   },
   {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },

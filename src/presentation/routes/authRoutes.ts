@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { container } from "tsyringe";
 import { UserController } from "../controllers/UserController";
 import { AdminController } from "../controllers/AdminController";

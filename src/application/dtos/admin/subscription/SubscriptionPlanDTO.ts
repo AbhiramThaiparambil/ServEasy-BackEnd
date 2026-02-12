@@ -21,7 +21,7 @@ export interface UpdateSubscriptionPlanRequestDTO {
 }
 
 export interface SubscriptionPlanResponseDTO {
-  _id: string; // Correctly using string for DTO response
+  _id: string; 
   name: string;
   price: number;
   validityDays: number;

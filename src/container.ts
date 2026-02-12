@@ -285,6 +285,8 @@ import { EditServiceProviderProfileUseCase } from "./application/use-case/servic
 import { GetServiceProvider } from "./application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
 import { IGetBookingPaymentSummaryUseCase } from "./application/use-case/serviceProvider/booking/getBookingPaymentSummary/IGetBookingPaymentSummaryUseCase";
 import { GetBookingPaymentSummaryUseCase } from "./application/use-case/serviceProvider/booking/getBookingPaymentSummary/GetBookingPaymentSummaryUseCase";
+import { GetAdminBookingHistoryUseCase } from "./application/use-case/admin/bookings/GetAdminBookingHistory.usecase";
+import { IGetAdminBookingHistoryUseCase } from "./application/use-case/admin/bookings/IGetAdminBookingHistory.usecase";
 
 container.register<IUserRepository>(REPOSITORY_TOKENS.UserRepository, {
   useClass: MongoUserRepository,
@@ -1071,3 +1073,12 @@ container.register<IVerifyPaymentUseCase>(
     useClass: VerifyPaymentUseCase,
   },
 );
+
+container.register<IGetAdminBookingHistoryUseCase>(
+  USE_CASE_TOKENS.GetAdminBookingHistoryUseCase,
+  {
+    useClass: GetAdminBookingHistoryUseCase,
+  },
+);
+
+

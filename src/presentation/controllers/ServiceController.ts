@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
 import { HttpStatus } from "../../constants/HttpStatus";
-// import { UpdateServiceStatus } from "../../application/use-case/serviceProvider/booking/updateBookingStatus/UpdateBookingStatusUseCase";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
 import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
@@ -56,7 +56,7 @@ export class ServiceController {
 
    async cancelUserBooking(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const { cancellationReason } = req.body;
 
       if (!id || !cancellationReason) {
@@ -91,7 +91,7 @@ export class ServiceController {
     res: Response,
   ): Promise<void> {
     try {
-      const { serviceId } = req.params;
+      const serviceId = getString(req.params.serviceId);
 
       if (!serviceId) {
         res
@@ -115,7 +115,7 @@ export class ServiceController {
     res: Response,
   ): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = getString(req.params.id);
 
       const dto: GetSlotsRequestDTO = { serviceId: id };
       const data = await this.getServiceSlotUseCase.execute(dto);
@@ -130,7 +130,7 @@ export class ServiceController {
 
   async deleteSlotHandler(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       if (!id) {
         res.status(HttpStatus.BAD_REQUEST).json({
@@ -187,7 +187,7 @@ export class ServiceController {
 
   async applyCoupon(req: Request, res: Response) {
     try {
-      const { bookingId } = req.params;
+      const bookingId = getString(req.params.bookingId);
       const { couponCode } = req.body;
 
       const updatedBooking = await this.applyCouponUseCase.execute({
@@ -212,7 +212,7 @@ export class ServiceController {
 
   async removeCoupon(req: Request, res: Response) {
     try {
-      const { bookingId } = req.params;
+      const bookingId = getString(req.params.bookingId);
       if (!bookingId) {
         res.status(HttpStatus.BAD_REQUEST).json({
           message: "Missing required fields: serviceId, startTime, endTime",
@@ -235,9 +235,7 @@ export class ServiceController {
     }
   }
 
-  /* ---------------------- NEW METHODS (Refactored) ---------------------- */
 
-  // 1. Add New Service
   async addNewService(req: Request, res: Response): Promise<void> {
     try {
       const {
@@ -267,8 +265,8 @@ export class ServiceController {
         return;
       }
       const updateLocation = {
-        type: "Point",
-        coordinates: [location.longitude, location.latitude],
+        type: "Point" as const,
+        coordinates: [location.longitude, location.latitude] as [number, number],
         address: location.address,
       };
       const serviceData: AddNewServiceRequestDTO = {
@@ -293,7 +291,6 @@ export class ServiceController {
     }
   }
 
-  // 2. Get Services
   async getServices(req: Request, res: Response): Promise<void> {
     try {
       const serviceProviderId = res.locals.serviceProvider_id;
@@ -317,10 +314,9 @@ export class ServiceController {
     }
   }
 
-  // 3. Update Service
   async updateService(req: Request, res: Response): Promise<void> {
     try {
-      const { serviceId } = req.params;
+      const serviceId = getString(req.params.serviceId);
       if (!serviceId) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -339,7 +335,6 @@ export class ServiceController {
         serviceProviderId,
       }: any = req.body;
 
-      // Validate required fields
       if (
         !serviceName ||
         !description ||
@@ -393,7 +388,6 @@ export class ServiceController {
     }
   }
 
-  // 4. Block/Unblock Service
   async blockUnblockService(req: Request, res: Response): Promise<void> {
     try {
       const { serviceId, action } = req.body;

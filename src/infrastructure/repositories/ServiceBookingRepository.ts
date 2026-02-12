@@ -2,10 +2,12 @@ import ServiceBooking from "../models/ServiceBooking";
 import { IServiceBookingRepository } from "../../domain/repositories/IserviceBookingRepository";
 import { ClientSession, Types } from "mongoose";
 import { injectable } from "tsyringe";
-import { ObjectId } from "mongodb";
-// import {IServiceBooking} from "../../domain/entities/IServiceBooking"
-import { IServiceBooking } from "../../domain/entities/IServiceBooking";
+import {
+  IBookedServiceWithDetails,
+  IServiceBooking,
+} from "../../domain/entities/IServiceBooking";
 import { IPayment } from "../../domain/entities/IPayment";
+import { IFindPaymentInfoAdminDTO } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
 
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
@@ -68,7 +70,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     userId: Types.ObjectId,
     skip: number,
     limit: number,
-  ): Promise<any> {
+  ): Promise<IBookedServiceWithDetails[]> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
         {
@@ -112,62 +114,12 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       throw e;
     }
   }
-  // async findBookedServicesAndServiceByServiceProviderId(
-  //   ServiceProviderId: Types.ObjectId,
-  //   skip: number,
-  //   limit: number
-  // ): Promise<any> {
-  //   try {
-  //     const bookedServices = await ServiceBooking.aggregate([
-  //       {
-  //         $match: { serviceProviderId: ServiceProviderId },
-  //       },
-  //       {
-  //         $lookup: {
-  //           from: "services",
-  //           localField: "serviceId",
-  //           foreignField: "_id",
-  //           as: "serviceDetails",
-  //         },
-  //       },
-  //       {
-  //         $unwind: "$serviceDetails",
-  //       },
-  //       {
-  //         $project: {
-  //           _id: 1,
-  //           serviceBookedAddress: "$address",
-  //           serviceStatus: 1,
-  //           paymentType: 1,
-  //           serviceName: "$serviceDetails.serviceName",
-  //           serviceType: "$serviceDetails.serviceType",
-  //           serviceImage: "$serviceDetails.serviceImage",
-  //           bookedTime: 1,
-  //         },
-  //       },
-  //       {
-  //         $sort: { bookedTime: -1 },
-  //       },
-  //       {
-  //         $skip: skip,
-  //       },
-  //       {
-  //         $limit: limit,
-  //       },
-  //     ]);
-
-  //     return bookedServices;
-  //   } catch (e) {
-  //     console.error("Error fetching booked services:", e);
-  //     throw e;
-  //   }
-  // }
 
   async findBookedServicesAndServiceByServiceProviderId(
     ServiceProviderId: Types.ObjectId,
     skip: number,
     limit: number,
-  ): Promise<any> {
+  ): Promise<IBookedServiceWithDetails[]> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
         {
@@ -337,11 +289,11 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     search: string,
     status: string,
     statusField: "serviceStatus" | "paymentStatus" = "serviceStatus",
-  ): Promise<any> {
+  ): Promise<IFindPaymentInfoAdminDTO[]> {
     try {
       const matchConditions: any[] = [];
 
-      console.log(`${statusField}: ${status} --------------`);
+      console.log(`${statusField}: ${status} `);
 
       // Add status filter
       if (status) {
@@ -514,7 +466,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   async getPaymentInfo(
     startDate?: Date | null,
     endDate?: Date | null,
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const match: any = {
         serviceStatus: "completed",
@@ -561,10 +513,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     serviceProviderId: string,
     startDate?: Date | null,
     endDate?: Date | null,
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const match: any = {
-        serviceProviderId: new ObjectId(serviceProviderId),
+        serviceProviderId: new Types.ObjectId(serviceProviderId),
         serviceStatus: "completed",
         paymentStatus: "completed",
       };
@@ -762,8 +714,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     const result = await ServiceBooking.aggregate([
       {
         $match: {
-          userId: new ObjectId(userId),
-          serviceId: new ObjectId(serviceId),
+          userId: new Types.ObjectId(userId),
+          serviceId: new Types.ObjectId(serviceId),
           serviceStatus: { $nin: ["cancelled", "completed"] },
         },
       },
@@ -795,10 +747,12 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     return await booking.save();
   }
 
-  async findCompletedByProvider(serviceProviderId: string): Promise<any[]> {
+  async findCompletedByProvider(
+    serviceProviderId: string,
+  ): Promise<IServiceBooking[]> {
     try {
       const match: any = {
-        serviceProviderId: new ObjectId(serviceProviderId),
+        serviceProviderId: new Types.ObjectId(serviceProviderId),
         serviceStatus: "completed",
         paymentStatus: "completed",
       };
@@ -813,7 +767,12 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
             as: "serviceDetails",
           },
         },
-        { $unwind: { path: "$serviceDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $unwind: {
+            path: "$serviceDetails",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
         {
           $lookup: {
             from: "users",
@@ -824,23 +783,23 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         },
         { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
         {
-            $project: {
-                _id: 1,
-                payment: 1,
-                paymentType: 1,
-                paymentStatus: 1,
-                serviceStatus: 1,
-                address: 1,
-                serviceImage: "$serviceDetails.serviceImage",
-                serviceName: "$serviceDetails.serviceName",
-                serviceType: "$serviceDetails.serviceType",
-                userEmail: "$userDetails.email",
-                userName: "$userDetails.userName",
-                userProfile: "$userDetails.profileImage",
-                userPhone: "$userDetails.phone",
-            }
+          $project: {
+            _id: 1,
+            payment: 1,
+            paymentType: 1,
+            paymentStatus: 1,
+            serviceStatus: 1,
+            address: 1,
+            serviceImage: "$serviceDetails.serviceImage",
+            serviceName: "$serviceDetails.serviceName",
+            serviceType: "$serviceDetails.serviceType",
+            userEmail: "$userDetails.email",
+            userName: "$userDetails.userName",
+            userProfile: "$userDetails.profileImage",
+            userPhone: "$userDetails.phone",
+          },
         },
-        { $sort: { bookedTime: -1 } }
+        { $sort: { bookedTime: -1 } },
       ]);
 
       return result;

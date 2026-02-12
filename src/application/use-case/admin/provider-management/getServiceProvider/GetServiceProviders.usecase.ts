@@ -54,7 +54,7 @@ export class GetServiceProviders implements IGetServiceProviders {
         subcategory: sp.subcategory,
         serviceMode: sp.serviceMode,
         socialMedia: sp.socialMedia,
-        subscriptions:sp.subscriptions
+        subscriptions: sp.subscription,
       };
     });
 

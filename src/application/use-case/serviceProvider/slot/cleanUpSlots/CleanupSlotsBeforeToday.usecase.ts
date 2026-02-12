@@ -1,5 +1,3 @@
-// application/usecases/slot/CleanupSlotsBeforeTodayUseCase.ts
-
 import { injectable, inject } from "tsyringe";
 import { ICleanupSlotsBeforeTodayUseCase } from "./ICleanupSlotsBeforeToday.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";

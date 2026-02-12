@@ -44,7 +44,12 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
         chatId
       );
 
+
       const response = await this.googleGenAIService.generateResponse(prompt);
+
+      if (!response.text) {
+        throw new Error("AI service returned empty response");
+      }
 
       const responseMessage: IAiAssistanceMessage = {
         content: response.text,

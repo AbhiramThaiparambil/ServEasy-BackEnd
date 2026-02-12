@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { ILocation } from "../../../../domain/entities/IService";
 
 export interface ServiceProviderDetailsDTO {
   _id: string;
@@ -23,7 +24,7 @@ export interface ServiceResponseDTO {
   description: string;
   serviceType: string;
   category: string;
-  location: Location;
+  location: ILocation;
   estimatedPrice: number;
   serviceProviderId: string;
   isActive?: boolean;

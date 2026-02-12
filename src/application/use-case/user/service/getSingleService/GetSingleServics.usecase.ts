@@ -8,8 +8,6 @@ import {
   GetSingleServiceRequestDTO,
   GetSingleServiceResponseDTO,
 } from "../../../../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
-import { ISingleServiceWithProvider } from "../../../../../utils/types/ISingleServiceWithProvider";
-import { IReviewWithUser } from "../../../../../domain/entities/IReview";
 
 @injectable()
 export class GetSingleServiceUseCase implements IGetSingleServiceUseCase {

@@ -2,7 +2,6 @@ import { injectable, inject } from "tsyringe";
 
 import { Types } from "mongoose";
 import { IAddReviewUseCase } from "./IAddReviewUseCase";
-import { ReviewRepository } from "../../../../../infrastructure/repositories/ReviewRepository";
 import { IReviewRepository } from "../../../../../domain/repositories/IReviewRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";

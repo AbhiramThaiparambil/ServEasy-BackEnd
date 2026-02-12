@@ -34,7 +34,6 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
           filters,
         );
 
-      // console.log(allFilterServices);
 
       const categories =
         await this.serviceRepository.findActiveServiceCategories();

@@ -1,4 +1,5 @@
 import { inject, injectable } from "tsyringe";
+import { getString } from "../../utils/requestUtils";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIService";
 import { Request, Response } from "express";
@@ -76,7 +77,7 @@ export class ServiceProviderSubscriptionController {
 
   async handleGetChatByChatId(req: Request, res: Response): Promise<void> {
     try {
-      const chatId = req.params.chatId;
+      const chatId = getString(req.params.chatId);
 
       if (!chatId) {
         res
@@ -105,7 +106,7 @@ export class ServiceProviderSubscriptionController {
     res: Response
   ): Promise<void> {
     try {
-      const providerId = req.params.providerId;
+      const providerId = getString(req.params.providerId);
 
       if (!providerId) {
         res

@@ -1,4 +1,3 @@
-// import { IService } from "../../../domain/entities/IService";
 import { inject, injectable } from "tsyringe";
 import { IGetAllServices } from "./IGetAllServices.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";

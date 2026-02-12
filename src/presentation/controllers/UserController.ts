@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
 import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
@@ -219,7 +220,7 @@ export class UserController {
   deleteNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       if (!userId || !id) {
         res
@@ -252,7 +253,7 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       if (!id) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -355,7 +356,7 @@ export class UserController {
   };
 
   signInUserController = async (req: Request, res: Response): Promise<void> => {
-    const { method } = req.params;
+    const method = getString(req.params.method);
 
     try {
       if (method === "email") {
@@ -491,8 +492,8 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      if (req.params.id) {
-        const response = await this.getUserProfileUseCase.execute(req.params.id);
+      if (getString(req.params.id)) {
+        const response = await this.getUserProfileUseCase.execute(getString(req.params.id));
         const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
@@ -649,7 +650,7 @@ export class UserController {
         newPassword,
         oldPassword,
       } = req.body;
-      const userId = req.params.userid;
+      const userId = getString(req.params.userid);
 
       if (!userId) {
         res
@@ -774,7 +775,7 @@ export class UserController {
 
   getSingleServiceHandler = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       console.log(id);
 
       if (!id) {
@@ -804,7 +805,7 @@ export class UserController {
   public userProfile = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.params.id) {
-        const response = await this.getUserProfileUseCase.execute(req.params.id);
+        const response = await this.getUserProfileUseCase.execute(getString(req.params.id));
         const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
@@ -1077,7 +1078,7 @@ export class UserController {
 
   public deleteAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const userId = res.locals.user?.userId;
 
       console.log("User ID:", userId, "Address ID:", id);
@@ -1149,8 +1150,8 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      if (req.params.id) {
-        const dto: GetServiceProviderInfoRequestDTO = { userId: req.params.id };
+      if (getString(req.params.id)) {
+        const dto: GetServiceProviderInfoRequestDTO = { userId: getString(req.params.id) };
         const user = await this.getServiceProviderInfoUseCase.execute(dto);
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
@@ -1185,7 +1186,7 @@ export class UserController {
 
   public removeCoupon = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { bookingId } = req.params;
+      const bookingId = getString(req.params.bookingId);
       const dto: RemoveCouponRequestDTO = { bookingId };
 
       const result = await this.removeCouponUseCase.execute(dto);
@@ -1308,7 +1309,7 @@ export class UserController {
 
   public increaseClicks = async (req: Request, res: Response) => {
     try {
-      const { adId } = req.params;
+      const adId = getString(req.params.adId);
       const dto: IncreaseAdClicksRequestDTO = { adId };
 
       const result = await this.increaseAdClicksUseCase.execute(dto);

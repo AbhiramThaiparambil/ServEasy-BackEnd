@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
 import { inject, injectable } from "tsyringe";
 import { IAddress } from "../../../../../domain/entities/IAddress";
-import { ObjectId } from "mongodb";
+
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAddNewAddress } from "./IAddNewAddress.usecase";
 import { AddAddressRequestDTO } from "../../../../dtos/user/address/AddressDTO";
@@ -17,7 +17,6 @@ export class AddNewAddress implements IAddNewAddress {
     const user = await this.userRepository.findById(userId);
 
     if (!user) throw new Error("User does not exist");
-    newAddress._id = new ObjectId();
 
     user.address = user.address ? [...user.address, newAddress] : [newAddress];
 

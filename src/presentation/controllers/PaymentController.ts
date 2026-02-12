@@ -165,7 +165,6 @@ export class PaymentController {
       razorpay_signature,
     } = req.body;
     console.log(req.body);
-    // Input validation
     if (
       !serviceId ||
       !razorpay_order_id ||

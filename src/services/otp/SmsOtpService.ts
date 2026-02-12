@@ -1,7 +1,6 @@
 import twilio from "twilio";
 import { injectable } from "tsyringe";
 import { ISmsOtpService } from "./ISmsOtpService";
-const clint = twilio();
 @injectable()
 export class SmsOtpService implements ISmsOtpService {
   private client!: twilio.Twilio;

@@ -1,9 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
-import {
-  GetServiceProviderInfoRequestDTO,
-  GetServiceProviderInfoResponseDTO,
-} from "../../../../../application/dtos/user/service/getProviderInfo/GetServiceProviderInfoDTO";
+import { GetServiceProviderInfoRequestDTO } from "../../../../dtos/user/service/getProviderInfo/GetServiceProviderInfoDTO";
 import { IServiceProvider } from "../../../../../domain/entities/IServiceProvider";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";

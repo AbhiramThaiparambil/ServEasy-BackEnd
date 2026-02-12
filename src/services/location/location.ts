@@ -3,6 +3,12 @@ import { config } from "dotenv";
 import { injectable } from "tsyringe";
 import { ILocationService } from "./ILocationService";
 config();
+interface ILocationIQResponse {
+  lat: string;
+  lon: string;
+  display_name: string;
+}
+
 @injectable()
 export class LocationService implements ILocationService {
   private locationUrl = "https://us1.locationiq.com/v1/search.php";
@@ -30,7 +36,8 @@ export class LocationService implements ILocationService {
         longitude: parseFloat(result.lon),
       };
     } catch (error: any) {
-      throw new Error(error);
+      const errorMessage = error instanceof Error ? error.message : "An error occurred";
+      throw new Error(errorMessage);
     }
   }
 
@@ -52,7 +59,7 @@ export class LocationService implements ILocationService {
         }
       );
 
-      const suggestions = response.data.map((item: any) => ({
+      const suggestions = response.data.map((item: ILocationIQResponse) => ({
         address: item.display_name,
         latitude: parseFloat(item.lat),
         longitude: parseFloat(item.lon),
@@ -64,9 +71,9 @@ export class LocationService implements ILocationService {
     } catch (error: any) {
       console.error(
         "Error in getAutoSuggestions:",
-        error?.response?.data || error.message || error
+        (error as any)?.response?.data || (error instanceof Error ? error.message : error)
       );
-      throw new Error(error?.message || "Failed to fetch auto suggestions");
+      throw new Error(error instanceof Error ? error.message : "Failed to fetch auto suggestions");
     }
   }
 }

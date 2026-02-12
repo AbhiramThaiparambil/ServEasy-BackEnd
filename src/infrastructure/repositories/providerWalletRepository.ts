@@ -123,14 +123,12 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     limit: number
   ): Promise<IProviderWalletView[]> {
     const data = await ProviderWalletModel.aggregate([
-      // 1. Add last transaction date
       {
         $addFields: {
           lastTransactionDate: { $max: "$transactions.date" },
         },
       },
 
-      // 2. Lookup provider
       {
         $lookup: {
           from: "serviceproviders",
@@ -141,7 +139,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       },
       { $unwind: "$serviceProvider" },
 
-      // 3. Add "isSubscribedProvider"
       {
         $addFields: {
           isSubscribedProvider: {
@@ -162,7 +159,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // 4. Sort: Pro first, recent activity next
       {
         $sort: {
           isSubscribedProvider: -1,
@@ -170,7 +166,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // 5. Add "pending" transaction flag
       {
         $addFields: {
           pending: {
@@ -190,7 +185,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // 6. Shape the final output
       {
         $project: {
           _id: 1,
@@ -208,7 +202,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // 7. Pagination
       { $skip: skip },
       { $limit: limit },
     ]);
@@ -296,7 +289,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       },
       { $unwind: "$serviceProvider" },
 
-      // ✅ ADD THIS: isSubscribedProvider logic
       {
         $addFields: {
           isSubscribedProvider: {
@@ -317,7 +309,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // Sort transactions
       {
         $addFields: {
           transactions: {
@@ -326,7 +317,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // Split credit and debit transactions
       {
         $addFields: {
           creditTransactions: {
@@ -346,7 +336,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // Calculate totals
       {
         $addFields: {
           totalPendingDebit: {
@@ -393,7 +382,6 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         },
       },
 
-      // ✅ Final projection
       {
         $project: {
           _id: 1,
@@ -402,7 +390,7 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
           debitTransactions: 1,
           totalPendingDebit: 1,
           totalSuccessDebit: 1,
-          isSubscribedProvider: 1, // ✅ FIXED
+          isSubscribedProvider: 1, 
 
           "serviceProvider.profileImage": 1,
           "serviceProvider.serviceProviderName": 1,

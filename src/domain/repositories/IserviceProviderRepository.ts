@@ -7,14 +7,12 @@ import {
 import { ISubscription } from "../entities/ISubscription";
 import {
   IFindSubscriptionsResult,
-  ISubscriptionWithPlan,
 } from "../../utils/types/dto/ISubscriptionWithPlan";
 export interface IServiceProviderRepository {
   create(
     ServiceProvider: IServiceProviderRegistration,
   ): Promise<IServiceProvider>;
   findByEmail(email: string): Promise<IServiceProvider | null>;
-  // findByPhone(phone:string):Promise<IServiceProvider |null>
 
   findById(id: string | Types.ObjectId): Promise<IServiceProvider | null>;
 

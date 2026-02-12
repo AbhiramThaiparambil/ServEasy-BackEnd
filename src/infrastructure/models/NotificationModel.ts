@@ -5,7 +5,7 @@ const notificationSchema =new  mongoose.Schema<INotification>({
     content:{type:String ,required:true},
     userId:{type:mongoose.Schema.Types.ObjectId,ref:"Users",required:true},
     notificationTime:{type:Date,default:Date.now()},
-    read:{type:Boolean,default:false}
+    isRead:{type:Boolean,default:false}
     
 }) 
 notificationSchema.index({userId:1})

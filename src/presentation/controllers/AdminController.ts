@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
+import { getString } from "../../utils/requestUtils";
+
 import { IServiceProviderRejectVerify } from "../../application/use-case/admin/provider-management/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
@@ -89,6 +91,11 @@ import {
   GetWalletListRequestDTO,
   WithdrawRequestDTO,
 } from "../../application/dtos/admin/wallet/WalletManagementDTO";
+import { IGetAdminBookingHistoryUseCase } from "../../application/use-case/admin/bookings/IGetAdminBookingHistory.usecase";
+import {
+  IFindPaymentInfoAdminDTO,
+  IFindPaymentInfoAdminRequestDTO,
+} from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
 
 @injectable()
 export class AdminController {
@@ -161,6 +168,8 @@ export class AdminController {
     private getAdsUseCase: IAdminGetAdsUseCase,
     @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
     private changeAdStatusUseCase: IChangeAdStatusUseCase,
+    @inject(USE_CASE_TOKENS.GetAdminBookingHistoryUseCase)
+    private getAdminBookingHistoryUseCase: IGetAdminBookingHistoryUseCase,
   ) {}
 
   refreshToken = async (req: Request, res: Response): Promise<void> => {
@@ -201,12 +210,13 @@ export class AdminController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal server error" });
     }
-  }
+  };
 
   public async getAdminProfile(req: Request, res: Response): Promise<void> {
     try {
-      const { adminId } = req.params;
-      const data: AdminProfileResponseDTO | null = await this.getAdminProfileUseCase.execute(adminId);
+      const adminId = getString(req.params.adminId);
+      const data: AdminProfileResponseDTO | null =
+        await this.getAdminProfileUseCase.execute(adminId);
       if (!data) {
         res.status(HttpStatus.BAD_REQUEST);
         return;
@@ -214,7 +224,9 @@ export class AdminController {
       res.status(HttpStatus.OK).json(data);
     } catch (error) {
       console.error("AdminController::getAdminProfile error", error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
     }
   }
 
@@ -274,15 +286,15 @@ export class AdminController {
 
   async getAllUsers(req: Request, res: Response) {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.page)) || 0;
       const skip = page * limit;
-      const search = (req.query.search as string) || "";
+      const search = getString(req.query.search);
 
       const dto: GetUserListRequestDTO = {
         skip,
         limit,
-        search
+        search,
       };
 
       const { users, count } = await this.getAllUsersUseCase.execute(dto);
@@ -297,22 +309,22 @@ export class AdminController {
 
   async allServiceProviders(req: Request, res: Response): Promise<void> {
     try {
-      const page: number = parseInt(req.query.page as string) || 1;
-      const limit: number = parseInt(req.query.limit as string) || 10;
-      const search: string = (req.query.search as string) || "";
+      const page = parseInt(getString(req.query.page)) || 1;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const search = getString(req.query.search);
       const serviceProviderVerfication: boolean =
         req.query.serviceProviderVerfication === "true";
       const skip = (page - 1) * limit;
 
       const dto: GetProvidersDTO = {
-          skip,
-          limit,
-          search,
-          serviceProviderVerfication
+        skip,
+        limit,
+        search,
+        serviceProviderVerfication,
       };
 
       const data = await this.getServiceProvidersUseCase.execute(dto);
-      
+
       res.status(HttpStatus.OK).json({ data: data.data, count: data.count });
       return;
     } catch (error) {
@@ -327,10 +339,10 @@ export class AdminController {
   async getPaymentInfoForChart(req: Request, res: Response): Promise<void> {
     try {
       const startDate = req.query.startDate
-        ? new Date(req.query.startDate as string)
+        ? new Date(getString(req.query.startDate))
         : undefined;
       const endDate = req.query.endDate
-        ? new Date(req.query.endDate as string)
+        ? new Date(getString(req.query.endDate))
         : undefined;
 
       const paymentData = await this.getPaymentInfoUseCase.execute(
@@ -352,10 +364,10 @@ export class AdminController {
       console.log("Received request to add site settings:", req.body);
       if (req.body.type === "addBanner") {
         const dto: AddHomeBannerRequestDTO = {
-            image: req.body.image,
-            title: req.body.title,
-            subtitle: req.body.subtitle,
-            imageUrl: req.body.imageUrl
+          image: req.body.image,
+          title: req.body.title,
+          subtitle: req.body.subtitle,
+          imageUrl: req.body.imageUrl,
         };
         const banner = await this.adminSiteSettingsUseCase.addHomeBanner(dto);
         res.status(HttpStatus.CREATED).json({ banner });
@@ -364,8 +376,8 @@ export class AdminController {
 
       if (req.body.type === "addTheme") {
         const dto: AddThemeRequestDTO = {
-            name: req.body.name,
-            isActive: req.body.isActive
+          name: req.body.name,
+          isActive: req.body.isActive,
         };
         const theme = await this.adminSiteSettingsUseCase.addTheme(dto);
         res.status(HttpStatus.CREATED).json({ theme });
@@ -374,10 +386,10 @@ export class AdminController {
 
       if (req.body.type === "addFooterBanner") {
         const dto: AddFooterBannerRequestDTO = {
-            image: req.body.image,
-            title: req.body.title,
-            subtitle: req.body.subtitle,
-            imageUrl: req.body.imageUrl
+          image: req.body.image,
+          title: req.body.title,
+          subtitle: req.body.subtitle,
+          imageUrl: req.body.imageUrl,
         };
         const footerBanner =
           await this.adminSiteSettingsUseCase.addFooterBanner(dto);
@@ -494,15 +506,14 @@ export class AdminController {
     }
   }
 
-
   async blockUnblockUser(req: Request, res: Response) {
     try {
       const { userId, action } = req.body;
 
       const dto: BlockUnblockUserRequestDTO = {
         userId,
-        action
-      }
+        action,
+      };
 
       const data = await this.blockUnblockUsersUseCase.execute(dto);
 
@@ -556,15 +567,16 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const search = (req.query.search as string) || "";
+      const search = getString(req.query.search);
 
       const dto: GetServiceListRequestDTO = {
         skip,
         limit,
-        search
+        search,
       };
 
-      const { allServices, count } = await this.getAllServicesUseCase.execute(dto);
+      const { allServices, count } =
+        await this.getAllServicesUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;
@@ -587,7 +599,7 @@ export class AdminController {
       }
 
       const dto: BlockUnblockServiceRequestDTO = {
-        serviceId
+        serviceId,
       };
 
       let result: boolean;
@@ -595,8 +607,7 @@ export class AdminController {
       if (action === "Block") {
         result = await this.blockUnblockServiceUseCase.blockService(dto);
       } else if (action === "Unblock") {
-        result =
-          await this.blockUnblockServiceUseCase.unblockService(dto);
+        result = await this.blockUnblockServiceUseCase.unblockService(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -628,7 +639,7 @@ export class AdminController {
     res: Response,
   ): Promise<void> {
     try {
-      const { action,providerId } = req.body;
+      const { action, providerId } = req.body;
 
       if (!providerId || !action) {
         res
@@ -638,22 +649,18 @@ export class AdminController {
       }
 
       const dto: BlockUnblockProviderDTO = {
-          serviceProviderId: providerId,
-          action: action === "Block"
+        serviceProviderId: providerId,
+        action: action === "Block",
       };
 
       let result: boolean;
 
       if (action === "Block") {
         result =
-          await this.blockUnblockProviderUseCase.blockServiceProvider(
-            dto,
-          );
+          await this.blockUnblockProviderUseCase.blockServiceProvider(dto);
       } else if (action === "Unblock") {
         result =
-          await this.blockUnblockProviderUseCase.unblockServiceProvider(
-            dto,
-          );
+          await this.blockUnblockProviderUseCase.unblockServiceProvider(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -686,8 +693,8 @@ export class AdminController {
 
   async addCategory(req: Request, res: Response): Promise<void> {
     try {
-      const newCategory :AddCategoryDTO = req.body;
-                
+      const newCategory: AddCategoryDTO = req.body;
+
       if (!newCategory) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -707,8 +714,6 @@ export class AdminController {
       return;
     }
   }
-
-  
 
   async getCategory(req: Request, res: Response): Promise<void> {
     try {
@@ -783,7 +788,7 @@ export class AdminController {
 
   async deleteCategory(req: Request, res: Response): Promise<void> {
     try {
-      const data: DeleteCategoryDTO = { categoryId: req.params.id };
+      const data: DeleteCategoryDTO = { categoryId: getString(req.params.id) };
 
       if (!data.categoryId) {
         res
@@ -839,8 +844,8 @@ export class AdminController {
   async deleteService(req: Request, res: Response): Promise<void> {
     try {
       const data: DeleteServiceDTO = {
-        categoryId: req.params.categoryId,
-        serviceId: req.params.serviceId,
+        categoryId: getString(req.params.categoryId),
+        serviceId: getString(req.params.serviceId),
       };
 
       if (!data.categoryId || !data.serviceId) {
@@ -862,7 +867,10 @@ export class AdminController {
     }
   }
 
-  async blockUnblockCategoryService(req: Request, res: Response): Promise<void> {
+  async blockUnblockCategoryService(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const data: BlockUnblockCategoryServiceDTO = {
         categoryId: req.body.categoryId,
@@ -876,11 +884,15 @@ export class AdminController {
         return;
       }
 
-      const result = await this.blockUnblockCategoryServiceUseCase.execute(data);
+      const result =
+        await this.blockUnblockCategoryServiceUseCase.execute(data);
 
       res.status(HttpStatus.OK).json({ message: result });
     } catch (error) {
-      console.error("AdminController::blockUnblockCategoryService error", error);
+      console.error(
+        "AdminController::blockUnblockCategoryService error",
+        error,
+      );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -932,27 +944,32 @@ export class AdminController {
     try {
       const { data } = req.body;
       console.log("createCoupon input:", data);
-      
-      const inputData: CreateCouponDTO = data; // Ensure type safety or validation here if strictly needed
+
+      const inputData: CreateCouponDTO = data;
 
       if (!inputData) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: "Coupon data required" });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Coupon data required" });
         return;
       }
 
       const resdata = await this.createCouponUseCase.execute(inputData);
       console.log(resdata);
-      res.status(HttpStatus.CREATED).json(resdata); // Return the created coupon
+      res.status(HttpStatus.CREATED).json(resdata); 
       return;
     } catch (e) {
       console.log(e);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   }
 
   public async getAllCoupon(req: Request, res: Response) {
     try {
       const coupons = await this.findAllCouponsUseCase.execute();
+      console.log(coupons);
       res.status(HttpStatus.CREATED).json(coupons);
       return;
     } catch (e) {
@@ -968,10 +985,10 @@ export class AdminController {
   ): Promise<void> {
     try {
       const dto: MakeCouponInactiveDTO = {
-        id: req.params.id,
+        id: getString(req.params.id),
         action: req.body.action,
       };
-      
+
       if (!dto.id) {
         res.status(HttpStatus.BAD_REQUEST).json({ message: "ID is required" });
         return;
@@ -992,9 +1009,10 @@ export class AdminController {
 
   public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
     try {
+      console.log(req.params);
       const dto: ToggleShowInBannerDTO = {
-          id: req.params.id,
-          show: req.body.action
+        id: getString(req.params.id),
+        show: req.body.action,
       };
 
       if (!dto.id) {
@@ -1035,27 +1053,25 @@ export class AdminController {
 
   public async rejectServiceProvider(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
-    const { id } = req.params;
+    const id = getString(req.params.id);
     const { reason } = req.body;
-    
+
     const dto: RejectProviderDTO = { userid: id, reason };
-    
+
     await this.serviceProviderRejectVerify.rejectServiceProvider(dto);
-    
+
     res
       .status(HttpStatus.OK)
       .json({ success: true, message: "Provider rejected successfully" });
   }
 
-
-
   public async verifyServiceProvider(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
-    const { id } = req.params;
+    const id = getString(req.params.id);
 
     const dto: VerifyProviderDTO = { userid: id };
 
@@ -1067,9 +1083,9 @@ export class AdminController {
 
   public async getProviderVerificationDetails(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
-    const { id } = req.params;
+    const id = getString(req.params.id);
     const provider =
       await this.getProviderVerificationDetailsUseCase.execute(id);
 
@@ -1077,10 +1093,9 @@ export class AdminController {
       res.status(HttpStatus.NOT_FOUND).json({ message: "Provider not found" });
       return;
     }
-    
-    res.status(HttpStatus.OK).json({ success: true,  data: provider });
-  }
 
+    res.status(HttpStatus.OK).json({ success: true, data: provider });
+  }
 
   public async getWalletById(req: Request, res: Response): Promise<void> {
     try {
@@ -1093,7 +1108,9 @@ export class AdminController {
         return;
       }
 
-      const dto: GetWalletByIdRequestDTO = { providerId: id };
+      const dto: GetWalletByIdRequestDTO = {
+        providerId: getString(req.params.id),
+      };
 
       const data = await this.getWalletByIdUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
@@ -1103,7 +1120,7 @@ export class AdminController {
   async withdrawFromWallet(req: Request, res: Response): Promise<void> {
     try {
       const { transactionId, newStatus, reason } = req.body;
-      const { walletId } = req.params;
+      const walletId = getString(req.params.walletId);
 
       if (!walletId || !transactionId || !newStatus) {
         res
@@ -1197,7 +1214,7 @@ export class AdminController {
         adLimitPerMonth: adLimitPerMonth || 0,
         payoutSpeedDays: payoutSpeedDays || 0,
         description: description || "",
-      }
+      };
 
       const newPlan = await this.createSubscriptionPlan.execute(dto);
 
@@ -1218,7 +1235,7 @@ export class AdminController {
 
   async updateSubscription(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       const {
         name,
@@ -1275,8 +1292,8 @@ export class AdminController {
 
   async getAds(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.page)) || 0;
       const skip = page * limit;
       const data = await this.getAdsUseCase.execute({ skip, limit });
 
@@ -1293,8 +1310,8 @@ export class AdminController {
 
   async changeAdStatus(req: Request, res: Response): Promise<void> {
     try {
-      const { adId } = req.params;
-      const { status } = req.body; // expecting { status: "active" | "block" }
+      const adId = getString(req.params.adId);
+      const { status } = req.body; 
       console.log("called");
       if (!adId || !status) {
         res.status(400).json({ message: "adId and status are required" });
@@ -1320,6 +1337,44 @@ export class AdminController {
       res.status(500).json({
         message: "Internal server error",
         error: error instanceof Error ? error.message : error,
+      });
+    }
+  }
+
+  async getAllBookings(req: Request, res: Response) {
+    try {
+      const limit = Number(req.query.limit) || 10;
+      const page = Number(req.query.page) || 0;
+      const skip = page * limit;
+
+      const search =
+        typeof req.query.search === "string" ? req.query.search.trim() : "";
+
+      const status =
+        typeof req.query.status === "string" ? req.query.status.trim() : "";
+
+      const statusField =
+        req.query.statusType === "paymentStatus"
+          ? "paymentStatus"
+          : "serviceStatus";
+
+      const dto: IFindPaymentInfoAdminRequestDTO = {
+        limit,
+        skip,
+        search,
+        status,
+        statusField,
+      };
+
+      const bookings = await this.getAdminBookingHistoryUseCase.execute(dto);
+
+      return res.status(HttpStatus.OK).json(bookings);
+    } catch (error) {
+      console.log(error);
+
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Error fetching bookings",
+        error,
       });
     }
   }

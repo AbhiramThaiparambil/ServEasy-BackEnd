@@ -77,8 +77,8 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     if (!provider) return null;
 
     const now = new Date();
-    const activeSubscription = (provider.subscriptions ?? []).find(
-      (sub) =>
+    const activeSubscription = (provider.subscription ?? []).find(
+      (sub: ISubscription) =>
         sub.status === "active" && sub.startDate <= now && sub.endDate >= now,
     );
 
@@ -94,7 +94,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     const provider = await ServiceProviderModel.findOne(
       {
         _id: providerId,
-        subscriptions: {
+        subscription: {
           $elemMatch: {
             startDate: { $lte: new Date() },
             endDate: { $gte: new Date() },
@@ -102,10 +102,10 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           },
         },
       },
-      { "subscriptions.$": 1 },
+      { "subscription.$": 1 },
     );
 
-    if (!provider || provider.subscriptions?.length === 0) {
+    if (!provider || provider.subscription?.length === 0) {
       return { isActive: false };
     }
 
@@ -119,11 +119,11 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
 
     const result = await ServiceProviderModel.aggregate([
       { $match: { _id: new Types.ObjectId(providerId) } },
-      { $unwind: "$subscriptions" },
+      { $unwind: "$subscription" },
       {
         $lookup: {
           from: "subscriptionplans",
-          localField: "subscriptions.planId",
+          localField: "subscription.planId",
           foreignField: "_id",
           as: "planDetails",
         },
@@ -131,18 +131,18 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       { $unwind: "$planDetails" },
       {
         $project: {
-          _id: "$subscriptions._id",
-          startDate: "$subscriptions.startDate",
-          endDate: "$subscriptions.endDate",
-          status: "$subscriptions.status",
-          paymentId: "$subscriptions.paymentId",
+          _id: "$subscription._id",
+          startDate: "$subscription.startDate",
+          endDate: "$subscription.endDate",
+          status: "$subscription.status",
+          paymentId: "$subscription.paymentId",
           name: "$planDetails.name",
           price: "$planDetails.price",
           validityDays: "$planDetails.validityDays",
           leftDays: {
             $ceil: {
               $divide: [
-                { $subtract: ["$subscriptions.endDate", now] },
+                { $subtract: ["$subscription.endDate", now] },
                 1000 * 60 * 60 * 24,
               ],
             },
@@ -225,7 +225,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       providerId,
       {
         $push: {
-          subscriptions: {
+          subscription: {
             planId: subscription.planId,
             startDate: subscription.startDate,
             endDate: subscription.endDate,
@@ -244,12 +244,12 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
 
     const result = await ServiceProviderModel.updateMany(
       {
-        subscriptions: { $exists: true, $ne: [] }, // must have subscriptions
-        "subscriptions.status": "active", // only active ones
-        "subscriptions.endDate": { $lt: today }, // expired already
+        subscription: { $exists: true, $ne: [] }, 
+        "subscription.status": "active", 
+        "subscription.endDate": { $lt: today }, 
       },
       {
-        $set: { "subscriptions.$[elem].status": "inactive" },
+        $set: { "subscription.$[elem].status": "inactive" },
       },
       {
         arrayFilters: [
@@ -277,7 +277,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
     const provider = await ServiceProviderModel.findOne(
       {
         _id: providerId,
-        subscriptions: {
+        subscription: {
           $elemMatch: {
             startDate: { $lte: new Date() },
             endDate: { $gte: new Date() },
@@ -285,15 +285,15 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
           },
         },
       },
-      { subscriptions: 1 },
+      { subscription: 1 },
     );
 
-    if (!provider || !provider.subscriptions) {
+    if (!provider || !provider.subscription) {
       return null;
     }
 
-    const activeSubs = provider.subscriptions.filter(
-      (s) =>
+    const activeSubs = provider.subscription.filter(
+      (s: ISubscription) =>
         s.status === "active" &&
         s.startDate <= new Date() &&
         s.endDate >= new Date(),
@@ -303,8 +303,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
       return null;
     }
 
-    // pick the one with the latest endDate
-    return activeSubs.reduce((latest, sub) =>
+    return activeSubs.reduce((latest: ISubscription, sub: ISubscription) =>
       sub.endDate > latest.endDate ? sub : latest,
     );
   }
@@ -328,7 +327,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
               $filter: {
                 input: {
                   $sortArray: {
-                    input: "$subscriptions",
+                    input: "$subscription",
                     sortBy: { endDate: -1 },
                   },
                 },

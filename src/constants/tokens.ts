@@ -115,6 +115,7 @@ export const USE_CASE_TOKENS = {
   VerifyPaymentUseCase: "IVerifyPaymentUseCase",
   GetProviderVerificationDetailsUseCase: "IGetProviderVerificationDetailsUseCase",
   GetBookingPaymentSummaryUseCase: "IGetBookingPaymentSummaryUseCase",
+  GetAdminBookingHistoryUseCase:"IGetAdminBookingHistoryUseCase"
 };
 
 export const REPOSITORY_TOKENS = {

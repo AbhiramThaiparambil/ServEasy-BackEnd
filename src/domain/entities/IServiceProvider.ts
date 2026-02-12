@@ -17,7 +17,7 @@ export interface IServiceProvider {
   serviceProviderName: string;
   serviceProviderEmail: string;
   serviceProviderPhone: string;
-  subscriptions?: ISubscription[];
+  subscription?: ISubscription[];
   experience: number;
   location: string;
   services: string[];
@@ -62,5 +62,5 @@ export interface IServiceProviderRegistration {
   socialMedia: string;
   description?: string;
   userId: string;
-  bankDetails: {} | IBankDetails;
+  bankDetails: Partial<IBankDetails> | IBankDetails;
 }

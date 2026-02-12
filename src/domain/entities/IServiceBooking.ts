@@ -1,12 +1,11 @@
-import { ObjectId } from "mongodb";
+import { Types } from "mongoose";
 import { IAddress } from "./IAddress";
 import { IPayment } from "./IPayment";
-import { Types } from "mongoose";
 
 export interface IServiceBooking {
-  _id?: ObjectId;
-  serviceProviderId: ObjectId;
-  serviceId: ObjectId;
+  _id?: Types.ObjectId;
+  serviceProviderId: Types.ObjectId;
+  serviceId: Types.ObjectId;
   address?: IAddress;
   serviceStatus?:
     | "pending"
@@ -16,7 +15,7 @@ export interface IServiceBooking {
     | "confirmed";
   paymentType?: "cash" | "card" | "online" | "pending" | "wallet";
   paymentStatus: "pending" | "paid" | "failed" | "completed";
-  userId: ObjectId;
+  userId: Types.ObjectId;
   estimatedServiceTime?: Date;
   bookedTime?: Date;
   serviceCompletedTime?: Date;
@@ -24,7 +23,7 @@ export interface IServiceBooking {
   cancelReason?: string;
   serviceBills?: string[];
   isOnlineService?: boolean;
-  reviewId?: ObjectId;
+  reviewId?: Types.ObjectId;
   preferredSlot?: IPreferredServiceDateTime;
   liveLocation?: IliveLocation;
   serviceSlot?: IServiceSlot;

@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "build": "tsc",
+    "lint": "eslint .",
     "dev": "nodemon --exec ts-node src/app.ts"
   },
   "keywords": [],
@@ -31,7 +32,8 @@
     "google-auth-library": "^9.15.1",
     "ioredis": "^5.6.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.10.1",
+    "mongodb": "^7.1.0",
+    "mongoose": "^7.8.9",
     "morgan": "^1.10.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^6.10.0",
@@ -46,14 +48,20 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
+    "@types/mongodb": "^4.0.6",
     "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.17",
     "@types/reflect-metadata": "^0.0.5",
     "@types/twilio": "^3.19.2",
+    "eslint": "^9.39.2",
+    "globals": "^17.3.0",
+    "jiti": "^2.6.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.55.0"
   }
 }

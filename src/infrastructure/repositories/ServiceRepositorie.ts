@@ -3,11 +3,7 @@ import { IOnlineService, IService } from "../../domain/entities/IService";
 import { IServiceRepository } from "../../domain/repositories/IServiceRepository";
 import ServiceModel from "../models/ServiceModel";
 import { injectable } from "tsyringe";
-import { SlotModel } from "../models/SlotModel";
-import {
-  INearbyServicePagination,
-  INearbyServiceResult,
-} from "../../utils/types/dto/INearbyServiceResult";
+import {INearbyServiceResult,} from "../../utils/types/dto/INearbyServiceResult";
 import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
 import { IServiceWithProviderDetails } from "../../utils/types/IServiceWithProviderDetails";
 @injectable()
@@ -338,7 +334,7 @@ export class ServiceRepository implements IServiceRepository {
   //     {
   //       $match: {
   //         isActive: true,
-  //         serviceProviderId: { $ne: serviceProviderId }, // Exclude the current provider if needed
+  //         serviceProviderId: { $ne: serviceProviderId },
   //       },
   //     },
   //     {
@@ -518,7 +514,6 @@ export class ServiceRepository implements IServiceRepository {
         },
       },
       {
-        // 👇 Filter by category name here
         $match: {
           "categoryInfo.category": category,
         },
@@ -630,7 +625,6 @@ export class ServiceRepository implements IServiceRepository {
   //       },
   //     },
   //     {
-  //       // 👇 Filter by experience >= given experience
   //       $match: {
   //         'providerInfo.experience': { $gte: experience },
   //       },
@@ -967,13 +961,11 @@ export class ServiceRepository implements IServiceRepository {
     const maxDistanceInMeters = 20000;
     const pipeline: any[] = [];
 
-    /* -------------------- CATEGORY OBJECT ID -------------------- */
     const categoryObjectId =
       filters?.category && Types.ObjectId.isValid(filters.category)
         ? new Types.ObjectId(filters.category)
         : null;
 
-    /* -------------------- SORT SETUP -------------------- */
     let sortStage: Record<string, 1 | -1> = { _id: 1 };
 
     if (filters?.priceSort === "gtToLow") {
@@ -982,7 +974,6 @@ export class ServiceRepository implements IServiceRepository {
       sortStage = { estimatedPrice: 1, _id: 1 };
     }
 
-    /* -------------------- GEO / BASE MATCH -------------------- */
     if (userLongitude != null && userLatitude != null) {
       pipeline.push({
         $geoNear: {
@@ -997,17 +988,14 @@ export class ServiceRepository implements IServiceRepository {
       pipeline.push({ $match: { isActive: true } });
     }
 
-    /* -------------------- SORT -------------------- */
     pipeline.push({ $sort: sortStage });
 
-    /* -------------------- CATEGORY FILTER -------------------- */
     if (categoryObjectId) {
       pipeline.push({
         $match: { category: { $in: [categoryObjectId] } },
       });
     }
 
-    /* -------------------- CURRENT USER LOOKUP -------------------- */
     pipeline.push(
       {
         $lookup: {
@@ -1023,7 +1011,6 @@ export class ServiceRepository implements IServiceRepository {
       { $addFields: { currentUser: { $arrayElemAt: ["$currentUser", 0] } } },
     );
 
-    /* -------------------- PROVIDER LOOKUP -------------------- */
     pipeline.push(
       {
         $lookup: {
@@ -1036,7 +1023,6 @@ export class ServiceRepository implements IServiceRepository {
       { $unwind: "$providerInfo" },
     );
 
-    /* -------------------- PROVIDER WALLET BLOCK CHECK -------------------- */
     pipeline.push(
       {
         $lookup: {
@@ -1059,7 +1045,6 @@ export class ServiceRepository implements IServiceRepository {
       },
     );
 
-    /* -------------------- EXCLUDE USER'S OWN PROVIDER -------------------- */
     pipeline.push({
       $match: {
         $expr: {
@@ -1072,7 +1057,6 @@ export class ServiceRepository implements IServiceRepository {
       },
     });
 
-    /* -------------------- EXPERIENCE FILTER -------------------- */
     if (filters?.experience !== undefined) {
       pipeline.push({
         $match: {
@@ -1081,7 +1065,6 @@ export class ServiceRepository implements IServiceRepository {
       });
     }
 
-    /* -------------------- SEARCH FILTER -------------------- */
     if (filters?.searchQuery) {
       pipeline.push({
         $match: {
@@ -1093,10 +1076,8 @@ export class ServiceRepository implements IServiceRepository {
       });
     }
 
-    /* -------------------- PAGINATION (SKIP + LIMIT) -------------------- */
     pipeline.push({ $skip: skip }, { $limit: limit });
 
-    /* -------------------- FINAL PROJECTION -------------------- */
     pipeline.push({
       $project: {
         serviceProviderName: "$providerInfo.serviceProviderName",
@@ -1113,7 +1094,6 @@ export class ServiceRepository implements IServiceRepository {
       },
     });
 
-    /* -------------------- EXECUTE -------------------- */
     const services = await ServiceModel.aggregate(pipeline);
 
     return { services };
@@ -1755,6 +1735,4 @@ export class ServiceRepository implements IServiceRepository {
   }
 }
 
-// this is the base find nearest services .
 
-// create this kind find nearest catogery services . like catogoery name is from argument . make a lookup with the catogry db. then return the catogory === argument catogory Name,

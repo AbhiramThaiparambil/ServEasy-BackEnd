@@ -14,7 +14,7 @@ export class RegisterServiceProviderUseCase {
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
-    private cloudinaryService: CloudinaryService, // Ensure this matches the registration
+    private cloudinaryService: CloudinaryService, 
   ) {}
 
   async execute(

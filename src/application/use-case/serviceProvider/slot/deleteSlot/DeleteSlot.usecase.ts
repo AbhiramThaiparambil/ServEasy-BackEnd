@@ -1,4 +1,3 @@
-// src/application/useCases/slot/DeleteSlotUseCase.ts
 import { injectable, inject } from "tsyringe";
 import { IDeleteSlotUseCase } from "./IDeleteSlot.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";

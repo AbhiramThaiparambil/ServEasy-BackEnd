@@ -3,6 +3,6 @@ export interface GetThemesResponseDTO {
 }
 
 export interface GetBannersResponseDTO {
-  homeBanner: any | null; // Replace 'any' with specific banner interface if available
-  footerBanner: any | null; // Replace 'any' with specific banner interface if available
+  homeBanner: string | null; 
+  footerBanner: string | null; 
 }

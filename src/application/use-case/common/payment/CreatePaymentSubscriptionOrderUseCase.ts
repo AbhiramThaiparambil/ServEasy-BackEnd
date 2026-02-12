@@ -25,9 +25,8 @@ export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubs
   async execute(data: CreatePaymentSubscriptionOrderRequestDTO): Promise<PaymentOrder> {
     const { userId, planId } = data;
     const lockKey = `order-lock:${planId}:${userId}`;
-    const ttl = 60; // seconds
+    const ttl = 60; 
 
-    // Acquire distributed lock
     const lockAcquired = await this.redisService.setLock(lockKey, ttl);
     if (!lockAcquired) {
       return {
@@ -36,7 +35,6 @@ export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubs
       };
     }
 
-    // Validate plan
     console.log("planId:", planId);
     const plan =
       await this.subscriptionPlanRepository.findSubscriptionPlanById(planId);
@@ -45,7 +43,6 @@ export class CreatePaymentSubscriptionOrderUseCase implements ICreatePaymentSubs
       return { success: false, message: "Subscription plan not found" };
     }
 
-    // Create Razorpay order
     const order = await this.razorpayService.createOrder(plan.price, userId);
     if (!order) {
       return { success: false, message: "Failed to create order" };
