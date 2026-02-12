@@ -1,5 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
 import { IGoogleGenAIService } from "../../services/aiAssistant/IGoogleGenAIService";
 import { Request, Response } from "express";
@@ -93,8 +95,8 @@ export class ServiceProviderSubscriptionController {
         return;
       }
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Something went wrong" });
@@ -123,6 +125,6 @@ export class ServiceProviderSubscriptionController {
         return;
       }
       res.status(HttpStatus.OK).json(data);
-    } catch (e) {}
+    } catch (e: unknown) {}
   }
 }

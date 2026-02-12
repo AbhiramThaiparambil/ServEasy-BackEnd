@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { injectable, inject } from "tsyringe";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
@@ -78,8 +80,8 @@ export class ServiceController {
         message: "Booking cancelled successfully.",
         data: result,
       });
-    } catch (error) {
-      console.error("Error cancelling user booking:", error);
+    } catch (error: unknown) {
+      console.error("Error cancelling user booking:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Something went wrong while cancelling the booking.",
       });
@@ -102,8 +104,8 @@ export class ServiceController {
       const data =
         await this.getAllActiveService.getOnlineServicesWithSlot(serviceId);
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching online services with slots:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching online services with slots:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -120,8 +122,8 @@ export class ServiceController {
       const dto: GetSlotsRequestDTO = { serviceId: id };
       const data = await this.getServiceSlotUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching online services with slots:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching online services with slots:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -145,8 +147,8 @@ export class ServiceController {
       res.status(HttpStatus.OK).json({
         message: "Slot deleted successfully",
       });
-    } catch (error) {
-      console.error("Error deleting slot:", error);
+    } catch (error: unknown) {
+      console.error("Error deleting slot:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -177,8 +179,8 @@ export class ServiceController {
         message: "Slot created successfully",
         slot,
       });
-    } catch (error) {
-      console.error("Error creating slot:", error);
+    } catch (error: unknown) {
+      console.error("Error creating slot:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
       });
@@ -200,11 +202,11 @@ export class ServiceController {
         payment: updatedBooking,
       });
       return;
-    } catch (error: any) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: error.message || "Failed to apply coupon" });
+        .json({ message: getErrorMessage(error) || "Failed to apply coupon" });
 
       return;
     }
@@ -226,11 +228,11 @@ export class ServiceController {
         updatedBooking,
       });
       return;
-    } catch (error: any) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       res
         .status(400)
-        .json({ message: error.message || "Failed to remove coupon" });
+        .json({ message: getErrorMessage(error) || "Failed to remove coupon" });
       return;
     }
   }
@@ -283,8 +285,8 @@ export class ServiceController {
       const service = await this.addNewServiceUseCase.execute(serviceData);
 
       res.status(HttpStatus.CREATED).json({ data: service });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -306,8 +308,8 @@ export class ServiceController {
       const result = await this.getServiceUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ allServices: result });
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while fetching services.",
       });
@@ -380,8 +382,8 @@ export class ServiceController {
       res
         .status(HttpStatus.OK)
         .json({ message: "Service updated successfully", data: updatedService });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -422,11 +424,11 @@ export class ServiceController {
           message: `Failed to ${action.toLowerCase()} service`,
         });
       }
-    } catch (error: any) {
-      console.error("Error in blockUnblockService:", error);
+    } catch (error: unknown) {
+      console.error("Error in blockUnblockService:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message || "Internal server error" });
+        .json({ message: getErrorMessage(error) || "Internal server error" });
     }
   }
 }

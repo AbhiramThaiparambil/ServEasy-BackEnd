@@ -6,6 +6,7 @@ import { injectable } from "tsyringe";
 import {INearbyServiceResult,} from "../../utils/types/dto/INearbyServiceResult";
 import { ISingleServiceWithProvider } from "../../utils/types/ISingleServiceWithProvider";
 import { IServiceWithProviderDetails } from "../../utils/types/IServiceWithProviderDetails";
+import { getErrorMessage } from "../../utils/errorUtils";
 @injectable()
 export class ServiceRepository implements IServiceRepository {
   async create(service: IService): Promise<IService> {
@@ -49,7 +50,7 @@ export class ServiceRepository implements IServiceRepository {
         { $set: { isActive: false } },
       );
       return result.modifiedCount > 0;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -61,7 +62,7 @@ export class ServiceRepository implements IServiceRepository {
         { $set: { isActive: true } },
       );
       return result.modifiedCount > 0;
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -70,7 +71,7 @@ export class ServiceRepository implements IServiceRepository {
       return await ServiceModel.findOneAndReplace({ _id: id }, newData, {
         new: true,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

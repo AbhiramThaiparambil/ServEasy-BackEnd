@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { inject, injectable } from "tsyringe";
 import { GetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/GetPaymentInfoUseCase";
 import { HttpStatus } from "../../constants/HttpStatus";
@@ -156,9 +158,9 @@ export class ServiceProviderController {
           .json({ message: "No service provider registration found" });
         return;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       res.status(404).json({
-        message: error.message || "Unable to fetch registration details",
+        message: getErrorMessage(error) || "Unable to fetch registration details",
       });
       return;
     }
@@ -178,7 +180,7 @@ export class ServiceProviderController {
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Unable to fetch service provider status",
       });
@@ -197,8 +199,8 @@ export class ServiceProviderController {
       const notification =
         await this.getNotificationUsecase.execute(dto);
       res.status(HttpStatus.OK).json(notification);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -223,9 +225,9 @@ export class ServiceProviderController {
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });
-    } catch (error) {
-      console.error(error);
-      console.log(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
+      console.log(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -257,8 +259,8 @@ export class ServiceProviderController {
 
       res.status(HttpStatus.OK).json({ paymentData });
       return;
-    } catch (error) {
-      console.error("Failed to fetch payment info for chart:", error);
+    } catch (error: unknown) {
+      console.error("Failed to fetch payment info for chart:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -280,8 +282,8 @@ export class ServiceProviderController {
       const result = await this.createAiChatUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ success: true, data: result });
-    } catch (error) {
-      console.error("Error in AI Assistance Controller:", error);
+    } catch (error: unknown) {
+      console.error("Error in AI Assistance Controller:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ success: false, message: "Internal server error" });
@@ -302,7 +304,7 @@ export class ServiceProviderController {
       }
 
       res.status(HttpStatus.OK).json({ success: true, data: chat });
-    } catch (error) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ success: false, message: "Internal server error" });
@@ -316,7 +318,7 @@ export class ServiceProviderController {
       const chats = await this.getProviderAIChatsUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ success: true, data: chats });
-    } catch (error) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ success: false, message: "Internal server error" });
@@ -339,8 +341,8 @@ export class ServiceProviderController {
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ message: "Failed to create ad." });
       }
-    } catch (error) {
-      console.error("Error creating ad:", error);
+    } catch (error: unknown) {
+      console.error("Error creating ad:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -372,8 +374,8 @@ export class ServiceProviderController {
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ message: "Failed to update service provider" });
       }
-    } catch (error) {
-      console.error("Error updating service provider:", error);
+    } catch (error: unknown) {
+      console.error("Error updating service provider:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -394,8 +396,8 @@ export class ServiceProviderController {
       } else {
         res.status(HttpStatus.NOT_FOUND).json({ message: "Ad not found." });
       }
-    } catch (error) {
-      console.error("Error editing ad:", error);
+    } catch (error: unknown) {
+      console.error("Error editing ad:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -468,8 +470,8 @@ export class ServiceProviderController {
         message: "Service provider registered successfully.",
         serviceProvider,
       });
-    } catch (error) {
-      console.error("Registration error:", error);
+    } catch (error: unknown) {
+      console.error("Registration error:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while registering the service provider.",
       });
@@ -532,8 +534,8 @@ export class ServiceProviderController {
         message: "Service provider reapplied successfully.",
         serviceProvider,
       });
-    } catch (error) {
-      console.error("Reapply error:", error);
+    } catch (error: unknown) {
+      console.error("Reapply error:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while reapplying as a service provider.",
       });
@@ -574,8 +576,8 @@ export class ServiceProviderController {
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Failed to generate refresh token" });
       }
-    } catch (error) {
-      console.error("Error verifying service provider:", error);
+    } catch (error: unknown) {
+      console.error("Error verifying service provider:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -587,8 +589,8 @@ export class ServiceProviderController {
       const dto: GetCategoryRequestDTO = {};
       const categories = await this.getCategoryUseCase.execute(dto);
       res.status(HttpStatus.OK).json(categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching categories:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -612,8 +614,8 @@ export class ServiceProviderController {
       } else {
         res.status(HttpStatus.NOT_FOUND).json({ message: "Slot not found" });
       }
-    } catch (error) {
-      console.error("Error marking slot as booked:", error);
+    } catch (error: unknown) {
+      console.error("Error marking slot as booked:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     }
   }
@@ -626,8 +628,8 @@ export class ServiceProviderController {
       const result = await this.getServiceProviderUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ serviceProvider: result });
-    } catch (error) {
-      console.error("Error fetching service provider:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching service provider:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -653,11 +655,11 @@ export class ServiceProviderController {
         message: "All services have been activated successfully.",
       });
       return;
-    } catch (error) {
-      console.error("Error activating services:", error);
+    } catch (error: unknown) {
+      console.error("Error activating services:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Something went wrong while activating services.",
-        error,
+        error: getErrorMessage(error),
       });
       return;
     }
@@ -682,11 +684,11 @@ export class ServiceProviderController {
         message: "All services have been marked as inactive successfully.",
       });
       return;
-    } catch (error) {
-      console.error("Error deactivating services:", error);
+    } catch (error: unknown) {
+      console.error("Error deactivating services:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Something went wrong while deactivating services.",
-        error,
+        error: getErrorMessage(error),
       });
       return;
     }
@@ -727,8 +729,8 @@ export class ServiceProviderController {
         await this.checkServiceProviderAvailabilityUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ availability });
-    } catch (error) {
-      console.error("Error checking availability:", error);
+    } catch (error: unknown) {
+      console.error("Error checking availability:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -767,10 +769,10 @@ export class ServiceProviderController {
             count: data.totalTransactions
           }
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.OK)
-        .json({ success: false, message: error.message });
+        .json({ success: false, message: getErrorMessage(error) });
     }
   }
 
@@ -798,10 +800,10 @@ export class ServiceProviderController {
       } else {
         res.status(HttpStatus.BAD_REQUEST).json(result);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ success: false, message: error.message });
+        .json({ success: false, message: getErrorMessage(error) });
     }
   };
 
@@ -812,10 +814,10 @@ export class ServiceProviderController {
     try {
       const plans = await this.getSubscriptionPlansUseCase.execute();
       res.status(HttpStatus.OK).json(plans);
-    } catch (error) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Error fetching subscription plans", error });
+        .json({ message: "Error fetching subscription plans", error: getErrorMessage(error) });
     }
   }
 
@@ -836,8 +838,8 @@ export class ServiceProviderController {
         page,
         totalPages: Math.ceil(count / limit),
       });
-    } catch (error) {
-      console.error("Error fetching ads:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching ads:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -865,12 +867,12 @@ export class ServiceProviderController {
         message: "Ad status updated successfully",
         status,
       });
-    } catch (error) {
-      console.error("Error changing ad status:", error);
+    } catch (error: unknown) {
+      console.error("Error changing ad status:", getErrorMessage(error));
 
       res.status(500).json({
         message: "Internal server error",
-        error: error instanceof Error ? error.message : error,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -887,11 +889,10 @@ export class ServiceProviderController {
       });
 
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message:
-          error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
 
       return;
@@ -903,10 +904,10 @@ export class ServiceProviderController {
       const dto: AddNewServiceRequestDTO = req.body;
       const result = await this.addNewServiceUseCase.execute(dto);
       res.status(200).json({ success: true, data: result });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
     }
   }
@@ -917,10 +918,10 @@ export class ServiceProviderController {
       const dto: BlockUnblockServiceRequestDTO = { serviceId };
       const result = await this.blockUnblockServiceUseCase.blockService(dto);
       res.status(200).json({ success: true, data: result });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
     }
   }
@@ -931,10 +932,10 @@ export class ServiceProviderController {
       const dto: BlockUnblockServiceRequestDTO = { serviceId };
       const result = await this.blockUnblockServiceUseCase.unblockService(dto);
       res.status(200).json({ success: true, data: result });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
     }
   }
@@ -944,10 +945,10 @@ export class ServiceProviderController {
       const dto: EditServiceRequestDTO = req.body;
       const result = await this.editServiceUseCase.execute(dto);
       res.status(200).json({ success: true, data: result });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
     }
   }
@@ -958,10 +959,10 @@ export class ServiceProviderController {
       const dto: GetProviderServicesRequestDTO = { providerId };
       const result = await this.getServicesUseCase.execute(dto);
       res.status(200).json({ success: true, data: result });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Something went wrong",
+        message: getErrorMessage(error) || "Something went wrong",
       });
     }
   }

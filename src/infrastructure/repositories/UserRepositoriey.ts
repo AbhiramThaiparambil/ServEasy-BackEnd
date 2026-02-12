@@ -3,6 +3,7 @@ import { IUserRepository } from "../../domain/repositories/IuserRepository";
 import { UserModel } from "../models/UserModel";
 import { injectable } from "tsyringe";
 import { hash, compare } from "bcrypt";
+import { getErrorMessage } from "../../utils/errorUtils";
 @injectable()
 export class MongoUserRepository implements IUserRepository {
   async create(user: IUser): Promise<IUser> {
@@ -38,8 +39,8 @@ export class MongoUserRepository implements IUserRepository {
         { new: true }
       );
       return result !== null;
-    } catch (error) {
-      console.error("Error updating user:", error);
+    } catch (error: unknown) {
+      console.error("Error updating user:", getErrorMessage(error));
       return false;
     }
   }
@@ -59,8 +60,8 @@ export class MongoUserRepository implements IUserRepository {
       );
       console.log(result);
       return result !== null;
-    } catch (error) {
-      console.error("Error updating user:", error);
+    } catch (error: unknown) {
+      console.error("Error updating user:", getErrorMessage(error));
       return false;
     }
   }
@@ -81,8 +82,8 @@ export class MongoUserRepository implements IUserRepository {
         { new: true }
       );
       return result !== null;
-    } catch (error) {
-      console.error("Error updating user:", error);
+    } catch (error: unknown) {
+      console.error("Error updating user:", getErrorMessage(error));
       return false;
     }
   }
@@ -107,8 +108,8 @@ export class MongoUserRepository implements IUserRepository {
       );
 
       return !!updatedUser; // Return true if update successful, false otherwise
-    } catch (error) {
-      console.error("Error updating user:", error);
+    } catch (error: unknown) {
+      console.error("Error updating user:", getErrorMessage(error));
       return false;
     }
   }

@@ -3,6 +3,7 @@ import { ISubscriptionPlan } from "../../domain/entities/ISubscriptionPlan";
 import { SubscriptionPlanModel } from "../models/SubscriptionPlanModel";
 import { ISubscriptionPlanRepository } from "../../domain/repositories/ISubscriptionPlanRepository";
 import { Types } from "mongoose";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 @injectable()
 export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
@@ -11,11 +12,10 @@ export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
  try {
      const newPlan = new SubscriptionPlanModel(plan);
     return (await newPlan.save()).toObject(); 
- } catch (error) {
-   console.log(error)
-  return  null
-
- }
+  } catch (error: unknown) {
+    console.log(getErrorMessage(error));
+   return  null
+  }
   }
 
   async findSubscriptionPlanById(id: string): Promise<ISubscriptionPlan | null> {
@@ -31,8 +31,8 @@ export class SubscriptionPlanRepository implements ISubscriptionPlanRepository {
      try {
           return await SubscriptionPlanModel.findByIdAndUpdate(id, data, { new: true });
 
-     } catch (error) {
-      console.log(error)
+     } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       return null
      }
   }

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IVerifySubscriptionPaymentUseCase } from "../../application/use-case/common/payment/IVerifySubscriptionPaymentUseCase";
 import { inject, injectable } from "tsyringe";
@@ -62,8 +64,8 @@ export class PaymentController {
       const result = await this.verifySubscriptionPaymentUseCase.execute(dto);
 
       return res.status(HttpStatus.OK).json(result);
-    } catch (error) {
-      console.error("Verify payment failed:", error);
+    } catch (error: unknown) {
+      console.error("Verify payment failed:", getErrorMessage(error));
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error during payment verification",
@@ -98,8 +100,8 @@ export class PaymentController {
       }
 
       return res.status(HttpStatus.OK).json(result);
-    } catch (error) {
-      console.error("Order creation failed:", error);
+    } catch (error: unknown) {
+      console.error("Order creation failed:", getErrorMessage(error));
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Failed to create Razorpay order",
@@ -128,8 +130,8 @@ export class PaymentController {
       }
 
       res.status(HttpStatus.OK).json(result);
-    } catch (error) {
-      console.error("Order creation failed:", error);
+    } catch (error: unknown) {
+      console.error("Order creation failed:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Failed to create Razorpay order",
@@ -187,8 +189,8 @@ export class PaymentController {
       const result = await this.verifyPaymentUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json(result);
-    } catch (error) {
-      console.error("Verify payment failed:", error);
+    } catch (error: unknown) {
+      console.error("Verify payment failed:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error during payment verification",
@@ -207,7 +209,7 @@ export class PaymentController {
       const data = await this.getPaymentInfoUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Internal server error during payment verification",

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { inject, injectable } from "tsyringe";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
 import { IUploadChatImageUseCase } from "../../application/use-case/common/chat/uploadChatMedia/IUploadChatImage.usecase";
@@ -34,10 +36,10 @@ export class ChatController {
       const dto: UploadChatImageRequestDTO = { image };
       const result = await this.uploadImageUseCase.uploadImage(dto);
       res.status(HttpStatus.OK).json(result);
-    } catch (error) {
+    } catch (error: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Error uploading image", error });
+        .json({ message: "Error uploading image", error: getErrorMessage(error) });
     }
   };
 
@@ -64,8 +66,8 @@ export class ChatController {
 
       res.status(HttpStatus.OK).json(chats);
       return;
-    } catch (error) {
-      console.error("Error fetching chats:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching chats:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -93,8 +95,8 @@ export class ChatController {
 
       res.status(HttpStatus.OK).json({ data });
       return;
-    } catch (error) {
-      console.error("Error getting specific chat:", error);
+    } catch (error: unknown) {
+      console.error("Error getting specific chat:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });

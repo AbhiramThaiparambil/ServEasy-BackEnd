@@ -3,6 +3,8 @@ import { container } from "tsyringe";
 import { AutoSuggestion } from "../../application/use-case/user/location/autoSuggestion";
 import { HttpStatus } from "../../constants/HttpStatus";
 import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 
 export const getAutoSuggestions = async (req: Request, res: Response) => {
   try {
@@ -22,9 +24,9 @@ export const getAutoSuggestions = async (req: Request, res: Response) => {
     console.log(suggestions);
      res.status(HttpStatus.OK).json(suggestions); 
       return
-  } catch (error) {
-    console.error("Error in getAutoSuggestions:", error);
-     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error });
+  } catch (error: unknown) {
+    console.error("Error in getAutoSuggestions:", getErrorMessage(error));
+     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error", error: getErrorMessage(error) });
      return
     }
 };

@@ -8,6 +8,7 @@ import {
 } from "../../domain/entities/IServiceBooking";
 import { IPayment } from "../../domain/entities/IPayment";
 import { IFindPaymentInfoAdminDTO } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
@@ -109,8 +110,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return bookedServices;
-    } catch (e) {
-      console.error("Error fetching booked services:", e);
+    } catch (e: unknown) {
+      console.error("Error fetching booked services:", getErrorMessage(e));
       throw e;
     }
   }
@@ -191,8 +192,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return bookedServices;
-    } catch (e) {
-      console.error("Error fetching booked services:", e);
+    } catch (e: unknown) {
+      console.error("Error fetching booked services:", getErrorMessage(e));
       throw e;
     }
   }
@@ -202,8 +203,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   ): Promise<number> {
     try {
       return await ServiceBooking.countDocuments({ serviceProviderId });
-    } catch (e) {
-      console.error("Error counting booked services:", e);
+    } catch (e: unknown) {
+      console.error("Error counting booked services:", getErrorMessage(e));
       throw e;
     }
   }
@@ -277,8 +278,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     try {
       const count = await ServiceBooking.countDocuments();
       return count;
-    } catch (error) {
-      console.error("Error counting booked services:", error);
+    } catch (error: unknown) {
+      console.error("Error counting booked services:", getErrorMessage(error));
       throw new Error("Failed to count booked services");
     }
   }
@@ -390,8 +391,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
 
       console.log(bookedData, "bookedData");
       return bookedData;
-    } catch (error) {
-      console.error("Error fetching booked service info:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching booked service info:", getErrorMessage(error));
       throw error;
     }
   }
@@ -444,10 +445,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return bookedData;
-    } catch (e) {
+    } catch (e: unknown) {
       console.error(
         "Error fetching booked service with user and service info:",
-        e,
+        getErrorMessage(e),
       );
       throw e;
     }
@@ -503,8 +504,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return result;
-    } catch (error) {
-      console.error("Error fetching payment info:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching payment info:", getErrorMessage(error));
       throw error;
     }
   }
@@ -551,8 +552,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       ]);
 
       return result;
-    } catch (error) {
-      console.error("Error fetching payment info:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching payment info:", getErrorMessage(error));
       throw error;
     }
   }
@@ -651,8 +652,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
       }
 
       return { available: true };
-    } catch (error) {
-      console.error("Error fetching availability:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching availability:", getErrorMessage(error));
       throw error;
     }
   }
@@ -700,8 +701,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
         serviceProviderId,
         serviceStatus: { $in: ["pending", "in-progress", "confirmed"] },
       });
-    } catch (error) {
-      console.error("Error counting active services:", error);
+    } catch (error: unknown) {
+      console.error("Error counting active services:", getErrorMessage(error));
       throw error;
     }
   }

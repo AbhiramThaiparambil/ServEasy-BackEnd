@@ -7,6 +7,7 @@ import { IProviderWalletRepository } from "../../domain/repositories/IproviderWa
 import { ProviderWalletModel } from "../models/providerWallet";
 import { IProviderWalletView } from "../../utils/types/dto/IProviderWalletView";
 import { IProviderWalletDetailsView } from "../../utils/types/dto/IProviderWalletDetailsView";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
   async createWallet(
@@ -227,8 +228,8 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
         }
       );
       return result.modifiedCount > 0;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
 
       return false;
     }
@@ -451,8 +452,8 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
       );
 
       return result.modifiedCount > 0;
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       return false;
     }
   }

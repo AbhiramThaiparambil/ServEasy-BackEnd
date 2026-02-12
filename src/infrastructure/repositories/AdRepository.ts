@@ -9,6 +9,7 @@ import {
   IGetRecommendedAdsRequestDTO,
   IRecommendedAdDTO,
 } from "../../utils/types/dto/IRecommendAdsDTO";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 @injectable()
 export class AdRepository implements IAdRepository {
@@ -18,8 +19,8 @@ export class AdRepository implements IAdRepository {
 
       const ad = await AdModel.create(data);
       return ad.toObject() as IAd;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
       throw e;
     }
   }
@@ -98,8 +99,8 @@ export class AdRepository implements IAdRepository {
       );
 
       return result.modifiedCount > 0;
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       return false;
     }
   }
@@ -116,8 +117,8 @@ export class AdRepository implements IAdRepository {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit).lean()
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       throw error;
     }
   }

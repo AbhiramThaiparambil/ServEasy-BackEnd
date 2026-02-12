@@ -14,6 +14,7 @@ import {
   ISubscriptionWithPlan,
 } from "../../utils/types/dto/ISubscriptionWithPlan";
 import { Types } from "mongoose";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 @injectable()
 export class ServiceProviderRepository implements IServiceProviderRepository {
@@ -180,7 +181,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
         { $set: { isBlocked: true } },
       );
       return result.modifiedCount > 0;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -192,7 +193,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
         { $set: { isBlocked: false } },
       );
       return result.modifiedCount > 0;
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

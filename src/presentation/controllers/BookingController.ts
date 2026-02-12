@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 import { injectable, inject } from "tsyringe";
 import mongoose from "mongoose";
 import { ICreateBookingUseCase } from "../../application/use-case/user/booking/createBooking/ICreateBooking.usecase";
@@ -86,13 +88,13 @@ export class BookingController {
         message: "Service booked successfully",
         data: booking,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.log("error message ");
 
-      console.log(error);
+      console.log(getErrorMessage(error));
       res.status(409).json({
         success: false,
-        message: (error as Error).message,
+        message: getErrorMessage(error),
       });
     }
   }
@@ -116,10 +118,10 @@ export class BookingController {
         message: "Online service booked successfully",
         data: booking,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(409).json({
         success: false,
-        message: (error as Error).message,
+        message: getErrorMessage(error),
       });
     }
   }
@@ -147,9 +149,9 @@ export class BookingController {
         message: "Booking status updated successfully",
         data,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.CONFLICT).json({
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -176,8 +178,8 @@ export class BookingController {
       res
         .status(HttpStatus.CREATED)
         .json({ message: "Invoice images uploaded successfully." });
-    } catch (error) {
-      console.error("Error uploading invoice bills:", error);
+    } catch (error: unknown) {
+      console.error("Error uploading invoice bills:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Failed to upload invoice images." });
@@ -214,9 +216,9 @@ export class BookingController {
         message: data.message || "Booking confirmed successfully",
         success: data.success,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.CONFLICT).json({
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -245,10 +247,10 @@ export class BookingController {
         message: "Booking rescheduled successfully",
         data,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
       res.status(HttpStatus.CONFLICT).json({
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -276,9 +278,9 @@ export class BookingController {
         message: "Booking cancelled successfully",
         data,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.CONFLICT).json({
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -307,9 +309,9 @@ export class BookingController {
         message: "Payment requested successfully",
         data,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.CONFLICT).json({
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -342,12 +344,12 @@ export class BookingController {
         await this.getBookedServicesUseCase.getUserBookedServices(dto);
 
       res.status(HttpStatus.OK).json({ services });
-    } catch (error) {
-      console.error("Error in getUserBookedServices:", error);
+    } catch (error: unknown) {
+      console.error("Error in getUserBookedServices:", getErrorMessage(error));
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         error: "Internal Server Error",
-        details: (error as Error).message,
+        details: getErrorMessage(error),
       });
     }
   }
@@ -367,12 +369,12 @@ export class BookingController {
         await this.getBookedServiceByIdUseCase.getForServiceProvider(dto);
 
       res.status(HttpStatus.OK).json({ service });
-    } catch (error) {
-      console.error("Error in getForServiceProvider:", error);
+    } catch (error: unknown) {
+      console.error("Error in getForServiceProvider:", getErrorMessage(error));
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         error: "Internal Server Error",
-        details: (error as Error).message,
+        details: getErrorMessage(error),
       });
     }
   }
@@ -391,12 +393,12 @@ export class BookingController {
       const service = await this.getBookedServiceByIdUseCase.getForUser(dto);
 
       res.status(HttpStatus.OK).json({ service });
-    } catch (error) {
-      console.error("Error in getForServiceProvider:", error);
+    } catch (error: unknown) {
+      console.error("Error in getForServiceProvider:", getErrorMessage(error));
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         error: "Internal Server Error",
-        details: (error as Error).message,
+        details: getErrorMessage(error),
       });
     }
   }
@@ -430,16 +432,15 @@ export class BookingController {
         services,
         count,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "Error in getBookedServicesForProvider:",
-        (error as Error).message,
-        (error as Error).stack,
+        getErrorMessage(error)
       );
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         error: "Internal Server Error",
-        details: (error as Error).message,
+        details: getErrorMessage(error),
       });
     }
   }
@@ -462,12 +463,12 @@ export class BookingController {
         success: true,
         data,
       });
-    } catch (error) {
-      console.error("Error in getBookingPaymentSummary:", error);
+    } catch (error: unknown) {
+      console.error("Error in getBookingPaymentSummary:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         error: "Internal Server Error",
-        details: (error as Error).message,
+        details: getErrorMessage(error),
       });
     }
   }

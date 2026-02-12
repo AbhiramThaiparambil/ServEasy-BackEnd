@@ -3,6 +3,7 @@ import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
 import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { SignIn } from "../../application/use-case/user/auth/signIn/SignIn.usecase";
@@ -190,8 +191,8 @@ export class UserController {
       );
 
       res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
-    } catch (error) {
-      console.error("RefreshToken error:", error);
+    } catch (error: unknown) {
+      console.error("RefreshToken error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -209,8 +210,8 @@ export class UserController {
       const dto: GetNotificationsRequestDTO = { userId: userId };
       const notification = await this.getNotificationUsecase.execute(dto);
       res.status(HttpStatus.OK).json(notification);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -240,8 +241,8 @@ export class UserController {
         await this.deleteSingleNotification.execute(dto);
         res.status(HttpStatus.OK).json({ message: "Notification deleted" });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -266,8 +267,8 @@ export class UserController {
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -317,10 +318,7 @@ export class UserController {
 
       res.status(HttpStatus.CREATED).json({ message, regInfo });
     } catch (error: unknown) {
-      let errorMessage = "";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
+      const errorMessage = getErrorMessage(error);
       console.error("Registration error:", errorMessage);
       res
         .status(HttpStatus.BAD_REQUEST)
@@ -347,8 +345,8 @@ export class UserController {
       res.status(HttpStatus.OK).json({
         accessToken: result.accessToken,
       });
-    } catch (error) {
-      console.error("Google auth error:", error);
+    } catch (error: unknown) {
+      console.error("Google auth error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Google authentication failed" });
@@ -425,8 +423,8 @@ export class UserController {
       res
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid login method" });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -453,8 +451,8 @@ export class UserController {
       res
         .status(HttpStatus.OK)
         .json({ message: result.success, accessToken: result.accessToken });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -479,8 +477,8 @@ export class UserController {
           .status(HttpStatus.BAD_REQUEST)
           .json({ errorMessage: "Email or phone is required" });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -520,8 +518,8 @@ export class UserController {
 
       const response = await this.getUserProfileUseCase.execute(decoded.userId);
       res.status(HttpStatus.OK).json({ user: response.user });
-    } catch (error) {
-      console.error("Error in userProfile:", error);
+    } catch (error: unknown) {
+      console.error("Error in userProfile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -563,8 +561,8 @@ export class UserController {
             .json({ message: message.errorMessage });
         }
       }
-    } catch (error) {
-      console.error("sendOtp error:", error);
+    } catch (error: unknown) {
+      console.error("sendOtp error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong. Please try again later." });
@@ -596,8 +594,8 @@ export class UserController {
           .status(HttpStatus.UNAUTHORIZED)
           .json({ message: "OTP expired or invalid." });
       }
-    } catch (error) {
-      console.error("Error in verifyOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in verifyOtp:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong. Please try again later." });
@@ -632,8 +630,8 @@ export class UserController {
       }
 
       res.status(HttpStatus.OK).json({ Message: result });
-    } catch (error) {
-      console.error("Error in resetPassword:", error);
+    } catch (error: unknown) {
+      console.error("Error in resetPassword:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         Message: "Something went wrong. Please try again later.",
       });
@@ -712,8 +710,8 @@ export class UserController {
         });
         return;
       }
-    } catch (error) {
-      console.error("Error updating profile:", error);
+    } catch (error: unknown) {
+      console.error("Error updating profile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -738,8 +736,8 @@ export class UserController {
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ errorMessage: "Internal server error" });
       }
-    } catch (error) {
-      console.error("Error in profileUpdateOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in profileUpdateOtp:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ errorMessage: "Internal server error" });
@@ -765,8 +763,8 @@ export class UserController {
       res
         .status(HttpStatus.OK)
         .json({ message: "User logged out successfully" });
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch (error: unknown) {
+      console.error("Logout error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -794,8 +792,8 @@ export class UserController {
       }
 
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching service:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching service:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -830,8 +828,8 @@ export class UserController {
 
         res.status(200).json({ user: response.user });
       }
-    } catch (error) {
-      console.error("Error in userProfile:", error);
+    } catch (error: unknown) {
+      console.error("Error in userProfile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -853,8 +851,8 @@ export class UserController {
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while fetching services.",
       });
@@ -924,8 +922,8 @@ export class UserController {
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while fetching services.",
       });
@@ -1007,8 +1005,8 @@ export class UserController {
 
       res.status(200).json({ allAddress });
       return;
-    } catch (error: any) {
-      console.error("Error fetching address:", error.message || error);
+    } catch (error: unknown) {
+      console.error("Error fetching address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to fetch address" });
       return;
     }
@@ -1037,8 +1035,8 @@ export class UserController {
 
       res.status(200).json({ message: "Address added successfully" });
       return;
-    } catch (error) {
-      console.error("Error adding new address:", error);
+    } catch (error: unknown) {
+      console.error("Error adding new address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to add new address" });
       return;
     }
@@ -1069,8 +1067,8 @@ export class UserController {
 
       res.status(200).json({ message: "Address updated successfully" });
       return;
-    } catch (error) {
-      console.error("Error updating address:", error);
+    } catch (error: unknown) {
+      console.error("Error updating address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to update address" });
       return;
     }
@@ -1098,8 +1096,8 @@ export class UserController {
 
       res.status(200).json({ message: "Address deleted successfully" });
       return;
-    } catch (error) {
-      console.error("Error deleting address:", error);
+    } catch (error: unknown) {
+      console.error("Error deleting address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to delete address" });
       return;
     }
@@ -1137,8 +1135,8 @@ export class UserController {
       res
         .status(HttpStatus.CREATED)
         .json({ message: "Review added successfully!" });
-    } catch (error) {
-      console.error("Error adding review:", error);
+    } catch (error: unknown) {
+      console.error("Error adding review:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Failed to add review." });
@@ -1162,8 +1160,8 @@ export class UserController {
       res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: "Service provider ID is required" });
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getServiceProviderInfoChat:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -1176,8 +1174,8 @@ export class UserController {
       console.log(result.themes);
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteThemes:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -1196,8 +1194,8 @@ export class UserController {
       } else {
         res.status(HttpStatus.BAD_REQUEST).json(result);
       }
-    } catch (err) {
-      console.error("Error removing coupon:", err);
+    } catch (err: unknown) {
+      console.error("Error removing coupon:", getErrorMessage(err));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ success: false, message: "Failed to remove coupon" });
@@ -1216,8 +1214,8 @@ export class UserController {
       } else {
         res.status(HttpStatus.BAD_REQUEST).json(result);
       }
-    } catch (error) {
-      console.error("Error applying coupon:", error);
+    } catch (error: unknown) {
+      console.error("Error applying coupon:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Failed to apply coupon" });
@@ -1232,8 +1230,8 @@ export class UserController {
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteBanners:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -1250,8 +1248,8 @@ export class UserController {
 
       const data = await this.findFeatureCouponsUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching featured coupons:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching featured coupons:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -1271,8 +1269,8 @@ export class UserController {
         data: result.coupons,
       });
       return;
-    } catch (error) {
-      console.error("Find active coupons error:", error);
+    } catch (error: unknown) {
+      console.error("Find active coupons error:", getErrorMessage(error));
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
@@ -1302,8 +1300,8 @@ export class UserController {
         count: ads.length,
         ads,
       });
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+    } catch (error: unknown) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: getErrorMessage(error) });
     }
   };
 
@@ -1319,10 +1317,10 @@ export class UserController {
         message: "Clicks updated",
         clicks: result,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ success: false, message: err });
+        .json({ success: false, message: getErrorMessage(err) });
     }
   };
 
@@ -1340,11 +1338,11 @@ export class UserController {
       const result = await this.autoSuggestionUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ success: true, suggestions: result.suggestions });
-    } catch (error: any) {
-      console.error("Error fetching auto suggestions:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching auto suggestions:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ success: false, message: error.message || "Something went wrong" });
+        .json({ success: false, message: getErrorMessage(error) || "Something went wrong" });
     }
   };
 }

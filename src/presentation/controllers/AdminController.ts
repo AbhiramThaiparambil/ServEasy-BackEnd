@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
 import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
 
 import { IServiceProviderRejectVerify } from "../../application/use-case/admin/provider-management/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
@@ -205,7 +207,8 @@ export class AdminController {
       );
 
       res.status(HttpStatus.OK).json({ adminToken: newAccessToken });
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("AdminController::refreshToken error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal server error" });
@@ -222,8 +225,8 @@ export class AdminController {
         return;
       }
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("AdminController::getAdminProfile error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::getAdminProfile error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -258,8 +261,8 @@ export class AdminController {
       setAuthCookies(res, "adminToken", refreshToken);
       res.status(200).json({ accessToken, user });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ error: "Internal Server Error" });
       return;
     }
@@ -277,8 +280,8 @@ export class AdminController {
       );
       res.status(200).json({ data });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -300,8 +303,8 @@ export class AdminController {
       const { users, count } = await this.getAllUsersUseCase.execute(dto);
       res.status(200).json({ users, count });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -327,8 +330,8 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ data: data.data, count: data.count });
       return;
-    } catch (error) {
-      console.error("AdminController::getServiceProviders error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::getServiceProviders error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -352,8 +355,8 @@ export class AdminController {
 
       res.status(200).json({ paymentData });
       return;
-    } catch (error) {
-      console.error("Failed to fetch payment info for chart:", error);
+    } catch (error: unknown) {
+      console.error("Failed to fetch payment info for chart:", getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -401,8 +404,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in addSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in addSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -442,8 +445,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in deleteSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in deleteSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -476,8 +479,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in makeActiveSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in makeActiveSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -498,8 +501,8 @@ export class AdminController {
         footerBanners,
         themes,
       });
-    } catch (error) {
-      console.error("Error in getSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -526,8 +529,8 @@ export class AdminController {
           .json({ message: "User not found or update failed." });
         return;
       }
-    } catch (error) {
-      console.error("AdminController::blockUnblockUser error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockUser error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -553,8 +556,8 @@ export class AdminController {
           .json({ message: "User not found or update failed." });
         return;
       }
-    } catch (error) {
-      console.error("AdminController::serviceProviderVerify error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::serviceProviderVerify error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -580,9 +583,9 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;
-    } catch (error) {
-      console.error("AdminController::getAllServices error", error);
-      res.status(HttpStatus.BAD_REQUEST).json(error);
+    } catch (error: unknown) {
+      console.error("AdminController::getAllServices error", getErrorMessage(error));
+      res.status(HttpStatus.BAD_REQUEST).json({ message: getErrorMessage(error) });
       return;
     }
   }
@@ -626,11 +629,11 @@ export class AdminController {
           .json({ message: `Failed to ${action.toLowerCase()} service` });
         return;
       }
-    } catch (error: any) {
-      console.error("AdminController::blockUnblockService error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockService error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message || "Internal server error" });
+        .json({ message: getErrorMessage(error) || "Internal server error" });
       return;
     }
   }
@@ -679,14 +682,14 @@ export class AdminController {
         });
         return;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(
         "AdminController::blockUnblockServiceProvider error",
-        error,
+        getErrorMessage(error),
       );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message || "Internal server error" });
+        .json({ message: getErrorMessage(error) || "Internal server error" });
       return;
     }
   }
@@ -706,8 +709,8 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ data });
       return;
-    } catch (error) {
-      console.error("AdminController:: addCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController:: addCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -724,8 +727,8 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json(categories);
       return;
-    } catch (error) {
-      console.error("AdminController::getCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::getCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -753,8 +756,8 @@ export class AdminController {
         .status(HttpStatus.OK)
         .json({ message: "Category updated successfully", data: result });
       return;
-    } catch (error) {
-      console.error("AdminController::editCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::editCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -777,8 +780,8 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ message: result });
       return;
-    } catch (error) {
-      console.error("AdminController::blockUnblockCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -801,8 +804,8 @@ export class AdminController {
 
       res.status(HttpStatus.OK).json({ message: result });
       return;
-    } catch (error) {
-      console.error("AdminController::deleteCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::deleteCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -833,8 +836,8 @@ export class AdminController {
       const data = await this.addServiceUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ message: data });
-    } catch (error) {
-      console.error("AdminController::addService error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::addService error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -858,8 +861,8 @@ export class AdminController {
       const result = await this.deleteServiceUseCase.execute(data);
 
       res.status(HttpStatus.OK).json({ message: result });
-    } catch (error) {
-      console.error("AdminController::deleteService error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::deleteService error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -888,10 +891,10 @@ export class AdminController {
         await this.blockUnblockCategoryServiceUseCase.execute(data);
 
       res.status(HttpStatus.OK).json({ message: result });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "AdminController::blockUnblockCategoryService error",
-        error,
+        getErrorMessage(error),
       );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -911,8 +914,8 @@ export class AdminController {
       res
         .status(HttpStatus.OK)
         .json({ message: "Admin logged out successfully" });
-    } catch (error) {
-      console.error("AdminController::logoutAdmin error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::logoutAdmin error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -958,8 +961,8 @@ export class AdminController {
       console.log(resdata);
       res.status(HttpStatus.CREATED).json(resdata); 
       return;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -972,8 +975,8 @@ export class AdminController {
       console.log(coupons);
       res.status(HttpStatus.CREATED).json(coupons);
       return;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -999,8 +1002,8 @@ export class AdminController {
       res.status(HttpStatus.OK).json({
         message: `Coupon ${dto.action ? "activated" : "deactivated"} successfully`,
       });
-    } catch (error) {
-      console.error("Error toggling coupon status:", error);
+    } catch (error: unknown) {
+      console.error("Error toggling coupon status:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -1029,8 +1032,8 @@ export class AdminController {
           dto.show ? "shown in" : "removed from"
         } banner successfully`,
       });
-    } catch (error) {
-      console.error("Error toggling coupon banner status:", error);
+    } catch (error: unknown) {
+      console.error("Error toggling coupon banner status:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -1150,8 +1153,8 @@ export class AdminController {
         success: true,
         message: "Transaction status updated successfully",
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(500)
         .json({ success: false, message: "Internal server error" });
@@ -1176,8 +1179,8 @@ export class AdminController {
         message: "Subscriptions fetched successfully",
         data: subscriptions,
       });
-    } catch (error) {
-      console.error("Error fetching subscriptions:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching subscriptions:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -1223,8 +1226,8 @@ export class AdminController {
         message: "Subscription created successfully",
         data: newPlan,
       });
-    } catch (error) {
-      console.error("Create subscription error:", error);
+    } catch (error: unknown) {
+      console.error("Create subscription error:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -1280,8 +1283,8 @@ export class AdminController {
         message: "Subscription updated successfully",
         data: updatedPlan,
       });
-    } catch (error) {
-      console.error("Update subscription error:", error);
+    } catch (error: unknown) {
+      console.error("Update subscription error:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -1300,10 +1303,10 @@ export class AdminController {
       console.log(data);
 
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Error fetching provider ads",
-        error,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -1331,12 +1334,12 @@ export class AdminController {
         message: "Ad status updated successfully",
         status,
       });
-    } catch (error) {
-      console.error("Error changing ad status:", error);
+    } catch (error: unknown) {
+      console.error("Error changing ad status:", getErrorMessage(error));
 
       res.status(500).json({
         message: "Internal server error",
-        error: error instanceof Error ? error.message : error,
+        error: getErrorMessage(error),
       });
     }
   }
@@ -1369,12 +1372,12 @@ export class AdminController {
       const bookings = await this.getAdminBookingHistoryUseCase.execute(dto);
 
       return res.status(HttpStatus.OK).json(bookings);
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
 
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Error fetching bookings",
-        error,
+        error: getErrorMessage(error),
       });
     }
   }
