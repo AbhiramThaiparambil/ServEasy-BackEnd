@@ -11,6 +11,8 @@ import { ITokenService } from "../../../../../services/token/ITokenService";
 import { IUser } from "../../../../../domain/entities/IUser";
 import { IGoogleAuthUseCase } from "./IGoogleAuth.usecase";
 import { GoogleAuthRequestDTO } from "../../../../dtos/user/auth/googleAuth/GoogleAuthDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 config();
 
@@ -81,8 +83,8 @@ export class GoogleAuthUseCase implements IGoogleAuthUseCase {
       } else {
         throw new Error("use Auth failed");
       }
-    } catch (error) {
-      console.error("Google Auth Error:", error);
+    } catch (error: unknown) {
+      console.error("Google Auth Error:", getErrorMessage(error));
       throw new Error("Google Authentication Failed");
     }
   }

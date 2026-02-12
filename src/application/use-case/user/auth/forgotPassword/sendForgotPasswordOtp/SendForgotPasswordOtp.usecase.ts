@@ -11,6 +11,8 @@ import { IOtpService } from "../../../../../../services/otp/IOtpService";
 import { ISmsOtpService } from "../../../../../../services/otp/ISmsOtpService";
 import { ISendForgotPasswordOtpUseCase } from "./ISendForgotPasswordOtp.usecase";
 import { SendOtpRequestDTO } from "../../../../../dtos/user/auth/resendOtp/ResendOtpDTO";
+import { getErrorMessage } from "../../../../../../utils/errorUtils";
+
 
 @injectable()
 export class SendForgotPasswordOtpUseCase
@@ -39,8 +41,8 @@ export class SendForgotPasswordOtpUseCase
       await this.emailOtp.sendOtpEmail(email, otp);
 
       return { successMessage: `OTP sent successfully to ${email}` };
-    } catch (error) {
-      console.error("Error in sendEmailOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in sendEmailOtp:", getErrorMessage(error));
       return { errorMessage: "Failed to send OTP. Please try again." };
     }
   }
@@ -60,8 +62,8 @@ export class SendForgotPasswordOtpUseCase
       await this.smsOtp.SendOtp(phone, otp);
 
       return { successMessage: `OTP sent successfully to ${phone}` };
-    } catch (error) {
-      console.error("Error in sendSmsOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in sendSmsOtp:", getErrorMessage(error));
       return { errorMessage: "Failed to send OTP. Please try again." };
     }
   }

@@ -11,6 +11,8 @@ import { isValidObjectId, Types } from "mongoose";
 import { IAiAssistanceMessage } from "../../../../../domain/entities/IAiAssistance";
 
 import { CreateAiChatRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class CreateAiChatUseCase implements ICreateAiChatUseCase {
@@ -68,8 +70,8 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
         chatId: chatId ?? savedUserMessage?.id,
         title: savedChat?.title,
       };
-    } catch (error) {
-      console.error("Error in AiChatUseCase.execute:", error);
+    } catch (error: unknown) {
+      console.error("Error in AiChatUseCase.execute:", getErrorMessage(error));
       throw new Error("Failed to process AI chat request");
     }
   }

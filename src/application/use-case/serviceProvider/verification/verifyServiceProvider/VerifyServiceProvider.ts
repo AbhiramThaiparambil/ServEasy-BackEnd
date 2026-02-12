@@ -6,6 +6,8 @@ import { ITokenService } from "../../../../../services/token/ITokenService";
 import { VerifyServiceProviderRequestDTO, VerifyServiceProviderResponseDTO } from "../../../../dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
 
 import { IVerifyServiceProvider } from "./IVerifyServiceProvider";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class VerifyServiceProvider implements IVerifyServiceProvider {
@@ -61,8 +63,8 @@ export class VerifyServiceProvider implements IVerifyServiceProvider {
         success: false,
         message: "Service provider not found for this user"
       };
-    } catch (error) {
-      console.error("Error verifying service provider:", error);
+    } catch (error: unknown) {
+      console.error("Error verifying service provider:", getErrorMessage(error));
       return {
         success: false,
         message: "Internal server error while verifying service provider"

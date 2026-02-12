@@ -7,6 +7,8 @@ import { IServiceRepository } from "../../../../../domain/repositories/IServiceR
 import { IService } from "../../../../../domain/entities/IService";
 
 import { AddNewServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class AddNewServiceUseCase implements IAddNewServiceUseCase {
@@ -30,8 +32,8 @@ export class AddNewServiceUseCase implements IAddNewServiceUseCase {
       );
       console.log(allServices);
       return allServices;
-    } catch (error) {
-      console.error("Error adding new service:", error);
+    } catch (error: unknown) {
+      console.error("Error adding new service:", getErrorMessage(error));
       throw new Error("Failed to add new service");
     }
   }

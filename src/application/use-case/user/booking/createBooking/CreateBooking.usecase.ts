@@ -123,7 +123,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       );
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       console.log(error);
       await session.abortTransaction();
       session.endSession();

@@ -7,6 +7,8 @@ import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudina
 import { IService } from "../../../../../domain/entities/IService";
 
 import { EditServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class EditServiceUseCase implements IEditServiceUseCase {
@@ -36,8 +38,8 @@ export class EditServiceUseCase implements IEditServiceUseCase {
         serviceData
       );
       return updatedService;
-    } catch (error: any) {
-      throw new Error(`Error updating service: ${error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`Error updating service: ${getErrorMessage(error)}`);
     }
   }
 }

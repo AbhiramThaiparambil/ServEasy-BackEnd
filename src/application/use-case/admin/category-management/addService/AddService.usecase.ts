@@ -5,6 +5,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { AddServiceDTO } from "../../../../dtos/admin/category/AddServiceDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class AddService implements IAddService {
@@ -28,8 +30,8 @@ export class AddService implements IAddService {
       await this.categoryRepository.updateCategory(categoryId, categorie);
 
       return "service added successfully";
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
     }
   }
 }

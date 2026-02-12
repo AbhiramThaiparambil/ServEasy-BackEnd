@@ -8,6 +8,8 @@ import {
   GetSingleServiceRequestDTO,
   GetSingleServiceResponseDTO,
 } from "../../../../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetSingleServiceUseCase implements IGetSingleServiceUseCase {
@@ -36,8 +38,8 @@ export class GetSingleServiceUseCase implements IGetSingleServiceUseCase {
       );
 
       return { service, reviews };
-    } catch (error) {
-      console.error("Error fetching single service:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching single service:", getErrorMessage(error));
       throw new Error("Failed to fetch service details");
     }
   }

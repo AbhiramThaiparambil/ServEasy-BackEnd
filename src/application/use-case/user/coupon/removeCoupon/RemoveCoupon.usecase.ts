@@ -5,6 +5,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
 import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
 import { RemoveCouponRequestDTO, RemoveCouponResponseDTO } from "../../../../dtos/user/coupon/CouponDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class RemoveCouponToBookingUseCase implements IRemoveCouponToBookingUseCase {
@@ -39,10 +41,10 @@ export class RemoveCouponToBookingUseCase implements IRemoveCouponToBookingUseCa
         success: true,
         message: "Coupon removed successfully",
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
        return {
          success: false,
-         message: error.message || "Failed to remove coupon",
+         message: getErrorMessage(error) || "Failed to remove coupon",
        }
     }
   }

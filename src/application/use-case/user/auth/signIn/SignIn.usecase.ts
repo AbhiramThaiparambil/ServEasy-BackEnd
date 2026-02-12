@@ -62,7 +62,7 @@ export class SignIn implements ISignInUseCase {
       );
 
       return { accessToken, refreshToken };
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -101,7 +101,7 @@ export class SignIn implements ISignInUseCase {
       );
 
       return { accessToken, refreshToken };
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

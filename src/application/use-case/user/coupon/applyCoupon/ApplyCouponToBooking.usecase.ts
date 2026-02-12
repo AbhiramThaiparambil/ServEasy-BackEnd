@@ -8,6 +8,8 @@ import {
   ApplyCouponRequestDTO,
   ApplyCouponResponseDTO,
 } from "../../../../dtos/user/coupon/CouponDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class ApplyCouponToBookingUseCase implements IApplyCouponToBookingUseCase {
@@ -76,10 +78,10 @@ export class ApplyCouponToBookingUseCase implements IApplyCouponToBookingUseCase
         finalAmount: updatedBooking?.payment?.finalTotal,
         couponId: coupon._id?.toString(),
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        message: error.message || "Failed to apply coupon",
+        message: getErrorMessage(error) || "Failed to apply coupon",
       };
     }
   }

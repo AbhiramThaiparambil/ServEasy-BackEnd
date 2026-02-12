@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { BlockUnblockCategoryServiceDTO } from "../../../../dtos/admin/category/BlockUnblockCategoryServiceDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class BlockUnblockCategoryService
@@ -38,9 +40,9 @@ export class BlockUnblockCategoryService
 
       await this.categoryRepository.updateCategory(categoryId, category);
       return `Service visibility changed successfully`;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(
-        error.message ||
+        getErrorMessage(error) ||
           "An error occurred while updating the service visibility"
       );
     }

@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { EditCategoryDTO } from "../../../../dtos/admin/category/EditCategoryDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class EditCategory implements IEditCategory {
@@ -26,9 +28,9 @@ export class EditCategory implements IEditCategory {
       await this.categoryRepository.updateCategory(categoryId, category);
 
       return "Category updated successfully";
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(
-        error.message || "An error occurred while updating the category"
+        getErrorMessage(error) || "An error occurred while updating the category"
       );
     }
   }

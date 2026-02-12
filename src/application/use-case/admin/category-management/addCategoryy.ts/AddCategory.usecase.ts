@@ -4,6 +4,8 @@ import { ICategoryRepository } from "../../../../../domain/repositories/Icategor
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { AddCategoryDTO } from "../../../../dtos/admin/category/AddCategoryDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class AddCategory implements IAddCategory {
@@ -15,8 +17,8 @@ export class AddCategory implements IAddCategory {
   async execute(data: AddCategoryDTO): Promise<CategoryResponseDTO> {
     try {
       return await this.categoryRepository.addCategory(data.category);
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
     }
   }
 }

@@ -26,7 +26,7 @@ export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
         serviceName: service.serviceName,
         serviceId: service._id?.toString(),
       }));
-    } catch (error) {
+    } catch (error: unknown) {
       console.log(error);
       throw error;
     }

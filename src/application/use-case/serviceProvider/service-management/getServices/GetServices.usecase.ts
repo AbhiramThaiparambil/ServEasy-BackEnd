@@ -5,6 +5,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 
 import { GetProviderServicesRequestDTO } from "../../../../dtos/serviceProvider/service-management/getServices/GetProviderServicesRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetServicesUseCase implements IGetServicesUseCase {
@@ -20,8 +22,8 @@ export class GetServicesUseCase implements IGetServicesUseCase {
       );
 
       return allServices;
-    } catch (error) {
-      console.error("Error fetching services:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching services:", getErrorMessage(error));
       throw new Error("Failed to fetch services");
     }
   }

@@ -9,6 +9,8 @@ import { IWalletTransaction } from "../../../../../domain/entities/IproviderWall
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
 import { IVerifyPaymentUseCase, VerifyPaymentResponseDTO } from "./IVerfypayment.usecase";
 import { VerifyPaymentRequestDTO } from "../../../../../application/dtos/common/payment/verifyPayment/VerifyPaymentDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
@@ -94,8 +96,8 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
         result.method
       );
       return { success: true, message: "Payment verified successfully" };
-    } catch (error) {
-      console.error("VerifyPaymentUseCase Error:", error);
+    } catch (error: unknown) {
+      console.error("VerifyPaymentUseCase Error:", getErrorMessage(error));
       return { success: false, message: "Failed to verify payment" };
     }
   }

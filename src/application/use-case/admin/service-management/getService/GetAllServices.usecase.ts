@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { GetServiceListRequestDTO, GetServiceListResponseDTO } from "../../../../dtos/admin/service/GetServiceListDTO";
 import { IServiceWithProviderDetails } from "../../../../../utils/types/IServiceWithProviderDetails";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetAllServices implements IGetAllServices {
@@ -53,8 +55,8 @@ export class GetAllServices implements IGetAllServices {
       console.log(count);
 
       return { allServices: mappedServices, count };
-    } catch (error) {
-      console.error("Error adding new service:", error);
+    } catch (error: unknown) {
+      console.error("Error adding new service:", getErrorMessage(error));
       throw new Error("Failed to Fetch services");
     }
   }

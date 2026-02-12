@@ -17,6 +17,8 @@ import { IServiceProviderRepository } from "../../../../../domain/repositories/I
 import { IRedisService } from "../../../../../services/redis/IRedisService";
 
 import { CreateServiceOrderRequestDTO } from "../../../../../application/dtos/common/payment/createServiceOrder/CreateServiceOrderDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class CreateServiceOrderUseCase implements ICreateServiceOrderUseCase {
@@ -83,8 +85,8 @@ export class CreateServiceOrderUseCase implements ICreateServiceOrderUseCase {
       );
 
       return { success: true, order };
-    } catch (error) {
-      console.error("[CreateServiceOrderUseCase]", error);
+    } catch (error: unknown) {
+      console.error("[CreateServiceOrderUseCase]", getErrorMessage(error));
       return {
         success: false,
         message: "Failed to create payment order",

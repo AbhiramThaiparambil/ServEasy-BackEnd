@@ -16,6 +16,8 @@ import {
   UpdateProfileRequestDTO,
   ProfileOtpResponseDTO,
 } from "../../../../../application/dtos/user/profile/UpdateProfileDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
@@ -111,8 +113,8 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
         successMessage: `OTP sent successfully to ${email}`,
         auth: email,
       };
-    } catch (error) {
-      console.error("Error in sendEmailOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in sendEmailOtp:", getErrorMessage(error));
       return { errorMessage: "Failed to send OTP. Please try again." };
     }
   }
@@ -135,8 +137,8 @@ export class UserProfileUpdateUseCase implements IUserProfileUpdateUseCase {
         successMessage: `OTP sent successfully to ${phone}`,
         auth: phone,
       };
-    } catch (error) {
-      console.error("Error in sendSmsOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in sendSmsOtp:", getErrorMessage(error));
       return { errorMessage: "Failed to send OTP. Please try again." };
     }
   }

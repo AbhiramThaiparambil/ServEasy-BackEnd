@@ -6,6 +6,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
 
 import { GetAIChatByIdRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
@@ -24,8 +26,8 @@ export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
 
       const objectId = new Types.ObjectId(id);
       return await this.aiAssistance.findById(objectId);
-    } catch (error) {
-      console.error(`[GetAIChatByIdUseCase] Failed to fetch chat:`, error);
+    } catch (error: unknown) {
+      console.error(`[GetAIChatByIdUseCase] Failed to fetch chat:`, getErrorMessage(error));
       throw error;
     }
   }

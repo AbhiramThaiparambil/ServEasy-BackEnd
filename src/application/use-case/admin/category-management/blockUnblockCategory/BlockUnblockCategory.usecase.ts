@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { BlockUnblockCategoryDTO } from "../../../../dtos/admin/category/BlockUnblockCategoryDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class BlockUnblockCategory implements IBlockUnblockCategory {
@@ -32,9 +34,9 @@ export class BlockUnblockCategory implements IBlockUnblockCategory {
       return newIsHiddenStatus
         ? "Category hidden successfully"
         : "Category visible successfully";
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(
-        error.message || "An error occurred while updating the category status"
+        getErrorMessage(error) || "An error occurred while updating the category status"
       );
     }
   }

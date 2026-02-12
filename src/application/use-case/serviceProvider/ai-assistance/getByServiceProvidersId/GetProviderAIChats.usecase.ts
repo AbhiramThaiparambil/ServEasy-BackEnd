@@ -26,7 +26,7 @@ export class GetProviderAIChatsUseCase implements IGetProviderAIChatsUseCase {
       }
       const objectId = new Types.ObjectId(providerId);
       return await this.aiAssistanceRepository.findByProviderId(objectId);
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

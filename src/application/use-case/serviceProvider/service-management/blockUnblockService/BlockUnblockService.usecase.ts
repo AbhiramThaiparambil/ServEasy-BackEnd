@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 
 import { BlockUnblockServiceRequestDTO } from "../../../../dtos/serviceProvider/service-management/blockUnblockService/BlockUnblockServiceRequestDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class BlockUnblockServiceUseCase implements IBlockUnblockServiceUseCase {
@@ -24,8 +26,8 @@ export class BlockUnblockServiceUseCase implements IBlockUnblockServiceUseCase {
       const { serviceId } = data;
       const res = await this.serviceRepository.unblockService(serviceId);
       return res;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
     }
   }
 }

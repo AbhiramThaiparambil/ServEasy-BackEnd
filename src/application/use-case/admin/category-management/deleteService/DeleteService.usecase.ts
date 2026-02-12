@@ -5,6 +5,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { DeleteServiceDTO } from "../../../../dtos/admin/category/DeleteServiceDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class DeleteService implements IDeleteService {
@@ -42,9 +44,9 @@ export class DeleteService implements IDeleteService {
       await this.categoryRepository.updateCategory(categoryId, category);
 
       return "Service deleted successfully";
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(
-        error.message || "An error occurred while deleting the service"
+        getErrorMessage(error) || "An error occurred while deleting the service"
       );
     }
   }

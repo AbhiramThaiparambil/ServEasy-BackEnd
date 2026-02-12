@@ -4,6 +4,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICategoryRepository } from "../../../../../domain/repositories/IcategoryRepository";
 import { DeleteCategoryDTO } from "../../../../dtos/admin/category/DeleteCategoryDTO";
 import { CategoryResponseDTO } from "../../../../dtos/admin/category/CategoryResponseDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class DeleteCategory implements IDeleteCategory {
@@ -32,9 +34,9 @@ export class DeleteCategory implements IDeleteCategory {
       }
 
       return "Category deleted successfully";
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(
-        error.message || "An error occurred while deleting the category"
+        getErrorMessage(error) || "An error occurred while deleting the category"
       );
     }
   }

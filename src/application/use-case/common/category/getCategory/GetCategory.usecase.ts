@@ -5,6 +5,8 @@ import { ICategoryRepository } from "../../../../../domain/repositories/Icategor
 import { ICategory } from "../../../../../domain/entities/ICategory ";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { GetCategoryRequestDTO } from "../../../../dtos/common/category/getCategory/GetCategoryDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetCategoryUseCase implements IGetCategory {
@@ -16,8 +18,8 @@ export class GetCategoryUseCase implements IGetCategory {
   async execute(data?: GetCategoryRequestDTO): Promise<void | ICategory[]> {
     try {
       return this.categoryRepository.getAllCategories();
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
     }
   }
 

@@ -21,9 +21,9 @@ export class UserSiteSettings implements IUserSiteSettings {
     this.siteSetting.findActiveHomeBanner()
   ]);
 
-  return {
-    homeBanner: activeHomeBanner || null,
-    footerBanner: activeFooterBanner || null
-  };
+    return {
+      homeBanner: activeHomeBanner?.imageUrl || null,
+      footerBanner: activeFooterBanner?.imageUrl || null
+    };
 }
 }

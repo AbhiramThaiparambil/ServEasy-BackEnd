@@ -6,6 +6,8 @@ import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class BlockUnblockProviderUseCase implements IBlockUnblockProviderUseCase {
@@ -37,8 +39,8 @@ export class BlockUnblockProviderUseCase implements IBlockUnblockProviderUseCase
         data.serviceProviderId
       );
       return res;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error));
     }
   }
 }

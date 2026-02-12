@@ -9,6 +9,8 @@ import {
   GetAllActiveServicesResponseDTO,
 } from "../../../../../application/dtos/user/service/getService/GetAllActiveServiceDTO";
 import { IGetAllActiveServiceUseCase } from "./IGetAllActiveService.usecase";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
 
 @injectable()
 export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
@@ -42,8 +44,8 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
         await this.serviceRepository.getActiveServiceNames();
 
       return { allFilterServices, categories, activeServiceNames };
-    } catch (error) {
-      console.error("Error fetching services:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching services:", getErrorMessage(error));
       throw new Error("Failed to fetch services");
     }
   }
@@ -58,8 +60,8 @@ export class GetAllActiveServiceUseCase implements IGetAllActiveServiceUseCase {
         await this.serviceRepository.findAllActiveServicesUser(skip, limit);
 
       return { allServices, categories };
-    } catch (error) {
-      console.error("Error fetching active services:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching active services:", getErrorMessage(error));
       throw new Error("Failed to fetch active services");
     }
   }

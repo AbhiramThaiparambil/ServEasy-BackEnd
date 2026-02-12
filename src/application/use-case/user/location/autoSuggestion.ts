@@ -7,6 +7,8 @@ import {
   GetAutoSuggestionRequestDTO,
   GetAutoSuggestionResponseDTO,
 } from "../../../dtos/user/location/LocationDTO";
+import { getErrorMessage } from "../../../../utils/errorUtils";
+
 
 @injectable()
 export class AutoSuggestion implements IAutoSuggestion {
@@ -22,9 +24,9 @@ export class AutoSuggestion implements IAutoSuggestion {
       const { query } = data;
       const suggestions = await this.location.getAutoSuggestions(query);
       return { suggestions };
-    } catch (error) {
-      console.error("Error in AutoSuggestion use case:", error);
-      throw new Error(error instanceof Error ? error.message : "Failed to fetch auto suggestions");
+    } catch (error: unknown) {
+      console.error("Error in AutoSuggestion use case:", getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
     }
   }
 }

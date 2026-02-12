@@ -2,6 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
 import { UpdateUserWithProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+import { getErrorMessage } from "../../../../utils/errorUtils";
+
 
 @injectable()
 export class UpdateUserWithServiceProviderUseCase {
@@ -21,8 +23,8 @@ export class UpdateUserWithServiceProviderUseCase {
         data.userId,
         data.serviceProviderId
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
     }
   }
 }
