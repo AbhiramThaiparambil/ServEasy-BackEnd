@@ -1,3 +1,4 @@
+import { ISubscription } from "../../../../../domain/entities/ISubscription";
 
 
 export interface GetProfileResponseDTO {
@@ -10,6 +11,9 @@ export interface GetProfileResponseDTO {
        description:string,
       profileImage: string,
       isBlocked:boolean,
+        isProServiceProvider: boolean;
+        subscriptions?: ISubscription[];
+        bankDetails?: BankDetails;
 
 }
 

@@ -33,10 +33,10 @@ router.get("/verify", authMiddleware("User"), (req, res) =>
 
 router
   .route("/")
-  .get(authMiddleware("User"), (req, res) =>
+  .get(authMiddleware("User"), serviceProviderAuth, (req, res) =>
     serviceController.getServiceProvider(req, res)
   )
-  .put(authMiddleware("User"), (req, res) =>
+  .put(authMiddleware("User"), serviceProviderAuth, (req, res) =>
     serviceController.updateServiceProvider(req, res)
   );
 router.get("/categories", (req, res) =>

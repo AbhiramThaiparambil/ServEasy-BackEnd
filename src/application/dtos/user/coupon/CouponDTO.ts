@@ -19,10 +19,10 @@ export interface ApplyCouponRequestDTO {
 }
 
 export interface ApplyCouponResponseDTO {
+  success: boolean;
   discountAmount?: number;
   finalAmount?: number;
   message?: string;
-  success: boolean;
   couponId?: string;
 }
 
@@ -33,4 +33,7 @@ export interface RemoveCouponRequestDTO {
 export interface RemoveCouponResponseDTO {
   message?: string;
   success: boolean;
+    discountAmount?: number;
+  finalAmount?: number;
+
 }

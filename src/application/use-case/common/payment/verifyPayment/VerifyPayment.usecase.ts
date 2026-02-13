@@ -10,6 +10,11 @@ import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/toke
 import { IVerifyPaymentUseCase, VerifyPaymentResponseDTO } from "./IVerfypayment.usecase";
 import { VerifyPaymentRequestDTO } from "../../../../../application/dtos/common/payment/verifyPayment/VerifyPaymentDTO";
 import { getErrorMessage } from "../../../../../utils/errorUtils";
+import { SocketService } from "../../../../../services/socket/SocketService";
+import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
+import { ISystemNotification } from "../../../../../domain/entities/INotification";
 
 
 @injectable()
@@ -17,13 +22,15 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
-    @inject(ServiceRepository) private serviceRepository: ServiceRepository,
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
-    @inject(ServiceProviderRepository)
-    private serviceProviderRepository: ServiceProviderRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository) private serviceRepository: IServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
+    private serviceProviderRepository: IServiceProviderRepository,
     @inject(REPOSITORY_TOKENS.WalletRepository)
-    private walletRepository: IProviderWalletRepository
+    private walletRepository: IProviderWalletRepository,
+    @inject(SocketService)
+    private socketService: SocketService,
   ) {}
 
   async execute(data: VerifyPaymentRequestDTO): Promise<VerifyPaymentResponseDTO> {
@@ -86,7 +93,23 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
         service.serviceProviderId,
         transaction
       );
+        const userId = await this.serviceProviderRepository.findUserIdByProviderId(service.serviceProviderId)
 
+ const notification: ISystemNotification = {
+      type: "notification",
+      targetRole:"SERVICE_PROVIDER",
+      content: "Payment completed successfully. Service marked as completed.",
+      timestamp: new Date().toISOString(),
+    };
+
+
+    this.socketService.sendNotificationToUser(
+      userId + "",
+      userId + "",
+      notification,
+    );
+
+    this.socketService.refreshData(userId + "");
       const paymentStatus =
         result.status === "captured" ? "completed" : "failed";
 

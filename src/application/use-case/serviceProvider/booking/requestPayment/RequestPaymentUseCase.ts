@@ -51,6 +51,8 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
         timestamp: new Date().toISOString(),
       },
     );
+    this.socketService.refreshData(result?.userId + "");
+
 
     return result;
   }

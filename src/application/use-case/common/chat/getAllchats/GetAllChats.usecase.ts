@@ -15,13 +15,13 @@ export class GetAllChatsUseCase implements IGetAllChats {
   async getServiceProviderChats(data: GetChatsRequestDTO) {
     const { id } = data;
     const chats = await this.chatRepository.findUsersChats(id);
-    console.log(chats);
 
     return chats;
   }
 
   async getUserChats(data: GetChatsRequestDTO) {
     const { id } = data;
+    console.log(id);
     return this.chatRepository.findServiceProvidersChat(id);
   }
 }

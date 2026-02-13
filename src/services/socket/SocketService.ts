@@ -80,4 +80,11 @@ export class SocketService {
       this.notificationUseCase.execute(dto);
     }
   }
+     
+   public refreshData(userId: string) {
+    this.io.to(userId).emit("refreshData");
+   }
+
+
+
 }

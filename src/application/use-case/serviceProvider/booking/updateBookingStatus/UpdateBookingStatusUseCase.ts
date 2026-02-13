@@ -46,6 +46,8 @@ export class UpdateBookingStatusUseCase implements IUpdateBookingStatusUseCase {
       notification,
     );
 
+    this.socketService.refreshData(result?.userId + "");
+
     return result;
   }
 }

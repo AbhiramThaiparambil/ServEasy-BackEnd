@@ -18,7 +18,7 @@ export class RecommendAdsUseCase implements IRecommendAdsUseCase {
     data: GetRecommendedAdsRequestDTO
   ): Promise<RecommendedAdDTO[]> {
     const { count = 1, category, providerId, lat, lng, radius = 10000 } = data;
-
+      
     return await this.adsRepository.findRecommendedAds({
       count,
       category,

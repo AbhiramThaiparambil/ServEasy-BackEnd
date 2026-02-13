@@ -327,9 +327,12 @@ export class ServiceProviderController {
 
   async createAd(req: Request, res: Response): Promise<void> {
     try {
-      const data: CreateAdRequestDTO = req.body;
-      const createdAd = await this.createAdUseCase.execute(data);
+      const data: CreateAdRequestDTO = req.body.data;
+       console.log(req.body)
+    
 
+      console.log("data", data);
+      const createdAd = await this.createAdUseCase.execute(data);
       if (createdAd) {
         res.status(HttpStatus.OK).json({
           message:
@@ -386,6 +389,7 @@ export class ServiceProviderController {
     try {
       const adId = getString(req.params.adId);
       const updateData = req.body;
+       console.log(req.body)
       const dto: EditAdRequestDTO = { adId, updateData };
       const updatedAd = await this.editAdUseCase.execute(dto);
 
@@ -828,7 +832,8 @@ export class ServiceProviderController {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 5;
       const skip = (page - 1) * limit;
-
+         console.log(providerId)
+         console.log('get ads service provider called ')
       const dto: GetProviderAdsRequestDTO = { providerId, skip, limit };
       const { ads, count } = await this.getProviderAdsUseCase.execute(dto);
 

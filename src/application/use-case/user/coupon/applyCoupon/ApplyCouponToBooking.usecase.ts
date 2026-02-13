@@ -21,50 +21,75 @@ export class ApplyCouponToBookingUseCase implements IApplyCouponToBookingUseCase
     private couponRepo: ICouponRepository
   ) {}
 
-  async execute(data: ApplyCouponRequestDTO): Promise<ApplyCouponResponseDTO> {
+ async execute(
+    data: ApplyCouponRequestDTO
+  ): Promise<ApplyCouponResponseDTO> {
     try {
       const { bookingId, couponCode } = data;
+
       const booking = await this.bookingRepo.findById(bookingId);
-      if (!booking || !booking.payment) throw new Error("Booking not found");
+
+      if (!booking)
+        throw new Error("Booking not found");
+
+      if (!booking.payment)
+        throw new Error("Booking payment not found");
 
       const coupon = await this.couponRepo.findByCode(couponCode);
-      if (!coupon || !coupon.isActive) {
-        throw new Error("Invalid or inactive coupon");
-      }
+
+      if (!coupon)
+        throw new Error("Coupon not found");
+
+      if (!coupon.isActive)
+        throw new Error("Coupon is inactive");
 
       const now = new Date();
-      if (coupon.validFrom > now || coupon.validTo < now) {
-        throw new Error("Coupon is not valid at this time");
-      }
+
+      if (coupon.validFrom > now || coupon.validTo < now)
+        throw new Error("Coupon expired or not yet valid");
+
+      const orderTotal = booking.payment.total;
+      const discountValue = coupon.discountValue;
+
+      if (!discountValue || discountValue <= 0)
+        throw new Error("Invalid coupon discount");
 
       if (
         coupon.minOrderAmount &&
-        booking.payment.total < coupon.minOrderAmount
-      ) {
+        orderTotal < coupon.minOrderAmount
+      )
         throw new Error(
-          "Order total does not meet minimum requirement for this coupon"
+          `Minimum order amount is ₹${coupon.minOrderAmount}`
         );
-      }
 
-      const alreadyUsed = await this.couponRepo.hasUserUsedCoupon(
-        coupon.code,
-        booking.userId.toString()
-      );
-      if (alreadyUsed) throw new Error("Coupon already used by this user");
+      if (discountValue > orderTotal)
+        throw new Error(
+          "Discount cannot be greater than order total"
+        );
 
-      const discountAmount = coupon.discountValue;
+      const alreadyUsed =
+        await this.couponRepo.hasUserUsedCoupon(
+          coupon.code,
+          booking.userId.toString()
+        );
+
+      if (alreadyUsed)
+        throw new Error("Coupon already used");
+
+      const finalTotal = orderTotal - discountValue;
 
       booking.coupon = {
         _id: coupon._id,
         code: coupon.code,
-        discountAmount,
+        discountAmount: discountValue,
         appliedAt: new Date(),
       };
 
-      booking.payment.discountAmount = discountAmount;
-      booking.payment.finalTotal = booking.payment.total - discountAmount;
+      booking.payment.discountAmount = discountValue;
+      booking.payment.finalTotal = finalTotal;
 
-      const updatedBooking = await this.bookingRepo.update(bookingId, booking);
+      const updatedBooking =
+        await this.bookingRepo.update(bookingId, booking);
 
       await this.couponRepo.markUsedByUser(
         coupon.code,
@@ -73,15 +98,16 @@ export class ApplyCouponToBookingUseCase implements IApplyCouponToBookingUseCase
 
       return {
         success: true,
-        message: "Coupon applied successfully",
-        discountAmount: discountAmount,
-        finalAmount: updatedBooking?.payment?.finalTotal,
+        discountAmount: discountValue,
+        finalAmount: updatedBooking?.payment?.finalTotal ?? finalTotal,
         couponId: coupon._id?.toString(),
       };
     } catch (error: unknown) {
       return {
         success: false,
-        message: getErrorMessage(error) || "Failed to apply coupon",
+        message:
+          getErrorMessage(error) ||
+          "Failed to apply coupon",
       };
     }
   }

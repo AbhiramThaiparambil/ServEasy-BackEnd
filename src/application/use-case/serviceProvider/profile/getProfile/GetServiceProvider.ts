@@ -28,6 +28,9 @@ export class GetServiceProvider implements IGetServiceProvider {
        description:result.description||"",
       profileImage: result.profileImage||"",
       isBlocked:result.isBlocked,
+      isProServiceProvider: result.isProServiceProvider,
+      subscriptions: result.subscription,
+      bankDetails: result.bankDetails,
   
     
     };

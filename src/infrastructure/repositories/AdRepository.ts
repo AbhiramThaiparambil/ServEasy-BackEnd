@@ -122,112 +122,211 @@ export class AdRepository implements IAdRepository {
       throw error;
     }
   }
+  // async findRecommendedAds(
+  //   params: IGetRecommendedAdsRequestDTO
+  // ): Promise<IRecommendedAdDTO[]> {
+  //   const {
+  //     count = 4,
+  //     category,
+  //     providerId,
+  //     lat,
+  //     lng,
+  //     radius = 10000,
+  //   } = params;
+        
 
-  async findRecommendedAds(
-    params: IGetRecommendedAdsRequestDTO
-  ): Promise<IRecommendedAdDTO[]> {
-    const {
-      count = 1,
-      category,
-      providerId,
-      lat,
-      lng,
-      radius = 10000,
-    } = params;
+  //   return await AdModel.find({}).limit(count).lean()
+  // }
 
-    const now = new Date();
 
-    const match: any = {
-      status: "active",
-      startDate: { $lte: now },
-      endDate: { $gte: now },
-    };
 
-    if (category) match.category = category;
-    if (providerId) match.providerId = providerId;
 
-    let coords: [number, number] | null = null;
-    if (lat !== undefined && lng !== undefined) {
-      coords = [lng, lat];
+
+  // async findRecommendedAds(
+  //   params: IGetRecommendedAdsRequestDTO
+  // ): Promise<IRecommendedAdDTO[]> {
+  //   const {
+  //     count = 3,
+  //     category,
+  //     providerId,
+  //     lat,
+  //     lng,
+  //     radius = 10000,
+  //   } = params;
+        
+
+
+  //   const now = new Date();
+
+  //   const match: any = {
+  //     status: "active",
+  //     startDate: { $lte: now },
+  //     endDate: { $gte: now },
+  //   };
+
+  //   if (category) match.category = category;
+  //   if (providerId) match.providerId = providerId;
+
+  //   let coords: [number, number] | null = null;
+  //   if (lat !== undefined && lng !== undefined) {
+  //     coords = [lng, lat];
+  //   }
+  //   const ads = await AdModel.aggregate([
+  //     ...(coords
+  //       ? [
+  //           {
+  //             $geoNear: {
+  //               near: coords,
+  //               distanceField: "distance",
+  //               maxDistance: radius * 1000,
+  //               spherical: true,
+  //             },
+  //           },
+  //         ]
+  //       : []),
+
+  //     { $match: match },
+
+  //     { $sort: { boostScore: -1, createdAt: -1 } },
+
+  //     { $sample: { size: count } },
+
+  //     {
+  //       $lookup: {
+  //         from: "serviceproviders",
+  //         localField: "providerId",
+  //         foreignField: "_id",
+  //         as: "provider",
+
+  //         pipeline: [
+  //           {
+  //             $match: {
+  //               subscriptions: {
+  //                 $elemMatch: {
+  //                   startDate: { $lte: new Date() },
+  //                   endDate: { $gte: new Date() },
+  //                   status: "active",
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     },
+
+  //     { $match: { provider: { $ne: [] } } },
+
+  //     {
+  //       $unwind: {
+  //         path: "$provider",
+  //         preserveNullAndEmptyArrays: false,
+  //       },
+  //     },
+
+  //     {
+  //       $project: {
+  //         _id: { $toString: "$_id" },
+  //         serviceId: { $toString: "$serviceId" },
+  //         providerId: { $toString: "$providerId" },
+
+  //         serviceProviderName: "$provider.name",
+  //         profileImage: "$provider.profileImage",
+
+  //         caption: 1,
+  //         description: 1,
+  //         image: 1,
+  //       },
+  //     },
+
+  //     { $limit: count },
+  //   ]);
+
+  //   const adIds = ads.map((a) => a._id);
+
+  //   if (adIds.length > 0) {
+  //     await AdModel.updateMany({ _id: { $in: adIds } }, { $inc: { views: 1 } });
+  //   }
+
+  //   return ads as IRecommendedAdDTO[];
+  // }
+
+
+
+
+
+
+
+async findRecommendedAds(
+  params: IGetRecommendedAdsRequestDTO
+): Promise<IRecommendedAdDTO[]> {
+
+  const { count = 3, category, providerId } = params;
+
+  const now = new Date();
+
+  const startOfTodayUTC = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      0, 0, 0, 0
+    )
+  );
+
+  const endOfTodayUTC = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      23, 59, 59, 999
+    )
+  );
+
+  const match: any = {
+    status: "active",
+    startDate: { $lte: endOfTodayUTC },
+    endDate: { $gte: startOfTodayUTC },
+  };
+
+  if (category) match.category = category;
+  if (providerId) match.providerId = providerId;
+
+  const ads = await AdModel.aggregate([
+    { $match: match },
+
+    {
+      $lookup: {
+        from: "serviceproviders",
+        localField: "providerId",
+        foreignField: "_id",
+        as: "provider"
+      }
+    },
+
+    { $unwind: "$provider" },
+
+    { $sample: { size: count } },
+
+    {
+      $project: {
+        _id: { $toString: "$_id" },
+        serviceId: { $toString: "$serviceId" },
+        providerId: { $toString: "$providerId" },
+        serviceProviderName: "$provider.name",
+        profileImage: "$provider.profileImage",
+        caption: 1,
+        description: 1,
+        image: 1
+      }
     }
-    const ads = await AdModel.aggregate([
-      ...(coords
-        ? [
-            {
-              $geoNear: {
-                near: coords,
-                distanceField: "distance",
-                maxDistance: radius * 1000,
-                spherical: true,
-              },
-            },
-          ]
-        : []),
+  ]);
 
-      { $match: match },
+  return ads;
+}
 
-      { $sort: { boostScore: -1, createdAt: -1 } },
 
-      { $sample: { size: count } },
 
-      {
-        $lookup: {
-          from: "serviceproviders",
-          localField: "providerId",
-          foreignField: "_id",
-          as: "provider",
 
-          pipeline: [
-            {
-              $match: {
-                subscriptions: {
-                  $elemMatch: {
-                    startDate: { $lte: new Date() },
-                    endDate: { $gte: new Date() },
-                    status: "active",
-                  },
-                },
-              },
-            },
-          ],
-        },
-      },
-
-      { $match: { provider: { $ne: [] } } },
-
-      {
-        $unwind: {
-          path: "$provider",
-          preserveNullAndEmptyArrays: false,
-        },
-      },
-
-      {
-        $project: {
-          _id: { $toString: "$_id" },
-          serviceId: { $toString: "$serviceId" },
-          providerId: { $toString: "$providerId" },
-
-          serviceProviderName: "$provider.name",
-          profileImage: "$provider.profileImage",
-
-          caption: 1,
-          description: 1,
-          image: 1,
-        },
-      },
-
-      { $limit: count },
-    ]);
-
-    const adIds = ads.map((a) => a._id);
-
-    if (adIds.length > 0) {
-      await AdModel.updateMany({ _id: { $in: adIds } }, { $inc: { views: 1 } });
-    }
-
-    return ads as IRecommendedAdDTO[];
-  }
 
   async expireExpiredAds(): Promise<number> {
     const now = new Date();

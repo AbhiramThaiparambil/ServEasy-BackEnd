@@ -1277,7 +1277,8 @@ export class UserController {
     req: Request,
     res: Response,
   ): Promise<void> => {
-    try {
+    try { 
+      console.log('hey hey ads requesteeddd ')
       const dto: GetRecommendedAdsRequestDTO = {
         count: req.query.count ? Number(req.query.count) : 1,
         category: req.query.category as string | undefined,

@@ -40,18 +40,33 @@ export class ChatHandler {
         message,
         senderInfo,
         targetRole,
+        content
       }: {
         senderId: string;
         receiverId: string;
         message: IMessage;
         senderInfo: { senderName: string; senderProfile: string };
         targetRole?: "SERVICE_PROVIDER" | "USER";
+        content: string;
       }) => {
+        console.log(
+          senderId,
+          receiverId,
+          message,
+          senderInfo,
+          targetRole,
+          content
+        );
+               
         const roomId = this.createRoomId(senderId, receiverId);
         const dto: SaveMessageRequestDTO = {
           user1: senderId,
           user2: receiverId,
-          message,
+          message:{
+            messageType: message.messageType,
+            content: message.content,
+            sender: message.sender,
+          },
         };
         const savedMessage = await this.saveMessageUseCase.execute(dto);
 
@@ -68,7 +83,7 @@ export class ChatHandler {
             senderId,
             senderName: senderInfo.senderName,
             senderProfile: senderInfo.senderProfile,
-            content: message.content,
+            content: message.messageType==="image"? "image sent" : message.content,
           });
         }
         socket.to(roomId).emit("receive_message", { message: savedMessage });

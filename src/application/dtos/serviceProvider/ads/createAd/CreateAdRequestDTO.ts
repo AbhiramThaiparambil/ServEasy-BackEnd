@@ -1,7 +1,15 @@
+import { ILocation } from "../../../../../domain/entities/IService";
+
 export interface CreateAdRequestDTO {
   serviceId: string;
-  image?: string;
+  serviceProviderId: string;
+  caption: string;
   description: string;
-  providerId: string;
-  status?: string;
+  image?: string;
+  targetLocation?: ILocation;
+  radiusKm?: number;
+  startDate?: string;
+  endDate?: string;
 }
+
+

@@ -63,6 +63,7 @@ export class ChatController {
           .json({ message: "Missing userId or serviceProviderId" });
         return;
       }
+      console.log('chats', chats)
 
       res.status(HttpStatus.OK).json(chats);
       return;

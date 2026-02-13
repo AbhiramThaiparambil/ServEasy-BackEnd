@@ -21,20 +21,30 @@ export class CreateAdUseCase implements ICreateAdUseCase {
   ) {}
 
   async execute(data: CreateAdRequestDTO): Promise<IAd | null> {
-    try {
+    try { 
+   
       const adData: Partial<IAd> = {
-          ...data,
+          caption: data.caption,
+          description: data.description,
           serviceId: new Types.ObjectId(data.serviceId),
-          providerId: new Types.ObjectId(data.providerId),
-          status: data.status as AdStatus,
-      };
+          providerId: new Types.ObjectId(data.serviceProviderId),
+          targetLocation: data.targetLocation,
+          radiusKm: data.radiusKm,
+          startDate: data.startDate ? new Date(data.startDate) : undefined,
+          endDate: data.endDate ? new Date(data.endDate) : undefined,
 
+      };
+        
       if (data.image) {
         const imageUrl = await this.cloudinaryService.uploadAdImage(data.image);
+
+
+
         return await this.adRepository.createAd({
           ...adData,
           image: imageUrl,
         } as IAd);
+
       } else {
         return await this.adRepository.createAd(adData as IAd);
       }

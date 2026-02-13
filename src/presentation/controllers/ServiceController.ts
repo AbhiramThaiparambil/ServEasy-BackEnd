@@ -197,8 +197,7 @@ export class ServiceController {
       });
 
       res.status(HttpStatus.OK).json({
-        message: "Coupon applied successfully",
-        payment: updatedBooking,
+        data: updatedBooking,
       });
       return;
     } catch (error: unknown) {
@@ -223,8 +222,7 @@ export class ServiceController {
       const updatedBooking = await this.removeCouponUseCase.execute({ bookingId });
       console.log(updatedBooking);
       res.status(200).json({
-        message: "Coupon removed successfully",
-        updatedBooking,
+        data: updatedBooking,
       });
       return;
     } catch (error: unknown) {

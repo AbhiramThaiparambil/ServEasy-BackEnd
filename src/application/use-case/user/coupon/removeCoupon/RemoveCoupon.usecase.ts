@@ -35,11 +35,13 @@ export class RemoveCouponToBookingUseCase implements IRemoveCouponToBookingUseCa
         bookingId
       );
 
-      console.log(updatedBooking);
 
       return {
         success: true,
         message: "Coupon removed successfully",
+        discountAmount: updatedBooking?.payment?.discountAmount||0,
+        finalAmount: updatedBooking?.payment?.finalTotal||0,
+
       };
     } catch (error: unknown) {
        return {
