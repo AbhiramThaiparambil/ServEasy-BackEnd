@@ -4,12 +4,13 @@ import {
   ISystemNotification,
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
-import { ICreateNotificationUseCase } from "../use-case/notification/createNotification/ICreateNotification.usecase";
+import { ICreateNotificationUseCase } from "../use-case/common/notification/createNotification/ICreateNotification.usecase";
+import { CreateNotificationRequestDTO } from "../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
 
 export class NotificationHandler {
   constructor(
     private notificationUseCase: ICreateNotificationUseCase,
-    private io: Server
+    private io: Server,
   ) {}
 
   public register(socket: Socket) {
@@ -27,16 +28,21 @@ export class NotificationHandler {
     notification:
       | IVideoCallNotification
       | IChatNotification
-      | ISystemNotification
+      | ISystemNotification,
   ) {
     this.io.to(userId).emit("receive_notification", notification);
     console.log(notification);
     if (notification.type === "chat") {
       const content = `${notification.senderName} sent you a message: "${notification.content}"`;
 
-      this.notificationUseCase.execute(content, userId);
+      const dto: CreateNotificationRequestDTO = { content, userId };
+      this.notificationUseCase.execute(dto);
     } else {
-      this.notificationUseCase.execute(notification.content, userId);
+      const dto: CreateNotificationRequestDTO = {
+        content: notification.content,
+        userId,
+      };
+      this.notificationUseCase.execute(dto);
     }
   }
 }

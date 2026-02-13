@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { IGetServiceProviderRegistrationDetailsUseCase } from "./IGetServiceProviderRegistrationDetailsUseCase";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
+import { GetRegistrationDetailsRequestDTO } from "../../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
 
 @injectable()
 export class GetServiceProviderRegistrationDetailsUseCase
@@ -11,10 +12,10 @@ export class GetServiceProviderRegistrationDetailsUseCase
     private serviceProviderRepository: IServiceProviderRepository
   ) {}
 
-  async execute(userId: string) {
+  async execute(data: GetRegistrationDetailsRequestDTO) {
     const provider =
       await this.serviceProviderRepository.findRegistrationDetailsByUserId(
-        userId
+        data.userId
       );
 
     return provider;

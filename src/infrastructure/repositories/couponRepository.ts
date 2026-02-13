@@ -1,13 +1,13 @@
-import { IBannerCouponResponse, ICoupon } from '../../domain/entities/ICoupon';
-import { CouponModel } from '../models/couponModel';
-import { injectable } from 'tsyringe';
-import { Types } from 'mongoose';
-import { ICouponRepository } from '../../domain/repositories/IcouponRepository';
+import { IBannerCouponResponse, ICoupon } from "../../domain/entities/ICoupon";
+import { CouponModel } from "../models/couponModel";
+import { injectable } from "tsyringe";
+import { Types } from "mongoose";
+import { ICouponRepository } from "../../domain/repositories/IcouponRepository";
 
 @injectable()
 export class CouponRepository implements ICouponRepository {
   async findAllCoupons(): Promise<ICoupon[]> {
-    return await CouponModel.find().exec();
+    return await CouponModel.find().lean();
   }
 
   async createCoupon(coupon: ICoupon): Promise<ICoupon> {
@@ -16,11 +16,17 @@ export class CouponRepository implements ICouponRepository {
   }
 
   async makeCouponInactive(id: string): Promise<void> {
-    await CouponModel.updateOne({ _id: new Types.ObjectId(id) }, { isActive: false }).exec();
+    await CouponModel.updateOne(
+      { _id: new Types.ObjectId(id) },
+      { isActive: false },
+    ).exec();
   }
 
   async toggleShowInBanner(id: string, show: boolean): Promise<void> {
-    await CouponModel.updateOne({ _id: new Types.ObjectId(id) }, { showInBanner: show }).exec();
+    await CouponModel.updateOne(
+      { _id: new Types.ObjectId(id) },
+      { showInBanner: show },
+    ).exec();
   }
 
   async findAllActiveCoupons(): Promise<ICoupon[]> {
@@ -28,48 +34,57 @@ export class CouponRepository implements ICouponRepository {
       isActive: true,
       validFrom: { $lte: new Date() },
       validTo: { $gte: new Date() },
-    }).exec();
+    }).lean();
   }
 
-  async updateCouponShowInBanner(id: string, action: boolean): Promise<boolean> {
-    const result = await CouponModel.updateOne({ _id: id }, { $set: { showInBanner: action } });
+  async updateCouponShowInBanner(
+    id: string,
+    action: boolean,
+  ): Promise<boolean> {
+    const result = await CouponModel.updateOne(
+      { _id: id },
+      { $set: { showInBanner: action } },
+    );
     return result.modifiedCount > 0;
   }
 
   async updateCouponStatus(id: string, action: boolean): Promise<boolean> {
-    const result = await CouponModel.updateOne({ _id: id }, { $set: { isActive: action } });
+    const result = await CouponModel.updateOne(
+      { _id: id },
+      { $set: { isActive: action } },
+    );
     return result.modifiedCount > 0;
   }
 
-async findFeaturedCoupons(skip: number): Promise<IBannerCouponResponse> {
-  const total = await CouponModel.countDocuments({
-    isActive: true,
-    showInBanner: true,
-    validFrom: { $lte: new Date() },
-    validTo: { $gte: new Date() },
-  });
+  async findFeaturedCoupons(skip: number): Promise<IBannerCouponResponse> {
+    const total = await CouponModel.countDocuments({
+      isActive: true,
+      showInBanner: true,
+      validFrom: { $lte: new Date() },
+      validTo: { $gte: new Date() },
+    });
 
-  if (total === 0) return { coupon: null, total: 0 };
+    if (total === 0) return { coupon: null, total: 0 };
 
-  const coupon = await CouponModel.findOne({
-    isActive: true,
-    showInBanner: true,
-    validFrom: { $lte: new Date() },
-    validTo: { $gte: new Date() },
-  })
-    .select('code description discountValue validTo')
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .lean();
+    const coupon = await CouponModel.findOne({
+      isActive: true,
+      showInBanner: true,
+      validFrom: { $lte: new Date() },
+      validTo: { $gte: new Date() },
+    })
+      .select("code description discountValue validTo")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .lean();
 
-  return {
-    coupon: coupon || null,
-    total,
-  };
-}
+    return {
+      coupon: coupon || null,
+      total,
+    };
+  }
 
   async findByCode(code: string): Promise<ICoupon | null> {
-    return await CouponModel.findOne({ code });
+    return await CouponModel.findOne({ code }).lean();
   }
 
   async hasUserUsedCoupon(code: string, userId: string): Promise<boolean> {
@@ -88,15 +103,14 @@ async findFeaturedCoupons(skip: number): Promise<IBannerCouponResponse> {
   async markUsedByUser(code: string, userId: string): Promise<void> {
     await CouponModel.updateOne(
       { code },
-      { $addToSet: { usedBy: new Types.ObjectId(userId) } } 
+      { $addToSet: { usedBy: new Types.ObjectId(userId) } },
     );
   }
 
-async removeCoupon(userId: Types.ObjectId, couponId:string): Promise<void> {
-  await CouponModel.updateOne(
-    { _id: couponId },
-    { $pull: { usedBy: userId } }
-  );
-}
-
+  async removeCoupon(userId: Types.ObjectId, couponId: string): Promise<void> {
+    await CouponModel.updateOne(
+      { _id: couponId },
+      { $pull: { usedBy: userId } },
+    );
+  }
 }

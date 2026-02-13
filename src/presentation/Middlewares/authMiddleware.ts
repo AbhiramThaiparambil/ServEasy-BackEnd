@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
 import { TokenService } from "../../services/token/TokenService";
 import { JwtPayload } from "jsonwebtoken";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 export const authMiddleware = (role: "User" | "Admin") => {
   return async (
@@ -44,8 +45,8 @@ export const authMiddleware = (role: "User" | "Admin") => {
         res.locals.adminId = decoded;
         next();
       }
-    } catch (error: any) {
-      console.log("Token verification failed:", error.message);
+    } catch (error: unknown) {
+      console.log("Token verification failed:", getErrorMessage(error));
       res
         .status(401)
         .json({ message: "Unauthorized: Invalid or expired token" });

@@ -1,6 +1,5 @@
-import { IAuthResponse } from "../../../../domain/entities/IAuthResponse";
+import { AdminLoginDTO, AdminLoginResponseDTO } from "../../../dtos/admin/auth/AdminAuthDTO";
 
 export interface IAdminSignin {
-  signByEmail(email: string, password: string): Promise<IAuthResponse | null>;
-  signByPhone(phone: string, password: string): Promise<IAuthResponse | null>;
+  execute(data: AdminLoginDTO): Promise<AdminLoginResponseDTO>;
 }

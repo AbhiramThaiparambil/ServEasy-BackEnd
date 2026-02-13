@@ -14,7 +14,7 @@ export interface SafeServiceProvider {
   location: string;
   services: string[];
   isBlocked:boolean;
-  subscriptions?: ISubscription[];
+  subscription?: ISubscription[];
   document?: string[];
   
 }
@@ -33,7 +33,7 @@ export const serviceProviderSanitizer = (sp: IServiceProvider): SafeServiceProvi
     location: sp.location|| "",
     services: sp.services || [],
     isBlocked:sp.isBlocked,
-    subscriptions:sp.subscriptions,
+    subscription: sp.subscription,
     document:sp.document,
   };
 };

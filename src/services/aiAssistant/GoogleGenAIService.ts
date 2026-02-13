@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { injectable } from "tsyringe";
 import { IGoogleGenAIService } from "./IGoogleGenAIService";
 config();
@@ -13,7 +13,7 @@ export class GoogleGenAIService implements IGoogleGenAIService {
     });
   }
 
-  async generateResponse(prompt: string): Promise<any> {
+  async generateResponse(prompt: string): Promise<GenerateContentResponse> {
     try {
       const response = await this.ai.models.generateContent({
         model: "gemini-2.5-flash",

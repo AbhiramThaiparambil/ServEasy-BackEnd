@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IBankDetails, IServiceProvider } from '../../domain/entities/IServiceProvider';
 import { ISubscription } from '../../domain/entities/ISubscription';
 
@@ -61,7 +61,7 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     isBlocked: { type: Boolean, default: false },
     bankDetails: { type: BankDetailsSchema, required: true },
-    subscriptions: [SubscriptionSchema],
+    subscription: [SubscriptionSchema],
   },
   {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },

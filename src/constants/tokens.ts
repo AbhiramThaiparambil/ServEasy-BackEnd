@@ -95,10 +95,30 @@ export const USE_CASE_TOKENS = {
   GetUserProfileUseCase: "IGetUserProfileUseCase",
   CreateServiceOrderUseCase: "CreateServiceOrderUseCase",
   FindAllActiveCouponsUseCase: "IFindAllActiveCouponsUseCase",
+  GetAdminProfileUseCase: "IGetAdminProfileUseCase",
+  GetPaymentInfoUseCase: "IGetPaymentInfoUseCase",
+  AdminSiteSettingsUseCase: "IAdminSiteSettingsUseCase",
+  ServiceProviderRejectVerify: "IServiceProviderRejectVerify",
+  ManageAllServiceUseCase: "IManageAllServiceUseCase",
+  EditServiceProviderProfileUseCase: "IEditServiceProviderProfileUseCase",
+  ServiceProviderGetPaymentInfo: "IServiceProviderGetPaymentInfoUseCase",
+  CheckServiceProviderAvailability: "ICheckServiceProviderAvailabilityUseCase",
+  VerifyServiceProvider: "IVerifyServiceProvider",
+  GetServiceProvider: "IGetServiceProvider",
+  AutoSuggestion: "IAutoSuggestion",
+  UserSiteSettings: "IUserSiteSettings",
+  UploadBillsUseCase: "IUploadBillsUseCase",
+  AddNewService: "IAddNewServiceUseCase",
+  GetService: "IGetServicesUseCase",
+  EditService: "IEditServiceUseCase",
+  BlockUnblockSericeUseCase: "IBlockUnblockServiceUseCase",
+  VerifyPaymentUseCase: "IVerifyPaymentUseCase",
+  GetProviderVerificationDetailsUseCase: "IGetProviderVerificationDetailsUseCase",
+  GetBookingPaymentSummaryUseCase: "IGetBookingPaymentSummaryUseCase",
+  GetAdminBookingHistoryUseCase:"IGetAdminBookingHistoryUseCase"
 };
 
 export const REPOSITORY_TOKENS = {
-  ServiceRepository: "ServiceRepository",
   WalletRepository: "IWalletRepository",
   CouponRepository: "ICouponRepository",
   SubscriptionRepository: "ISubscriptionPlanRepository",
@@ -112,6 +132,8 @@ export const REPOSITORY_TOKENS = {
   ChatRepository: "ChatRepository",
   NotificationRepository: "NotificationRepository",
   ReviewRepository: "ReviewRepository",
+  SiteSettingRepository: "ISiteSettingRepository",
+  ServiceRepository: "IServiceRepository",
 };
 export const SERVICE_TOKENS = {
   MailService: "IMailService",
@@ -122,9 +144,10 @@ export const SERVICE_TOKENS = {
   RazorpayService: "RazorpayService",
   SmsOtpService: "ISmsOtpService",
   EmailService: "IEmailService",
-  ServiceRepository: "ServiceRepository",
   OtpService: "IOtpService",
+  LocationService: "ILocationService",
 };
+
 
 // IBlockUnblockUsers
 // BlockUnblockSericeProvider

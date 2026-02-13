@@ -1,7 +1,12 @@
 import { Socket, Server } from "socket.io";
-import { SaveMessageUseCase } from "../use-case/chat/saveMessage/SaveMessage.usecase";
 import { IMessage } from "../../domain/entities/IChat";
 import { SocketService } from "../../services/socket/SocketService";
+import { SaveMessageUseCase } from "../use-case/common/chat/saveMessage/SaveMessage.usecase";
+import {
+  SaveMessageRequestDTO,
+  MakeChatOfflineRequestDTO,
+  MakeChatOnlineRequestDTO,
+} from "../dtos/common/chat/saveMessage/SaveMessageDTO";
 
 export class ChatHandler {
   constructor(
@@ -35,19 +40,35 @@ export class ChatHandler {
         message,
         senderInfo,
         targetRole,
+        content
       }: {
         senderId: string;
         receiverId: string;
         message: IMessage;
         senderInfo: { senderName: string; senderProfile: string };
         targetRole?: "SERVICE_PROVIDER" | "USER";
+        content: string;
       }) => {
-        const roomId = this.createRoomId(senderId, receiverId);
-        const savedMessage = await this.saveMessageUseCase.execute(
+        console.log(
           senderId,
           receiverId,
           message,
+          senderInfo,
+          targetRole,
+          content
         );
+               
+        const roomId = this.createRoomId(senderId, receiverId);
+        const dto: SaveMessageRequestDTO = {
+          user1: senderId,
+          user2: receiverId,
+          message:{
+            messageType: message.messageType,
+            content: message.content,
+            sender: message.sender,
+          },
+        };
+        const savedMessage = await this.saveMessageUseCase.execute(dto);
 
         const room = this.io.sockets.adapter.rooms.get(roomId);
         const socketsInRoom = room ? Array.from(room) : [];
@@ -62,7 +83,7 @@ export class ChatHandler {
             senderId,
             senderName: senderInfo.senderName,
             senderProfile: senderInfo.senderProfile,
-            content: message.content,
+            content: message.messageType==="image"? "image sent" : message.content,
           });
         }
         socket.to(roomId).emit("receive_message", { message: savedMessage });
@@ -72,11 +93,13 @@ export class ChatHandler {
     socket.on("leave_chat", ({ senderId, receiverId, offlineId }) => {
       const roomId = this.createRoomId(senderId, receiverId);
       socket.leave(roomId);
-      this.saveMessageUseCase.makeItOffline(senderId, receiverId, offlineId);
+      const dto: MakeChatOfflineRequestDTO = { senderId, receiverId, offlineId };
+      this.saveMessageUseCase.makeItOffline(dto);
     });
 
     socket.on("makeItOnline", async ({ onlineId, receiverId }) => {
-      await this.saveMessageUseCase.makeItOnline(onlineId, receiverId);
+      const dto: MakeChatOnlineRequestDTO = { onlineId, receiverId };
+      await this.saveMessageUseCase.makeItOnline(dto);
     });
   }
 

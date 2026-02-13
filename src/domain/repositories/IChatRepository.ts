@@ -7,7 +7,7 @@ import {
 } from "../entities/IChat";
 
 export interface IChatRepository {
-  findByIds(senderId: Types.ObjectId, receiverId: Types.ObjectId): Promise<any>;
+  findByIds(senderId: Types.ObjectId, receiverId: Types.ObjectId): Promise<IChat | null>;
   createChat(
     userA: Types.ObjectId,
     userB: Types.ObjectId,

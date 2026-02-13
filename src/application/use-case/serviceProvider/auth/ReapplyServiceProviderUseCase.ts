@@ -1,13 +1,15 @@
 import { injectable, inject } from "tsyringe";
 import { IServiceProvider } from "../../../../domain/entities/IServiceProvider";
-import { IServiceProviderRegistration } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { ISkill } from "../../../../domain/entities/IServiceProvider";
 import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { ReapplyServiceProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+
+import { IReapplyServiceProviderUseCase } from "./IReapplyServiceProviderUseCase";
 
 @injectable()
-export class ReapplyServiceProviderUseCase {
+export class ReapplyServiceProviderUseCase implements IReapplyServiceProviderUseCase {
   constructor(
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
@@ -17,11 +19,9 @@ export class ReapplyServiceProviderUseCase {
   ) {}
 
   async execute(
-    serviceProviderData: IServiceProviderRegistration,
-    profileImageRow: string | null,
-    documentRow: string | null,
-    document2Row: string | null
+    data: ReapplyServiceProviderRequestDTO
   ): Promise<IServiceProvider> {
+    const { serviceProviderData, profileImageRow, documentRow, document2Row } = data;
     const existingProvider = await this.serviceProviderRepository.findByUserID(
       serviceProviderData.userId
     );
@@ -30,7 +30,6 @@ export class ReapplyServiceProviderUseCase {
       throw new Error("Service provider not found");
     }
 
-    /* ---------- Profile Image ---------- */
 
     let profileImage: string | undefined = existingProvider.profileImage;
 
@@ -47,7 +46,6 @@ export class ReapplyServiceProviderUseCase {
       );
     }
 
-    /* ---------- Documents ---------- */
 
     const documents: string[] = [];
 
@@ -68,16 +66,14 @@ export class ReapplyServiceProviderUseCase {
       documents.push(existingProvider.document[1]);
     }
 
-    /* ---------- Skills Mapping (FIXED) ---------- */
 
     const mappedSkills: ISkill[] = serviceProviderData.skills.map(
-      (skillName) => ({
+      (skillName: string) => ({
         name: skillName,
-        level: "beginner", // default level (business rule)
+        level: "beginner", 
       })
     );
 
-    /* ---------- Build Update Payload ---------- */
 
     const updatePayload: Partial<IServiceProvider> = {
       serviceProviderName: serviceProviderData.serviceProviderName,
@@ -98,8 +94,6 @@ export class ReapplyServiceProviderUseCase {
       document: documents,
       isVerified: "pending",
     };
-
-    /* ---------- Update ---------- */
 
     return await this.serviceProviderRepository.updateRegistration(
       existingProvider._id,

@@ -1,0 +1,56 @@
+import { injectable, inject } from "tsyringe";
+
+import { ICreateAdUseCase } from "./ICreateAd.usecase";
+import { Types } from "mongoose";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../../constants/tokens";
+import { IAdRepository } from "../../../../../domain/repositories/IAdRepository";
+import { ICloudinaryService } from "../../../../../services/cloudinary/ICloudinaryService";
+import { AdStatus, IAd } from "../../../../../domain/entities/IAd";
+
+import { CreateAdRequestDTO } from "../../../../dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
+
+@injectable()
+export class CreateAdUseCase implements ICreateAdUseCase {
+  constructor(
+    @inject(REPOSITORY_TOKENS.AdRepository) private adRepository: IAdRepository,
+    @inject(SERVICE_TOKENS.CloudinaryService)
+    private cloudinaryService: ICloudinaryService
+  ) {}
+
+  async execute(data: CreateAdRequestDTO): Promise<IAd | null> {
+    try { 
+   
+      const adData: Partial<IAd> = {
+          caption: data.caption,
+          description: data.description,
+          serviceId: new Types.ObjectId(data.serviceId),
+          providerId: new Types.ObjectId(data.serviceProviderId),
+          targetLocation: data.targetLocation,
+          radiusKm: data.radiusKm,
+          startDate: data.startDate ? new Date(data.startDate) : undefined,
+          endDate: data.endDate ? new Date(data.endDate) : undefined,
+
+      };
+        
+      if (data.image) {
+        const imageUrl = await this.cloudinaryService.uploadAdImage(data.image);
+
+
+
+        return await this.adRepository.createAd({
+          ...adData,
+          image: imageUrl,
+        } as IAd);
+
+      } else {
+        return await this.adRepository.createAd(adData as IAd);
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+}

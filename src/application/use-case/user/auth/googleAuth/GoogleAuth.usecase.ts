@@ -1,0 +1,91 @@
+import { injectable, inject } from "tsyringe";
+import { OAuth2Client } from "google-auth-library";
+
+import { config } from "dotenv";
+import {
+  REPOSITORY_TOKENS,
+  SERVICE_TOKENS,
+} from "../../../../../constants/tokens";
+import { IUserRepository } from "../../../../../domain/repositories/IuserRepository";
+import { ITokenService } from "../../../../../services/token/ITokenService";
+import { IUser } from "../../../../../domain/entities/IUser";
+import { IGoogleAuthUseCase } from "./IGoogleAuth.usecase";
+import { GoogleAuthRequestDTO } from "../../../../dtos/user/auth/googleAuth/GoogleAuthDTO";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
+
+
+config();
+
+@injectable()
+export class GoogleAuthUseCase implements IGoogleAuthUseCase {
+  private client: OAuth2Client;
+
+  constructor(
+    @inject(REPOSITORY_TOKENS.UserRepository)
+    private userRepository: IUserRepository,
+    @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
+  ) {
+    this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  }
+
+  async execute(data: GoogleAuthRequestDTO) {
+    const { googleToken } = data;
+    try {
+      console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
+
+      const ticket = await this.client.verifyIdToken({
+        idToken: googleToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload) throw new Error("Invalid Google token");
+
+      console.log("Google Payload:", payload);
+
+      const { sub, email, name, picture, email_verified } = payload;
+
+      console.log(sub, email, name, picture, email_verified);
+      if (!email) {
+        throw new Error("Email not found in Google payload");
+      }
+
+      let user = await this.userRepository.findByEmail(email);
+
+      if (user) {
+        if (!user.googleId) {
+          user.googleId = sub;
+          await this.userRepository.updateUser(user);
+        }
+      } else {
+        const newUser: IUser = {
+          isVerified: email_verified || false,
+          password: sub,
+          userName: name || email.split("@")[0],
+          email,
+          googleId: sub,
+          ...(picture && { profileImage: picture }),
+        };
+
+        user = await this.userRepository.create(newUser);
+      }
+
+      if (user) {
+        const accessToken = this.tokenService.generateAccessToken(
+          user._id + "",
+          "userId",
+        );
+        const refreshToken = this.tokenService.generateRefreshToken(
+          (user._id = ""),
+          "userId",
+        );
+        return { accessToken, refreshToken };
+      } else {
+        throw new Error("use Auth failed");
+      }
+    } catch (error: unknown) {
+      console.error("Google Auth Error:", getErrorMessage(error));
+      throw new Error("Google Authentication Failed");
+    }
+  }
+}

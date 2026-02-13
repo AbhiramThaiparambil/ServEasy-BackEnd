@@ -1,4 +1,4 @@
-import { IAdminAd, IAdStatus } from "../../utils/types/dto/IAdAdminDto";
+import { IAdminAd, IAdStatus } from "../../application/dtos/admin/GetAdsAdminDTO";
 import { IAdDTO } from "../../utils/types/dto/IAdDto";
 import { IGetRecommendedAdsRequestDTO, IRecommendedAdDTO } from "../../utils/types/dto/IRecommendAdsDTO";
 import { IAd } from "../entities/IAd";
@@ -12,7 +12,7 @@ export interface IAdRepository {
     skip?: number,
     limit?: number
   ): Promise<IAdDTO[]>;
-  getAllAds(skip: number, limit: number): Promise<IAdminAd[]>;
+  findAllAdsWithProvider(skip: number, limit: number): Promise<IAdminAd[]>;
   getTotalAdCount(): Promise<number>;
   changeAdStatus(id: string, status: IAdStatus): Promise<boolean>;
   getTotalProviderAdCount(id: string): Promise<number>;

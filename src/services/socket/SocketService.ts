@@ -1,7 +1,7 @@
 import { inject, singleton } from "tsyringe";
 import { Server, Socket } from "socket.io";
 import { Server as HTTPServer } from "http";
-import { SaveMessageUseCase } from "../../application/use-case/chat/saveMessage/SaveMessage.usecase";
+import { SaveMessageUseCase } from "../../application/use-case/common/chat/saveMessage/SaveMessage.usecase";
 import { ChatHandler } from "../../application/handlers/ChatHandler";
 import { NotificationHandler } from "../../application/handlers/NotificationHandler";
 
@@ -11,9 +11,10 @@ import {
   IVideoCallNotification,
 } from "../../domain/entities/INotification";
 import { VideoCallHandler } from "../../application/handlers/VideoCallHandler";
-import { ICreateNotificationUseCase } from "../../application/use-case/notification/createNotification/ICreateNotification.usecase";
+import { ICreateNotificationUseCase } from "../../application/use-case/common/notification/createNotification/ICreateNotification.usecase";
+import { CreateNotificationRequestDTO } from "../../application/dtos/common/notification/createNotification/CreateNotificationDTO";
 import { USE_CASE_TOKENS } from "../../constants/tokens";
-import { ISaveMessageUseCase } from "../../application/use-case/chat/saveMessage/ISaveMessage.uescase";
+
 @singleton()
 export class SocketService {
   private io!: Server;
@@ -70,10 +71,21 @@ export class SocketService {
     this.io.to(userId).emit("receive_notification", notification);
 
     if (notification.type === "chat") {
-      const content = `${notification.senderName} sent you a message: "${notification.content}"`;
+      // const content = `${notification.senderName} sent you a message: "${notification.content}"`;
       // this.notificationUseCase.create(content, userId);
     } else if (notification.type === "notification") {
-      this.notificationUseCase.execute(notification.content, referenceId);
+      const dto: CreateNotificationRequestDTO = {
+        content: notification.content,
+        userId: referenceId,
+      };
+      this.notificationUseCase.execute(dto);
     }
   }
+     
+   public refreshData(userId: string) {
+    this.io.to(userId).emit("refreshData");
+   }
+
+
+
 }

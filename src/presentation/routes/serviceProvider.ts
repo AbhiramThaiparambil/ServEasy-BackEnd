@@ -3,7 +3,7 @@ import { container } from "tsyringe";
 
 import { authMiddleware } from "../Middlewares/authMiddleware";
 
-import { ServiceProviderController } from "../controllers/serviceProviderController";
+import { ServiceProviderController } from "../controllers/ServiceProviderController";
 import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 
 const serviceController = container.resolve(ServiceProviderController);
@@ -21,8 +21,10 @@ router.put("/reapply", authMiddleware("User"), (req, res) =>
   serviceController.reapplyServiceProvider(req, res)
 );
 
-router.get("/status", authMiddleware("User"), (req, res) =>
-  serviceController.getStatus(req, res)
+router.get(
+  "/status",
+  authMiddleware("User"),
+  (req, res) => serviceController.getServiceProviderStatus(req, res)
 );
 
 router.get("/verify", authMiddleware("User"), (req, res) =>
@@ -31,10 +33,10 @@ router.get("/verify", authMiddleware("User"), (req, res) =>
 
 router
   .route("/")
-  .get(authMiddleware("User"), (req, res) =>
+  .get(authMiddleware("User"), serviceProviderAuth, (req, res) =>
     serviceController.getServiceProvider(req, res)
   )
-  .put(authMiddleware("User"), (req, res) =>
+  .put(authMiddleware("User"), serviceProviderAuth, (req, res) =>
     serviceController.updateServiceProvider(req, res)
   );
 router.get("/categories", (req, res) =>
@@ -54,7 +56,7 @@ router.put("/services/deactivate-all/:id", (req, res) =>
   serviceController.makeInactiveAllService(req, res)
 );
 router.get("/availability/:serviceProviderId", (req, res) =>
-  serviceController.getAvailability(req, res)
+  serviceController.checkServiceProviderAvailability(req, res)
 );
 
 router.get("/wallet", authMiddleware("User"), serviceProviderAuth, (req, res) =>

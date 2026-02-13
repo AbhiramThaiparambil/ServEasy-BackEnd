@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import { ICategoryRepository } from "../../domain/repositories/IcategoryRepository";
 import { ICategory } from "../../domain/entities/ICategory ";
-import { CategoryModel } from "../models/categoryModel"; // Mongoose Model
+import { CategoryModel } from "../models/categoryModel"; 
 
 @injectable()
 export class CategoryRepository implements ICategoryRepository {

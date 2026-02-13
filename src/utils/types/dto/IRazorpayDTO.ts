@@ -17,7 +17,7 @@ export interface IRazorpayPaymentResult {
   email?: string;
   contact?: string;
   created_at: number;
-  notes?: Record<string, any>;
+  notes?: Record<string, string | number>;
   fee?: number;
   tax?: number;
 }

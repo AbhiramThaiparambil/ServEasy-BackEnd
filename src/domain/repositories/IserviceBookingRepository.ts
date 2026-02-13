@@ -1,8 +1,12 @@
-import { ClientSession, Schema, Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import {
   IBookedServiceWithDetails,
   IServiceBooking,
 } from "../entities/IServiceBooking";
+import { IFindPaymentInfoAdminDTO } from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
+import { GetPaymentInfoResponseDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
+import { ICompletedServiceByProvider } from "../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
+import { IPayment } from "../entities/IPayment";
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(
     userId: Types.ObjectId,
@@ -29,12 +33,12 @@ export interface IServiceBookingRepository {
     Id: Types.ObjectId,
     skip: number,
     limit: number,
-  ): Promise<any>;
+  ): Promise<IBookedServiceWithDetails[]>;
   findBookedServicesAndServiceByServiceProviderId(
     Id: Types.ObjectId,
     skip: number,
     limit: number,
-  ): Promise<IBookedServiceWithDetails>;
+  ): Promise<IBookedServiceWithDetails[]>;
 
   confirmBooking(
     id: Types.ObjectId,
@@ -80,8 +84,38 @@ export interface IServiceBookingRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<IServiceBooking | null>;
+
+  findCompletedByProvider(
+    serviceProviderId: string,
+  ): Promise<ICompletedServiceByProvider[]>;
   updateReviewId(
     bookingId: Types.ObjectId,
     reviewId: Types.ObjectId,
   ): Promise<void>;
+
+  getPaymentInfo(
+    startDate?: Date | null,
+    endDate?: Date | null,
+  ): Promise<GetPaymentInfoResponseDTO>;
+
+  getPaymentInfoServiceProvider(
+    serviceProviderId: string,
+    startDate?: Date | null,
+    endDate?: Date | null,
+  ): Promise<unknown>;
+
+  checkAvailability(
+    serviceProviderId: Types.ObjectId,
+  ): Promise<{ available: boolean; reason?: string }>;
+
+  findPaymentInfoAdmin(
+    skip: number,
+    limit: number,
+    search: string,
+    status: string,
+    statusField: "serviceStatus" | "paymentStatus",
+  ): Promise<IFindPaymentInfoAdminDTO[]>;
+
+     requestPayment(id: Types.ObjectId, status: string, payment: IPayment):Promise<IServiceBooking|null> 
+  
 }

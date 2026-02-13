@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import "dotenv/config";
 
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -9,11 +9,11 @@ import http from "http";
 import { container } from "tsyringe";
 import "./container";
 import dbConnect from "./infrastructure/database/db";
-import authRouter from "./presentation/routes/authRoutes";
-import userRoutes from "./presentation/routes/User";
+import authRouter from "./presentation/routes/auth";
+import userRoutes from "./presentation/routes/user";
 import locationRouter from "./presentation/routes/location";
 import serviceProviderRoute from "./presentation/routes/serviceProvider";
-import serviceProviderSubscriptionRouter from "./presentation/routes/ServiceProviderSubscriptionRoute";
+import serviceProviderSubscriptionRouter from "./presentation/routes/serviceProviderSubscription";
 import adminRoute from "./presentation/routes/admin";
 import serviceRouter from "./presentation/routes/service";
 import paymentRouter from "./presentation/routes/payment";

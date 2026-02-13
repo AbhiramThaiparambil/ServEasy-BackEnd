@@ -1,67 +1,115 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { GetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/getPaymentInfoUseCase";
-import { AdminSiteSettingsUseCase } from "../../application/use-case/siteSetting/AdminSiteSettingsUseCase";
+import { IGetPaymentInfoUseCase } from "../../application/use-case/admin/dashboard/IGetPaymentInfo.usecase";
+import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
+
+import { IServiceProviderRejectVerify } from "../../application/use-case/admin/provider-management/rejectRequest/IServiceProviderReject.usecase";
 import { HttpStatus } from "../../constants/HttpStatus";
 
 import fs from "fs";
 import { setAuthCookies } from "../../utils/setAuthCookies";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { ICreateCouponUseCase } from "../../application/use-case/coupon/createCoupon/ICreateCoupon.usecase";
-import { IFindAllCouponsUseCase } from "../../application/use-case/coupon/findAllCoupons/IFindAllCoupons.usecase";
-import { IMakeCouponInactiveUseCase } from "../../application/use-case/coupon/makeCouponInactive/IMakeCouponInactive.usecase";
-import { IToggleShowInBannerUseCase } from "../../application/use-case/coupon/toggleShowInBanner/IToggleShowInBanner.usecase";
-import { IGetAllProvidersWalletsUseCase } from "../../application/use-case/wallet/getWallet/IGetAllProvidersWallets.usecase";
-import { IGetProviderWalletUseCase } from "../../application/use-case/wallet/getWalletByid/IGetProviderWalletById.usecase";
+import { ICreateCouponUseCase } from "../../application/use-case/admin/coupon-management/createCoupon/ICreateCoupon.usecase";
+import { IFindAllCouponsUseCase } from "../../application/use-case/admin/coupon-management/findAllCoupons/IFindAllCoupons.usecase";
+import { IMakeCouponInactiveUseCase } from "../../application/use-case/admin/coupon-management/makeCouponInactive/IMakeCouponInactive.usecase";
+import { IToggleShowInBannerUseCase } from "../../application/use-case/admin/coupon-management/toggleShowInBanner/IToggleShowInBanner.usecase";
+import { IGetAllProvidersWalletsUseCase } from "../../application/use-case/admin/wallet-management/getWallet/IGetAllProvidersWallets.usecase";
+import { IGetProviderWalletUseCase } from "../../application/use-case/admin/wallet-management/getWalletByid/IGetProviderWalletById.usecase";
 
-import { IAdminGetAdsUseCase } from "../../application/use-case/ads/getAds/IAdminGetAds.usecase";
+import { IAdminGetAdsUseCase } from "../../application/use-case/admin/ad-management/getAds/IAdminGetAds.usecase";
 import { ITokenService } from "../../services/token/ITokenService";
 
-import { userInfo } from "os";
 
 import path from "path";
 
-import { IChangeAdStatusUseCase } from "../../application/use-case/ads/changeAdStatus/IChangeAdStatus..usecase";
-import { IGetAllUsers } from "../../application/use-case/userManagement/getAllUsers/IGetAllUsers.usecase";
-import { IBlockUnblockUsers } from "../../application/use-case/userManagement/blockUnblockUsers/IBlockUnblockUsers.usecase";
-import { IGetServiceProviders } from "../../application/use-case/serviceProviderManagement/getServiceProvider/IGetServiceProviders.usecase";
-import { ServiceProviderRejectVerify } from "../../application/use-case/serviceProviderManagement/rejectRequest/ServiceProviderReject.usecase";
-import { IGetAllServices } from "../../application/use-case/service-management/serviceManagementAdmin/getService/IGetAllServices.usecase";
-import { IBlockUnblockService } from "../../application/use-case/service-management/serviceManagementAdmin/blockUnblock/IBlockUnblock.usecase";
-import { IAddCategory } from "../../application/use-case/category-management/addCategoryy.ts/IAddCategory.usecase";
-import { IGetCategory } from "../../application/use-case/category-management/getCategory/IGetCategory.usecase";
-import { IEditCategory } from "../../application/use-case/category-management/editCategory/IEditCategory.usecase";
-import { IBlockUnblockCategory } from "../../application/use-case/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
-import { IDeleteCategory } from "../../application/use-case/category-management/deleteCategory/IDeleteCategory.usecase";
-import { IAddService } from "../../application/use-case/category-management/addService/IAddService.usecase";
-import { IDeleteService } from "../../application/use-case/category-management/deleteService/IDeleteService.usecase";
-import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/wallet/withdraw/IWithdrawFromProviderWallet.usecase";
-import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/subscriptionManagement/getSubscription/IGetAllSubscriptionPlans.usecase";
-import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/createSubscription/ICreateSubscriptionPlan.usecase";
-import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/subscriptionManagement/updateSubscription/IUpdateSubscriptionPlan.usecase";
-import { BlockUnblockSericeProvider } from "../../application/use-case/serviceProviderManagement/blockServiceProvider/BlockUnblockProvider.usecase";
+import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { ChangeAdStatusRequestDTO } from "../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
+import { IGetAllUsers } from "../../application/use-case/admin/user-management/getAllUsers/IGetAllUsers.usecase";
+import { IBlockUnblockUsers } from "../../application/use-case/admin/user-management/blockUnblockUsers/IBlockUnblockUsers.usecase";
+import { IGetServiceProviders } from "../../application/use-case/admin/provider-management/getServiceProvider/IGetServiceProviders.usecase";
+import { IGetAllServices } from "../../application/use-case/admin/service-management/getService/IGetAllServices.usecase";
+import { IBlockUnblockService } from "../../application/use-case/admin/service-management/blockUnblock/IBlockUnblock.usecase";
+import { IAddCategory } from "../../application/use-case/admin/category-management/addCategoryy.ts/IAddCategory.usecase";
+import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
+import { IEditCategory } from "../../application/use-case/admin/category-management/editCategory/IEditCategory.usecase";
+import { IBlockUnblockCategory } from "../../application/use-case/admin/category-management/blockUnblockCategory/IBlockUnblockCategory.usecase";
+import { IDeleteCategory } from "../../application/use-case/admin/category-management/deleteCategory/IDeleteCategory.usecase";
+import { IAddService } from "../../application/use-case/admin/category-management/addService/IAddService.usecase";
+import { IDeleteService } from "../../application/use-case/admin/category-management/deleteService/IDeleteService.usecase";
+import { IWithdrawFromProviderWalletUseCase } from "../../application/use-case/admin/wallet-management/withdraw/IWithdrawFromProviderWallet.usecase";
+import { IGetAllSubscriptionPlansUseCase } from "../../application/use-case/admin/subscription-management/getSubscription/IGetAllSubscriptionPlans.usecase";
+import { ICreateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/createSubscription/ICreateSubscriptionPlan.usecase";
+import { IUpdateSubscriptionPlanUseCase } from "../../application/use-case/admin/subscription-management/updateSubscription/IUpdateSubscriptionPlan.usecase";
 import { IAdminSignin } from "../../application/use-case/admin/auth/IAdminSignin.usecase";
-import { GetAdminProfileUseCase } from "../../application/use-case/admin/profile/profile";
+import { IGetAdminProfileUseCase } from "../../application/use-case/admin/profile/IProfile";
+import { IBlockUnblockProviderUseCase } from "../../application/use-case/admin/provider-management/blockServiceProvider/IBlockUnblockProvider.usecase";
+import { IAdminSiteSettingsUseCase } from "../../application/use-case/admin/site-settings/IAdminSiteSettings.usecase";
+import { IBlockUnblockCategoryService } from "../../application/use-case/admin/category-management/blockUnblockService/IBlockUnblockCategoryService.usecase";
+import { AddCategoryDTO } from "../../application/dtos/admin/category/AddCategoryDTO";
+import { EditCategoryDTO } from "../../application/dtos/admin/category/EditCategoryDTO";
+import { BlockUnblockCategoryDTO } from "../../application/dtos/admin/category/BlockUnblockCategoryDTO";
+import { DeleteCategoryDTO } from "../../application/dtos/admin/category/DeleteCategoryDTO";
+import { AddServiceDTO } from "../../application/dtos/admin/category/AddServiceDTO";
+import { DeleteServiceDTO } from "../../application/dtos/admin/category/DeleteServiceDTO";
+import { BlockUnblockCategoryServiceDTO } from "../../application/dtos/admin/category/BlockUnblockCategoryServiceDTO";
+import { CreateCouponDTO } from "../../application/dtos/admin/coupon/CreateCouponDTO";
+import { MakeCouponInactiveDTO } from "../../application/dtos/admin/coupon/MakeCouponInactiveDTO";
+import { ToggleShowInBannerDTO } from "../../application/dtos/admin/coupon/ToggleShowInBannerDTO";
+import { AdminProfileResponseDTO } from "../../application/dtos/admin/profile/AdminProfileResponseDTO";
+import { BlockUnblockProviderDTO } from "../../application/dtos/admin/provider/BlockUnblockProviderDTO";
+import { GetProvidersDTO } from "../../application/dtos/admin/provider/GetProvidersDTO";
+import { RejectProviderDTO } from "../../application/dtos/admin/provider/RejectProviderDTO";
+import { VerifyProviderDTO } from "../../application/dtos/admin/provider/VerifyProviderDTO";
+import { IGetProviderVerificationDetailsUseCase } from "../../application/use-case/admin/provider-management/getProviderVerificationDetails/IGetProviderVerificationDetails.usecase";
+import { GetCategoryRequestDTO } from "../../application/dtos/common/category/getCategory/GetCategoryDTO";
+import { GetServiceListRequestDTO } from "../../application/dtos/admin/service/GetServiceListDTO";
+import { BlockUnblockServiceRequestDTO } from "../../application/dtos/admin/service/BlockUnblockServiceDTO";
+import {
+  AddFooterBannerRequestDTO,
+} from "../../application/dtos/admin/site-settings/FooterBannerDTO";
+import {
+  AddHomeBannerRequestDTO,
+} from "../../application/dtos/admin/site-settings/HomeBannerDTO";
+import { AddThemeRequestDTO } from "../../application/dtos/admin/site-settings/ThemeDTO";
+import {
+  CreateSubscriptionPlanRequestDTO,
+  UpdateSubscriptionPlanRequestDTO,
+} from "../../application/dtos/admin/subscription/SubscriptionPlanDTO";
+import {
+  GetUserListRequestDTO,
+  BlockUnblockUserRequestDTO,
+} from "../../application/dtos/admin/user/UserManagementDTO";
+import {
+  GetWalletByIdRequestDTO,
+  GetWalletListRequestDTO,
+  WithdrawRequestDTO,
+} from "../../application/dtos/admin/wallet/WalletManagementDTO";
+import { IGetAdminBookingHistoryUseCase } from "../../application/use-case/admin/bookings/IGetAdminBookingHistory.usecase";
+import {
+  IFindPaymentInfoAdminRequestDTO,
+} from "../../application/dtos/admin/bookings/GetAdminBookingHistoryDTO";
 
 @injectable()
 export class AdminController {
   constructor(
     @inject(USE_CASE_TOKENS.AdminSignin) private signInUseCase: IAdminSignin,
     @inject(SERVICE_TOKENS.TokenService) private tokenService: ITokenService,
-    @inject(GetAdminProfileUseCase)
-    private getAdminProfileUseCase: GetAdminProfileUseCase,
+    @inject(USE_CASE_TOKENS.GetAdminProfileUseCase)
+    private getAdminProfileUseCase: IGetAdminProfileUseCase,
     @inject(USE_CASE_TOKENS.GetAllUsers)
     private getAllUsersUseCase: IGetAllUsers,
     @inject(USE_CASE_TOKENS.BlockUnblockUsers)
     private blockUnblockUsersUseCase: IBlockUnblockUsers,
     @inject(USE_CASE_TOKENS.GetServiceProviders)
     private getServiceProvidersUseCase: IGetServiceProviders,
-    @inject(GetPaymentInfoUseCase)
-    private getPaymentInfoUseCase: GetPaymentInfoUseCase,
-    @inject(AdminSiteSettingsUseCase)
-    private adminSiteSettingsUseCase: AdminSiteSettingsUseCase,
-    @inject(ServiceProviderRejectVerify)
-    private serviceProviderRejectVerify: ServiceProviderRejectVerify,
+    @inject(USE_CASE_TOKENS.GetPaymentInfoUseCase)
+    private getPaymentInfoUseCase: IGetPaymentInfoUseCase,
+    @inject(USE_CASE_TOKENS.AdminSiteSettingsUseCase)
+    private adminSiteSettingsUseCase: IAdminSiteSettingsUseCase,
+    @inject(USE_CASE_TOKENS.ServiceProviderRejectVerify)
+    private serviceProviderRejectVerify: IServiceProviderRejectVerify,
 
     @inject(USE_CASE_TOKENS.GetAllServices)
     private getAllServicesUseCase: IGetAllServices,
@@ -70,7 +118,9 @@ export class AdminController {
     private blockUnblockServiceUseCase: IBlockUnblockService,
 
     @inject(USE_CASE_TOKENS.BlockUnblockSericeProvider)
-    private blockUnblockProviderUseCase: BlockUnblockSericeProvider,
+    private blockUnblockProviderUseCase: IBlockUnblockProviderUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderVerificationDetailsUseCase)
+    private getProviderVerificationDetailsUseCase: IGetProviderVerificationDetailsUseCase,
     @inject(USE_CASE_TOKENS.AddCategory)
     private addCategoryUseCase: IAddCategory,
     @inject(USE_CASE_TOKENS.GetCategory)
@@ -85,6 +135,8 @@ export class AdminController {
     private addServiceUseCase: IAddService,
     @inject(USE_CASE_TOKENS.DeleteService)
     private deleteServiceUseCase: IDeleteService,
+    @inject(USE_CASE_TOKENS.BlockUnblockCategoryService)
+    private blockUnblockCategoryServiceUseCase: IBlockUnblockCategoryService,
     @inject(USE_CASE_TOKENS.CreateCouponUseCase)
     private createCouponUseCase: ICreateCouponUseCase,
     @inject(USE_CASE_TOKENS.FindAllCouponsUseCase)
@@ -110,7 +162,68 @@ export class AdminController {
     private getAdsUseCase: IAdminGetAdsUseCase,
     @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
     private changeAdStatusUseCase: IChangeAdStatusUseCase,
+    @inject(USE_CASE_TOKENS.GetAdminBookingHistoryUseCase)
+    private getAdminBookingHistoryUseCase: IGetAdminBookingHistoryUseCase,
   ) {}
+
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const adminTokenData = req.cookies.adminToken;
+
+      if (!adminTokenData) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Refresh token is missing" });
+        return;
+      }
+
+      const decoded = this.tokenService.verifyRefreshToken(adminTokenData);
+
+      if (!decoded) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Invalid refresh token" });
+        return;
+      }
+
+      const user = await this.getAdminProfileUseCase.execute(decoded.adminId);
+
+      if (!user || !user.isAdmin) {
+        res.status(HttpStatus.NOT_FOUND).json({ error: "Admin not found" });
+        return;
+      }
+
+      const newAccessToken = await this.tokenService.generateAccessToken(
+        user._id + "",
+        "adminId",
+      );
+
+      res.status(HttpStatus.OK).json({ adminToken: newAccessToken });
+    } catch (error: unknown) {
+      console.error("AdminController::refreshToken error", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal server error" });
+    }
+  };
+
+  public async getAdminProfile(req: Request, res: Response): Promise<void> {
+    try {
+      const adminId = getString(req.params.adminId);
+      const data: AdminProfileResponseDTO | null =
+        await this.getAdminProfileUseCase.execute(adminId);
+      if (!data) {
+        res.status(HttpStatus.BAD_REQUEST);
+        return;
+      }
+      res.status(HttpStatus.OK).json(data);
+    } catch (error: unknown) {
+      console.error("AdminController::getAdminProfile error", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
 
   async signIn(req: Request, res: Response) {
     try {
@@ -125,9 +238,9 @@ export class AdminController {
 
       let result;
       if (email) {
-        result = await this.signInUseCase.signByEmail(email, password);
+        result = await this.signInUseCase.execute({ email, password });
       } else {
-        result = await this.signInUseCase.signByPhone(phone, password);
+        result = await this.signInUseCase.execute({ phone, password });
       }
 
       if (!result) {
@@ -140,8 +253,8 @@ export class AdminController {
       setAuthCookies(res, "adminToken", refreshToken);
       res.status(200).json({ accessToken, user });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ error: "Internal Server Error" });
       return;
     }
@@ -159,8 +272,8 @@ export class AdminController {
       );
       res.status(200).json({ data });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -168,42 +281,49 @@ export class AdminController {
 
   async getAllUsers(req: Request, res: Response) {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.page)) || 0;
       const skip = page * limit;
-      const search = req.query.search || "";
-      const { users, count } = await this.getAllUsersUseCase.execute(
+      const search = getString(req.query.search);
+
+      const dto: GetUserListRequestDTO = {
         skip,
         limit,
-        search as string,
-      );
+        search,
+      };
+
+      const { users, count } = await this.getAllUsersUseCase.execute(dto);
       res.status(200).json({ users, count });
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
   }
 
-  async getServiceProviders(req: Request, res: Response): Promise<void> {
+  async allServiceProviders(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
-      const skip = page * limit;
-      const search = req.query.search || "";
-      const verification = req.query.verification;
-      const { data, count } = await this.getServiceProvidersUseCase.execute(
+      const page = parseInt(getString(req.query.page)) || 1;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const search = getString(req.query.search);
+      const serviceProviderVerfication: boolean =
+        req.query.serviceProviderVerfication === "true";
+      const skip = (page - 1) * limit;
+
+      const dto: GetProvidersDTO = {
         skip,
         limit,
-        search as string,
-        verification ? true : false,
-      );
+        search,
+        serviceProviderVerfication,
+      };
 
-      res.status(HttpStatus.OK).json({ data, count });
+      const data = await this.getServiceProvidersUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ data: data.data, count: data.count });
       return;
-    } catch (error) {
-      console.error("AdminController::getServiceProviders error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::getServiceProviders error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -214,10 +334,10 @@ export class AdminController {
   async getPaymentInfoForChart(req: Request, res: Response): Promise<void> {
     try {
       const startDate = req.query.startDate
-        ? new Date(req.query.startDate as string)
+        ? new Date(getString(req.query.startDate))
         : undefined;
       const endDate = req.query.endDate
-        ? new Date(req.query.endDate as string)
+        ? new Date(getString(req.query.endDate))
         : undefined;
 
       const paymentData = await this.getPaymentInfoUseCase.execute(
@@ -227,8 +347,8 @@ export class AdminController {
 
       res.status(200).json({ paymentData });
       return;
-    } catch (error) {
-      console.error("Failed to fetch payment info for chart:", error);
+    } catch (error: unknown) {
+      console.error("Failed to fetch payment info for chart:", getErrorMessage(error));
       res.status(500).json({ message: "Internal Server Error" });
       return;
     }
@@ -238,22 +358,36 @@ export class AdminController {
     try {
       console.log("Received request to add site settings:", req.body);
       if (req.body.type === "addBanner") {
-        const banner = await this.adminSiteSettingsUseCase.addHomeBanner(
-          req.body,
-        );
+        const dto: AddHomeBannerRequestDTO = {
+          image: req.body.image,
+          title: req.body.title,
+          subtitle: req.body.subtitle,
+          imageUrl: req.body.imageUrl,
+        };
+        const banner = await this.adminSiteSettingsUseCase.addHomeBanner(dto);
         res.status(HttpStatus.CREATED).json({ banner });
         return;
       }
 
       if (req.body.type === "addTheme") {
-        const theme = await this.adminSiteSettingsUseCase.addTheme(req.body);
+        const dto: AddThemeRequestDTO = {
+          name: req.body.name,
+          isActive: req.body.isActive,
+        };
+        const theme = await this.adminSiteSettingsUseCase.addTheme(dto);
         res.status(HttpStatus.CREATED).json({ theme });
         return;
       }
 
       if (req.body.type === "addFooterBanner") {
+        const dto: AddFooterBannerRequestDTO = {
+          image: req.body.image,
+          title: req.body.title,
+          subtitle: req.body.subtitle,
+          imageUrl: req.body.imageUrl,
+        };
         const footerBanner =
-          await this.adminSiteSettingsUseCase.addFooterBanner(req.body);
+          await this.adminSiteSettingsUseCase.addFooterBanner(dto);
         res.status(HttpStatus.CREATED).json({ footerBanner });
         return;
       }
@@ -262,8 +396,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in addSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in addSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -303,8 +437,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in deleteSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in deleteSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -337,8 +471,8 @@ export class AdminController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid type provided" });
       return;
-    } catch (error) {
-      console.error("Error in makeActiveSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in makeActiveSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -359,8 +493,8 @@ export class AdminController {
         footerBanners,
         themes,
       });
-    } catch (error) {
-      console.error("Error in getSiteSettings:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteSettings:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -371,12 +505,12 @@ export class AdminController {
     try {
       const { userId, action } = req.body;
 
-      let data;
-      if (action === "Block") {
-        data = await this.blockUnblockUsersUseCase.blockUser(userId);
-      } else {
-        data = await this.blockUnblockUsersUseCase.unblockUser(userId);
-      }
+      const dto: BlockUnblockUserRequestDTO = {
+        userId,
+        action,
+      };
+
+      const data = await this.blockUnblockUsersUseCase.execute(dto);
 
       if (data) {
         res.status(HttpStatus.OK).json({ data });
@@ -387,35 +521,8 @@ export class AdminController {
           .json({ message: "User not found or update failed." });
         return;
       }
-    } catch (error) {
-      console.error("AdminController::blockUnblockUser error", error);
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal Server Error" });
-      return;
-    }
-  }
-
-  async serviceProviderReject(req: Request, res: Response): Promise<void> {
-    try {
-      const { serviceProviderId, reason } = req.body;
-
-      const data = await this.serviceProviderRejectVerify.rejectServiceProvider(
-        serviceProviderId,
-        reason,
-      );
-
-      if (data) {
-        res.status(HttpStatus.OK).json({ data });
-        return;
-      } else {
-        res
-          .status(HttpStatus.NOT_FOUND)
-          .json({ message: "User not found or update failed." });
-        return;
-      }
-    } catch (error) {
-      console.error("AdminController::serviceProviderReject error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockUser error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -441,8 +548,8 @@ export class AdminController {
           .json({ message: "User not found or update failed." });
         return;
       }
-    } catch (error) {
-      console.error("AdminController::serviceProviderVerify error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::serviceProviderVerify error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -455,19 +562,22 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const search = req.query.search || "";
+      const search = getString(req.query.search);
 
-      const { allServices, count } = await this.getAllServicesUseCase.execute(
+      const dto: GetServiceListRequestDTO = {
         skip,
         limit,
-        search as string,
-      );
+        search,
+      };
+
+      const { allServices, count } =
+        await this.getAllServicesUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ allServices, count });
       return;
-    } catch (error) {
-      console.error("AdminController::getAllServices error", error);
-      res.status(HttpStatus.BAD_REQUEST).json(error);
+    } catch (error: unknown) {
+      console.error("AdminController::getAllServices error", getErrorMessage(error));
+      res.status(HttpStatus.BAD_REQUEST).json({ message: getErrorMessage(error) });
       return;
     }
   }
@@ -483,13 +593,16 @@ export class AdminController {
         return;
       }
 
+      const dto: BlockUnblockServiceRequestDTO = {
+        serviceId,
+      };
+
       let result: boolean;
 
       if (action === "Block") {
-        result = await this.blockUnblockServiceUseCase.blockService(serviceId);
+        result = await this.blockUnblockServiceUseCase.blockService(dto);
       } else if (action === "Unblock") {
-        result =
-          await this.blockUnblockServiceUseCase.unblockService(serviceId);
+        result = await this.blockUnblockServiceUseCase.unblockService(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -508,11 +621,11 @@ export class AdminController {
           .json({ message: `Failed to ${action.toLowerCase()} service` });
         return;
       }
-    } catch (error: any) {
-      console.error("AdminController::blockUnblockService error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockService error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message || "Internal server error" });
+        .json({ message: getErrorMessage(error) || "Internal server error" });
       return;
     }
   }
@@ -521,7 +634,7 @@ export class AdminController {
     res: Response,
   ): Promise<void> {
     try {
-      const { providerId, action } = req.body;
+      const { action, providerId } = req.body;
 
       if (!providerId || !action) {
         res
@@ -530,18 +643,19 @@ export class AdminController {
         return;
       }
 
+      const dto: BlockUnblockProviderDTO = {
+        serviceProviderId: providerId,
+        action: action === "Block",
+      };
+
       let result: boolean;
 
       if (action === "Block") {
         result =
-          await this.blockUnblockProviderUseCase.blockServiceProvider(
-            providerId,
-          );
+          await this.blockUnblockProviderUseCase.blockServiceProvider(dto);
       } else if (action === "Unblock") {
         result =
-          await this.blockUnblockProviderUseCase.unblockServiceProvider(
-            providerId,
-          );
+          await this.blockUnblockProviderUseCase.unblockServiceProvider(dto);
       } else {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -560,21 +674,21 @@ export class AdminController {
         });
         return;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(
         "AdminController::blockUnblockServiceProvider error",
-        error,
+        getErrorMessage(error),
       );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message || "Internal server error" });
+        .json({ message: getErrorMessage(error) || "Internal server error" });
       return;
     }
   }
 
   async addCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { newCategory } = req.body;
+      const newCategory: AddCategoryDTO = req.body;
 
       if (!newCategory) {
         res
@@ -583,14 +697,12 @@ export class AdminController {
         return;
       }
 
-      const data = await this.addCategoryUseCase.execute({
-        category: newCategory,
-      });
+      const data = await this.addCategoryUseCase.execute(newCategory);
 
       res.status(HttpStatus.OK).json({ data });
       return;
-    } catch (error) {
-      console.error("AdminController::addCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController:: addCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -600,14 +712,15 @@ export class AdminController {
 
   async getCategory(req: Request, res: Response): Promise<void> {
     try {
-      const categories = await this.getCategoryUseCase.execute();
+      const dto: GetCategoryRequestDTO = {};
+      const categories = await this.getCategoryUseCase.execute(dto);
 
       console.log(categories);
 
       res.status(HttpStatus.OK).json(categories);
       return;
-    } catch (error) {
-      console.error("AdminController::getCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::getCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error." });
@@ -617,26 +730,26 @@ export class AdminController {
 
   async editCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId, categoryName } = req.body;
+      const data: EditCategoryDTO = {
+        categoryId: req.body.categoryId,
+        newName: req.body.categoryName,
+      };
 
-      if (!categoryId || !categoryName) {
+      if (!data.categoryId || !data.newName) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID and name are required" });
         return;
       }
 
-      const data = await this.editCategoryUseCase.execute(
-        categoryId,
-        categoryName,
-      );
+      const result = await this.editCategoryUseCase.execute(data);
 
       res
         .status(HttpStatus.OK)
-        .json({ message: "Category updated successfully", data });
+        .json({ message: "Category updated successfully", data: result });
       return;
-    } catch (error) {
-      console.error("AdminController::editCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::editCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -646,22 +759,21 @@ export class AdminController {
 
   async blockUnblockCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId } = req.body;
+      const data: BlockUnblockCategoryDTO = { categoryId: req.body.categoryId };
 
-      if (!categoryId) {
+      if (!data.categoryId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID is required" });
         return;
       }
 
-      const message =
-        await this.blockUnblockCategoryUseCase.execute(categoryId);
+      const result = await this.blockUnblockCategoryUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message });
+      res.status(HttpStatus.OK).json({ message: result });
       return;
-    } catch (error) {
-      console.error("AdminController::blockUnblockCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::blockUnblockCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -671,21 +783,21 @@ export class AdminController {
 
   async deleteCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const data: DeleteCategoryDTO = { categoryId: getString(req.params.id) };
 
-      if (!id) {
+      if (!data.categoryId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID is required" });
         return;
       }
 
-      const message = await this.deleteCategoryUseCase.execute(id);
+      const result = await this.deleteCategoryUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message });
+      res.status(HttpStatus.OK).json({ message: result });
       return;
-    } catch (error) {
-      console.error("AdminController::deleteCategory error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::deleteCategory error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -704,15 +816,20 @@ export class AdminController {
         return;
       }
 
-      const service = await this.addServiceUseCase.execute(categoryId, {
-        serviceName: newServiceName,
-        serviceDescription: newServiceDescription,
-        isHidden: false,
-      });
+      const dto: AddServiceDTO = {
+        categoryId,
+        service: {
+          serviceName: newServiceName,
+          serviceDescription: newServiceDescription,
+          isHidden: false,
+        },
+      };
 
-      res.status(HttpStatus.OK).json({ message: service });
-    } catch (error) {
-      console.error("AdminController::addService error", error);
+      const data = await this.addServiceUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ message: data });
+    } catch (error: unknown) {
+      console.error("AdminController::addService error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -721,23 +838,56 @@ export class AdminController {
 
   async deleteService(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryId, serviceId } = req.params;
+      const data: DeleteServiceDTO = {
+        categoryId: getString(req.params.categoryId),
+        serviceId: getString(req.params.serviceId),
+      };
 
-      if (!categoryId || !serviceId) {
+      if (!data.categoryId || !data.serviceId) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category ID and Service ID are required" });
         return;
       }
 
-      const message = await this.deleteServiceUseCase.execute(
-        categoryId,
-        serviceId,
-      );
+      const result = await this.deleteServiceUseCase.execute(data);
 
-      res.status(HttpStatus.OK).json({ message });
-    } catch (error) {
-      console.error("AdminController::deleteService error", error);
+      res.status(HttpStatus.OK).json({ message: result });
+    } catch (error: unknown) {
+      console.error("AdminController::deleteService error", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+      return;
+    }
+  }
+
+  async blockUnblockCategoryService(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const data: BlockUnblockCategoryServiceDTO = {
+        categoryId: req.body.categoryId,
+        serviceId: req.body.serviceId,
+      };
+
+      if (!data.categoryId || !data.serviceId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Category ID and Service ID are required" });
+        return;
+      }
+
+      const result =
+        await this.blockUnblockCategoryServiceUseCase.execute(data);
+
+      res.status(HttpStatus.OK).json({ message: result });
+    } catch (error: unknown) {
+      console.error(
+        "AdminController::blockUnblockCategoryService error",
+        getErrorMessage(error),
+      );
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -756,8 +906,8 @@ export class AdminController {
       res
         .status(HttpStatus.OK)
         .json({ message: "Admin logged out successfully" });
-    } catch (error) {
-      console.error("AdminController::logoutAdmin error", error);
+    } catch (error: unknown) {
+      console.error("AdminController::logoutAdmin error", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -788,28 +938,37 @@ export class AdminController {
   public async createCoupon(req: Request, res: Response) {
     try {
       const { data } = req.body;
-      console.log(data);
-      if (!data) {
-        res.status(HttpStatus.BAD_REQUEST);
+      console.log("createCoupon input:", data);
+
+      const inputData: CreateCouponDTO = data;
+
+      if (!inputData) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Coupon data required" });
         return;
       }
 
-      const resdata = await this.createCouponUseCase.execute(data);
+      const resdata = await this.createCouponUseCase.execute(inputData);
       console.log(resdata);
-      res.status(HttpStatus.CREATED);
+      res.status(HttpStatus.CREATED).json(resdata); 
       return;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
     }
   }
 
   public async getAllCoupon(req: Request, res: Response) {
     try {
       const coupons = await this.findAllCouponsUseCase.execute();
+      console.log(coupons);
       res.status(HttpStatus.CREATED).json(coupons);
       return;
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown) {
+      console.log(getErrorMessage(e));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -820,20 +979,23 @@ export class AdminController {
     res: Response,
   ): Promise<void> {
     try {
-      const id = req.params.id;
-      const action: boolean = req.body.action;
-      if (!id) {
-        res.status(HttpStatus.BAD_REQUEST);
+      const dto: MakeCouponInactiveDTO = {
+        id: getString(req.params.id),
+        action: req.body.action,
+      };
+
+      if (!dto.id) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "ID is required" });
         return;
       }
 
-      await this.makeActiveInActiveCouponUseCase.execute(id, action);
+      await this.makeActiveInActiveCouponUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
-        message: `Coupon ${action ? "activated" : "deactivated"} successfully`,
+        message: `Coupon ${dto.action ? "activated" : "deactivated"} successfully`,
       });
-    } catch (error) {
-      console.error("Error toggling coupon status:", error);
+    } catch (error: unknown) {
+      console.error("Error toggling coupon status:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -842,25 +1004,28 @@ export class AdminController {
 
   public async showCouponsInBanner(req: Request, res: Response): Promise<void> {
     try {
-      const id = req.params.id;
-      const action: boolean = req.body.action;
+      console.log(req.params);
+      const dto: ToggleShowInBannerDTO = {
+        id: getString(req.params.id),
+        show: req.body.action,
+      };
 
-      if (!id) {
+      if (!dto.id) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Coupon ID is required" });
         return;
       }
 
-      await this.showInBannerUseCase.execute(id, action);
+      await this.showInBannerUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         message: `Coupon ${
-          action ? "shown in" : "removed from"
+          dto.show ? "shown in" : "removed from"
         } banner successfully`,
       });
-    } catch (error) {
-      console.error("Error toggling coupon banner status:", error);
+    } catch (error: unknown) {
+      console.error("Error toggling coupon banner status:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -872,10 +1037,59 @@ export class AdminController {
       const limit = parseInt(req.query.limit as string) || 10;
       const page = parseInt(req.query.page as string) || 0;
       const skip = page * limit;
-      const data = await this.getWalletUseCase.execute(skip, limit);
+
+      const dto: GetWalletListRequestDTO = { skip, limit };
+
+      const data = await this.getWalletUseCase.execute(dto);
       console.log(data);
-      res.status(HttpStatus.OK).json({ data });
+      res.status(HttpStatus.OK).json({ data: data.wallets });
     } catch {}
+  }
+
+  public async rejectServiceProvider(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const id = getString(req.params.id);
+    const { reason } = req.body;
+
+    const dto: RejectProviderDTO = { userid: id, reason };
+
+    await this.serviceProviderRejectVerify.rejectServiceProvider(dto);
+
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "Provider rejected successfully" });
+  }
+
+  public async verifyServiceProvider(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const id = getString(req.params.id);
+
+    const dto: VerifyProviderDTO = { userid: id };
+
+    await this.serviceProviderRejectVerify.verifyServiceProvider(dto);
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "Verification success" });
+  }
+
+  public async getProviderVerificationDetails(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const id = getString(req.params.id);
+    const provider =
+      await this.getProviderVerificationDetailsUseCase.execute(id);
+
+    if (!provider) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: "Provider not found" });
+      return;
+    }
+
+    res.status(HttpStatus.OK).json({ success: true, data: provider });
   }
 
   public async getWalletById(req: Request, res: Response): Promise<void> {
@@ -888,7 +1102,12 @@ export class AdminController {
           .json({ message: "provider Id is missing" });
         return;
       }
-      const data = await this.getWalletByIdUseCase.execute(id);
+
+      const dto: GetWalletByIdRequestDTO = {
+        providerId: getString(req.params.id),
+      };
+
+      const data = await this.getWalletByIdUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
     } catch {}
   }
@@ -896,7 +1115,7 @@ export class AdminController {
   async withdrawFromWallet(req: Request, res: Response): Promise<void> {
     try {
       const { transactionId, newStatus, reason } = req.body;
-      const { walletId } = req.params;
+      const walletId = getString(req.params.walletId);
 
       if (!walletId || !transactionId || !newStatus) {
         res
@@ -905,12 +1124,14 @@ export class AdminController {
         return;
       }
 
-      const success = await this.withDrawProviderWallet.execute({
+      const dto: WithdrawRequestDTO = {
         walletId,
         transactionId,
         newStatus,
         reason,
-      });
+      };
+
+      const success = await this.withDrawProviderWallet.execute(dto);
 
       if (!success) {
         res.status(404).json({
@@ -924,8 +1145,8 @@ export class AdminController {
         success: true,
         message: "Transaction status updated successfully",
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(500)
         .json({ success: false, message: "Internal server error" });
@@ -950,8 +1171,8 @@ export class AdminController {
         message: "Subscriptions fetched successfully",
         data: subscriptions,
       });
-    } catch (error) {
-      console.error("Error fetching subscriptions:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching subscriptions:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -980,7 +1201,7 @@ export class AdminController {
         return;
       }
 
-      const newPlan = await this.createSubscriptionPlan.execute({
+      const dto: CreateSubscriptionPlanRequestDTO = {
         name,
         price,
         validityDays,
@@ -988,15 +1209,17 @@ export class AdminController {
         adLimitPerMonth: adLimitPerMonth || 0,
         payoutSpeedDays: payoutSpeedDays || 0,
         description: description || "",
-      });
+      };
+
+      const newPlan = await this.createSubscriptionPlan.execute(dto);
 
       res.status(201).json({
         success: true,
         message: "Subscription created successfully",
         data: newPlan,
       });
-    } catch (error) {
-      console.error("Create subscription error:", error);
+    } catch (error: unknown) {
+      console.error("Create subscription error:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -1007,7 +1230,7 @@ export class AdminController {
 
   async updateSubscription(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       const {
         name,
@@ -1027,7 +1250,7 @@ export class AdminController {
         return;
       }
 
-      const updatedPlan = await this.updateSubscriptionPlan.execute(id, {
+      const dto: UpdateSubscriptionPlanRequestDTO = {
         name,
         price,
         validityDays,
@@ -1035,7 +1258,9 @@ export class AdminController {
         adLimitPerMonth,
         payoutSpeedDays,
         description,
-      });
+      };
+
+      const updatedPlan = await this.updateSubscriptionPlan.execute(id, dto);
 
       if (!updatedPlan) {
         res.status(404).json({
@@ -1050,8 +1275,8 @@ export class AdminController {
         message: "Subscription updated successfully",
         data: updatedPlan,
       });
-    } catch (error) {
-      console.error("Update subscription error:", error);
+    } catch (error: unknown) {
+      console.error("Update subscription error:", getErrorMessage(error));
 
       res.status(500).json({
         success: false,
@@ -1062,33 +1287,35 @@ export class AdminController {
 
   async getAds(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 0;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.page)) || 0;
       const skip = page * limit;
-      const data = await this.getAdsUseCase.execute(skip, limit);
+      const data = await this.getAdsUseCase.execute({ skip, limit });
 
       console.log(data);
 
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Error fetching provider ads",
-        error,
+        error: getErrorMessage(error),
       });
     }
   }
 
   async changeAdStatus(req: Request, res: Response): Promise<void> {
     try {
-      const { adId } = req.params;
-      const { status } = req.body;
+      const adId = getString(req.params.adId);
+      const { status } = req.body; 
+      console.log("called");
       if (!adId || !status) {
         res.status(400).json({ message: "adId and status are required" });
         return;
       }
       console.log("called");
 
-      const updated = await this.changeAdStatusUseCase.execute(adId, status);
+      const dto: ChangeAdStatusRequestDTO = { adId, status };
+      const updated = await this.changeAdStatusUseCase.execute(dto);
 
       if (!updated) {
         res.status(404).json({ message: "Ad not found or status unchanged" });
@@ -1099,12 +1326,50 @@ export class AdminController {
         message: "Ad status updated successfully",
         status,
       });
-    } catch (error) {
-      console.error("Error changing ad status:", error);
+    } catch (error: unknown) {
+      console.error("Error changing ad status:", getErrorMessage(error));
 
       res.status(500).json({
         message: "Internal server error",
-        error: error instanceof Error ? error.message : error,
+        error: getErrorMessage(error),
+      });
+    }
+  }
+
+  async getAllBookings(req: Request, res: Response) {
+    try {
+      const limit = Number(req.query.limit) || 10;
+      const page = Number(req.query.page) || 0;
+      const skip = page * limit;
+
+      const search =
+        typeof req.query.search === "string" ? req.query.search.trim() : "";
+
+      const status =
+        typeof req.query.status === "string" ? req.query.status.trim() : "";
+
+      const statusField =
+        req.query.statusType === "paymentStatus"
+          ? "paymentStatus"
+          : "serviceStatus";
+
+      const dto: IFindPaymentInfoAdminRequestDTO = {
+        limit,
+        skip,
+        search,
+        status,
+        statusField,
+      };
+
+      const bookings = await this.getAdminBookingHistoryUseCase.execute(dto);
+
+      return res.status(HttpStatus.OK).json(bookings);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
+
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Error fetching bookings",
+        error: getErrorMessage(error),
       });
     }
   }

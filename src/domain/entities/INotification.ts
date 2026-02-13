@@ -6,7 +6,7 @@ export interface INotification {
   content: string;
   notificationTime: Date;
   userId: Types.ObjectId;
-  read: boolean;
+  isRead: boolean;
 }
 
 export interface IVideoCallNotification {
@@ -37,5 +37,5 @@ export interface IChatNotification {
 
   senderProfile: string;
   content: string;
-  read?: Boolean;
+  isRead?: boolean;
 }

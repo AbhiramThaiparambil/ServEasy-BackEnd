@@ -1,5 +1,6 @@
-import { IProviderWallet } from "../../../../../domain/entities/IproviderWallet";
+import { GetWalletRequestDTO } from "../../../../dtos/serviceProvider/wallet/getWallet/GetWalletRequestDTO";
+import { GetWalletResponseDTO } from "../../../../dtos/serviceProvider/wallet/getWallet/GetWalletResponseDTO";
 
 export interface IGetWalletUseCase {
-  execute(serviceProviderId: string,limit:number,skip:number): Promise< {wallet:IProviderWallet|null,count:number} | null>;
+  execute(data: GetWalletRequestDTO): Promise<GetWalletResponseDTO | null>;
 }

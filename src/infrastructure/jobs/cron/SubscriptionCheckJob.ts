@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { USE_CASE_TOKENS } from "../../../constants/tokens";
 import { inject, injectable } from "tsyringe";
-import { IManageServiceProviderSubscriptionsUseCase } from "../../../application/use-case/subscription/IManageServiceProviderSubscriptionsUseCase";
+import { IManageServiceProviderSubscriptionsUseCase } from "../../../application/use-case/serviceProvider/subscription/manageSubscription/IManageServiceProviderSubscriptionsUseCase";
 @injectable()
 export class SubscriptionCheckJob {
   constructor(
@@ -17,7 +17,8 @@ export class SubscriptionCheckJob {
     cron.schedule("27 13 * * *", async () => {
       console.log(" Running subscription check... (test every second)");
 
-      await this.manageSubscriptionUseCase.execute();
+      const result = await this.manageSubscriptionUseCase.execute();
+      console.log(`Processed ${result.processedCount} subscriptions.`);
     });
   }
 }

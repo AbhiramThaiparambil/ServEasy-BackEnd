@@ -21,5 +21,4 @@ const CategorySchema = new Schema<ICategoryModel>(
   }
 );
 
-// Ensure the model is defined correctly
 export const CategoryModel = model<ICategoryModel>("Category", CategorySchema);

@@ -1,6 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { IUserRepository } from "../../../../domain/repositories/IuserRepository";
 import { REPOSITORY_TOKENS } from "../../../../constants/tokens";
+import { UpdateUserWithProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+import { getErrorMessage } from "../../../../utils/errorUtils";
+
 
 @injectable()
 export class UpdateUserWithServiceProviderUseCase {
@@ -10,19 +13,18 @@ export class UpdateUserWithServiceProviderUseCase {
   ) {}
 
   async execute(
-    userId: string,
-    serviceProviderId: string
+    data: UpdateUserWithProviderRequestDTO
   ): Promise<boolean | void> {
     try {
-      console.log(userId);
-      console.log(serviceProviderId);
+      console.log(data.userId);
+      console.log(data.serviceProviderId);
 
       return this.userRepository.addServiceProviderId(
-        userId,
-        serviceProviderId
+        data.userId,
+        data.serviceProviderId
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.log(getErrorMessage(error));
     }
   }
 }

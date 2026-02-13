@@ -1,11 +1,11 @@
 import { injectable, inject } from "tsyringe";
 import {
   IServiceProvider,
-  IServiceProviderRegistration,
 } from "../../../../domain/entities/IServiceProvider";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
 import { CloudinaryService } from "../../../../services/cloudinary/CloudinaryService";
 import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { RegisterServiceProviderRequestDTO } from "../../../dtos/serviceProvider/auth/ServiceProviderAuthDTO";
 
 @injectable()
 export class RegisterServiceProviderUseCase {
@@ -13,15 +13,13 @@ export class RegisterServiceProviderUseCase {
     @inject("IServiceProviderRepository")
     private serviceProviderRepository: IServiceProviderRepository,
     @inject(SERVICE_TOKENS.CloudinaryService)
-    private cloudinaryService: CloudinaryService, // Ensure this matches the registration
+    private cloudinaryService: CloudinaryService, 
   ) {}
 
   async execute(
-    serviceProviderData: IServiceProviderRegistration,
-    profileImageRow: string,
-    documentRow: string,
-    document2Row: string | null,
+    data: RegisterServiceProviderRequestDTO
   ): Promise<IServiceProvider> {
+    const { serviceProviderData, profileImageRow, documentRow, document2Row } = data;
     console.log(serviceProviderData.bankDetails);
 
     const document = await this.cloudinaryService.uploadDocuments(documentRow);

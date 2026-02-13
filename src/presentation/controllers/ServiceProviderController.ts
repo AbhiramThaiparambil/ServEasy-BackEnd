@@ -1,0 +1,974 @@
+import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+
+import { inject, injectable } from "tsyringe";
+import { GetPaymentInfoUseCase } from "../../application/use-case/serviceProvider/payments/getPaymentInfo/GetPaymentInfoUseCase";
+import { HttpStatus } from "../../constants/HttpStatus";
+import { RegisterServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/RegisterServiceProvider";
+import { UpdateUserWithServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/UpdateUserWithServiceProvider";
+import { IServiceProviderRegistration } from "../../domain/entities/IServiceProvider";
+import { VerifyServiceProvider } from "../../application/use-case/serviceProvider/verification/verifyServiceProvider/VerifyServiceProvider";
+import { CheckServiceProviderAvailabilityUseCase } from "../../application/use-case/serviceProvider/availability/checkAvailability/CheckServiceProviderAvailabilityUseCase";
+import { setAuthCookies } from "../../utils/setAuthCookies";
+import { VerifyServiceProviderRequestDTO } from "../../application/dtos/serviceProvider/verification/verifyServiceProvider/VerifyServiceProviderDTO";
+import { GetPaymentInfoRequestDTO } from "../../application/dtos/serviceProvider/payment/getPaymentInfo/GetPaymentInfoDTO";
+import { USE_CASE_TOKENS } from "../../constants/tokens";
+import { IGetWalletUseCase } from "../../application/use-case/serviceProvider/wallet/getWallet/IGetWalletUseCase";
+import { IWithdrawPaymentUseCase } from "../../application/use-case/serviceProvider/wallet/withdrawPayment/IWithdrawPaymentUseCase";
+import { RegisterServiceProviderRequestDTO, ReapplyServiceProviderRequestDTO, UpdateUserWithProviderRequestDTO, GetRegistrationDetailsRequestDTO } from "../../application/dtos/serviceProvider/auth/ServiceProviderAuthDTO";
+import { CheckAvailabilityRequestDTO } from "../../application/dtos/serviceProvider/availability/CheckAvailabilityDTO";
+import { MarkSlotBookedRequestDTO } from "../../application/dtos/serviceProvider/slot/MarkSlotAsBookedDTO";
+
+import { IGetServiceProviderRegistrationDetailsUseCase } from "../../application/use-case/serviceProvider/auth/getServiceProviderRegistrationDetails/IGetServiceProviderRegistrationDetailsUseCase";
+import { IGetServiceProviderStatusUseCase } from "../../application/use-case/serviceProvider/getServiceProviderStatus/IGetServiceProviderStatusUseCase";
+import { IReapplyServiceProviderUseCase } from "../../application/use-case/serviceProvider/auth/IReapplyServiceProviderUseCase";
+
+import { IChangeAdStatusUseCase } from "../../application/use-case/common/ads/changeAdStatus/IChangeAdStatus.usecase";
+import { ChangeAdStatusRequestDTO } from "../../application/dtos/common/ads/changeAdStatus/ChangeAdStatusDTO";
+import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { GetNotificationsRequestDTO } from "../../application/dtos/common/notification/getNotification/GetNotificationDTO";
+import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
+import { IGetCategory } from "../../application/use-case/common/category/getCategory/IGetCategory.usecase";
+import { IEditAdUseCase } from "../../application/use-case/serviceProvider/ads/editAd/IEditAd.usecase";
+import { GetCategoryRequestDTO } from "../../application/dtos/common/category/getCategory/GetCategoryDTO";
+import { CreateAdRequestDTO } from "../../application/dtos/serviceProvider/ads/createAd/CreateAdRequestDTO";
+import { EditAdRequestDTO } from "../../application/dtos/serviceProvider/ads/editAd/EditAdRequestDTO";
+import { GetProviderAdsRequestDTO } from "../../application/dtos/serviceProvider/ads/getAd/GetProviderAdsRequestDTO";
+import { CreateAiChatRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
+import { GetAIChatByIdRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getById/GetAIChatByIdRequestDTO";
+import { GetProviderAIChatsRequestDTO } from "../../application/dtos/serviceProvider/ai-assistance/getByServiceProvidersId/GetProviderAIChatsRequestDTO";
+import { ICreateAdUseCase } from "../../application/use-case/serviceProvider/ads/createAd/ICreateAd.usecase";
+import { IGetProviderAdsUseCase } from "../../application/use-case/serviceProvider/ads/getAd/IGetProviderAds.usecase";
+import { ICreateAiChatUseCase } from "../../application/use-case/serviceProvider/ai-assistance/create/ICreateAiChat.usecase";
+import { IGetAIChatByIdUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getById/IGetAIChatByIdUseCase";
+import { IGetProviderAIChatsUseCase } from "../../application/use-case/serviceProvider/ai-assistance/getByServiceProvidersId/IGetProviderAIChatsusecase";
+import { GetServiceNamesRequestDTO } from "../../application/dtos/serviceProvider/service-management/getServiceNames/GetServiceNamesRequestDTO";
+import { AddNewServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/addNewService/AddNewServiceRequestDTO";
+import { BlockUnblockServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/blockUnblockService/BlockUnblockServiceRequestDTO";
+import { EditServiceRequestDTO } from "../../application/dtos/serviceProvider/service-management/editService/EditServiceRequestDTO";
+import { GetProviderServicesRequestDTO } from "../../application/dtos/serviceProvider/service-management/getServices/GetProviderServicesRequestDTO";
+import { IAddNewServiceUseCase } from "../../application/use-case/serviceProvider/service-management/addNewService/IAddNewService.usecase";
+import { IBlockUnblockServiceUseCase } from "../../application/use-case/serviceProvider/service-management/blockUnblockService/IBlockUnblockService.usecase";
+import { IEditServiceUseCase } from "../../application/use-case/serviceProvider/service-management/editService/IEditService.usecase";
+import { IGetServicesUseCase } from "../../application/use-case/serviceProvider/service-management/getServices/IGetServices.usecase";
+import { IGetServiceNamesUseCase } from "../../application/use-case/serviceProvider/service-management/getServiceNames/IGetServiceNames.usecase";
+import { IManageAllServiceUseCase } from "../../application/use-case/admin/dashboard/IManageAllService.usecase";
+import { IGetSubscriptionPlansUseCase } from "../../application/use-case/serviceProvider/subscription/getSubscriptionPlans/IGetSubscriptionPlansUseCase";
+import { IMarkSlotAsBookedUseCase } from "../../application/use-case/serviceProvider/slot/markAsBooked/IMarkSlotAsBooked.usecase";
+import { IEditServiceProviderProfileUseCase } from "../../application/use-case/serviceProvider/profile/editProfile/IEditProfile";
+import { IGetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/IGetServiceProvider";
+import { GetServiceProvider } from "../../application/use-case/serviceProvider/profile/getProfile/GetServiceProvider";
+import { GetProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/getProfile/GetProfileRequestDTO";
+import { EditProfileRequestDTO } from "../../application/dtos/serviceProvider/profile/editProfile/EditProfileRequestDTO";
+import { GetWalletRequestDTO } from "../../application/dtos/serviceProvider/wallet/getWallet/GetWalletRequestDTO";
+import { WithdrawPaymentRequestDTO } from "../../application/dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentRequestDTO";
+import { GetServiceProviderStatusRequestDTO } from "../../application/dtos/serviceProvider/getServiceProviderStatus/GetServiceProviderStatusRequestDTO";
+
+@injectable()
+export class ServiceProviderController {
+  constructor(
+    @inject(GetPaymentInfoUseCase)
+    private getPaymentInfo: GetPaymentInfoUseCase,
+    @inject(GetServiceProvider)
+    private getServiceProviderUseCase: IGetServiceProvider,
+    @inject(USE_CASE_TOKENS.EditServiceProviderProfileUseCase)
+    private editServiceProviderProfileUseCase: IEditServiceProviderProfileUseCase,
+    @inject(USE_CASE_TOKENS.GetSubscriptionPlansUseCase)
+    private getSubscriptionPlanUseCase: IGetSubscriptionPlansUseCase,
+    @inject(RegisterServiceProviderUseCase)
+    private registerServiceProviderUseCase: RegisterServiceProviderUseCase,
+    @inject(UpdateUserWithServiceProviderUseCase)
+    private updateUserWithServiceProvider: UpdateUserWithServiceProviderUseCase,
+
+    @inject(VerifyServiceProvider)
+    private verifyServiceProviderUseCase: VerifyServiceProvider,
+    @inject(USE_CASE_TOKENS.GetCategory)
+    private getCategoryUseCase: IGetCategory,
+
+    @inject(USE_CASE_TOKENS.ManageAllServiceUseCase)
+    private manageAllServiceUseCase: IManageAllServiceUseCase,
+    @inject(CheckServiceProviderAvailabilityUseCase)
+    private checkServiceProviderAvailabilityUseCase: CheckServiceProviderAvailabilityUseCase,
+    @inject(USE_CASE_TOKENS.GetWalletUseCase)
+    private getWalletUseCase: IGetWalletUseCase,
+    @inject(USE_CASE_TOKENS.WithdrawPaymentUseCase)
+    private withdrawPaymentUseCase: IWithdrawPaymentUseCase,
+    @inject(USE_CASE_TOKENS.GetSubscriptionPlansUseCase)
+    private getSubscriptionPlansUseCase: IGetSubscriptionPlansUseCase,
+    @inject(USE_CASE_TOKENS.EditAdUseCase)
+    private editAdUseCase: IEditAdUseCase,
+    @inject(USE_CASE_TOKENS.CreateAdUseCase)
+    private createAdUseCase: ICreateAdUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderAdsUseCase)
+    private getProviderAdsUseCase: IGetProviderAdsUseCase,
+    @inject(USE_CASE_TOKENS.GetServiceNamesUseCase)
+    private getServiceNamesUseCase: IGetServiceNamesUseCase,
+    @inject(USE_CASE_TOKENS.ChangeAdStatusUseCase)
+    private changeAdStatusUseCase: IChangeAdStatusUseCase,
+    // @inject(NotificationUseCase)
+    // private notificationUseCase: NotificationUseCase,
+    @inject(USE_CASE_TOKENS.GetServiceProviderRegistrationDetailsUseCase)
+    private getRegistrationDetailsUseCase: IGetServiceProviderRegistrationDetailsUseCase,
+    @inject(USE_CASE_TOKENS.GetServiceProviderStatusUseCase)
+    private getServiceProviderStatusUseCase: IGetServiceProviderStatusUseCase,
+    @inject(USE_CASE_TOKENS.ReapplyServiceProviderUseCase)
+    private reapplyServiceProviderUseCase: IReapplyServiceProviderUseCase,
+    @inject(USE_CASE_TOKENS.GetNotificationUseCase)
+    private getNotificationUsecase: IGetNotificationUseCase,
+    @inject(USE_CASE_TOKENS.MarkNotificationAsReadUseCase)
+    private markAsRead: IMarkNotificationAsReadUseCase,
+    @inject(USE_CASE_TOKENS.CreateAiChatUseCase)
+    private createAiChatUseCase: ICreateAiChatUseCase,
+    @inject(USE_CASE_TOKENS.GetAIChatByIdUseCase)
+    private getAIChatByIdUseCase: IGetAIChatByIdUseCase,
+    @inject(USE_CASE_TOKENS.GetProviderAIChatsUseCase)
+    private getProviderAIChatsUseCase: IGetProviderAIChatsUseCase,
+    @inject(USE_CASE_TOKENS.AddNewService)
+    private addNewServiceUseCase: IAddNewServiceUseCase,
+    @inject(USE_CASE_TOKENS.BlockUnblockSericeUseCase)
+    private blockUnblockServiceUseCase: IBlockUnblockServiceUseCase,
+    @inject(USE_CASE_TOKENS.EditService)
+    private editServiceUseCase: IEditServiceUseCase,
+    @inject(USE_CASE_TOKENS.GetService)
+    private getServicesUseCase: IGetServicesUseCase,
+    @inject(USE_CASE_TOKENS.MarkSlotAsBookedUseCase)
+    private markSlotAsBookedUseCase: IMarkSlotAsBookedUseCase,
+  ) {}
+
+  async getRegistrationDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = res.locals.user?.userId;
+
+      if (!userId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized" });
+        return;
+      }
+
+      const dto: GetRegistrationDetailsRequestDTO = { userId };
+      const provider = await this.getRegistrationDetailsUseCase.execute(dto);
+      console.log(provider);
+      if (provider) {
+        res.status(200).json(provider);
+        return;
+      } else {
+        res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: "No service provider registration found" });
+        return;
+      }
+    } catch (error: unknown) {
+      res.status(404).json({
+        message: getErrorMessage(error) || "Unable to fetch registration details",
+      });
+      return;
+    }
+  }
+
+  async getServiceProviderStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = res.locals.user?.userId;
+
+      if (!userId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized" });
+        return;
+      }
+      
+      const dto: GetServiceProviderStatusRequestDTO = { userId };
+      const result = await this.getServiceProviderStatusUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json(result);
+      return;
+    } catch (error: unknown) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Unable to fetch service provider status",
+      });
+    }
+  }
+
+  async getNotification(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      if (!serviceProviderId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "User not found" });
+        return;
+      }
+
+      const dto: GetNotificationsRequestDTO = { userId: serviceProviderId };
+      const notification =
+        await this.getNotificationUsecase.execute(dto);
+      res.status(HttpStatus.OK).json(notification);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  markAsReadNotification = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      const id = getString(req.params.id);
+      if (!id) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Notification ID is required" });
+        return;
+      }
+
+      const dto: MarkNotificationAsReadRequestDTO = { notificationId: id };
+      await this.markAsRead.execute(dto);
+      res
+        .status(HttpStatus.OK)
+        .json({ message: "Notification marked as read" });
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
+      console.log(getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  };
+
+  async getPaymentInfoForChartServiceProvider(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    console.log("getPaymentInfo is:", this.getPaymentInfo);
+
+    try {
+      const endDate = req.query.endDate
+        ? new Date(getString(req.query.endDate))
+        : undefined;
+      const startDate = req.query.startDate
+        ? new Date(getString(req.query.startDate))
+        : undefined;
+      const serviceProviderId = res.locals.serviceProvider_id;
+
+      const dto: GetPaymentInfoRequestDTO = {
+        serviceProviderId,
+        startDate,
+        endDate,
+      };
+
+      const paymentData = await this.getPaymentInfo.execute(dto);
+
+      res.status(HttpStatus.OK).json({ paymentData });
+      return;
+    } catch (error: unknown) {
+      console.error("Failed to fetch payment info for chart:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+      return;
+    }
+  }
+
+  async handleChat(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const { prompt, activeChatId } = req.body;
+
+      const dto: CreateAiChatRequestDTO = {
+        serviceProviderId,
+        prompt,
+        activeChatId,
+      };
+
+      const result = await this.createAiChatUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, data: result });
+    } catch (error: unknown) {
+      console.error("Error in AI Assistance Controller:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  async getChatHistory(req: Request, res: Response): Promise<void> {
+    try {
+      const chatId = getString(req.params.chatId);
+      const dto: GetAIChatByIdRequestDTO = { id: chatId };
+      const chat = await this.getAIChatByIdUseCase.execute(dto);
+
+      if (!chat) {
+        res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ success: false, message: "Chat not found" });
+        return;
+      }
+
+      res.status(HttpStatus.OK).json({ success: true, data: chat });
+    } catch (error: unknown) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  async getProviderChats(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = res.locals.serviceProvider_id;
+      const dto: GetProviderAIChatsRequestDTO = { providerId };
+      const chats = await this.getProviderAIChatsUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, data: chats });
+    } catch (error: unknown) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  async createAd(req: Request, res: Response): Promise<void> {
+    try {
+      const data: CreateAdRequestDTO = req.body.data;
+       console.log(req.body)
+    
+
+      console.log("data", data);
+      const createdAd = await this.createAdUseCase.execute(data);
+      if (createdAd) {
+        res.status(HttpStatus.OK).json({
+          message:
+            "Ad creation request submitted successfully. Waiting for admin approval.",
+          adObject: createdAd,
+        });
+      } else {
+        res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Failed to create ad." });
+      }
+    } catch (error: unknown) {
+      console.error("Error creating ad:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async updateServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      
+      if (!serviceProviderId) {
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: "Unauthorized" });
+        return;
+      }
+
+      const dto: EditProfileRequestDTO = {
+        serviceProviderId,
+        ...req.body
+      };
+
+      const updated = await this.editServiceProviderProfileUseCase.execute(dto);
+
+      if (updated) {
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "Service provider updated successfully" });
+      } else {
+        res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Failed to update service provider" });
+      }
+    } catch (error: unknown) {
+      console.error("Error updating service provider:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal Server Error" });
+    }
+  }
+
+  async editAd(req: Request, res: Response): Promise<void> {
+    try {
+      const adId = getString(req.params.adId);
+      const updateData = req.body;
+       console.log(req.body)
+      const dto: EditAdRequestDTO = { adId, updateData };
+      const updatedAd = await this.editAdUseCase.execute(dto);
+
+      if (updatedAd) {
+        res
+          .status(HttpStatus.OK)
+          .json({ message: "Ad updated successfully.", adObject: updatedAd });
+      } else {
+        res.status(HttpStatus.NOT_FOUND).json({ message: "Ad not found." });
+      }
+    } catch (error: unknown) {
+      console.error("Error editing ad:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async registerServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const { data, bankDetails } = req.body;
+
+      const {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        businessType,
+        category,
+        subcategory,
+        experience,
+        location,
+        serviceMode,
+        services,
+        skills,
+        profileImage,
+        documentImg,
+        documentImg2,
+        socialMedia,
+        description,
+      } = data;
+
+      const serviceProviderData: IServiceProviderRegistration = {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        experience: parseInt(experience, 10),
+        location,
+        services,
+        skills,
+        serviceMode,
+        profileImage: "",
+        document: [],
+        businessType,
+        category,
+        subcategory,
+        socialMedia: socialMedia + "",
+        description: description || "",
+        userId: res.locals.user.userId,
+        bankDetails,
+      };
+
+      const registerDTO: RegisterServiceProviderRequestDTO = {
+        serviceProviderData,
+        profileImageRow: profileImage || "",
+        documentRow: documentImg || "",
+        document2Row: documentImg2 || null,
+      };
+
+      const serviceProvider = await this.registerServiceProviderUseCase.execute(registerDTO);
+
+      const user = res.locals.user;
+
+      if (user.userId && serviceProvider._id) {
+        const updateDTO: UpdateUserWithProviderRequestDTO = {
+          userId: user.userId,
+          serviceProviderId: serviceProvider._id.toString(),
+        };
+        await this.updateUserWithServiceProvider.execute(updateDTO);
+      }
+
+      res.status(HttpStatus.CREATED).json({
+        message: "Service provider registered successfully.",
+        serviceProvider,
+      });
+    } catch (error: unknown) {
+      console.error("Registration error:", getErrorMessage(error));
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "An error occurred while registering the service provider.",
+      });
+    }
+  }
+
+  async reapplyServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const { data, bankDetails } = req.body;
+
+      const {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        businessType,
+        category,
+        subcategory,
+        experience,
+        location,
+        serviceMode,
+        services,
+        skills,
+        profileImage,
+        documentImg,
+        documentImg2,
+        socialMedia,
+        description,
+      } = data;
+
+      const serviceProviderData: IServiceProviderRegistration = {
+        serviceProviderName,
+        serviceProviderEmail,
+        serviceProviderPhone,
+        experience: parseInt(experience, 10),
+        location,
+        services,
+        skills,
+        serviceMode,
+        profileImage: "",
+        document: [],
+        businessType,
+        category,
+        subcategory,
+        socialMedia: socialMedia + "",
+        description: description || "",
+        userId: res.locals.user.userId,
+        bankDetails,
+      };
+
+      const reapplyDTO: ReapplyServiceProviderRequestDTO = {
+        serviceProviderData,
+        profileImageRow: profileImage || null,
+        documentRow: documentImg || null,
+        document2Row: documentImg2 || null,
+      };
+
+      const serviceProvider = await this.reapplyServiceProviderUseCase.execute(reapplyDTO);
+
+      res.status(HttpStatus.OK).json({
+        message: "Service provider reapplied successfully.",
+        serviceProvider,
+      });
+    } catch (error: unknown) {
+      console.error("Reapply error:", getErrorMessage(error));
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "An error occurred while reapplying as a service provider.",
+      });
+    }
+  }
+
+  async verifyServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const user = res.locals.user;
+
+      if (!user || !user.userId) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: "Unauthorized access" });
+        return;
+      }
+
+      const dto: VerifyServiceProviderRequestDTO = {
+        userId: user.userId
+      };
+
+      const result = await this.verifyServiceProviderUseCase.execute(dto);
+
+      if (!result.success) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: result.message || "Not a valid service provider" });
+        return;
+      }
+
+      if (result.refreshToken) {
+        setAuthCookies(res, "serviceProviderToken", result.refreshToken);
+        res.status(HttpStatus.OK).json({ 
+          message: result.message || "Service provider verified" 
+        });
+      } else {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Failed to generate refresh token" });
+      }
+    } catch (error: unknown) {
+      console.error("Error verifying service provider:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" });
+    }
+  }
+
+  async getActiveCategories(req: Request, res: Response): Promise<void> {
+    try {
+      const dto: GetCategoryRequestDTO = {};
+      const categories = await this.getCategoryUseCase.execute(dto);
+      res.status(HttpStatus.OK).json(categories);
+    } catch (error: unknown) {
+      console.error("Error fetching categories:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async markSlotAsBooked(req: Request, res: Response): Promise<void> {
+    try {
+      const slotId = getString(req.params.slotId);
+      
+      if (!slotId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: "Slot ID is required" });
+        return;
+      }
+
+      const dto: MarkSlotBookedRequestDTO = { slotId };
+      const updatedSlot = await this.markSlotAsBookedUseCase.execute(dto);
+
+      if (updatedSlot) {
+        res.status(HttpStatus.OK).json({ message: "Slot marked as booked", slot: updatedSlot });
+      } else {
+        res.status(HttpStatus.NOT_FOUND).json({ message: "Slot not found" });
+      }
+    } catch (error: unknown) {
+      console.error("Error marking slot as booked:", getErrorMessage(error));
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+    }
+  }
+
+  async getServiceProvider(req: Request, res: Response): Promise<void> {
+    try {
+      const user = res.locals.user;
+
+      const dto: GetProfileRequestDTO = { userId: user.userId };
+      const result = await this.getServiceProviderUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ serviceProvider: result });
+    } catch (error: unknown) {
+      console.error("Error fetching service provider:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async makeItactiveAllService(req: Request, res: Response) {
+    try {
+      const serviceProviderId = getString(req.params.id);
+
+      if (!serviceProviderId) {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          message: "Service provider ID is required",
+        });
+        return;
+      }
+
+      await this.manageAllServiceUseCase.makeActiveAllService(
+        serviceProviderId,
+      );
+
+      res.status(HttpStatus.OK).json({
+        message: "All services have been activated successfully.",
+      });
+      return;
+    } catch (error: unknown) {
+      console.error("Error activating services:", getErrorMessage(error));
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while activating services.",
+        error: getErrorMessage(error),
+      });
+      return;
+    }
+  }
+
+  async makeInactiveAllService(req: Request, res: Response) {
+    try {
+      const serviceProviderId = getString(req.params.id);
+
+      if (!serviceProviderId) {
+        res.status(HttpStatus.BAD_REQUEST).json({
+          message: "Service provider ID is required",
+        });
+        return;
+      }
+
+      await this.manageAllServiceUseCase.makeActiveAllService(
+        serviceProviderId,
+      );
+
+      res.status(HttpStatus.OK).json({
+        message: "All services have been marked as inactive successfully.",
+      });
+      return;
+    } catch (error: unknown) {
+      console.error("Error deactivating services:", getErrorMessage(error));
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while deactivating services.",
+        error: getErrorMessage(error),
+      });
+      return;
+    }
+  }
+
+  // async rescheduleBookingHandler(req: Request, res: Response){
+  //   try{
+  //     const { bookingId, newDate } = req.body;
+
+  //     if (!bookingId || !newDate ) {
+  //       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Booking ID, new date, and new time are required.' });
+  //     }
+
+  //     const updatedBooking = await this.manageAllServiceUseCase.rescheduleBooking(bookingId, newDate);
+
+  //     if (!updatedBooking) {
+  //       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Booking not found or could not be rescheduled.' });
+  //     }
+
+  //     res.status(HttpStatus.OK).json({ message: 'Booking rescheduled successfully.', booking: updatedBooking });
+
+  //   } catch (error) {
+  //     console.error('Error rescheduling booking:', error);
+  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+
+  // }
+  // }
+
+  async checkServiceProviderAvailability(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const dto: CheckAvailabilityRequestDTO = { serviceProviderId };
+
+      const availability =
+        await this.checkServiceProviderAvailabilityUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ availability });
+    } catch (error: unknown) {
+      console.error("Error checking availability:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async getWallet(req: Request, res: Response) {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const limit = parseInt(getString(req.query.limit)) || 10;
+      const page = parseInt(getString(req.query.skip)) || 0;
+      const skip = page * limit;
+
+      const dto: GetWalletRequestDTO = {
+        serviceProviderId,
+        limit,
+        skip
+      };
+
+      const data = await this.getWalletUseCase.execute(dto);
+      
+      if (!data) {
+        res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: "Wallet not found" });
+        return;
+      }
+      
+      res
+        .status(HttpStatus.OK)
+        .json({ 
+          success: true, 
+          data: {
+            wallet: {
+              balance: data.balance,
+              transactions: data.transactions
+            },
+            count: data.totalTransactions
+          }
+        });
+    } catch (error: unknown) {
+      res
+        .status(HttpStatus.OK)
+        .json({ success: false, message: getErrorMessage(error) });
+    }
+  }
+
+  withdrawPayment = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const serviceProviderId = res.locals.serviceProvider_id;
+      const { amount } = req.body;
+
+      if (!amount || !serviceProviderId) {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Amount and Service Provider ID are required" });
+        return;
+      }
+      
+      const dto: WithdrawPaymentRequestDTO = {
+        serviceProviderId,
+        amount
+      };
+      
+      const result = await this.withdrawPaymentUseCase.execute(dto);
+
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
+    } catch (error: unknown) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: getErrorMessage(error) });
+    }
+  };
+
+  async getAvailableSubscriptionPlans(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const plans = await this.getSubscriptionPlansUseCase.execute();
+      res.status(HttpStatus.OK).json(plans);
+    } catch (error: unknown) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Error fetching subscription plans", error: getErrorMessage(error) });
+    }
+  }
+
+
+  async getProviderAds(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = getString(req.params.providerId);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+      const skip = (page - 1) * limit;
+         console.log(providerId)
+         console.log('get ads service provider called ')
+      const dto: GetProviderAdsRequestDTO = { providerId, skip, limit };
+      const { ads, count } = await this.getProviderAdsUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({
+        ads,
+        total: count,
+        page,
+        totalPages: Math.ceil(count / limit),
+      });
+    } catch (error: unknown) {
+      console.error("Error fetching ads:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error." });
+    }
+  }
+
+  async changeAdStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const adId = getString(req.params.adId);
+      const { status } = req.body;
+      if (!adId || !status) {
+        res.status(400).json({ message: "adId and status are required" });
+        return;
+      }
+
+      const dto: ChangeAdStatusRequestDTO = { adId, status };
+      const updated = await this.changeAdStatusUseCase.execute(dto);
+
+      if (!updated) {
+        res.status(404).json({ message: "Ad not found or status unchanged" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Ad status updated successfully",
+        status,
+      });
+    } catch (error: unknown) {
+      console.error("Error changing ad status:", getErrorMessage(error));
+
+      res.status(500).json({
+        message: "Internal server error",
+        error: getErrorMessage(error),
+      });
+    }
+  }
+
+  async getServiceNames(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = getString(req.params.providerId);
+      const dto: GetServiceNamesRequestDTO = { providerId };
+      const result = await this.getServiceNamesUseCase.execute(dto);
+      console.log(result);
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+
+      return;
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+
+      return;
+    }
+  }
+
+  async addNewService(req: Request, res: Response): Promise<void> {
+    try {
+      const dto: AddNewServiceRequestDTO = req.body;
+      const result = await this.addNewServiceUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+    }
+  }
+
+  async blockService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId } = req.body;
+      const dto: BlockUnblockServiceRequestDTO = { serviceId };
+      const result = await this.blockUnblockServiceUseCase.blockService(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+    }
+  }
+
+  async unblockService(req: Request, res: Response): Promise<void> {
+    try {
+      const { serviceId } = req.body;
+      const dto: BlockUnblockServiceRequestDTO = { serviceId };
+      const result = await this.blockUnblockServiceUseCase.unblockService(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+    }
+  }
+
+  async editService(req: Request, res: Response): Promise<void> {
+    try {
+      const dto: EditServiceRequestDTO = req.body;
+      const result = await this.editServiceUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+    }
+  }
+
+  async getServices(req: Request, res: Response): Promise<void> {
+    try {
+      const providerId = getString(req.params.providerId);
+      const dto: GetProviderServicesRequestDTO = { providerId };
+      const result = await this.getServicesUseCase.execute(dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        message: getErrorMessage(error) || "Something went wrong",
+      });
+    }
+  }
+}

@@ -1,7 +1,3 @@
-import { IAddress } from "../../../domain/entities/IAddress";
-import { ICoupon } from "../../../domain/entities/ICoupon";
-import { IPayment } from "../../../domain/entities/IPayment";
-
 export interface IWalletTransactionView {
   _id: string;
   type: "credit" | "debit";

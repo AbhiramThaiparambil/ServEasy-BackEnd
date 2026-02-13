@@ -1,6 +1,22 @@
 import mongoose from "mongoose";
 import { IUser } from "../../domain/entities/IUser";
 
+
+const AddressSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  houseName: { type: String, required: true },
+  pincode: { type: String, required: true },
+  landmark: { type: String },
+  state: { type: String, required: true },
+  phone: { type: String, required: true },
+  description: { type: String },
+});
+
+
+
+
+
+
 const UserSchema = new mongoose.Schema({
   userName: { type: String, required: true },
   email: { type: String, unique: true },
@@ -19,7 +35,7 @@ const UserSchema = new mongoose.Schema({
   },
   isAdmin: { type: Boolean, default: false },
   isBlocked: { type: Boolean, default: false },
-  address: { type: Array },
+  address: [AddressSchema],
   profileImage: { type: String },
 });
 

@@ -1,4 +1,4 @@
-import express, { Request, Response, Router } from "express";
+import express from "express";
 
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { container } from "tsyringe";
@@ -8,108 +8,114 @@ const adminController = container.resolve(AdminController);
 
 router.post("/signin", (req, res) => adminController.signIn(req, res));
 router.get("/profile", authMiddleware("Admin"), (req, res) =>
-  adminController.getProfile(req, res)
+  adminController.getProfile(req, res),
 );
 
 router.get(
   "/users",
   authMiddleware("Admin"),
   authMiddleware("Admin"),
-  (req, res) => adminController.getAllUsers(req, res)
+  (req, res) => adminController.getAllUsers(req, res),
 );
 
 router.patch("/users/block-unblock", authMiddleware("Admin"), (req, res) =>
-  adminController.blockUnblockUser(req, res)
+  adminController.blockUnblockUser(req, res),
 );
 router.get("/serviceProvider", authMiddleware("Admin"), (req, res) =>
-  adminController.getServiceProviders(req, res)
+  adminController.allServiceProviders(req, res),
 );
 router.patch("/serviceProvider/reject", authMiddleware("Admin"), (req, res) =>
-  adminController.serviceProviderReject(req, res)
+  adminController.rejectServiceProvider(req, res),
+);
+
+router.get(
+  "/serviceProvider/verification/:id",
+  authMiddleware("Admin"),
+  (req, res) => adminController.getProviderVerificationDetails(req, res),
 );
 
 router.patch("/serviceProvider/verify", authMiddleware("Admin"), (req, res) =>
-  adminController.serviceProviderVerify(req, res)
+  adminController.serviceProviderVerify(req, res),
 );
 
 router.get("/service", authMiddleware("Admin"), (req, res) =>
-  adminController.getAllServices(req, res)
+  adminController.getAllServices(req, res),
 );
 router.patch("/service", authMiddleware("Admin"), (req, res) =>
-  adminController.blockUnblockService(req, res)
+  adminController.blockUnblockService(req, res),
 );
 router.patch("/serviceprovider", authMiddleware("Admin"), (req, res) =>
-  adminController.blockUnblockServiceProvider(req, res)
+  adminController.blockUnblockServiceProvider(req, res),
 );
 router.post("/category", authMiddleware("Admin"), (req, res) =>
-  adminController.addCategory(req, res)
+  adminController.addCategory(req, res),
 );
 router.get("/category", authMiddleware("Admin"), (req, res) =>
-  adminController.getCategory(req, res)
+  adminController.getCategory(req, res),
 );
 router.put("/category", authMiddleware("Admin"), (req, res) =>
-  adminController.editCategory(req, res)
+  adminController.editCategory(req, res),
 );
 router.patch("/category", authMiddleware("Admin"), (req, res) =>
-  adminController.blockUnblockCategory(req, res)
+  adminController.blockUnblockCategory(req, res),
 );
 router.delete("/category/:id", authMiddleware("Admin"), (req, res) =>
-  adminController.deleteCategory(req, res)
+  adminController.deleteCategory(req, res),
 );
 
 router.post("/category/service", authMiddleware("Admin"), (req, res) =>
-  adminController.addService(req, res)
+  adminController.addService(req, res),
 );
 router.patch("/category/service", (req, res) =>
-  adminController.blockUnblockService(req, res)
+  adminController.blockUnblockService(req, res),
 );
 router.patch("/category/service", authMiddleware("Admin"), (req, res) =>
-  adminController.blockUnblockCategory(req, res)
+  adminController.blockUnblockCategory(req, res),
 );
 router.put("/category/service", authMiddleware("Admin"), (req, res) =>
-  adminController.addService(req, res)
+  adminController.addService(req, res),
 );
 
 router.delete(
   "/category/service/:categoryId/:serviceId",
   authMiddleware("Admin"),
-  (req, res) => adminController.deleteService(req, res)
+  (req, res) => adminController.deleteService(req, res),
 );
 router.get("/logout", authMiddleware("Admin"), (req, res) =>
-  adminController.logoutAdmin(req, res)
+  adminController.logoutAdmin(req, res),
 );
 
-router.get("/dashboard/payment-info", authMiddleware("Admin"), (req, res) =>
-  adminController.getPaymentInfoForChart(req, res)
+router.get("/dashboard/payment-info", (req, res) =>
+  adminController.getPaymentInfoForChart(req, res),
 );
 
 router.post("/site-settings/add", authMiddleware("Admin"), (req, res) =>
-  adminController.addSiteSettings(req, res)
+  adminController.addSiteSettings(req, res),
 );
 router.delete("/site-settings/delete", authMiddleware("Admin"), (req, res) =>
-  adminController.deleteSiteSettings(req, res)
+  adminController.deleteSiteSettings(req, res),
 );
 router.put("/site-settings/activate", authMiddleware("Admin"), (req, res) =>
-  adminController.makeActiveSiteSettings(req, res)
+  adminController.makeActiveSiteSettings(req, res),
 );
 router.get("/site-settings", authMiddleware("Admin"), (req, res) =>
-  adminController.getSiteSettings(req, res)
+  adminController.getSiteSettings(req, res),
 );
-router.get("/logs", (req, res) => adminController.getCurrentLog(req, res));
+// router.get("/logs", (req, res) => adminController.getCurrentLog(req, res));
 router.post("/coupons", (req, res) => adminController.createCoupon(req, res));
 router.get("/coupons", (req, res) => adminController.getAllCoupon(req, res));
 router.patch("/coupons/:id/deactivate", (req, res) =>
-  adminController.activeInActiveCoupons(req, res)
+  adminController.activeInActiveCoupons(req, res),
 );
 router.patch("/coupons/:id/banner", (req, res) =>
-  adminController.showCouponsInBanner(req, res)
+  adminController.showCouponsInBanner(req, res),
 );
 router.get("/wallets", (req, res) => adminController.getAllWallets(req, res));
 router.get("/wallets/:id", (req, res) =>
-  adminController.getWalletById(req, res)
+  adminController.getWalletById(req, res),
 );
 router.patch("/wallets/:walletId", (req, res) =>
-  adminController.withdrawFromWallet(req, res)
+  adminController.withdrawFromWallet(req, res),
 );
 
 router
@@ -118,13 +124,14 @@ router
   .post((req, res) => adminController.createSubscription(req, res));
 
 router.patch("/subscriptions/:id", (req, res) =>
-  adminController.updateSubscription(req, res)
+  adminController.updateSubscription(req, res),
 );
 
 router.get("/ads", (req, res) => adminController.getAds(req, res));
 
 router.patch("/ads/:adId/", (req, res) =>
-  adminController.changeAdStatus(req, res)
+  adminController.changeAdStatus(req, res),
 );
 
+router.get("/bookings", (req, res) => adminController.getAllBookings(req, res));
 export default router;

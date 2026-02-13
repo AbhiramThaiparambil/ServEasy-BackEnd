@@ -1,7 +1,8 @@
+import { GenerateContentResponse } from "@google/genai";
 
 export interface IGoogleGenAIService {
 
-       generateResponse(prompt:string): Promise<any>;
+       generateResponse(prompt:string): Promise<GenerateContentResponse>;
 
 
 }

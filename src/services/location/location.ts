@@ -1,9 +1,17 @@
 import axios from "axios";
 import { config } from "dotenv";
 import { injectable } from "tsyringe";
+import { ILocationService } from "./ILocationService";
+import { getErrorMessage } from "../../utils/errorUtils";
 config();
+interface ILocationIQResponse {
+  lat: string;
+  lon: string;
+  display_name: string;
+}
+
 @injectable()
-export class LocationService {
+export class LocationService implements ILocationService {
   private locationUrl = "https://us1.locationiq.com/v1/search.php";
   private locationIqApiKey = process.env.LOCATIONIQ_API_KEY as string;
   async getLocation(query: string) {
@@ -28,8 +36,12 @@ export class LocationService {
         latitude: parseFloat(result.lat),
         longitude: parseFloat(result.lon),
       };
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error: unknown) {
+             const errorMessage =getErrorMessage(error)
+            console.error("Error in getLocation:", errorMessage);
+      
+
+      throw new Error(errorMessage);
     }
   }
 
@@ -51,7 +63,7 @@ export class LocationService {
         }
       );
 
-      const suggestions = response.data.map((item: any) => ({
+      const suggestions = response.data.map((item: ILocationIQResponse) => ({
         address: item.display_name,
         latitude: parseFloat(item.lat),
         longitude: parseFloat(item.lon),
@@ -60,12 +72,10 @@ export class LocationService {
       console.log("Auto-suggestions:", suggestions);
 
       return suggestions;
-    } catch (error: any) {
-      console.error(
-        "Error in getAutoSuggestions:",
-        error?.response?.data || error.message || error
-      );
-      throw new Error(error?.message || "Failed to fetch auto suggestions");
+    } catch (error: unknown) {
+      const errorMessage =getErrorMessage(error)
+      console.error("Error in getAutoSuggestions:", errorMessage);
+      throw new Error(errorMessage);
     }
   }
 }

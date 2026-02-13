@@ -1,42 +1,78 @@
 import { Request, Response } from "express";
+import { getString } from "../../utils/requestUtils";
 import { injectable, inject } from "tsyringe";
-import { TokenService } from "../../services/token/TokenService";
 import { HttpStatus } from "../../constants/HttpStatus";
+import { getErrorMessage } from "../../utils/errorUtils";
 
 import { setAuthCookies } from "../../utils/setAuthCookies";
-import { SignIn } from "../../application/use-case/User/auth/signIn/SignIn.usecase";
+import { SignIn } from "../../application/use-case/user/auth/signIn/SignIn.usecase";
 
-import { UserSiteSettings } from "../../application/use-case/siteSetting/UserSiteSettingsUseCase";
 import { SERVICE_TOKENS, USE_CASE_TOKENS } from "../../constants/tokens";
-import { IFindFeaturedCouponsUseCase } from "../../application/use-case/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
-import { IIncreaseAdClicksUseCase } from "../../application/use-case/User/Ads/increaseAdclicks/IIncreaseAdClicksUseCase";
+import { IFindFeaturedCouponsUseCase } from "../../application/use-case/user/coupon/FeaturedCoupons/IFindFeaturedCoupons.usecase";
+import { IIncreaseAdClicksUseCase } from "../../application/use-case/user/ads/increaseAdclicks/IIncreaseAdClicksUseCase";
 import { ITokenService } from "../../services/token/ITokenService";
-import { IGetNotificationUseCase } from "../../application/use-case/notification/getNotification/IGetNotification.usecase";
-import { AddReviewUseCase } from "../../application/use-case/review/addReview/AddReviewUseCase";
-import { IDeleteAllNotificationUseCase } from "../../application/use-case/notification/deleteAllNotification/IDeleteAllNotification.usecase";
-import { IDeleteSingleNotificationUseCase } from "../../application/use-case/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
-import { IMarkNotificationAsReadUseCase } from "../../application/use-case/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
-import { IAddReviewUseCase } from "../../application/use-case/review/addReview/IAddReviewUseCase";
-import { IGetAddress } from "../../application/use-case/User/Address/getAddress/IGetAddress.usecase";
-import { IAddNewAddress } from "../../application/use-case/User/Address/addAddress/IAddNewAddress.usecase";
-import { IEditAddress } from "../../application/use-case/User/Address/editAddress/IEditAddress.usecase";
-import { IDeleteAddress } from "../../application/use-case/User/Address/deleteAddress/IDeleteAddress.usecase";
-import { IRecommendAdsUseCase } from "../../application/use-case/User/Ads/recommendAds/IRecommendAdsUseCase";
-import { ISignInUseCase } from "../../application/use-case/User/auth/signIn/ISignIn.usecase";
-import { ISignUpUseCase } from "../../application/use-case/User/auth/signUp/ISignUp.usecase";
-import { IVerifyOtpUseCase } from "../../application/use-case/User/auth/verifyOtp/IVerifyOtp.usecase";
-import { IResendOtp } from "../../application/use-case/User/auth/resendOtp/IResendOtp.usecase";
-import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
-import { IResetPasswordUseCase } from "../../application/use-case/User/auth/forgotPassword/resetPassword/IResetPassword.usecase";
-import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/User/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
-import { IGoogleAuthUseCase } from "../../application/use-case/User/auth/googleAuth/IGoogleAuth.usecase";
-import { IGetServiceProviderInfoUseCase } from "../../application/use-case/User/service/getProviderInfo/IGetServiceProviderInfoUseCase";
-import { IGetSingleServiceUseCase } from "../../application/use-case/User/service/getSingleService/IGetSingleServics.usecase";
-import { IGetAllActiveServiceUseCase } from "../../application/use-case/User/service/getService/IGetAllActiveService.usecase";
-import { IUserProfileUpdateUseCase } from "../../application/use-case/User/profile/updateProfile/IUserProfileUpdate.usecase";
-import { IProfileUpdateOtpUseCase } from "../../application/use-case/User/profile/updateProfile/IProfileUpdateOtp.usecase";
-import { IGetUserProfileUseCase } from "../../application/use-case/User/profile/getProfile/IGetUserProfile.usecase";
-import { IFindAllActiveCouponsUseCase } from "../../application/use-case/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { IGetNotificationUseCase } from "../../application/use-case/common/notification/getNotification/IGetNotification.usecase";
+import { IDeleteAllNotificationUseCase } from "../../application/use-case/common/notification/deleteAllNotification/IDeleteAllNotification.usecase";
+import { IDeleteSingleNotificationUseCase } from "../../application/use-case/common/notification/deleteSingleNotification/IDeleteSingleNotification.usecase";
+import { IMarkNotificationAsReadUseCase } from "../../application/use-case/common/notification/markNotificationAsRead/IMarkNotificationAsRead.usecase";
+import { GetNotificationsRequestDTO } from "../../application/dtos/common/notification/getNotification/GetNotificationDTO";
+import { DeleteAllNotificationsRequestDTO } from "../../application/dtos/common/notification/deleteAllNotification/DeleteAllNotificationDTO";
+import { DeleteSingleNotificationRequestDTO } from "../../application/dtos/common/notification/deleteSingleNotification/DeleteSingleNotificationDTO";
+import { MarkNotificationAsReadRequestDTO } from "../../application/dtos/common/notification/markNotificationAsRead/MarkNotificationAsReadDTO";
+import { IAddReviewUseCase } from "../../application/use-case/user/review/addReview/IAddReviewUseCase";
+import { IGetAddress } from "../../application/use-case/user/address/getAddress/IGetAddress.usecase";
+import { IAddNewAddress } from "../../application/use-case/user/address/addAddress/IAddNewAddress.usecase";
+import { IEditAddress } from "../../application/use-case/user/address/editAddress/IEditAddress.usecase";
+import { IDeleteAddress } from "../../application/use-case/user/address/deleteAddress/IDeleteAddress.usecase";
+import { IRecommendAdsUseCase } from "../../application/use-case/user/ads/recommendAds/IRecommendAdsUseCase";
+import { ISignUpUseCase } from "../../application/use-case/user/auth/signUp/ISignUp.usecase";
+import { IVerifyOtpUseCase } from "../../application/use-case/user/auth/verifyOtp/IVerifyOtp.usecase";
+import { IResendOtp } from "../../application/use-case/user/auth/resendOtp/IResendOtp.usecase";
+import { IVerifyForgotPasswordOtpUseCase } from "../../application/use-case/user/auth/forgotPassword/verifyForgotPasswordOtp/IVerifyForgotPasswordOtp.usecase";
+import { IResetPasswordUseCase } from "../../application/use-case/user/auth/forgotPassword/resetPassword/IResetPassword.usecase";
+import { ISendForgotPasswordOtpUseCase } from "../../application/use-case/user/auth/forgotPassword/sendForgotPasswordOtp/ISendForgotPasswordOtp.usecase";
+import { IGoogleAuthUseCase } from "../../application/use-case/user/auth/googleAuth/IGoogleAuth.usecase";
+import { IGetServiceProviderInfoUseCase } from "../../application/use-case/user/service/getProviderInfo/IGetServiceProviderInfo.usecase";
+import { IGetSingleServiceUseCase } from "../../application/use-case/user/service/getSingleService/IGetSingleServics.usecase";
+import { IGetAllActiveServiceUseCase } from "../../application/use-case/user/service/getService/IGetAllActiveService.usecase";
+import { IUserProfileUpdateUseCase } from "../../application/use-case/user/profile/updateProfile/IUserProfileUpdate.usecase";
+import { IProfileUpdateOtpUseCase } from "../../application/use-case/user/profile/updateProfile/IProfileUpdateOtp.usecase";
+import { IGetUserProfileUseCase } from "../../application/use-case/user/profile/getProfile/IGetUserProfile.usecase";
+import { IFindAllActiveCouponsUseCase } from "../../application/use-case/user/coupon/findAllActiveCoupons/IFindAllActiveCoupons.usecase";
+import { IApplyCouponToBookingUseCase } from "../../application/use-case/user/coupon/applyCoupon/IApplyCouponToBooking.usecase";
+import { IRemoveCouponToBookingUseCase } from "../../application/use-case/user/coupon/removeCoupon/IRemoveCoupon.usecase";
+import { IUserSiteSettings } from "../../application/use-case/user/site-settings/IUserSiteSettings";
+import {
+  UpdateProfileRequestDTO,
+} from "../../application/dtos/user/profile/UpdateProfileDTO";
+import { SignUpRequestDTO } from "../../application/dtos/user/auth/signUp/SignUpDTO";
+import { SignInRequestDTO } from "../../application/dtos/user/auth/signIn/SignInDTO";
+import { ResetPasswordRequestDTO } from "../../application/dtos/user/auth/forgotPassword/ResetPasswordDTO";
+import { GoogleAuthRequestDTO } from "../../application/dtos/user/auth/googleAuth/GoogleAuthDTO";
+import { SendOtpRequestDTO } from "../../application/dtos/user/auth/resendOtp/ResendOtpDTO";
+import { VerifyOtpRequestDTO } from "../../application/dtos/user/auth/verifyOtp/VerifyOtpDTO";
+import { IncreaseAdClicksRequestDTO } from "../../application/dtos/user/ads/increaseAdClicks/IncreaseAdClicksDTO";
+import { GetRecommendedAdsRequestDTO } from "../../application/dtos/user/ads/recommendAds/RecommendAdsDTO";
+import {
+  AddAddressRequestDTO,
+  EditAddressRequestDTO,
+  GetAddressRequestDTO,
+  DeleteAddressRequestDTO,
+} from "../../application/dtos/user/address/AddressDTO";
+import {
+  GetFeaturedCouponsRequestDTO,
+  GetAllActiveCouponsResponseDTO,
+  ApplyCouponRequestDTO,
+  RemoveCouponRequestDTO,
+} from "../../application/dtos/user/coupon/CouponDTO";
+import { IAutoSuggestion } from "../../application/use-case/user/location/IAutoSuggestion";
+import { GetAutoSuggestionRequestDTO } from "../../application/dtos/user/location/LocationDTO";
+
+import { AddReviewRequestDTO } from "../../application/dtos/user/review/ReviewDTO";
+import { GetThemesResponseDTO, GetBannersResponseDTO } from "../../application/dtos/user/site-settings/SiteSettingsDTO";
+import { GetSingleServiceRequestDTO } from "../../application/dtos/user/service/getSingleService/GetSingleServiceDTO";
+import { GetNearbyServicesRequestDTO, GetAllActiveServicesRequestDTO } from "../../application/dtos/user/service/getService/GetAllActiveServiceDTO";
+import { GetServiceProviderInfoRequestDTO } from "../../application/dtos/user/service/getProviderInfo/GetServiceProviderInfoDTO";
 
 @injectable()
 export class UserController {
@@ -91,7 +127,8 @@ export class UserController {
     private addReviewUseCase: IAddReviewUseCase,
     @inject(USE_CASE_TOKENS.GetServiceProviderInfoUseCase)
     private getServiceProviderInfoUseCase: IGetServiceProviderInfoUseCase,
-    @inject(UserSiteSettings) private userSiteSettings: UserSiteSettings,
+    @inject(USE_CASE_TOKENS.UserSiteSettings)
+    private userSiteSettings: IUserSiteSettings,
 
     @inject(USE_CASE_TOKENS.FindFeaturedCouponsUseCase)
     private findFeatureCouponsUseCase: IFindFeaturedCouponsUseCase,
@@ -106,7 +143,57 @@ export class UserController {
 
     @inject(USE_CASE_TOKENS.FindAllActiveCouponsUseCase)
     private findActiveCouponsusecase: IFindAllActiveCouponsUseCase,
+
+    @inject(USE_CASE_TOKENS.ApplyCouponToBookingUseCase)
+    private applyCouponUseCase: IApplyCouponToBookingUseCase,
+
+    @inject(USE_CASE_TOKENS.RemoveCouponToBookingUseCase)
+    private removeCouponUseCase: IRemoveCouponToBookingUseCase,
+
+    @inject(USE_CASE_TOKENS.AutoSuggestion)
+    private autoSuggestionUseCase: IAutoSuggestion
   ) {}
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { refreshToken } = req.cookies;
+
+      if (!refreshToken) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Refresh token is missing" });
+        return;
+      }
+
+      const decoded = this.tokenService.verifyRefreshToken(refreshToken);
+      if (!decoded) {
+        res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ error: "Invalid refresh token" });
+        return;
+      }
+
+      const response = await this.getUserProfileUseCase.execute(decoded.userId);
+      const user = response.user;
+
+      if (!user) {
+        res.status(HttpStatus.NOT_FOUND).json({ error: "User not found" });
+        return;
+      }
+
+      const newAccessToken = await this.tokenService.generateAccessToken(
+        user._id + "",
+        "userId",
+      );
+
+      res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
+    } catch (error: unknown) {
+      console.error("RefreshToken error:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  };
+
   getNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
@@ -115,10 +202,11 @@ export class UserController {
         return;
       }
 
-      const notification = await this.getNotificationUsecase.execute(userId);
+      const dto: GetNotificationsRequestDTO = { userId: userId };
+      const notification = await this.getNotificationUsecase.execute(dto);
       res.status(HttpStatus.OK).json(notification);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -128,7 +216,7 @@ export class UserController {
   deleteNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = res.locals.user?.userId;
-      const { id } = req.params;
+      const id = getString(req.params.id);
 
       if (!userId || !id) {
         res
@@ -138,16 +226,18 @@ export class UserController {
       }
 
       if (id === "deleteAll") {
-        await this.delteAllNotification.execute(userId);
+        const dto: DeleteAllNotificationsRequestDTO = { userId };
+        await this.delteAllNotification.execute(dto);
         res
           .status(HttpStatus.OK)
           .json({ message: "All notifications deleted" });
       } else {
-        await this.deleteSingleNotification.execute(id);
+        const dto: DeleteSingleNotificationRequestDTO = { notificationId: id };
+        await this.deleteSingleNotification.execute(dto);
         res.status(HttpStatus.OK).json({ message: "Notification deleted" });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -159,7 +249,7 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       if (!id) {
         res
           .status(HttpStatus.BAD_REQUEST)
@@ -167,12 +257,13 @@ export class UserController {
         return;
       }
 
-      await this.markAsRead.execute(id);
+      const dto: MarkNotificationAsReadRequestDTO = { notificationId: id };
+      await this.markAsRead.execute(dto);
       res
         .status(HttpStatus.OK)
         .json({ message: "Notification marked as read" });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -193,28 +284,21 @@ export class UserController {
         return;
       }
 
-      const data: {
-        userName: string;
-        password: string;
-        phone?: string;
-        email?: string;
-      } = {
+      const dto: SignUpRequestDTO = {
         userName,
         password,
+        phone,
+        email,
       };
 
-      if (phone) {
-        data.phone = phone;
-      } else if (email) {
-        data.email = email;
-      } else {
+      if (!dto.phone && !dto.email) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Either phone or email is required" });
         return;
       }
 
-      const result = await this.registerUser.execute(data);
+      const result = await this.registerUser.execute(dto);
       if ("errorMessage" in result) {
         res
           .status(HttpStatus.UNAUTHORIZED)
@@ -229,10 +313,7 @@ export class UserController {
 
       res.status(HttpStatus.CREATED).json({ message, regInfo });
     } catch (error: unknown) {
-      let errorMessage = "";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
+      const errorMessage = getErrorMessage(error);
       console.error("Registration error:", errorMessage);
       res
         .status(HttpStatus.BAD_REQUEST)
@@ -251,15 +332,16 @@ export class UserController {
         return;
       }
 
-      const result = await this.googleAuthUseCase.execute(googleToken);
+      const dto: GoogleAuthRequestDTO = { googleToken };
+      const result = await this.googleAuthUseCase.execute(dto);
 
       setAuthCookies(res, "refreshToken", result.refreshToken);
 
       res.status(HttpStatus.OK).json({
         accessToken: result.accessToken,
       });
-    } catch (error) {
-      console.error("Google auth error:", error);
+    } catch (error: unknown) {
+      console.error("Google auth error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Google authentication failed" });
@@ -267,7 +349,7 @@ export class UserController {
   };
 
   signInUserController = async (req: Request, res: Response): Promise<void> => {
-    const { method } = req.params;
+    const method = getString(req.params.method);
 
     try {
       if (method === "email") {
@@ -280,10 +362,12 @@ export class UserController {
           return;
         }
 
-        const result = await this.signInUseCase.signInWithEmail(
-          email,
-          password,
-        );
+        const dto: SignInRequestDTO = {
+            email,
+            password
+        };
+
+        const result = await this.signInUseCase.signInWithEmail(dto);
 
         if ("errorMessage" in result) {
           res
@@ -309,10 +393,12 @@ export class UserController {
           return;
         }
 
-        const result = await this.signInUseCase.signInWithPhone(
-          phone,
-          password,
-        );
+        const dto: SignInRequestDTO = {
+            phone,
+            password
+        };
+
+        const result = await this.signInUseCase.signInWithPhone(dto);
 
         if ("errorMessage" in result) {
           res
@@ -332,8 +418,8 @@ export class UserController {
       res
         .status(HttpStatus.BAD_REQUEST)
         .json({ error: "Invalid login method" });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: "Internal Server Error" });
@@ -344,7 +430,8 @@ export class UserController {
     try {
       const { otp, sender } = req.body;
 
-      const result = await this.verifyOtpUseCase.execute(sender, otp);
+      const dto: VerifyOtpRequestDTO = { otp, sender };
+      const result = await this.verifyOtpUseCase.execute(dto);
       console.log(result);
 
       if ("errorMessage" in result) {
@@ -359,8 +446,8 @@ export class UserController {
       res
         .status(HttpStatus.OK)
         .json({ message: result.success, accessToken: result.accessToken });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -370,12 +457,14 @@ export class UserController {
   resendOtpController = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.body.email) {
-        const result = await this.resendOtpUseCase.sendEmailOtp(req.body.email);
+        const dto: SendOtpRequestDTO = { email: req.body.email };
+        const result = await this.resendOtpUseCase.sendEmailOtp(dto);
         console.log(result);
         res.status(HttpStatus.OK).json({ message: result });
         return;
       } else if (req.body.phone) {
-        const result = await this.resendOtpUseCase.sendSmsOtp(req.body.phone);
+        const dto: SendOtpRequestDTO = { phone: req.body.phone };
+        const result = await this.resendOtpUseCase.sendSmsOtp(dto);
         res.status(HttpStatus.OK).json({ message: result });
         return;
       } else {
@@ -383,8 +472,8 @@ export class UserController {
           .status(HttpStatus.BAD_REQUEST)
           .json({ errorMessage: "Email or phone is required" });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -396,8 +485,9 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      if (req.params.id) {
-        const user = await this.getUserProfileUseCase.execute(req.params.id);
+      if (getString(req.params.id)) {
+        const response = await this.getUserProfileUseCase.execute(getString(req.params.id));
+        const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.userName,
@@ -421,10 +511,10 @@ export class UserController {
         return;
       }
 
-      const user = await this.getUserProfileUseCase.execute(decoded.userId);
-      res.status(HttpStatus.OK).json({ user });
-    } catch (error) {
-      console.error("Error in userProfile:", error);
+      const response = await this.getUserProfileUseCase.execute(decoded.userId);
+      res.status(HttpStatus.OK).json({ user: response.user });
+    } catch (error: unknown) {
+      console.error("Error in userProfile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -442,7 +532,8 @@ export class UserController {
       }
 
       if (email) {
-        const message = await this.sendOtpUseCase.sendEmailOtp(email);
+        const dto: SendOtpRequestDTO = { email };
+        const message = await this.sendOtpUseCase.sendEmailOtp(dto);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
         }
@@ -454,7 +545,8 @@ export class UserController {
       }
 
       if (phone) {
-        const message = await this.sendOtpUseCase.sendSmsOtp(phone);
+        const dto: SendOtpRequestDTO = { phone };
+        const message = await this.sendOtpUseCase.sendSmsOtp(dto);
         if (message.successMessage) {
           res.status(HttpStatus.OK).json({ message });
         }
@@ -464,8 +556,8 @@ export class UserController {
             .json({ message: message.errorMessage });
         }
       }
-    } catch (error) {
-      console.error("sendOtp error:", error);
+    } catch (error: unknown) {
+      console.error("sendOtp error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong. Please try again later." });
@@ -485,7 +577,8 @@ export class UserController {
         return;
       }
 
-      const result = await this.forgotVerifyOtpUseCase.execute(otp, key);
+      const dto: VerifyOtpRequestDTO = { otp, sender: key };
+      const result = await this.forgotVerifyOtpUseCase.execute(dto);
 
       if (result === true) {
         res
@@ -496,8 +589,8 @@ export class UserController {
           .status(HttpStatus.UNAUTHORIZED)
           .json({ message: "OTP expired or invalid." });
       }
-    } catch (error) {
-      console.error("Error in verifyOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in verifyOtp:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong. Please try again later." });
@@ -524,20 +617,16 @@ export class UserController {
       let result;
 
       if (email) {
-        result = await this.resetPasswordUseCase.resetPasswordEmail(
-          password,
-          email,
-        );
+        const dto: ResetPasswordRequestDTO = { newPassword: password, email };
+        result = await this.resetPasswordUseCase.resetPasswordEmail(dto);
       } else {
-        result = await this.resetPasswordUseCase.resetPasswordPhone(
-          password,
-          phone,
-        );
+        const dto: ResetPasswordRequestDTO = { newPassword: password, phone };
+        result = await this.resetPasswordUseCase.resetPasswordPhone(dto);
       }
 
       res.status(HttpStatus.OK).json({ Message: result });
-    } catch (error) {
-      console.error("Error in resetPassword:", error);
+    } catch (error: unknown) {
+      console.error("Error in resetPassword:", getErrorMessage(error));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         Message: "Something went wrong. Please try again later.",
       });
@@ -554,7 +643,7 @@ export class UserController {
         newPassword,
         oldPassword,
       } = req.body;
-      const userId = req.params.userid;
+      const userId = getString(req.params.userid);
 
       if (!userId) {
         res
@@ -564,13 +653,15 @@ export class UserController {
       }
 
       if (newUserName || NewProfileImage || newPassword || oldPassword) {
-        const update = await this.userProfileUpdate.updateProfile(
-          userId,
-          newUserName,
-          NewProfileImage,
-          newPassword,
-          oldPassword,
-        );
+        const dto: UpdateProfileRequestDTO = {
+            userId,
+            newUserName,
+            newProfileImage: NewProfileImage,
+            newPassword,
+            oldPassword
+        };
+
+        const update = await this.userProfileUpdate.updateProfile(dto);
 
         if (!update.updated) {
           res.status(HttpStatus.BAD_REQUEST).json({ message: update.message });
@@ -614,8 +705,8 @@ export class UserController {
         });
         return;
       }
-    } catch (error) {
-      console.error("Error updating profile:", error);
+    } catch (error: unknown) {
+      console.error("Error updating profile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal Server Error" });
@@ -640,8 +731,8 @@ export class UserController {
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ errorMessage: "Internal server error" });
       }
-    } catch (error) {
-      console.error("Error in profileUpdateOtp:", error);
+    } catch (error: unknown) {
+      console.error("Error in profileUpdateOtp:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ errorMessage: "Internal server error" });
@@ -667,8 +758,8 @@ export class UserController {
       res
         .status(HttpStatus.OK)
         .json({ message: "User logged out successfully" });
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch (error: unknown) {
+      console.error("Logout error:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -677,7 +768,7 @@ export class UserController {
 
   getSingleServiceHandler = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       console.log(id);
 
       if (!id) {
@@ -687,7 +778,8 @@ export class UserController {
         return;
       }
 
-      const data = await this.getServics.execute(id);
+      const dto: GetSingleServiceRequestDTO = { serviceId: id };
+      const data = await this.getServics.execute(dto);
 
       if (!data) {
         res.status(HttpStatus.NOT_FOUND).json({ message: "Service not found" });
@@ -695,8 +787,8 @@ export class UserController {
       }
 
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching service:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching service:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -706,7 +798,8 @@ export class UserController {
   public userProfile = async (req: Request, res: Response): Promise<void> => {
     try {
       if (req.params.id) {
-        const user = await this.getUserProfileUseCase.execute(req.params.id);
+        const response = await this.getUserProfileUseCase.execute(getString(req.params.id));
+        const user = response.user;
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.userName,
@@ -726,12 +819,12 @@ export class UserController {
           return;
         }
 
-        const user = await this.getUserProfileUseCase.execute(decoded.userId);
+        const response = await this.getUserProfileUseCase.execute(decoded.userId);
 
-        res.status(200).json({ user });
+        res.status(200).json({ user: response.user });
       }
-    } catch (error) {
-      console.error("Error in userProfile:", error);
+    } catch (error: unknown) {
+      console.error("Error in userProfile:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -748,12 +841,13 @@ export class UserController {
       const skip = (page - 1) * limit;
       console.log(limit);
       console.log(skip);
-      const result = await this.getAllActiveService.execute(skip, limit);
+      const dto: GetAllActiveServicesRequestDTO = { skip, limit };
+      const result = await this.getAllActiveService.execute(dto);
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while fetching services.",
       });
@@ -773,14 +867,12 @@ export class UserController {
       const skip = (page - 1) * limit;
       console.log(limit);
       console.log(skip);
-      /* -------------------- LOCATION -------------------- */
       const longitude =
         req.query.longitude !== undefined ? Number(req.query.longitude) : null;
 
       const latitude =
         req.query.latitude !== undefined ? Number(req.query.latitude) : null;
 
-      /* -------------------- FILTERS (FLAT QUERY) -------------------- */
       const parsedFilters = {
         category: req.query.category as string | undefined,
 
@@ -810,19 +902,21 @@ export class UserController {
       //   return;
       // }
 
-      const result = await this.getAllActiveService.getNearByServices(
+      const dto: GetNearbyServicesRequestDTO = {
         userId,
         skip,
         limit,
-        longitude,
-        latitude,
-        parsedFilters,
-      );
+        userLongitude: longitude,
+        userLatitude: latitude,
+        filters: parsedFilters
+      };
+
+      const result = await this.getAllActiveService.getNearByServices(dto);
 
       res.status(HttpStatus.OK).json(result);
       return;
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      console.error(getErrorMessage(e));
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "An error occurred while fetching services.",
       });
@@ -899,12 +993,13 @@ export class UserController {
         return;
       }
 
-      const allAddress = await this.getAddressUseCase.execute(userId);
+      const dto: GetAddressRequestDTO = { userId };
+      const allAddress = await this.getAddressUseCase.execute(dto);
 
       res.status(200).json({ allAddress });
       return;
-    } catch (error: any) {
-      console.error("Error fetching address:", error.message || error);
+    } catch (error: unknown) {
+      console.error("Error fetching address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to fetch address" });
       return;
     }
@@ -927,13 +1022,14 @@ export class UserController {
         return;
       }
 
-      const result = await this.addNewAddressUseCase.execute(userId, address);
+      const dto: AddAddressRequestDTO = { userId, address };
+      const result = await this.addNewAddressUseCase.execute(dto);
       console.log(result);
 
       res.status(200).json({ message: "Address added successfully" });
       return;
-    } catch (error) {
-      console.error("Error adding new address:", error);
+    } catch (error: unknown) {
+      console.error("Error adding new address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to add new address" });
       return;
     }
@@ -958,12 +1054,13 @@ export class UserController {
         return;
       }
 
-      await this.editAddressUseCase.execute(userId, address);
+      const dto: EditAddressRequestDTO = { userId, address };
+      await this.editAddressUseCase.execute(dto);
 
       res.status(200).json({ message: "Address updated successfully" });
       return;
-    } catch (error) {
-      console.error("Error updating address:", error);
+    } catch (error: unknown) {
+      console.error("Error updating address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to update address" });
       return;
     }
@@ -971,7 +1068,7 @@ export class UserController {
 
   public deleteAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getString(req.params.id);
       const userId = res.locals.user?.userId;
 
       console.log("User ID:", userId, "Address ID:", id);
@@ -986,12 +1083,13 @@ export class UserController {
         return;
       }
 
-      await this.deleteAddressUseCase.execute(userId, id);
+      const dto: DeleteAddressRequestDTO = { userId, addressId: id };
+      await this.deleteAddressUseCase.execute(dto);
 
       res.status(200).json({ message: "Address deleted successfully" });
       return;
-    } catch (error) {
-      console.error("Error deleting address:", error);
+    } catch (error: unknown) {
+      console.error("Error deleting address:", getErrorMessage(error));
       res.status(500).json({ message: "Failed to delete address" });
       return;
     }
@@ -1016,19 +1114,21 @@ export class UserController {
         return;
       }
 
-      await this.addReviewUseCase.execute(
+      const reviewData: AddReviewRequestDTO = {
         bookedServiceId,
         serviceId,
         rating,
         comment,
         userId,
-      );
+      };
+
+      await this.addReviewUseCase.execute(reviewData);
 
       res
         .status(HttpStatus.CREATED)
         .json({ message: "Review added successfully!" });
-    } catch (error) {
-      console.error("Error adding review:", error);
+    } catch (error: unknown) {
+      console.error("Error adding review:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Failed to add review." });
@@ -1040,10 +1140,9 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      if (req.params.id) {
-        const user = await this.getServiceProviderInfoUseCase.execute(
-          req.params.id,
-        );
+      if (getString(req.params.id)) {
+        const dto: GetServiceProviderInfoRequestDTO = { userId: getString(req.params.id) };
+        const user = await this.getServiceProviderInfoUseCase.execute(dto);
         res.status(HttpStatus.OK).json({
           userAvatar: user?.profileImage,
           userName: user?.serviceProviderName,
@@ -1053,8 +1152,8 @@ export class UserController {
       res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: "Service provider ID is required" });
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getServiceProviderInfoChat:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -1063,15 +1162,55 @@ export class UserController {
 
   public getSiteThemes = async (req: Request, res: Response): Promise<void> => {
     try {
-      const themes = await this.userSiteSettings.getThemes();
-      console.log(themes);
-      res.status(HttpStatus.OK).json({ themes });
+      const result: GetThemesResponseDTO = await this.userSiteSettings.getThemes();
+      console.log(result.themes);
+      res.status(HttpStatus.OK).json(result);
       return;
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteThemes:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
+    }
+  };
+
+  public removeCoupon = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const bookingId = getString(req.params.bookingId);
+      const dto: RemoveCouponRequestDTO = { bookingId };
+
+      const result = await this.removeCouponUseCase.execute(dto);
+      
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
+    } catch (err: unknown) {
+      console.error("Error removing coupon:", getErrorMessage(err));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: "Failed to remove coupon" });
+    }
+  };
+
+  public applyCoupon = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { couponCode, bookingId } = req.body;
+      const dto: ApplyCouponRequestDTO = { couponCode, bookingId };
+
+      const result = await this.applyCouponUseCase.execute(dto);
+
+      if (result.success) {
+        res.status(HttpStatus.OK).json(result);
+      } else {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+      }
+    } catch (error: unknown) {
+      console.error("Error applying coupon:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to apply coupon" });
     }
   };
   public getSiteBanners = async (
@@ -1079,12 +1218,12 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const banners = await this.userSiteSettings.getBanners();
+      const result: GetBannersResponseDTO = await this.userSiteSettings.getBanners();
 
-      res.status(HttpStatus.OK).json(banners);
+      res.status(HttpStatus.OK).json(result);
       return;
-    } catch (error) {
-      console.error("Error in getServiceProviderInfoChat:", error);
+    } catch (error: unknown) {
+      console.error("Error in getSiteBanners:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Internal server error" });
@@ -1097,11 +1236,12 @@ export class UserController {
   ): Promise<void> => {
     try {
       const skip = Number(req.query.skip) || 0;
+      const dto: GetFeaturedCouponsRequestDTO = { skip };
 
-      const data = await this.findFeatureCouponsUseCase.execute(skip);
+      const data = await this.findFeatureCouponsUseCase.execute(dto);
       res.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      console.error("Error fetching featured coupons:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching featured coupons:", getErrorMessage(error));
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: "Something went wrong" });
@@ -1113,16 +1253,16 @@ export class UserController {
     res: Response,
   ): Promise<void> => {
     try {
-      const coupons = await this.findActiveCouponsusecase.execute();
+      const result: GetAllActiveCouponsResponseDTO = await this.findActiveCouponsusecase.execute();
 
       res.status(HttpStatus.OK).json({
         success: true,
         message: "Active coupons fetched successfully",
-        data: coupons,
+        data: result.coupons,
       });
       return;
-    } catch (error) {
-      console.error("Find active coupons error:", error);
+    } catch (error: unknown) {
+      console.error("Find active coupons error:", getErrorMessage(error));
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
@@ -1136,41 +1276,66 @@ export class UserController {
     req: Request,
     res: Response,
   ): Promise<void> => {
-    try {
-      const ads = await this.recommendAdsUseCase.execute({
+    try { 
+      console.log('hey hey ads requesteeddd ')
+      const dto: GetRecommendedAdsRequestDTO = {
         count: req.query.count ? Number(req.query.count) : 1,
         category: req.query.category as string | undefined,
         providerId: req.query.providerId as string | undefined,
         lat: req.query.lat ? Number(req.query.lat) : undefined,
         lng: req.query.lng ? Number(req.query.lng) : undefined,
         radius: req.query.radius ? Number(req.query.radius) : undefined,
-      });
+      };
+      const ads = await this.recommendAdsUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({
         success: true,
         count: ads.length,
         ads,
       });
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+    } catch (error: unknown) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: getErrorMessage(error) });
     }
   };
 
   public increaseClicks = async (req: Request, res: Response) => {
     try {
-      const { adId } = req.params;
+      const adId = getString(req.params.adId);
+      const dto: IncreaseAdClicksRequestDTO = { adId };
 
-      const result = await this.increaseAdClicksUseCase.execute(adId);
+      const result = await this.increaseAdClicksUseCase.execute(dto);
 
       res.status(200).json({
         success: true,
         message: "Clicks updated",
         clicks: result,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ success: false, message: err });
+        .json({ success: false, message: getErrorMessage(err) });
+    }
+  };
+
+  public getAutoSuggestions = async (req: Request, res: Response) => {
+    try {
+      const { query } = req.query;
+      if (!query || typeof query !== "string") {
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: "Query parameter is required" });
+        return;
+      }
+
+      const dto: GetAutoSuggestionRequestDTO = { query };
+      const result = await this.autoSuggestionUseCase.execute(dto);
+
+      res.status(HttpStatus.OK).json({ success: true, suggestions: result.suggestions });
+    } catch (error: unknown) {
+      console.error("Error fetching auto suggestions:", getErrorMessage(error));
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ success: false, message: getErrorMessage(error) || "Something went wrong" });
     }
   };
 }

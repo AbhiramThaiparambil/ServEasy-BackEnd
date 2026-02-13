@@ -9,7 +9,7 @@ export interface IServiceType {
   
   
   export interface ICategory {
-    // id?: string; // Optional ID for category
+    // id?: string; 
     category?: string;
     isHidden?:boolean
     typeService?: IServiceType[];

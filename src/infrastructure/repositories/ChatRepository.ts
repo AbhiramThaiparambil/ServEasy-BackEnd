@@ -2,8 +2,7 @@ import { injectable } from 'tsyringe';
 import { ChatModel } from '../models/chatModel';
 import { IChatRepository } from '../../domain/repositories/IChatRepository';
 import { IChat, IMessage, IServiceProviderChat, IUserChat } from '../../domain/entities/IChat';
-import { Collection, Types } from 'mongoose';
-import { promises } from 'dns';
+import { Types } from 'mongoose';
 @injectable()
 export class ChatRepository implements IChatRepository {
   //   async saveMessage({ senderId, receiverId, content, messageType }: IMessage) {
