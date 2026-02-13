@@ -3,7 +3,7 @@ import { container } from "tsyringe";
 
 import { authMiddleware } from "../Middlewares/authMiddleware";
 
-import { ServiceProviderController } from "../controllers/serviceProviderController";
+import { ServiceProviderController } from "../controllers/ServiceProviderController";
 import { serviceProviderAuth } from "../Middlewares/serviceProviderMiddleware";
 
 const serviceController = container.resolve(ServiceProviderController);
