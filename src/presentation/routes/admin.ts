@@ -34,7 +34,7 @@ router.get(
   (req, res) => adminController.getProviderVerificationDetails(req, res),
 );
 
-router.patch("/serviceProvider/verify", authMiddleware("Admin"), (req, res) =>
+router.patch("/service-provider/verify", authMiddleware("Admin"), (req, res) =>
   adminController.serviceProviderVerify(req, res),
 );
 
