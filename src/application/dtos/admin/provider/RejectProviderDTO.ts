@@ -1,4 +1,4 @@
 export interface RejectProviderDTO {
-    userid: string;
+    providerId: string;
     reason: string;
 }

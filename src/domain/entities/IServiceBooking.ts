@@ -1,11 +1,10 @@
-import { Types } from "mongoose";
 import { IAddress } from "./IAddress";
 import { IPayment } from "./IPayment";
 
 export interface IServiceBooking {
-  _id?: Types.ObjectId;
-  serviceProviderId: Types.ObjectId;
-  serviceId: Types.ObjectId;
+  _id?: string;
+  serviceProviderId: string;
+  serviceId: string;
   address?: IAddress;
   serviceStatus?:
     | "pending"
@@ -15,7 +14,7 @@ export interface IServiceBooking {
     | "confirmed";
   paymentType?: "cash" | "card" | "online" | "pending" | "wallet";
   paymentStatus: "pending" | "paid" | "failed" | "completed";
-  userId: Types.ObjectId;
+  userId: string;
   estimatedServiceTime?: Date;
   bookedTime?: Date;
   serviceCompletedTime?: Date;
@@ -23,7 +22,7 @@ export interface IServiceBooking {
   cancelReason?: string;
   serviceBills?: string[];
   isOnlineService?: boolean;
-  reviewId?: Types.ObjectId;
+  reviewId?: string;
   preferredSlot?: IPreferredServiceDateTime;
   liveLocation?: IliveLocation;
   serviceSlot?: IServiceSlot;
@@ -69,7 +68,7 @@ export interface IPreferredServiceDateTime {
 }
 
 export interface IBookedServiceWithDetails {
-  _id?: Types.ObjectId;
+  _id?: string;
   serviceBookedAddress: IAddress;
   serviceStatus: string;
   paymentType: string;

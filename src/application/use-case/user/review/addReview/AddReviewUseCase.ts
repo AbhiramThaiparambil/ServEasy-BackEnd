@@ -1,6 +1,5 @@
 import { injectable, inject } from "tsyringe";
 
-import { Types } from "mongoose";
 import { IAddReviewUseCase } from "./IAddReviewUseCase";
 import { IReviewRepository } from "../../../../../domain/repositories/IReviewRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
@@ -22,9 +21,9 @@ export class AddReviewUseCase implements IAddReviewUseCase {
     const { bookedServiceId, serviceId, rating, comment, userId } = data;
     
     const review = await this.reviewRepository.create({
-      userId: new Types.ObjectId(userId),
-      bookingId: new Types.ObjectId(bookedServiceId),
-      serviceId: new Types.ObjectId(serviceId),
+      userId,
+      bookingId: bookedServiceId,
+      serviceId,
       rating,
       comment,
     });
@@ -34,7 +33,7 @@ export class AddReviewUseCase implements IAddReviewUseCase {
     }
 
     await this.serviceBookingRepository.updateReviewId(
-      new Types.ObjectId(bookedServiceId),
+      bookedServiceId,
       review._id
     );
 

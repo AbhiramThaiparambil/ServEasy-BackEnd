@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IApplyCouponToBookingUseCase } from "./IApplyCouponToBooking.usecase";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import {
   ApplyCouponRequestDTO,
@@ -14,7 +14,7 @@ import { getErrorMessage } from "../../../../../utils/errorUtils";
 @injectable()
 export class ApplyCouponToBookingUseCase implements IApplyCouponToBookingUseCase {
   constructor(
-    @inject(ServiceBookingRepository)
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private bookingRepo: IServiceBookingRepository,
 
     @inject(REPOSITORY_TOKENS.CouponRepository)

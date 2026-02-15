@@ -1,13 +1,13 @@
 import { injectable, inject } from "tsyringe";
-import mongoose from "mongoose";
 import {
   IServiceBooking,
   IServiceSlot,
 } from "../../../../../domain/entities/IServiceBooking";
-import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { ISlotRepository } from "../../../../../domain/repositories/ISlotRepository";
 import { ICreateOnlineBookingUseCase } from "./ICreateOnlineBooking.usecase";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 import {
   CreateOnlineBookingRequestDTO,
@@ -16,20 +16,19 @@ import {
 @injectable()
 export class CreateOnlineBookingUseCase implements ICreateOnlineBookingUseCase {
   constructor(
-    @inject(ServiceRepository)
-    private serviceRepository: ServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository)
+    private serviceRepository: IServiceRepository,
 
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
 
     @inject("ISlotRepository")
     private slotRepository: ISlotRepository
   ) {}
 
   async execute(data: CreateOnlineBookingRequestDTO): Promise<IServiceBooking> {
-    const { userId: userIdStr, serviceId: serviceIdStr, slotId } = data;
-    const userId = new mongoose.Types.ObjectId(userIdStr);
-    const serviceId = new mongoose.Types.ObjectId(serviceIdStr);
+    const { userId, serviceId, slotId } = data;
+
     const service = await this.serviceRepository.findById(serviceId);
     if (!service || !slotId) {
       throw new Error("Service not found or slot ID is missing");

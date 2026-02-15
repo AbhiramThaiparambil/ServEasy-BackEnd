@@ -23,7 +23,7 @@ export class ServiceProviderRejectVerify implements IServiceProviderRejectVerify
     data: RejectProviderDTO
   ): Promise<ProviderResponseDTO | null> {
     const serviceProvider = await this.serviceProviderRepository.update(
-      data.userid,
+      data.providerId,
       { isVerified: "rejected" }
     );
     if (serviceProvider) {
@@ -39,7 +39,7 @@ export class ServiceProviderRejectVerify implements IServiceProviderRejectVerify
   async verifyServiceProvider(
     data: VerifyProviderDTO
   ): Promise<ProviderResponseDTO | null> {
-    const result = await this.serviceProviderRepository.update(data.userid, {
+    const result = await this.serviceProviderRepository.update(data.providerId, {
       isVerified: "verified",
     });
     return result as ProviderResponseDTO | null;

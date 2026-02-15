@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { IBannerCouponResponse, ICoupon } from "../../domain/entities/ICoupon";
 
 export interface ICouponRepository {
@@ -14,5 +13,5 @@ export interface ICouponRepository {
   checkIsExceedMaxUseLimit(_id: string): Promise<boolean>;
   hasUserUsedCoupon(code: string, userId: string): Promise<boolean>;
   markUsedByUser(code: string, userId: string): Promise<void>;
-  removeCoupon(userId: Types.ObjectId, couponId: string): Promise<void>;
+  removeCoupon(userId: string, couponId: string): Promise<void>;
 }

@@ -387,7 +387,7 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
   }
 
   async updateRegistration(
-    serviceProviderId: ObjectId,
+    serviceProviderId: string,
     data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider> {
     const updatedProvider = await ServiceProviderModel.findByIdAndUpdate(

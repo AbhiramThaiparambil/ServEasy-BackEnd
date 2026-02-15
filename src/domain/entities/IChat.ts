@@ -1,20 +1,19 @@
-import { Types } from 'mongoose';
 export interface IMessage {
   messageType: string;
   content: string;
   sender: 'user' | 'serviceProvider';
 }
 
-export interface IChat extends Document {
-  _id?: string | Types.ObjectId;
-  participants: [user1: Types.ObjectId | string, user2: Types.ObjectId | string];
+export interface IChat {
+  _id?: string;
+  participants: [user1: string, user2: string];
   messages: IMessage[];
   lastMessageAt: Date;
   presence:
     | []
     | [
         {
-          userId: Types.ObjectId;
+          userId: string;
           online: boolean;
           lastSeen: Date | null;
         },
@@ -24,32 +23,32 @@ export interface IChat extends Document {
 }
 
 export interface IServiceProviderChat {
-  _id: Types.ObjectId;
+  _id: string;
   lastMessageAt: Date;
   createdAt: Date;
   updatedAt: Date;
   lastMessage: IMessage;
   userName: string;
   userAvatar: string;
-  userId: Types.ObjectId | string;
+  userId: string;
   presence: Array<{
-    userId: Types.ObjectId;
+    userId: string;
     online: boolean;
     lastSeen: Date | null;
   }>;
 }
 
 export interface IUserChat {
-  _id: Types.ObjectId;
+  _id: string;
   lastMessageAt: Date;
   createdAt: Date;
   updatedAt: Date;
   lastMessage: IMessage;
   userName: string;
-  userID: Types.ObjectId;
+  userID: string;
   userAvatar: string;
   presence: Array<{
-    userId: Types.ObjectId;
+    userId: string;
     online: boolean;
     lastSeen: Date | null;
   }>;

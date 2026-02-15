@@ -1,7 +1,5 @@
-import { Types } from "mongoose";
-
 export interface ISubscriptionPlan {
-  _id?: Types.ObjectId;
+  _id?: string;
   name: string; 
   price: number;
   validityDays: number; 
@@ -10,4 +8,3 @@ export interface ISubscriptionPlan {
   payoutSpeedDays: number;
   description?: string;
 }
-     

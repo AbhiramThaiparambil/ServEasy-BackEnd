@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 
 import {
   ICreateServiceOrderUseCase,
@@ -51,10 +50,8 @@ export class CreateServiceOrderUseCase implements ICreateServiceOrderUseCase {
     }
 
     try {
-      const bookingId = new Types.ObjectId(serviceBookingId);
-
       const booking =
-        await this.serviceBookingRepository.findBookedServiceById(bookingId);
+        await this.serviceBookingRepository.findBookedServiceById(serviceBookingId);
 
       if (!booking || !booking.payment) {
         return {

@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { INotification } from "../../domain/entities/INotification"
 
-const notificationSchema =new  mongoose.Schema<INotification>({
+const notificationSchema =new  mongoose.Schema({
     content:{type:String ,required:true},
     userId:{type:mongoose.Schema.Types.ObjectId,ref:"Users",required:true},
     notificationTime:{type:Date,default:Date.now()},

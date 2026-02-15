@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 import { INotificationRepository } from "../../../../../domain/repositories/INotificationRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IMarkNotificationAsReadUseCase } from "./IMarkNotificationAsRead.usecase";
@@ -17,8 +16,6 @@ export class MarkNotificationAsReadUseCase
 
   async execute(data: MarkNotificationAsReadRequestDTO): Promise<void> {
     const { notificationId } = data;
-    await this.notificationRepository.markNotificationAsRead(
-      new Types.ObjectId(notificationId)
-    );
+    await this.notificationRepository.markNotificationAsRead(notificationId);
   }
 }

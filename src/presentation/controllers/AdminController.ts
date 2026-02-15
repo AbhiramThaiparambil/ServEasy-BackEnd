@@ -533,12 +533,15 @@ export class AdminController {
   async serviceProviderVerify(req: Request, res: Response): Promise<void> {
     try {
       const { serviceProviderId } = req.body;
-
+        
+      const reqData: VerifyProviderDTO = {
+    providerId: serviceProviderId,
+}
       const data =
         await this.serviceProviderRejectVerify.verifyServiceProvider(
-          serviceProviderId,
+          reqData,
         );
-
+         console.log(data)
       if (data) {
         res.status(HttpStatus.OK).json({ data });
         return;
@@ -688,16 +691,19 @@ export class AdminController {
 
   async addCategory(req: Request, res: Response): Promise<void> {
     try {
-      const newCategory: AddCategoryDTO = req.body;
-
-      if (!newCategory) {
+      const {newCategory} = req.body;
+       console.log(newCategory)
+      const dto: AddCategoryDTO = { category:newCategory };
+      console.log(dto)
+      console.log(dto.category)
+      if (!dto.category) {
         res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: "Category is required" });
         return;
       }
 
-      const data = await this.addCategoryUseCase.execute(newCategory);
+      const data = await this.addCategoryUseCase.execute(dto);
 
       res.status(HttpStatus.OK).json({ data });
       return;
@@ -1050,10 +1056,8 @@ export class AdminController {
     req: Request,
     res: Response,
   ): Promise<void> {
-    const id = getString(req.params.id);
-    const { reason } = req.body;
-
-    const dto: RejectProviderDTO = { userid: id, reason };
+    const { reason,serviceProviderId } = req.body;
+    const dto: RejectProviderDTO = { providerId:serviceProviderId, reason };
 
     await this.serviceProviderRejectVerify.rejectServiceProvider(dto);
 
@@ -1068,7 +1072,7 @@ export class AdminController {
   ): Promise<void> {
     const id = getString(req.params.id);
 
-    const dto: VerifyProviderDTO = { userid: id };
+    const dto: VerifyProviderDTO = { providerId: id };
 
     await this.serviceProviderRejectVerify.verifyServiceProvider(dto);
     res

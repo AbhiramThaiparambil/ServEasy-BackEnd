@@ -1,6 +1,5 @@
 import { injectable, inject } from "tsyringe";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
-import { Types } from "mongoose";
 import { ICheckServiceProviderAvailabilityUseCase } from "./ICheckServiceProviderAvailabilityUseCase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { CheckAvailabilityRequestDTO } from "../../../../dtos/serviceProvider/availability/CheckAvailabilityDTO";
@@ -16,7 +15,7 @@ export class CheckServiceProviderAvailabilityUseCase implements ICheckServicePro
    data: CheckAvailabilityRequestDTO
   ):Promise<{ available: boolean; reason?: string }> {
 
-  const availability = await this.serviceBookingRepository.checkAvailability(new Types.ObjectId(data.serviceProviderId));
+  const availability = await this.serviceBookingRepository.checkAvailability(data.serviceProviderId);
  return availability
   }
 }

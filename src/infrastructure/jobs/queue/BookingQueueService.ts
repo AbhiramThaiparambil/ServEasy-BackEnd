@@ -19,7 +19,7 @@ export class BookingQueueService {
     this.processJobs();
   }
 
-  async addAutoCancelJob(bookingId: Types.ObjectId): Promise<void> {
+  async addAutoCancelJob(bookingId: string): Promise<void> {
     await this.queue.add(
       "auto-cancel-booking",
       { bookingId },

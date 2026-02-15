@@ -1,7 +1,5 @@
-import mongoose from "mongoose";
-
  export interface IAddress {
-    _id:string|mongoose.Types.ObjectId;
+    _id: string;
   name: string;
   houseName: string;
   pincode: string;

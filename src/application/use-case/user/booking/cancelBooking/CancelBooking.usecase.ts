@@ -1,34 +1,33 @@
 import { inject, injectable } from "tsyringe";
-import mongoose from "mongoose";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
 import {
   CancelBookingRequestDTO,
 } from "../../../../../application/dtos/user/booking/cancelBooking/CancelBookingDTO";
 import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 import { ICancelBookingUseCase } from "./ICancelBooking.usecase";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 @injectable()
 export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
     @inject(SocketService)
     private socketService: SocketService,
   ) {}
 
   async execute(data: CancelBookingRequestDTO): Promise<IServiceBooking | null> {
     const { bookingId, status, reason } = data;
-    const id = new mongoose.Types.ObjectId(bookingId);
 
     const cancelledBooking = await this.serviceBookingRepository.cancelBooking(
-      id,
+      bookingId,
       status,
       reason,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
-      id,
+      bookingId,
       "cancelled",
       `Cancelled: ${reason}`,
     );
@@ -38,7 +37,7 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
       cancelledBooking?.userId + "",
       {
         type: "notification",
-        targetRole:"USER",
+        targetRole: "USER",
         content: "Your booking has been cancelled",
         timestamp: new Date().toISOString(),
       },

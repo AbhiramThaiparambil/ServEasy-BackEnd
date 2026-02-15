@@ -4,7 +4,7 @@ import { BlockUnblockProviderDTO } from "../../../../dtos/admin/provider/BlockUn
 import { IBlockUnblockProviderUseCase } from "./IBlockUnblockProvider.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceProviderRepository } from "../../../../../domain/repositories/IserviceProviderRepository";
-import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { getErrorMessage } from "../../../../../utils/errorUtils";
 
 
@@ -14,7 +14,7 @@ export class BlockUnblockProviderUseCase implements IBlockUnblockProviderUseCase
     @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,
     @inject(REPOSITORY_TOKENS.ServiceRepository)
-    private serviceRepo: ServiceRepository
+    private serviceRepo: IServiceRepository
   ) {}
 
   async blockServiceProvider(data: BlockUnblockProviderDTO): Promise<boolean> {

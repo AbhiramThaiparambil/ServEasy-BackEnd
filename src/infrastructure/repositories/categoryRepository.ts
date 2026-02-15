@@ -2,11 +2,12 @@ import { injectable } from "tsyringe";
 import { ICategoryRepository } from "../../domain/repositories/IcategoryRepository";
 import { ICategory } from "../../domain/entities/ICategory ";
 import { CategoryModel } from "../models/categoryModel"; 
+import { AddCategoryDTO } from "../../application/dtos/admin/category/AddCategoryDTO";
 
 @injectable()
 export class CategoryRepository implements ICategoryRepository {
   
-  async addCategory(category: ICategory): Promise<ICategory> {
+  async addCategory(category: AddCategoryDTO): Promise<ICategory> {
     const newCategory = new CategoryModel(category);
     return await newCategory.save();
   }

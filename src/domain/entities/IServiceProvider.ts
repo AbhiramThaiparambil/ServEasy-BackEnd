@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { ISubscription } from "./ISubscription";
 export interface ISkill {
   name: string;
@@ -12,8 +11,8 @@ export interface IBankDetails {
 }
 
 export interface IServiceProvider {
-  _id?: mongoose.Schema.Types.ObjectId;
-  userId: mongoose.Schema.Types.ObjectId;
+  _id?: string;
+  userId: string;
   serviceProviderName: string;
   serviceProviderEmail: string;
   serviceProviderPhone: string;

@@ -2,7 +2,6 @@ import { inject, injectable } from "tsyringe";
 import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IWithdrawPaymentUseCase } from "./IWithdrawPaymentUseCase";
-import { Types } from "mongoose";
 import { IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
 import { WithdrawPaymentRequestDTO } from "../../../../dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentRequestDTO";
 import { WithdrawPaymentResponseDTO } from "../../../../dtos/serviceProvider/wallet/withdrawPayment/WithdrawPaymentResponseDTO";
@@ -15,10 +14,8 @@ export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
   ) {}
 
   async execute(data: WithdrawPaymentRequestDTO): Promise<WithdrawPaymentResponseDTO> {
-    const serviceProviderId = new Types.ObjectId(data.serviceProviderId);
-    
     const wallet = await this.walletRepository.findByProviderId(
-      serviceProviderId
+      data.serviceProviderId
     );
 
     if (!wallet) {
@@ -43,7 +40,7 @@ export class WithdrawPaymentUseCase implements IWithdrawPaymentUseCase {
     };
 
     const updatedWallet = await this.walletRepository.addTransaction(
-      serviceProviderId, 
+      data.serviceProviderId, 
       transaction
     );
     

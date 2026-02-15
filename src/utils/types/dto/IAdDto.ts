@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export interface ILocationDTO {
   type: "Point";
   coordinates: number[];
@@ -8,9 +6,9 @@ export interface ILocationDTO {
 
 
 export interface IAdDTO {
-  _id: Types.ObjectId;
-  serviceId: Types.ObjectId;
-  providerId: Types.ObjectId;
+  _id: string;
+  serviceId: string;
+  providerId: string;
   caption: string;
   description: string;
   startDate?: Date | null;

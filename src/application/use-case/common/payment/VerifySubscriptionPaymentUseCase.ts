@@ -5,7 +5,7 @@ import { VerifySubscriptionPaymentRequestDTO } from "../../../../application/dto
 import { RazorpayService } from "../../../../services/payment/RazorpayService";
 import { inject, injectable } from "tsyringe";
 import { IServiceProviderRepository } from "../../../../domain/repositories/IserviceProviderRepository";
-import { ServiceProviderRepository } from "../../../../infrastructure/repositories/ServiceProviderRepository";
+
 import {
   ISubscription,
   ISubscriptionStatus,
@@ -23,7 +23,7 @@ export class VerifySubscriptionPaymentUseCase
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
-    @inject(ServiceProviderRepository)
+    @inject(REPOSITORY_TOKENS.ServiceProviderRepository)
     private serviceProviderRepository: IServiceProviderRepository,
 
     @inject(REPOSITORY_TOKENS.SubscriptionRepository)

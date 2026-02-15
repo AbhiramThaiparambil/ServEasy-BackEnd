@@ -12,18 +12,18 @@ export class ReviewRepository implements IReviewRepository {
     return savedReview.toObject();
   }
 
-  async findByServiceId(serviceId: Types.ObjectId): Promise<IReview[]> {
+  async findByServiceId(serviceId: string): Promise<IReview[]> {
     return ReviewModel.find({ serviceId }).lean();
   }
 
-  async findByBookingId(bookingId: Types.ObjectId): Promise<IReview | null> {
+  async findByBookingId(bookingId: string): Promise<IReview | null> {
     return ReviewModel.findOne({ bookingId }).lean();
   }
 
-  findReviews(serviceId: Types.ObjectId): Promise<IReviewWithUser[]|[]> {
+  findReviews(serviceId: string): Promise<IReviewWithUser[]|[]> {
    return ReviewModel.aggregate([
       {
-        $match: { serviceId }
+        $match: { serviceId: new Types.ObjectId(serviceId) }
       },
       {
         $lookup: {

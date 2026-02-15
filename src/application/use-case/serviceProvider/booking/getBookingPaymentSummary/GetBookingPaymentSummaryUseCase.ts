@@ -5,7 +5,7 @@ import {
   ICompletedServiceByProvider,
   ServiceBooking,
 } from "../../../../../application/dtos/serviceProvider/booking/paymentSummary/BookingPaymentSummaryDTO";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking";
 
@@ -13,7 +13,7 @@ import { IServiceBooking } from "../../../../../domain/entities/IServiceBooking"
 export class GetBookingPaymentSummaryUseCase implements IGetBookingPaymentSummaryUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
+    private serviceBookingRepository: IServiceBookingRepository,
   ) {}
 
   async execute(

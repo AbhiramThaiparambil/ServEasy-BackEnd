@@ -1,6 +1,5 @@
 import { inject, injectable } from "tsyringe";
 
-import { Types } from "mongoose";
 import { IGetServiceNamesUseCase } from "./IGetServiceNames.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
@@ -18,9 +17,7 @@ export class GetServiceNamesUseCase implements IGetServiceNamesUseCase {
   async execute(data: GetServiceNamesRequestDTO): Promise<IServiceNameDTO[]> {
     try {
       const { providerId } = data;
-      const services = await this.serviceRepo.findAllServiceProviderId(
-        new Types.ObjectId(providerId)
-      );
+      const services = await this.serviceRepo.findAllServiceProviderId(providerId);
 
       return services.map((service) => ({
         serviceName: service.serviceName,

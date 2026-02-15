@@ -7,7 +7,7 @@ import {
 import { IGoogleGenAIService } from "../../../../../services/aiAssistant/IGoogleGenAIService";
 import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiAssistanceRepository";
 import { AiChatResponse } from "../../../../../utils/types/dto/IAiChatResponse";
-import { isValidObjectId, Types } from "mongoose";
+import { isValidObjectId } from "../../../../../utils/isValidObjectId";
 import { IAiAssistanceMessage } from "../../../../../domain/entities/IAiAssistance";
 
 import { CreateAiChatRequestDTO } from "../../../../dtos/serviceProvider/ai-assistance/create/CreateAiChatRequestDTO";
@@ -41,7 +41,7 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
       };
 
       const savedUserMessage = await this.aiAssistance.addMessage(
-        new Types.ObjectId(serviceProviderId),
+        serviceProviderId,
         newMessage,
         chatId
       );
@@ -60,7 +60,7 @@ export class CreateAiChatUseCase implements ICreateAiChatUseCase {
       };
 
       const savedChat = await this.aiAssistance.addMessage(
-        new Types.ObjectId(serviceProviderId),
+        serviceProviderId,
         responseMessage,
         chatId ?? savedUserMessage?.id
       );

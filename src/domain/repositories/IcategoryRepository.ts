@@ -1,7 +1,8 @@
+import { AddCategoryDTO } from "../../application/dtos/admin/category/AddCategoryDTO";
 import { ICategory } from "../../domain/entities/ICategory ";
 
 export interface ICategoryRepository {
-  addCategory(category: ICategory): Promise<ICategory>;
+  addCategory(category: AddCategoryDTO): Promise<ICategory>;
   getAllCategories(): Promise<ICategory[]>;
   getCategoryById(id: string): Promise<ICategory | null>;
   updateCategory(id: string, updateData: Partial<ICategory>): Promise<ICategory | null>;

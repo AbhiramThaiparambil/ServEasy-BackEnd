@@ -1,7 +1,6 @@
 import { injectable, inject } from "tsyringe";
 
 import { ICreateAdUseCase } from "./ICreateAd.usecase";
-import { Types } from "mongoose";
 import {
   REPOSITORY_TOKENS,
   SERVICE_TOKENS,
@@ -26,8 +25,8 @@ export class CreateAdUseCase implements ICreateAdUseCase {
       const adData: Partial<IAd> = {
           caption: data.caption,
           description: data.description,
-          serviceId: new Types.ObjectId(data.serviceId),
-          providerId: new Types.ObjectId(data.serviceProviderId),
+          serviceId: data.serviceId,
+          providerId: data.serviceProviderId,
           targetLocation: data.targetLocation,
           radiusKm: data.radiusKm,
           startDate: data.startDate ? new Date(data.startDate) : undefined,

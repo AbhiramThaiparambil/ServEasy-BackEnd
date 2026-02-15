@@ -1,3 +1,3 @@
 export interface VerifyProviderDTO {
-    userid: string;
+    providerId: string;
 }

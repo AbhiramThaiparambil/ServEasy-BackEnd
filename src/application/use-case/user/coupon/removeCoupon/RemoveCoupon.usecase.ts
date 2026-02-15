@@ -3,7 +3,7 @@ import { IRemoveCouponToBookingUseCase } from "./IRemoveCoupon.usecase";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { ICouponRepository } from "../../../../../domain/repositories/IcouponRepository";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+
 import { RemoveCouponRequestDTO, RemoveCouponResponseDTO } from "../../../../dtos/user/coupon/CouponDTO";
 import { getErrorMessage } from "../../../../../utils/errorUtils";
 
@@ -11,7 +11,7 @@ import { getErrorMessage } from "../../../../../utils/errorUtils";
 @injectable()
 export class RemoveCouponToBookingUseCase implements IRemoveCouponToBookingUseCase {
   constructor(
-    @inject(ServiceBookingRepository)
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
     private bookingRepository: IServiceBookingRepository,
     @inject(REPOSITORY_TOKENS.CouponRepository)
     private couponRepo: ICouponRepository

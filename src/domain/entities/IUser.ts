@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { IAddress } from "./IAddress";
 
 export interface IUser {
@@ -10,7 +9,7 @@ export interface IUser {
   googleId?: string;
   isVerified: boolean;
   isBlocked?: boolean;
-  serviceProvider?: mongoose.Schema.Types.ObjectId;
+  serviceProvider?: string;
   profileImage?: string;
   isAdmin?: boolean;
   address?: IAddress[];

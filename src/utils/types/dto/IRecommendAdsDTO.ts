@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export interface IGetRecommendedAdsRequestDTO {
   count?: number;
   category?: string;
@@ -10,7 +8,7 @@ export interface IGetRecommendedAdsRequestDTO {
 }
 
 export interface IRecommendedAdDTO {
-  _id: string|Types.ObjectId; 
+  _id: string; 
 
   serviceId: string;
   providerId: string;

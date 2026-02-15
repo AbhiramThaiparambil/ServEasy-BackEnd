@@ -1,4 +1,3 @@
-import { ObjectId, Types } from "mongoose";
 import {
   IServiceProvider,
   IServiceProviderRegistration,
@@ -14,9 +13,9 @@ export interface IServiceProviderRepository {
   ): Promise<IServiceProvider>;
   findByEmail(email: string): Promise<IServiceProvider | null>;
 
-  findById(id: string | Types.ObjectId): Promise<IServiceProvider | null>;
+  findById(id: string): Promise<IServiceProvider | null>;
 
-  findUserIdByProviderId(providerId: string | Types.ObjectId): Promise<string>;
+  findUserIdByProviderId(providerId: string): Promise<string>;
 
   update(
     id: string,
@@ -61,7 +60,7 @@ export interface IServiceProviderRepository {
   ): Promise<{ isVerified: "verified" | "pending" | "rejected" } | null>;
 
   updateRegistration(
-    serviceProviderId: ObjectId,
+    serviceProviderId: string,
     data: Partial<IServiceProvider>,
   ): Promise<IServiceProvider>;
 

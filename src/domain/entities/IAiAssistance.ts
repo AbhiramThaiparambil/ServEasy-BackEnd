@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export interface IAiAssistanceMessage {
   id?: string;
   role: "user" | "assistant";
@@ -13,8 +11,8 @@ export interface IAiAssistanceChatSession {
   _id?: string;
     id?: string;
 
-  serviceProviderId: Types.ObjectId;
-  userId: Types.ObjectId;
+  serviceProviderId: string;
+  userId: string;
   title: string;
   messages: IAiAssistanceMessage[];
   isActive: boolean;

@@ -11,7 +11,7 @@ const WalletTransactionSchema = new Schema<IWalletTransaction>({
  rejectionReason: { type: String, default: null }
 });
 
-const ProviderWalletSchema = new Schema<IProviderWallet>({
+const ProviderWalletSchema = new Schema({
   serviceProviderId: { type: Schema.Types.ObjectId, ref: 'serviceproviders', required: true },
   balance: { type: Number, required: true },
   transactions: [WalletTransactionSchema]

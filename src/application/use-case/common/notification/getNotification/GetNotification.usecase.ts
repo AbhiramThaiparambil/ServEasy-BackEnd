@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 import { INotificationRepository } from "../../../../../domain/repositories/INotificationRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IGetNotificationUseCase } from "./IGetNotification.usecase";
@@ -15,13 +14,12 @@ export class GetNotificationUseCase implements IGetNotificationUseCase {
 
   async execute(data: GetNotificationsRequestDTO) {
     const { userId } = data;
-    const objectId = new Types.ObjectId(userId);
 
     const notifications =
-      await this.notificationRepository.findNotificationsByUserId(objectId);
+      await this.notificationRepository.findNotificationsByUserId(userId);
 
     const unreadCount =
-      await this.notificationRepository.findNotificationsUnreaded(objectId);
+      await this.notificationRepository.findNotificationsUnreaded(userId);
 
     return { notifications, unreadCount };
   }

@@ -1,9 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 import { RazorpayService } from "../../../../../services/payment/RazorpayService";
-import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
-import { ServiceProviderRepository } from "../../../../../infrastructure/repositories/ServiceProviderRepository";
 import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
 import { IWalletTransaction } from "../../../../../domain/entities/IproviderWallet";
 import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../../constants/tokens";
@@ -41,9 +37,8 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
         razorpay_signature,
     } = data;
     try {
-      const serviceObjId = new Types.ObjectId(id);
       const bookedService =
-        await this.serviceBookingRepository.findBookedServiceById(serviceObjId);
+        await this.serviceBookingRepository.findBookedServiceById(id);
 
       if (bookedService?.paymentStatus === "completed") {
         return { success: false, message: "Payment already verified" };
@@ -54,19 +49,11 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
         razorpay_payment_id,
         razorpay_signature
       );
-      const service = await this.serviceBookingRepository.findBookedServiceById(
-        serviceObjId
-      );
+      const service = await this.serviceBookingRepository.findBookedServiceById(id);
       if (service?.isOnlineService) {
-        this.serviceBookingRepository.updateServiceStatus(
-          serviceObjId,
-          "in-progress"
-        );
+        this.serviceBookingRepository.updateServiceStatus(id, "in-progress");
       } else {
-        this.serviceBookingRepository.updateServiceStatus(
-          serviceObjId,
-          "completed"
-        );
+        this.serviceBookingRepository.updateServiceStatus(id, "completed");
       }
 
       if (!service || !service.serviceProviderId || !service.payment)
@@ -114,7 +101,7 @@ export class VerifyPaymentUseCase implements IVerifyPaymentUseCase {
         result.status === "captured" ? "completed" : "failed";
 
       await this.serviceBookingRepository.updatePaymentStatus(
-        serviceObjId,
+        id,
         paymentStatus,
         result.method
       );
