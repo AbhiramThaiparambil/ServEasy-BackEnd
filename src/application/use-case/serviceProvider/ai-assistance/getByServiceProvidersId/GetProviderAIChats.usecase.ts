@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { IGetProviderAIChatsUseCase } from "./IGetProviderAIChatsusecase";
 
-import { isValidObjectId, Types } from "mongoose";
+import { isValidObjectId } from "../../../../../utils/isValidObjectId";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiAssistanceRepository";
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
@@ -24,8 +24,7 @@ export class GetProviderAIChatsUseCase implements IGetProviderAIChatsUseCase {
         console.error(` ${providerId} is not valid objectId`);
         return null;
       }
-      const objectId = new Types.ObjectId(providerId);
-      return await this.aiAssistanceRepository.findByProviderId(objectId);
+      return await this.aiAssistanceRepository.findByProviderId(providerId);
     } catch (error: unknown) {
       throw error;
     }

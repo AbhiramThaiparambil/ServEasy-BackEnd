@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { IGetAIChatByIdUseCase } from "./IGetAIChatByIdUseCase";
-import { isValidObjectId, Types } from "mongoose";
+import { isValidObjectId } from "../../../../../utils/isValidObjectId";
 import { IAiAssistanceRepository } from "../../../../../domain/repositories/IAiAssistanceRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IAiAssistanceChatSession } from "../../../../../domain/entities/IAiAssistance";
@@ -24,8 +24,7 @@ export class GetAIChatByIdUseCase implements IGetAIChatByIdUseCase {
         return null;
       }
 
-      const objectId = new Types.ObjectId(id);
-      return await this.aiAssistance.findById(objectId);
+      return await this.aiAssistance.findById(id);
     } catch (error: unknown) {
       console.error(`[GetAIChatByIdUseCase] Failed to fetch chat:`, getErrorMessage(error));
       throw error;

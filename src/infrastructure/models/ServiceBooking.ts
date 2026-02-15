@@ -18,7 +18,7 @@ const CouponAppliedSchema = new Schema({
   appliedAt: { type: Date, required: true },
 });
 
-const ServiceBookingSchema = new Schema<IServiceBooking>(
+const ServiceBookingSchema = new Schema(
   {
     serviceProviderId: {
       type: Schema.Types.ObjectId,

@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ISlot } from "./ISlot";
 
 export interface ILocation {
@@ -7,20 +6,20 @@ export interface ILocation {
   address: string;
 }
 export interface Review {
-  userId: Types.ObjectId;
+  userId: string;
   rating: number;
   comment?: string;
 }
 
 export interface IService {
-  _id?: Types.ObjectId;
+  _id?: string;
   serviceName: string;
   description: string;
   serviceType: string;
-  category: Types.ObjectId;
+  category: string;
   location: ILocation;
   estimatedPrice: number;
-  serviceProviderId: Types.ObjectId;
+  serviceProviderId: string;
   isActive?: boolean;
   review?: Review[];
   serviceImage: string;

@@ -1,18 +1,17 @@
-import { Types } from 'mongoose';
 import { IProviderWallet, IWalletTransaction } from '../entities/IproviderWallet';
 import { IProviderWalletView } from '../../utils/types/dto/IProviderWalletView';
 import { IProviderWalletDetailsView } from '../../utils/types/dto/IProviderWalletDetailsView';
 
 export interface IProviderWalletRepository {
-  createWallet(providerId: Types.ObjectId): Promise<IProviderWallet>;
+  createWallet(providerId: string): Promise<IProviderWallet>;
   addTransaction(
-    providerId: Types.ObjectId,
+    providerId: string,
     transaction: IWalletTransaction
   ): Promise<IProviderWallet>;
 
-  findByProviderId(providerId: Types.ObjectId): Promise<IProviderWallet | null>;
+  findByProviderId(providerId: string): Promise<IProviderWallet | null>;
   findProviderWalletWithPaginatedTransactions(
-    providerId: Types.ObjectId,
+    providerId: string,
     limit: number,
     skip: number
   ): Promise<IProviderWallet | null>;
@@ -42,7 +41,7 @@ export interface IProviderWalletRepository {
   ): Promise<boolean>;
 
   addTransactionWithWalletId(
-    walletId: Types.ObjectId,
+    walletId: string,
     transaction: IWalletTransaction
   ): Promise<IProviderWallet>;
    findCountOfTransactions(serviceProviderId: string): Promise<number> 

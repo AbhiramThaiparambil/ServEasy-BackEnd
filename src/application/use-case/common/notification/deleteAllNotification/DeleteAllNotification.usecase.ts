@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 import { INotificationRepository } from "../../../../../domain/repositories/INotificationRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IDeleteAllNotificationUseCase } from "./IDeleteAllNotification.usecase";
@@ -17,8 +16,6 @@ export class DeleteAllNotificationUseCase
 
   async execute(data: DeleteAllNotificationsRequestDTO): Promise<void> {
     const { userId } = data;
-    await this.notificationRepository.deleteUserAllNotification(
-      new Types.ObjectId(userId)
-    );
+    await this.notificationRepository.deleteUserAllNotification(userId);
   }
 }

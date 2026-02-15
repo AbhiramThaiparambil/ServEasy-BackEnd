@@ -44,7 +44,7 @@ const SubscriptionSchema = new Schema<ISubscription>({
   createdAt: { type: Date, default: Date.now },
 });
 
-const ServiceProviderSchema = new Schema<IServiceProvider>(
+const ServiceProviderSchema = new Schema(
   {
     serviceProviderName: { type: String, required: true },
     serviceProviderEmail: { type: String, required: true },

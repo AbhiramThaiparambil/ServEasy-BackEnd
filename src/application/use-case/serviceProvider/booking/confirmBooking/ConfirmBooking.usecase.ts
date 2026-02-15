@@ -1,29 +1,26 @@
 import { inject, injectable } from "tsyringe";
-import mongoose from "mongoose";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
 import { SocketService } from "../../../../../services/socket/SocketService";
 import { ISystemNotification } from "../../../../../domain/entities/INotification";
 import { formatDateTime } from "../../../../../utils/formatDateTime";
 import { IConfirmBookingUseCase } from "./IConfirmBooking.usecase";
 import { ConfirmBookingRequestDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingRequestDTO";
 import { ConfirmBookingResponseDTO } from "../../../../dtos/serviceProvider/booking/confirmBooking/ConfirmBookingResponseDTO";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 @injectable()
 export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
   constructor(
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository,
     @inject(SocketService)
     private socketService: SocketService,
   ) {}
 
   async execute(data: ConfirmBookingRequestDTO): Promise<ConfirmBookingResponseDTO> {
-    const bookingObjectId = new mongoose.Types.ObjectId(data.bookingId);
-    const providerId = new mongoose.Types.ObjectId(data.serviceProviderId);
-
     const isConflicting =
       await this.serviceBookingRepository.isServiceTimeConflicting(
-        providerId,
+        data.serviceProviderId,
         data.estimatedServiceTime,
       );
 
@@ -33,7 +30,7 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
 
     const booking =
       await this.serviceBookingRepository.findBookedServiceById(
-        bookingObjectId,
+        data.bookingId,
       );
 
     if (!booking) throw new Error("Booking not found");
@@ -42,12 +39,12 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
 
     if (data.reschedule) {
       await this.serviceBookingRepository.rescheduleBooking(
-        bookingObjectId,
+        data.bookingId,
         data.estimatedServiceTime,
       );
 
       await this.serviceBookingRepository.addBookingHistory(
-        bookingObjectId,
+        data.bookingId,
         "rescheduled",
         `Rescheduled to ${formatDateTime(data.estimatedServiceTime)}`,
       );
@@ -75,13 +72,13 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
     }
 
     await this.serviceBookingRepository.confirmBooking(
-      bookingObjectId,
+      data.bookingId,
       data.status,
       data.estimatedServiceTime,
     );
 
     await this.serviceBookingRepository.addBookingHistory(
-      bookingObjectId,
+      data.bookingId,
       "confirmed",
       `Booking confirmed for ${formatDateTime(data.estimatedServiceTime)}`,
     );

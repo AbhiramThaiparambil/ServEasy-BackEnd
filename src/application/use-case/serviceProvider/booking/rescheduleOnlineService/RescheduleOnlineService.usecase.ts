@@ -1,5 +1,4 @@
 import { injectable, inject } from "tsyringe";
-import { Types } from "mongoose";
 import { IRescheduleOnlineServiceSlotUseCase } from "./IRescheduleOnlineService.usecase";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
@@ -17,7 +16,7 @@ export class RescheduleOnlineServiceSlotUseCase implements IRescheduleOnlineServ
 
   async execute(data: RescheduleOnlineServiceRequestDTO): Promise<boolean> {
     const result = await this.serviceBookingRepository.rescheduleOnlineService(
-      new Types.ObjectId(data.bookingId),
+      data.bookingId,
       data.date,
       data.startTime,
       data.endTime,

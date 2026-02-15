@@ -1,7 +1,5 @@
-import { Types } from "mongoose";
-
 export interface IServiceProviderDetails {
-  _id: Types.ObjectId;
+  _id: string;
   serviceProviderName: string;
   profileImage?: string;
   experience?: number;
@@ -16,14 +14,14 @@ export interface IServiceReviewDetails {
 }
 
 export interface ISingleServiceWithProvider {
-  _id: Types.ObjectId;
+  _id: string;
   serviceName: string;
   description: string;
   serviceType: string;
   estimatedPrice: number;
   serviceImage?: string;
   isActive: boolean;
-  serviceProviderId: Types.ObjectId;
+  serviceProviderId: string;
   createdAt: Date;
   updatedAt: Date;
 

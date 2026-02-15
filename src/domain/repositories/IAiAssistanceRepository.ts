@@ -1,17 +1,16 @@
-import { Types } from 'mongoose';
 import { IAiAssistanceChatInfo, IAiAssistanceChatSession, IAiAssistanceMessage } from '../entities/IAiAssistance';
 export interface IAiAssistanceRepository {
   createSession(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     message: IAiAssistanceMessage
   ): Promise<IAiAssistanceChatSession>;
-  findById(chatId: Types.ObjectId): Promise<IAiAssistanceChatSession | null>;
+  findById(chatId: string): Promise<IAiAssistanceChatSession | null>;
   addMessage(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     message: IAiAssistanceMessage,
     chatId?:string,
   ): Promise<IAiAssistanceChatSession | null>;
-    findByProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatSession[]|[]>;
-    getChatsInfoByServiceProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatInfo[]|[]>;
-  //   endSession(chatId: Types.ObjectId): Promise<boolean>;
+    findByProviderId(serviceProviderId: string): Promise<IAiAssistanceChatSession[]|[]>;
+    getChatsInfoByServiceProviderId(serviceProviderId: string): Promise<IAiAssistanceChatInfo[]|[]>;
+  //   endSession(chatId: string): Promise<boolean>;
 }

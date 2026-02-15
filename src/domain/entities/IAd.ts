@@ -1,11 +1,10 @@
-import { Types } from "mongoose";
 import { ILocation } from "./IService";
 export type AdStatus = "active" | "block" | "expired";
 export interface IAd {
-  _id?: Types.ObjectId;
+  _id?: string;
 
-  serviceId: Types.ObjectId;
-  providerId: Types.ObjectId;
+  serviceId: string;
+  providerId: string;
 
   caption: string;
   description: string;

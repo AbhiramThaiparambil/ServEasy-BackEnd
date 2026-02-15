@@ -1,6 +1,5 @@
 import { inject, injectable } from "tsyringe";
 import { IProviderWalletRepository } from "../../../../../domain/repositories/IproviderWalletRepository";
-import { Types } from "mongoose";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IGetWalletUseCase } from "./IGetWalletUseCase";
 import { GetWalletRequestDTO } from "../../../../dtos/serviceProvider/wallet/getWallet/GetWalletRequestDTO";
@@ -16,7 +15,7 @@ export class GetWalletUseCase implements IGetWalletUseCase {
   async execute(data: GetWalletRequestDTO): Promise<GetWalletResponseDTO | null> {
     const wallet =
       await this.walletRepository.findProviderWalletWithPaginatedTransactions(
-        new Types.ObjectId(data.serviceProviderId),
+        data.serviceProviderId,
         data.limit,
         data.skip
       );

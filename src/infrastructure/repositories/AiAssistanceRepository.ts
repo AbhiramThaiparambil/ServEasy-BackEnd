@@ -11,7 +11,7 @@ import { AiAssistanceChatSessionModel } from '../models/aiAssistanceSessionModel
 @injectable()
 export class aiAssistanceRepository implements IAiAssistanceRepository {
   async createSession(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     message: IAiAssistanceMessage
   ): Promise<IAiAssistanceChatSession> {
     const newSession = new AiAssistanceChatSessionModel({
@@ -24,7 +24,7 @@ export class aiAssistanceRepository implements IAiAssistanceRepository {
   }
 
   async addMessage(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     message: IAiAssistanceMessage,
     chatId?: string
   ): Promise<IAiAssistanceChatSession | null> {
@@ -48,7 +48,7 @@ export class aiAssistanceRepository implements IAiAssistanceRepository {
     );
   }
 
-  findById(chatId: Types.ObjectId): Promise<IAiAssistanceChatSession | null> {
+  findById(chatId: string): Promise<IAiAssistanceChatSession | null> {
     return AiAssistanceChatSessionModel.findById(chatId);
   }
 
@@ -68,14 +68,14 @@ export class aiAssistanceRepository implements IAiAssistanceRepository {
   //   endSession(chatId: Types.ObjectId): Promise<boolean>;
 
 
-async findByProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatSession[] | []> {
+async findByProviderId(serviceProviderId: string): Promise<IAiAssistanceChatSession[] | []> {
     
-    return await AiAssistanceChatSessionModel.find({serviceProviderId}).sort({createdAt:-1})
+    return await AiAssistanceChatSessionModel.find({serviceProviderId: new Types.ObjectId(serviceProviderId)}).sort({createdAt:-1})
 
 }
 
-async getChatsInfoByServiceProviderId(serviceProviderId: Types.ObjectId): Promise<IAiAssistanceChatInfo[] | []> {
-      return await AiAssistanceChatSessionModel.aggregate([{$match:{serviceProviderId}},{$sort:{createdAt:-1}},{ $project: {  title: 1, _id: 1 } }])
+async getChatsInfoByServiceProviderId(serviceProviderId: string): Promise<IAiAssistanceChatInfo[] | []> {
+      return await AiAssistanceChatSessionModel.aggregate([{$match:{serviceProviderId: new Types.ObjectId(serviceProviderId)}},{$sort:{createdAt:-1}},{ $project: {  title: 1, _id: 1 } }])
 
 
 }

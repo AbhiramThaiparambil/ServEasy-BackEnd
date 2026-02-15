@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export interface INearbyServiceFilters {
   category?: string;
   experience?: number;
@@ -8,7 +6,7 @@ export interface INearbyServiceFilters {
 }
 
 export interface INearbyServiceResult {
-  _id: Types.ObjectId;
+  _id: string;
   serviceProviderName?: string;
   profileImage?: string;
   category?: string;

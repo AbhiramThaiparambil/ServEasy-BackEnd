@@ -1,17 +1,16 @@
-import { Types } from "mongoose";
 import { INotification } from "../entities/INotification";
 
 export interface INotificationRepository {
   findNotificationsByUserId(
-    userId: Types.ObjectId
+    userId: string
   ): Promise<INotification[] | null>;
-  markNotificationAsRead(id: Types.ObjectId): Promise<void>;
+  markNotificationAsRead(id: string): Promise<void>;
   createNotification(notification: {
     content: string;
-    userId: Types.ObjectId;
+    userId: string;
   }): Promise<void>;
 
-  deleteUserAllNotification(id: Types.ObjectId): Promise<void>;
-  findNotificationsUnreaded(userId: Types.ObjectId): Promise<number | null>;
-  delteSingleNotification(id: Types.ObjectId): Promise<void>;
+  deleteUserAllNotification(id: string): Promise<void>;
+  findNotificationsUnreaded(userId: string): Promise<number | null>;
+  delteSingleNotification(id: string): Promise<void>;
 }

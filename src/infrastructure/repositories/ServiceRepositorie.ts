@@ -13,7 +13,7 @@ export class ServiceRepository implements IServiceRepository {
     return await newService.save();
   }
 
-  async findById(serviceId: Types.ObjectId): Promise<IService | null> {
+  async findById(serviceId: string): Promise<IService | null> {
     return await ServiceModel.findById(serviceId);
   }
   async findAllServiceProviderId(
@@ -29,7 +29,7 @@ export class ServiceRepository implements IServiceRepository {
   }
 
   async update(
-    serviceId: Types.ObjectId,
+    serviceId: string,
     service: Partial<IService>,
   ): Promise<IService | null> {
     return await ServiceModel.findByIdAndUpdate(serviceId, service, {
@@ -37,7 +37,7 @@ export class ServiceRepository implements IServiceRepository {
     });
   }
 
-  async delete(serviceId: Types.ObjectId): Promise<boolean> {
+  async delete(serviceId: string): Promise<boolean> {
     const result = await ServiceModel.findByIdAndDelete(serviceId);
     return !!result;
   }

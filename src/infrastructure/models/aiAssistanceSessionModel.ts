@@ -11,7 +11,7 @@ export const AiAssistanceMessageSchema = new Schema<IAiAssistanceMessage>(
   { _id: false }
 );
 
-const AiAssistanceSessionSchema = new Schema<IAiAssistanceChatSession>(
+const AiAssistanceSessionSchema = new Schema(
   {
     serviceProviderId: { type: Schema.Types.ObjectId, ref: "ServiceProvider", required: true },
     title: { type: String, default:"new Chat" },

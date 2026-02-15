@@ -1,10 +1,9 @@
 
-import { Types } from "mongoose";
 import { IProviderWallet, IWalletTransaction } from "../../../../domain/entities/IproviderWallet";
 
 export interface IWalletUseCase {
-  addTransactionToProviderWallet(providerId: Types.ObjectId, transaction: IWalletTransaction): Promise<IProviderWallet>;
-  getProviderWallet(providerId: Types.ObjectId): Promise<IProviderWallet | null>;
+  addTransactionToProviderWallet(providerId: string, transaction: IWalletTransaction): Promise<IProviderWallet>;
+  getProviderWallet(providerId: string): Promise<IProviderWallet | null>;
   getAllWallets(): Promise<IProviderWallet[]>;
 
   // getTransactionsByProviderSorted(providerId: string): Promise<IWalletTransaction[]>;

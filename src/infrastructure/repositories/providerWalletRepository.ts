@@ -11,9 +11,9 @@ import { getErrorMessage } from "../../utils/errorUtils";
 
 export class ProviderWalletRepository implements IProviderWalletRepository {
   async createWallet(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: string
   ): Promise<IProviderWallet> {
-    let wallet = await ProviderWalletModel.findOne({ serviceProviderId });
+    let wallet = await ProviderWalletModel.findOne({ serviceProviderId: new Types.ObjectId(serviceProviderId) });
 
     if (!wallet) {
       wallet = new ProviderWalletModel({
@@ -28,10 +28,10 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
   }
 
   async addTransaction(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     transaction: IWalletTransaction
   ): Promise<IProviderWallet> {
-    const wallet = await ProviderWalletModel.findOne({ serviceProviderId });
+    const wallet = await ProviderWalletModel.findOne({ serviceProviderId: new Types.ObjectId(serviceProviderId) });
     if (!wallet) throw new Error("Wallet not found");
 
     wallet.transactions.push(transaction);
@@ -43,7 +43,7 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
   }
 
   async addTransactionWithWalletId(
-    walletId: Types.ObjectId,
+    walletId: string,
     transaction: IWalletTransaction
   ): Promise<IProviderWallet> {
     const wallet = await ProviderWalletModel.findOne({ _id: walletId });
@@ -58,18 +58,18 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
   }
 
   async findByProviderId(
-    serviceProviderId: Types.ObjectId
+    serviceProviderId: string
   ): Promise<IProviderWallet | null> {
-    return ProviderWalletModel.findOne({ serviceProviderId });
+    return ProviderWalletModel.findOne({ serviceProviderId: new Types.ObjectId(serviceProviderId) });
   }
 
   async findProviderWalletWithPaginatedTransactions(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     limit = 10,
     skip = 0
   ): Promise<IProviderWallet | null> {
     const result = await ProviderWalletModel.aggregate([
-      { $match: { serviceProviderId } },
+      { $match: { serviceProviderId: new Types.ObjectId(serviceProviderId) } },
       {
         $lookup: {
           from: "serviceproviders",
@@ -265,7 +265,7 @@ export class ProviderWalletRepository implements IProviderWalletRepository {
     };
 
     const added = await this.addTransactionWithWalletId(
-      new Types.ObjectId(walletId),
+      walletId,
       revertTransaction
     );
 

@@ -1,11 +1,9 @@
-import { Types } from "mongoose";
-
 export interface INotification {
-  id?: Types.ObjectId;
+  id?: string;
 
   content: string;
   notificationTime: Date;
-  userId: Types.ObjectId;
+  userId: string;
   isRead: boolean;
 }
 

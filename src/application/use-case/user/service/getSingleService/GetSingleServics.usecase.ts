@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { inject, injectable } from "tsyringe";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
@@ -33,9 +32,7 @@ export class GetSingleServiceUseCase implements IGetSingleServiceUseCase {
         return { service: [], reviews: [] };
       }
 
-      const reviews = await this.reviewRepository.findReviews(
-        new Types.ObjectId(serviceId),
-      );
+      const reviews = await this.reviewRepository.findReviews(serviceId);
 
       return { service, reviews };
     } catch (error: unknown) {

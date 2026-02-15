@@ -18,7 +18,7 @@ const locationSchema = new Schema({
   }
 });
 
-const ServiceSchema = new Schema<IService>(
+const ServiceSchema = new Schema(
   {
     serviceName: { type: String, required: true },
     description: { type: String, required: true },

@@ -1,5 +1,5 @@
 import { injectable, inject, container } from "tsyringe";
-import mongoose, { ClientSession, Types } from "mongoose";
+import mongoose from "mongoose";
 import {
   IServiceBooking,
 } from "../../../../../domain/entities/IServiceBooking";
@@ -33,10 +33,10 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
   ) {}
 
   async execute(data: CreateBookingRequestDTO): Promise<IServiceBooking> {
-    const { userId: userIdStr, serviceId: serviceIdStr, address, preferredServiceTime, liveLocation } = data;
-    const userId = new mongoose.Types.ObjectId(userIdStr);
-    const serviceId = new mongoose.Types.ObjectId(serviceIdStr);
-    const session: ClientSession = await mongoose.startSession();
+    const { userId, serviceId, address, preferredServiceTime, liveLocation } = data;
+    // NOTE: mongoose.startSession() is used here for transaction support.
+    // This is an infrastructure concern that will be abstracted in a future refactor.
+    const session = await mongoose.startSession();
     session.startTransaction();
     try {
       console.log("im useCase booking");
@@ -112,7 +112,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
 
       const bookingQueueService = container.resolve(BookingQueueService);
       await bookingQueueService.addAutoCancelJob(
-        new Types.ObjectId(result._id.toString()),
+        result._id.toString(),
       );
 
       return result;

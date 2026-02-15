@@ -1,8 +1,8 @@
 import { injectable, inject } from "tsyringe";
-import mongoose from "mongoose";
-import { ServiceBookingRepository } from "../../../../../infrastructure/repositories/ServiceBookingRepository";
-import { ServiceRepository } from "../../../../../infrastructure/repositories/ServiceRepositorie";
+import { IServiceBookingRepository } from "../../../../../domain/repositories/IserviceBookingRepository";
+import { IServiceRepository } from "../../../../../domain/repositories/IServiceRepository";
 import { IGetBookedServicesUseCase } from "./IGetBookedServices.usecase";
+import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 
 import {
   GetUserBookedServicesRequestDTO,
@@ -15,19 +15,18 @@ import { IBookedServiceWithDetails } from "../../../../../domain/entities/IServi
 @injectable()
 export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
   constructor(
-    @inject(ServiceRepository)
-    private serviceRepository: ServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceRepository)
+    private serviceRepository: IServiceRepository,
 
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository
   ) {}
 
   async getUserBookedServices(data: GetUserBookedServicesRequestDTO): Promise<IBookedServiceWithDetails[]> {
     const { userId, skip, limit } = data;
-    const uId = new mongoose.Types.ObjectId(userId);
 
     return this.serviceBookingRepository.findBookedServicesAndServiceByUserId(
-      uId,
+      userId,
       skip,
       limit
     );
@@ -37,30 +36,25 @@ export class GetBookedServicesUseCase implements IGetBookedServicesUseCase {
     data: GetUserBookedServiceCountRequestDTO
   ): Promise<number> {
     const { userId } = data;
-    const uId = new mongoose.Types.ObjectId(userId);
 
-    return this.serviceBookingRepository.findCountBookedServicebyUserId(uId);
+    return this.serviceBookingRepository.findCountBookedServicebyUserId(userId);
   }
 
   async getServiceProviderBookedServices(
     data: GetServiceProviderBookedServicesRequestDTO
   ): Promise<GetServiceProviderBookedServiceResponseDTO> {
     const { serviceProviderId, skip, limit } = data;
-    const sId = new mongoose.Types.ObjectId(serviceProviderId);
 
     const services =
       await this.serviceBookingRepository.findBookedServicesAndServiceByServiceProviderId(
-        sId,
+        serviceProviderId,
         skip,
         limit
       );
 
     const count = await this.serviceBookingRepository.findCountBookedService(
-      sId
+      serviceProviderId
     );
-
- 
-     
 
     return { services, count };
   }

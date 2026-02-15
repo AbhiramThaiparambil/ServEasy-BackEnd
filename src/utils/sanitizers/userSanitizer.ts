@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { IUser } from "../../domain/entities/IUser";
 
 export interface SafeUser {
@@ -9,7 +8,7 @@ export interface SafeUser {
   isBlocked: boolean;
   profileImage?: string;
   isAdmin?: boolean;
-  serviceProvider?: Types.ObjectId;
+  serviceProvider?: string;
 }
 
 export const userSanitizer = (user: IUser): SafeUser => {
@@ -23,7 +22,7 @@ export const userSanitizer = (user: IUser): SafeUser => {
     isAdmin: user.isAdmin,
   };
 
-  if (user.serviceProvider instanceof Types.ObjectId) {
+  if (user.serviceProvider) {
     safeUser.serviceProvider = user.serviceProvider;
   }
 

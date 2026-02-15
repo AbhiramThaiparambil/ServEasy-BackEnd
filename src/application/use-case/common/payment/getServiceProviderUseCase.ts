@@ -1,17 +1,18 @@
 import { inject, injectable } from "tsyringe";
 import { RazorpayService } from "../../../../services/payment/RazorpayService";
-import { ServiceRepository } from "../../../../infrastructure/repositories/ServiceRepositorie";
-import { ServiceBookingRepository } from "../../../../infrastructure/repositories/ServiceBookingRepository";
-import { SERVICE_TOKENS } from "../../../../constants/tokens";
+import { IServiceRepository } from "../../../../domain/repositories/IServiceRepository";
+import { IServiceBookingRepository } from "../../../../domain/repositories/IserviceBookingRepository";
+import { REPOSITORY_TOKENS, SERVICE_TOKENS } from "../../../../constants/tokens";
 
 @injectable()
 export class GetPaymentInfoServiceProviderUseCase {
   constructor(
     @inject(SERVICE_TOKENS.RazorpayService)
     private razorpayService: RazorpayService,
-    @inject(ServiceRepository) private serviceRepository: ServiceRepository,
-    @inject(ServiceBookingRepository)
-    private serviceBookingRepository: ServiceBookingRepository
+    @inject(REPOSITORY_TOKENS.ServiceRepository)
+    private serviceRepository: IServiceRepository,
+    @inject(REPOSITORY_TOKENS.ServiceBookingRepository)
+    private serviceBookingRepository: IServiceBookingRepository
   ) {}
 
   async serviceProviderInfo(id: string) {

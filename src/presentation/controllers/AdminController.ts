@@ -532,6 +532,7 @@ export class AdminController {
 
   async serviceProviderVerify(req: Request, res: Response): Promise<void> {
     try {
+       console.log('----------------')
       const { serviceProviderId } = req.body;
 
       const data =
@@ -1050,10 +1051,8 @@ export class AdminController {
     req: Request,
     res: Response,
   ): Promise<void> {
-    const id = getString(req.params.id);
-    const { reason } = req.body;
-
-    const dto: RejectProviderDTO = { userid: id, reason };
+    const { reason,serviceProviderId } = req.body;
+    const dto: RejectProviderDTO = { userid:serviceProviderId, reason };
 
     await this.serviceProviderRejectVerify.rejectServiceProvider(dto);
 

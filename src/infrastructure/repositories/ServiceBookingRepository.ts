@@ -15,13 +15,13 @@ import { ICompletedServiceByProvider } from "../../application/dtos/serviceProvi
 @injectable()
 export class ServiceBookingRepository implements IServiceBookingRepository {
   async findBookedServicesByUserId(
-    userId: Types.ObjectId,
+    userId: string,
   ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ userId }).sort({ bookedTime: -1 });
   }
 
   async findServicesByProviderId(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<IServiceBooking[]> {
     return await ServiceBooking.find({ serviceProviderId }).sort({
       bookedTime: -1,
@@ -41,7 +41,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async updateServiceStatus(
-    serviceBookingId: Types.ObjectId,
+    serviceBookingId: string,
     serviceStatus: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
@@ -52,7 +52,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async updatePaymentStatus(
-    serviceBookingId: Types.ObjectId,
+    serviceBookingId: string,
     paymentStatus: string,
     paymentType: string,
   ): Promise<IServiceBooking | null> {
@@ -64,20 +64,20 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findCountBookedServicebyUserId(
-    userId: Types.ObjectId,
+    userId: string,
   ): Promise<number> {
     return await ServiceBooking.find({ userId }).countDocuments();
   }
 
   async findBookedServicesAndServiceByUserId(
-    userId: Types.ObjectId,
+    userId: string,
     skip: number,
     limit: number,
   ): Promise<IBookedServiceWithDetails[]> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
         {
-          $match: { userId: userId },
+          $match: { userId: new Types.ObjectId(userId) },
         },
         {
           $lookup: {
@@ -119,14 +119,14 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findBookedServicesAndServiceByServiceProviderId(
-    ServiceProviderId: Types.ObjectId,
+    ServiceProviderId: string,
     skip: number,
     limit: number,
   ): Promise<IBookedServiceWithDetails[]> {
     try {
       const bookedServices = await ServiceBooking.aggregate([
         {
-          $match: { serviceProviderId: ServiceProviderId },
+          $match: { serviceProviderId: new Types.ObjectId(ServiceProviderId) },
         },
         {
           $lookup: {
@@ -201,10 +201,10 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findCountBookedService(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<number> {
     try {
-      return await ServiceBooking.countDocuments({ serviceProviderId });
+      return await ServiceBooking.countDocuments({ serviceProviderId: new Types.ObjectId(serviceProviderId) });
     } catch (e: unknown) {
       console.error("Error counting booked services:", getErrorMessage(e));
       throw e;
@@ -212,13 +212,13 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async findBookedServiceById(
-    id: Types.ObjectId,
+    id: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findById(id);
   }
 
   async confirmBooking(
-    id: Types.ObjectId,
+    id: string,
     newStatus: string,
     estimatedServiceTime: string,
   ): Promise<IServiceBooking | null> {
@@ -234,7 +234,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
   async cancelBooking(
-    id: Types.ObjectId,
+    id: string,
     newStatus: string,
     cancelReason: string,
   ): Promise<IServiceBooking | null> {
@@ -250,7 +250,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
-  async requestPayment(id: Types.ObjectId, status: string, payment: IPayment):Promise<IServiceBooking | null> {
+  async requestPayment(id: string, status: string, payment: IPayment):Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       id,
       {
@@ -264,7 +264,7 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
     );
   }
 
-  async uploadBills(id: Types.ObjectId, uploadBills: string[] | string) {
+  async uploadBills(id: string, uploadBills: string[] | string): Promise<IServiceBooking | null> {
     return await ServiceBooking.findByIdAndUpdate(
       id,
       {
@@ -457,8 +457,8 @@ export class ServiceBookingRepository implements IServiceBookingRepository {
   }
 
   async updateReviewId(
-    bookingId: Types.ObjectId,
-    reviewId: Types.ObjectId,
+    bookingId: string,
+    reviewId: string,
   ): Promise<void> {
     await ServiceBooking.findOneAndUpdate(
       { _id: bookingId },
@@ -565,7 +565,7 @@ async getPaymentInfo(
   }
 
   async isServiceTimeConflicting(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     estimatedServiceTime: string,
   ): Promise<boolean> {
     console.log(serviceProviderId, "serviceProviderId");
@@ -579,7 +579,7 @@ async getPaymentInfo(
   }
 
   async rescheduleBooking(
-    bookingId: Types.ObjectId,
+    bookingId: string,
     newDate: string,
   ): Promise<IServiceBooking | null> {
     return await ServiceBooking.findOneAndUpdate(
@@ -594,7 +594,7 @@ async getPaymentInfo(
   }
 
   async addBookingHistory(
-    bookingId: Types.ObjectId,
+    bookingId: string,
     action: string,
     message: string,
     session?: ClientSession,
@@ -615,7 +615,7 @@ async getPaymentInfo(
   }
 
   async checkAvailability(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<{ available: boolean; reason?: string }> {
     try {
       const bookings = await ServiceBooking.find({
@@ -700,7 +700,7 @@ async getPaymentInfo(
   }
 
   async countActiveServices(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<number> {
     try {
       return await ServiceBooking.countDocuments({
@@ -714,8 +714,8 @@ async getPaymentInfo(
   }
 
   async hasActiveBooking(
-    userId: Types.ObjectId,
-    serviceId: Types.ObjectId,
+    userId: string,
+    serviceId: string,
   ): Promise<boolean> {
     console.log(userId, serviceId);
     const result = await ServiceBooking.aggregate([
@@ -734,7 +734,7 @@ async getPaymentInfo(
   }
 
   async rescheduleOnlineService(
-    bookingId: Types.ObjectId,
+    bookingId: string,
     date: Date,
     startTime: Date,
     endTime: Date,

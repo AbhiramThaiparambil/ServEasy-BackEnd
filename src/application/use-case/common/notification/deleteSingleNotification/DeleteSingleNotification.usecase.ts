@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { Types } from "mongoose";
 import { INotificationRepository } from "../../../../../domain/repositories/INotificationRepository";
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IDeleteSingleNotificationUseCase } from "./IDeleteSingleNotification.usecase";
@@ -17,8 +16,6 @@ export class DeleteSingleNotificationUseCase
 
   async execute(data: DeleteSingleNotificationRequestDTO): Promise<void> {
     const { notificationId } = data;
-    await this.notificationRepository.delteSingleNotification(
-      new Types.ObjectId(notificationId)
-    );
+    await this.notificationRepository.delteSingleNotification(notificationId);
   }
 }

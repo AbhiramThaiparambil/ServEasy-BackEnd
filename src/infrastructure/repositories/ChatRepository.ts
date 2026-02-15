@@ -34,7 +34,7 @@ export class ChatRepository implements IChatRepository {
 
   //     return chat;
   //   }
-  async findByIds(senderId: Types.ObjectId, receiverId: Types.ObjectId): Promise<IChat | null> {
+  async findByIds(senderId: string, receiverId: string): Promise<IChat | null> {
     const [user1, user2] = [senderId, receiverId].sort((a, b) =>
       a.toString().localeCompare(b.toString())
     );
@@ -45,8 +45,8 @@ export class ChatRepository implements IChatRepository {
   }
 
   async createChat(
-    userA: Types.ObjectId,
-    userB: Types.ObjectId,
+    userA: string,
+    userB: string,
     messages: Array<IMessage>
   ): Promise<IChat> {
     const [user1, user2] = [userA, userB].sort((a, b) => a.toString().localeCompare(b.toString()));
@@ -61,7 +61,7 @@ export class ChatRepository implements IChatRepository {
   }
 
   async addMessage(
-    chatId: Types.ObjectId,
+    chatId: string,
     message: {
       messageType: string;
       content: string;
@@ -134,7 +134,7 @@ export class ChatRepository implements IChatRepository {
   //     );
   //   }
 
-  async makeItOnline(id1: Types.ObjectId, onlineId: Types.ObjectId): Promise<void> {
+  async makeItOnline(id1: string, onlineId: string): Promise<void> {
     const chat = await this.findByIds(id1, onlineId);
     if (!chat) return;
 
@@ -184,9 +184,9 @@ export class ChatRepository implements IChatRepository {
   }
 
   async makeItOffline(
-    sender: Types.ObjectId,
-    receiver: Types.ObjectId,
-    offlineId: Types.ObjectId
+    sender: string,
+    receiver: string,
+    offlineId: string
   ): Promise<void> {
     const chat = await this.findByIds(sender, receiver);
     if (!chat) return;

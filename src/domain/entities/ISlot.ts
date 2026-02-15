@@ -1,8 +1,6 @@
-import { Types } from "mongoose";
-
 export interface ISlot {
-  _id?: Types.ObjectId | string;
-  serviceId: Types.ObjectId;
+  _id?: string;
+  serviceId: string;
   startTime: Date;
   endTime: Date;
   booked: boolean;

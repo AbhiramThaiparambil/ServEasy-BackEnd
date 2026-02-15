@@ -107,7 +107,7 @@ export class CouponRepository implements ICouponRepository {
     );
   }
 
-  async removeCoupon(userId: Types.ObjectId, couponId: string): Promise<void> {
+  async removeCoupon(userId: string, couponId: string): Promise<void> {
     await CouponModel.updateOne(
       { _id: couponId },
       { $pull: { usedBy: userId } },

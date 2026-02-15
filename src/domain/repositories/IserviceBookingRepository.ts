@@ -1,4 +1,3 @@
-import { ClientSession, Types } from "mongoose";
 import {
   IBookedServiceWithDetails,
   IServiceBooking,
@@ -9,76 +8,76 @@ import { ICompletedServiceByProvider } from "../../application/dtos/serviceProvi
 import { IPayment } from "../entities/IPayment";
 export interface IServiceBookingRepository {
   findBookedServicesByUserId(
-    userId: Types.ObjectId,
+    userId: string,
   ): Promise<IServiceBooking[]>;
   findServicesByProviderId(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<IServiceBooking[]>;
   createServiceBooking(
     serviceBookingData: IServiceBooking,
-    session?: ClientSession,
+    session?: unknown,
   ): Promise<IServiceBooking>;
   findById(serviceId: string): Promise<IServiceBooking | null>;
   updateServiceStatus(
-    serviceBookingId: Types.ObjectId,
+    serviceBookingId: string,
     serviceStatus: string,
   ): Promise<IServiceBooking | null>;
   updatePaymentStatus(
-    serviceBookingId: Types.ObjectId,
+    serviceBookingId: string,
     paymentStatus: string,
     paymentType: string,
   ): Promise<IServiceBooking | null>;
 
   findBookedServicesAndServiceByUserId(
-    Id: Types.ObjectId,
+    Id: string,
     skip: number,
     limit: number,
   ): Promise<IBookedServiceWithDetails[]>;
   findBookedServicesAndServiceByServiceProviderId(
-    Id: Types.ObjectId,
+    Id: string,
     skip: number,
     limit: number,
   ): Promise<IBookedServiceWithDetails[]>;
 
   confirmBooking(
-    id: Types.ObjectId,
+    id: string,
     newStatus: string,
     estimatedServiceTime: string,
   ): Promise<IServiceBooking | null>;
 
   cancelBooking(
-    id: Types.ObjectId,
+    id: string,
     newStatus: string,
     cancelReason: string,
   ): Promise<IServiceBooking | null>;
 
   isServiceTimeConflicting(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
     estimatedServiceTime: string,
   ): Promise<boolean>;
 
   addBookingHistory(
-    bookingId: Types.ObjectId,
+    bookingId: string,
     action: string,
     message: string,
-    session?: ClientSession,
+    session?: unknown,
   ): Promise<void>;
 
-  findBookedServiceById(id: Types.ObjectId): Promise<IServiceBooking | null>;
+  findBookedServiceById(id: string): Promise<IServiceBooking | null>;
   update(
     bookingId: string,
     data: Partial<IServiceBooking>,
   ): Promise<IServiceBooking | null>;
   removeCouponAndUpdatePayment(bookingId: string): Promise<IServiceBooking>;
-  countActiveServices(providerId: Types.ObjectId): Promise<number>;
+  countActiveServices(providerId: string): Promise<number>;
 
   hasActiveBooking(
-    userId: Types.ObjectId,
-    serviceId: Types.ObjectId,
+    userId: string,
+    serviceId: string,
   ): Promise<boolean>;
 
   rescheduleOnlineService(
-    bookingId: Types.ObjectId,
+    bookingId: string,
 
     date: Date,
     startTime: Date,
@@ -89,8 +88,8 @@ export interface IServiceBookingRepository {
     serviceProviderId: string,
   ): Promise<ICompletedServiceByProvider[]>;
   updateReviewId(
-    bookingId: Types.ObjectId,
-    reviewId: Types.ObjectId,
+    bookingId: string,
+    reviewId: string,
   ): Promise<void>;
 
   getPaymentInfo(
@@ -105,7 +104,7 @@ export interface IServiceBookingRepository {
   ): Promise<unknown>;
 
   checkAvailability(
-    serviceProviderId: Types.ObjectId,
+    serviceProviderId: string,
   ): Promise<{ available: boolean; reason?: string }>;
 
   findPaymentInfoAdmin(
@@ -116,6 +115,17 @@ export interface IServiceBookingRepository {
     statusField: "serviceStatus" | "paymentStatus",
   ): Promise<IFindPaymentInfoAdminDTO[]>;
 
-     requestPayment(id: Types.ObjectId, status: string, payment: IPayment):Promise<IServiceBooking|null> 
-  
+     requestPayment(id: string, status: string, payment: IPayment):Promise<IServiceBooking|null> 
+ 
+     
+        rescheduleBooking(
+         bookingId: string,
+         newDate: string,
+       ): Promise<IServiceBooking | null> 
+
+  findCountBookedServicebyUserId(userId: string): Promise<number>;
+  findCountBookedService(serviceProviderId: string): Promise<number>;
+  uploadBills(id: string, uploadBills: string[] | string): Promise<IServiceBooking | null>;
+  getBookedServiceCount(): Promise<number>;
+  findPaymentInfoServiceProvider(id: string): Promise<unknown>;
 }
