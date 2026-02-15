@@ -6,7 +6,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "start": "node dist/app.js",
-    "build": "tsc",
+    "build": "tsc && copyfiles -u 1 \"src/**/*.html\" dist/",
     "dev": "nodemon --exec ts-node src/app.ts"
   },
   "keywords": [],
@@ -57,6 +57,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/reflect-metadata": "^0.0.5",
     "@types/twilio": "^3.19.2",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.39.2",
     "eslint-plugin-unused-imports": "^4.4.1",
     "globals": "^17.3.0",
