@@ -27,21 +27,22 @@ import { errorMiddleware } from "./presentation/Middlewares/errorMiddleware";
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins =
+  process.env.CLIENT_URL?.split(",").map((url) => url.trim()) || [];
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://serveasy.abhiramtb.online",
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morganMiddleware);
-
-
 
 container.resolve(SocketService).initialize(server);
 
