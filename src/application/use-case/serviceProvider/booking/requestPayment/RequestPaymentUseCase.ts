@@ -16,8 +16,14 @@ export class RequestPaymentUseCase implements IRequestPaymentUseCase {
     private socketService: SocketService,
   ) {}
 
-  async execute(data: RequestPaymentRequestDTO): Promise<IServiceBooking | null> {
-    const payment: IPayment = data.payment;
+  async execute(
+    data: RequestPaymentRequestDTO,
+  ): Promise<IServiceBooking | null> {
+    const payment: IPayment = {
+      ...data.payment,
+      convenienceFee:
+        data.payment.total > 100 ? Math.round(data.payment.total * 0.1) : 0,
+    };
 
     const result = await this.serviceBookingRepository.requestPayment(
       data.bookingId,
