@@ -1,12 +1,8 @@
 import { IServiceBookingHistory } from "../../../../../domain/entities/IServiceBooking";
 
-
-
 export interface GetBookedServiceByIdRequestDTO {
   bookingId: string;
 }
-
-
 
 export interface AddressDTO {
   name: string;
@@ -53,8 +49,6 @@ export interface ReviewDTO {
   comment: string;
 }
 
-
-
 export interface ServiceDTO {
   _id: string;
   serviceName: string;
@@ -68,8 +62,6 @@ export interface ServiceDTO {
   createdAt: string;
   updatedAt: string;
 }
-
-
 
 export interface ServiceProviderDTO {
   _id: string;
@@ -86,7 +78,6 @@ export interface ServiceProviderDTO {
   userId: string;
 }
 
-
 export interface UserDTO {
   _id: string;
   userName: string;
@@ -94,8 +85,6 @@ export interface UserDTO {
   email: string;
   phone?: string;
 }
-
-
 
 export interface BookedServiceDTO {
   _id: string;
@@ -126,15 +115,20 @@ export interface BookedServiceDTO {
   payment?: PaymentDTO;
 
   coupon?: CouponDTO;
+  serviceSlot?: IServiceSlot;
 }
 
-
-export interface BookedServiceForServiceProviderDTO
-  extends Omit<BookedServiceDTO, "bookingHistory" | "coupon"> {
+export interface IServiceSlot {
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+export interface BookedServiceForServiceProviderDTO extends Omit<
+  BookedServiceDTO,
+  "bookingHistory" | "coupon"
+> {
   liveLocation: LiveLocationDTO;
 }
-
-
 
 export interface GetBookedServiceByIdForUserResponseDTO {
   bookedService: BookedServiceDTO;
@@ -142,8 +136,6 @@ export interface GetBookedServiceByIdForUserResponseDTO {
   serviceProvider: ServiceProviderDTO;
   review?: ReviewDTO;
 }
-
-
 
 export interface GetBookedServiceByIdForServiceProviderResponseDTO {
   bookedService: BookedServiceForServiceProviderDTO;

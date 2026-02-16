@@ -8,12 +8,14 @@ import { IUserRepository } from "../../../../../domain/repositories/IuserReposit
 import { REPOSITORY_TOKENS } from "../../../../../constants/tokens";
 import { IGetBookedServiceByIdUseCase } from "./IGetBookedServiceById.usecase";
 
-import { GetBookedServiceByIdForServiceProviderResponseDTO, GetBookedServiceByIdForUserResponseDTO, GetBookedServiceByIdRequestDTO } from "../../../../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
+import {
+  GetBookedServiceByIdForServiceProviderResponseDTO,
+  GetBookedServiceByIdForUserResponseDTO,
+  GetBookedServiceByIdRequestDTO,
+} from "../../../../../application/dtos/common/booking/fetchByid/GetBookedServiceByIdDTO";
 
 @injectable()
-export class GetBookedServiceByIdUseCase
-  implements IGetBookedServiceByIdUseCase
-{
+export class GetBookedServiceByIdUseCase implements IGetBookedServiceByIdUseCase {
   constructor(
     @inject(REPOSITORY_TOKENS.ServiceRepository)
     private serviceRepository: IServiceRepository,
@@ -28,7 +30,7 @@ export class GetBookedServiceByIdUseCase
     private reviewRepository: IReviewRepository,
 
     @inject(REPOSITORY_TOKENS.UserRepository)
-    private userRepository: IUserRepository
+    private userRepository: IUserRepository,
   ) {}
 
   private async getBookedServiceOrThrow(bookingId: string) {
@@ -42,7 +44,9 @@ export class GetBookedServiceByIdUseCase
     return bookedService;
   }
 
-  async getForUser(data: GetBookedServiceByIdRequestDTO): Promise<GetBookedServiceByIdForUserResponseDTO> {
+  async getForUser(
+    data: GetBookedServiceByIdRequestDTO,
+  ): Promise<GetBookedServiceByIdForUserResponseDTO> {
     const { bookingId } = data;
 
     const bookedService = await this.getBookedServiceOrThrow(bookingId);
@@ -74,7 +78,17 @@ export class GetBookedServiceByIdUseCase
         serviceStatus: bookedService.serviceStatus + "",
         paymentStatus: bookedService.paymentStatus + "",
         paymentType: bookedService.paymentType + "",
-
+        serviceSlot:
+          bookedService.serviceSlot &&
+          bookedService.serviceSlot.date &&
+          bookedService.serviceSlot.startTime &&
+          bookedService.serviceSlot.endTime
+            ? {
+                date: bookedService.serviceSlot.date + "",
+                startTime: bookedService.serviceSlot.startTime + "",
+                endTime: bookedService.serviceSlot.endTime + "",
+              }
+            : undefined,
         address: {
           name: bookedService?.address?.name || "",
           houseName: bookedService?.address?.houseName || "",
@@ -168,7 +182,7 @@ export class GetBookedServiceByIdUseCase
   }
 
   async getForServiceProvider(
-    data: GetBookedServiceByIdRequestDTO
+    data: GetBookedServiceByIdRequestDTO,
   ): Promise<GetBookedServiceByIdForServiceProviderResponseDTO> {
     const { bookingId } = data;
 
@@ -206,6 +220,17 @@ export class GetBookedServiceByIdUseCase
         serviceStatus: bookedService.serviceStatus + "",
         paymentStatus: bookedService.paymentStatus + "",
         paymentType: bookedService.paymentType + "",
+        serviceSlot:
+          bookedService.serviceSlot &&
+          bookedService.serviceSlot.date &&
+          bookedService.serviceSlot.startTime &&
+          bookedService.serviceSlot.endTime
+            ? {
+                date: bookedService.serviceSlot.date + "",
+                startTime: bookedService.serviceSlot.startTime + "",
+                endTime: bookedService.serviceSlot.endTime + "",
+              }
+            : undefined,
 
         serviceBills: bookedService.serviceBills || [],
 
