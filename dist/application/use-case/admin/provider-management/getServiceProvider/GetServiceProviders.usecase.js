@@ -1,0 +1,71 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GetServiceProviders = void 0;
+const tsyringe_1 = require("tsyringe");
+const tokens_1 = require("../../../../../constants/tokens");
+let GetServiceProviders = class GetServiceProviders {
+    constructor(serviceProviderRepository) {
+        this.serviceProviderRepository = serviceProviderRepository;
+    }
+    execute(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const providers = yield this.serviceProviderRepository.findServiceProviderSkipLimit(data.skip, data.limit, data.search);
+            const count = yield this.serviceProviderRepository.findServiceProvidersCount();
+            const mappedData = providers.map((sp) => {
+                var _a;
+                return {
+                    _id: (_a = sp._id) === null || _a === void 0 ? void 0 : _a.toString(),
+                    userId: sp.userId.toString(),
+                    serviceProviderName: sp.serviceProviderName,
+                    serviceProviderEmail: sp.serviceProviderEmail,
+                    serviceProviderPhone: sp.serviceProviderPhone,
+                    description: sp.description,
+                    experience: sp.experience,
+                    profileImage: sp.profileImage,
+                    isVerified: sp.isVerified || "pending",
+                    createdAt: sp.createdAt,
+                    location: sp.location || "",
+                    services: sp.services || [],
+                    isBlocked: sp.isBlocked,
+                    document: sp.document,
+                    skills: sp.skills,
+                    bankDetails: sp.bankDetails,
+                    businessType: sp.businessType,
+                    category: sp.category,
+                    subcategory: sp.subcategory,
+                    serviceMode: sp.serviceMode,
+                    socialMedia: sp.socialMedia,
+                    subscriptions: sp.subscription,
+                };
+            });
+            return { data: mappedData, count };
+        });
+    }
+};
+exports.GetServiceProviders = GetServiceProviders;
+exports.GetServiceProviders = GetServiceProviders = __decorate([
+    (0, tsyringe_1.injectable)(),
+    __param(0, (0, tsyringe_1.inject)(tokens_1.REPOSITORY_TOKENS.ServiceProviderRepository)),
+    __metadata("design:paramtypes", [Object])
+], GetServiceProviders);

@@ -1,0 +1,55 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const authMiddleware_1 = require("../Middlewares/authMiddleware");
+const tsyringe_1 = require("tsyringe");
+const AdminController_1 = require("../controllers/AdminController");
+const router = express_1.default.Router();
+const adminController = tsyringe_1.container.resolve(AdminController_1.AdminController);
+router.post("/signin", (req, res) => adminController.signIn(req, res));
+router.get("/profile", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getProfile(req, res));
+router.get("/users", (0, authMiddleware_1.authMiddleware)("Admin"), (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getAllUsers(req, res));
+router.patch("/users/block-unblock", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.blockUnblockUser(req, res));
+router.get("/serviceProvider", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.allServiceProviders(req, res));
+router.patch("/serviceProvider/reject", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.rejectServiceProvider(req, res));
+router.get("/serviceProvider/verification/:id", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getProviderVerificationDetails(req, res));
+router.patch("/service-provider/verify", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.serviceProviderVerify(req, res));
+router.get("/service", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getAllServices(req, res));
+router.patch("/service", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.blockUnblockService(req, res));
+router.patch("/serviceprovider", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.blockUnblockServiceProvider(req, res));
+router.post("/category", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.addCategory(req, res));
+router.get("/category", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getCategory(req, res));
+router.put("/category", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.editCategory(req, res));
+router.patch("/category", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.blockUnblockCategory(req, res));
+router.delete("/category/:id", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.deleteCategory(req, res));
+router.post("/category/service", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.addService(req, res));
+router.patch("/category/service", (req, res) => adminController.blockUnblockService(req, res));
+router.patch("/category/service", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.blockUnblockCategory(req, res));
+router.put("/category/service", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.addService(req, res));
+router.delete("/category/service/:categoryId/:serviceId", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.deleteService(req, res));
+router.get("/logout", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.logoutAdmin(req, res));
+router.get("/dashboard/payment-info", (req, res) => adminController.getPaymentInfoForChart(req, res));
+router.post("/site-settings/add", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.addSiteSettings(req, res));
+router.delete("/site-settings/delete", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.deleteSiteSettings(req, res));
+router.put("/site-settings/activate", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.makeActiveSiteSettings(req, res));
+router.get("/site-settings", (0, authMiddleware_1.authMiddleware)("Admin"), (req, res) => adminController.getSiteSettings(req, res));
+// router.get("/logs", (req, res) => adminController.getCurrentLog(req, res));
+router.post("/coupons", (req, res) => adminController.createCoupon(req, res));
+router.get("/coupons", (req, res) => adminController.getAllCoupon(req, res));
+router.patch("/coupons/:id/deactivate", (req, res) => adminController.activeInActiveCoupons(req, res));
+router.patch("/coupons/:id/banner", (req, res) => adminController.showCouponsInBanner(req, res));
+router.get("/wallets", (req, res) => adminController.getAllWallets(req, res));
+router.get("/wallets/:id", (req, res) => adminController.getWalletById(req, res));
+router.patch("/wallets/:walletId", (req, res) => adminController.withdrawFromWallet(req, res));
+router
+    .route("/subscriptions")
+    .get((req, res) => adminController.getAllSubscriptions(req, res))
+    .post((req, res) => adminController.createSubscription(req, res));
+router.patch("/subscriptions/:id", (req, res) => adminController.updateSubscription(req, res));
+router.get("/ads", (req, res) => adminController.getAds(req, res));
+router.patch("/ads/:adId/", (req, res) => adminController.changeAdStatus(req, res));
+router.get("/bookings", (req, res) => adminController.getAllBookings(req, res));
+exports.default = router;

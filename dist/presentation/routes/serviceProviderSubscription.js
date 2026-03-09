@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tsyringe_1 = require("tsyringe");
+const ServiceProviderSubscriptionController_1 = require("../controllers/ServiceProviderSubscriptionController");
+const serviceProviderMiddleware_1 = require("../Middlewares/serviceProviderMiddleware");
+const authMiddleware_1 = require("../Middlewares/authMiddleware");
+const serviceProviderSubscriptionController = tsyringe_1.container.resolve(ServiceProviderSubscriptionController_1.ServiceProviderSubscriptionController);
+const serviceProviderSubscriptionRouter = (0, express_1.Router)();
+serviceProviderSubscriptionRouter.post("/ai-assistance/chats/", (0, authMiddleware_1.authMiddleware)("User"), serviceProviderMiddleware_1.serviceProviderAuth, (req, res) => serviceProviderSubscriptionController.handleChatRequest(req, res));
+serviceProviderSubscriptionRouter.get("/ai-assistance/chats/:chatId", (req, res) => serviceProviderSubscriptionController.handleGetChatByChatId(req, res));
+serviceProviderSubscriptionRouter.get("/ai-assistance/providers/:providerId/chats", (req, res) => serviceProviderSubscriptionController.getServiceProviderChatsHandler(req, res));
+exports.default = serviceProviderSubscriptionRouter;
