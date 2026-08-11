@@ -3,7 +3,7 @@ name: ServEase CI/CD
 on:
   push:
     branches:
-      - main
+      - production
 
 permissions:
   id-token: write
