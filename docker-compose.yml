@@ -1,27 +1,19 @@
 
-# services:
-#   # MongoDB Database
-#   # database:
-#   #   image: mongo:latest
-#   #   ports:
-#   #     - "27017:27017"
-
-#   # Backend Node.js App
-#   backend:
-#     build: .
-#     ports:
-#       - "5001:5001"
-#     env_file:
-#       - .env
-#     restart: unless-stopped
-
-
-
 services:
+  # MongoDB Database
+  # database:
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+
+  # Backend Node.js App
   backend:
-    image: 760904708020.dkr.ecr.ap-southeast-2.amazonaws.com/serveasy-backend:latest
+    build: .
     ports:
       - "5001:5001"
     env_file:
       - .env
     restart: unless-stopped
+
+
+
