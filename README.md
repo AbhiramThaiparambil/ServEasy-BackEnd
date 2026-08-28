@@ -433,7 +433,10 @@ npm install
 ```
 
 ### 3. Setup environment variables
-Create a `.env` file in the project root by copying the template provided in the [Environment Variables Guide](#-environment-variables-guide).
+Copy the `.env.example` file to create your `.env` file and fill in your credentials:
+```bash
+cp .env.example .env
+```
 
 ### 4. Run the development server
 ```bash
