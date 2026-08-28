@@ -577,3 +577,9 @@ docker run -p 5001:5001 --env-file .env serveasy-backend
 - **Rate-Limiting Protection**: Key endpoints like advertisement clicks and heavy queries use IP-based rate limiting to protect platform metrics and prevent abuse.
 - **Strict Token Lifecycle**: Short-lived 15-minute JWT access tokens paired with 7-day secure HTTP-only refresh tokens and role validation.
 - **Structured Error Handling & Logging**: Morgan request logger streaming to rotating log files combined with centralized Express error middleware for clean API responses.
+
+## 👨‍💻 Author
+
+**Abhiram TB**  
+Full Stack Developer   
+- GitHub: [@AbhiramTB](https://github.com/AbhiramTB)
