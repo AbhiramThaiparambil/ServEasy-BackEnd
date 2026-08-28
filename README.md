@@ -19,12 +19,13 @@ The platform connects customers with verified service professionals for both off
 ## 📑 Table of Contents
 
 - [Architectural Overview](#-architectural-overview)
+- [SOLID Principles in Practice](#-solid-principles-in-practice)
+- [DTO Mapping & Data Sanitization](#-dto-mapping--data-sanitization)
 - [Key Features by Role](#-key-features-by-role)
   - [Customer / User](#1-customer--user)
   - [Service Provider](#2-service-provider)
   - [Administrator](#3-administrator)
 - [Core Technologies & Integrations](#-core-technologies--integrations)
-- [System Architecture & Clean Architecture Flow](#-system-architecture--clean-architecture-flow)
 - [Project Directory Structure](#-project-directory-structure)
 - [Background Jobs & Asynchronous Processing](#-background-jobs--asynchronous-processing)
 - [Real-Time Capabilities](#-real-time-capabilities)
@@ -67,6 +68,100 @@ The backend is built around **Clean Architecture** (Ports & Adapters / Hexagonal
 - **Infrastructure Layer (`src/infrastructure/`)**: Implements repository interfaces using MongoDB/Mongoose, configures Redis, BullMQ queue workers, and cron tasks.
 - **Presentation Layer (`src/presentation/`)**: Express controllers, REST routes, JWT authentication, and role-based access control (RBAC) middleware.
 - **Services Layer (`src/services/`)**: Adapter wrappers for external APIs (Gemini AI, Cloudinary, Razorpay, LocationIQ, Twilio, Nodemailer).
+
+---
+
+## 📐 SOLID Principles in Practice
+
+The codebase is engineered with strict adherence to the **SOLID** software design principles:
+
+### 1. Single Responsibility Principle (SRP)
+Each class and module has one, and only one, reason to change:
+- **Fine-Grained Use Cases**: Rather than bloated service classes, every distinct business operation has its own use case (e.g., `CreateBookingUseCase`, `CancelBookingUseCase`, `VerifyOtpUseCase`, `MakeCouponInactiveUseCase`, `UploadBillsUseCase`).
+- **Dedicated External Adapters**: Specialized service classes (`RazorpayService`, `GoogleGenAIService`, `CloudinaryService`, `LocationService`, `MailService`, `SmsOtpService`) each handle a single third-party integration without leaking vendor logic into core business rules.
+- **Modular Socket Event Handlers**: Real-time event handling is cleanly partitioned into `ChatHandler`, `NotificationHandler`, and `VideoCallHandler`.
+
+### 2. Open/Closed Principle (OCP)
+The system is open for extension but closed for modification:
+- **Interface-Driven Services**: Business use cases depend on abstract contracts (`IEmailService`, `ISmsOtpService`, `ILocationService`, `ITokenService`).
+- If the SMS provider changes from Twilio to another vendor, or the email provider changes from Nodemailer SMTP to AWS SES, a new class implementing the interface can be plugged in via `container.ts` without modifying existing use cases.
+
+### 3. Liskov Substitution Principle (LSP)
+Subtypes and concrete implementations are fully substitutable for their base abstractions:
+- Concrete repository classes (`MongoUserRepository`, `CategoryRepository`, `ServiceBookingRepository`, `SlotRepository`) strictly fulfill domain contracts (`IUserRepository`, `ICategoryRepository`, `IServiceBookingRepository`, `ISlotRepository`).
+- Application use cases interact solely through domain repository interfaces, ensuring any compliant persistence engine can be substituted without altering application behavior.
+
+### 4. Interface Segregation Principle (ISP)
+Clients are not forced to depend on interfaces they do not use:
+- Interfaces are fine-grained and role-tailored (e.g., `ISlotRepository`, `ICouponRepository`, `IProviderWalletRepository`, `IAiAssistanceRepository`).
+- Each use case defines a concise interface (e.g., `ICreateCouponUseCase`, `IGetWalletUseCase`, `IRescheduleOnlineServiceSlotUseCase`) exposing only the necessary `execute()` signature to its controller consumer.
+
+### 5. Dependency Inversion Principle (DIP)
+High-level policy modules do not depend on low-level detail modules; both depend on abstractions:
+- Inversion of Control is managed via **TSyringe** with decoupled token constants (`REPOSITORY_TOKENS`, `SERVICE_TOKENS`, `USE_CASE_TOKENS`):
+```typescript
+@injectable()
+export class CreateCouponUseCase implements ICreateCouponUseCase {
+  constructor(
+    @inject(REPOSITORY_TOKENS.CouponRepository)
+    private readonly couponRepo: ICouponRepository
+  ) {}
+
+  async execute(coupon: CreateCouponDTO): Promise<CouponResponseDTO> {
+    // Business logic decoupled from MongoDB/Mongoose
+    const couponEntity: ICoupon = { ...coupon, usedBy: [], isActive: true };
+    return await this.couponRepo.createCoupon(couponEntity);
+  }
+}
+```
+
+---
+
+## 🔄 DTO Mapping & Data Sanitization
+
+ServEasy implements strict **Data Transfer Object (DTO)** boundaries and data sanitization layers to guarantee type safety, prevent over-posting vulnerabilities, and protect sensitive domain data from being leaked to clients:
+
+```
+┌──────────────────────────┐
+│    HTTP Request Body     │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│       Request DTO        │  (e.g., CreateCouponDTO, AddServiceDTO, RegisterServiceProviderDTO)
+└────────────┬─────────────┘
+             │
+             ▼  [Validation & Business Transformation in Use Case]
+┌──────────────────────────┐
+│      Domain Entity       │  (e.g., ICoupon, IService, IServiceProvider)
+└────────────┬─────────────┘
+             │
+             ▼  [Persistence via Repository Contract]
+┌──────────────────────────┐
+│     Mongoose Schema      │  (MongoDB Document in Infrastructure Layer)
+└────────────┬─────────────┘
+             │
+             ▼  [Data Fetching & Mapping]
+┌──────────────────────────┐
+│      Domain Entity       │  (e.g., IUser, IServiceProvider)
+└────────────┬─────────────┘
+             │
+             ▼  [Sanitizers / DTO Projection]
+┌──────────────────────────┐
+│  Response DTO / SafeView │  (e.g., SafeUser, CouponResponseDTO, ProviderResponseDTO)
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│    HTTP Response JSON    │  (Clean, Safe & Free of Sensitive Fields)
+└──────────────────────────┘
+```
+
+- **Request DTOs (`src/application/dtos/`)**: Define strict typing for incoming payloads, ensuring controllers and use cases only process expected fields (e.g., `CreateBookingDTO`, `AddCategoryDTO`, `SubscriptionPlanDTO`).
+- **Response DTOs**: Structure outbound data shapes, transforming internal timestamps, nested IDs, and related entity structures for optimal client consumption.
+- **Sanitization Helpers (`src/utils/sanitizers/`)**:
+  - `userSanitizer`: Strips sensitive fields like password hashes, verification tokens, and internal security flags, mapping `IUser` into a `SafeUser` representation.
+  - `serviceProviderSanitizer`: Normalizes provider profile fields and associated credentials for secure client-side consumption.
 
 ---
 
@@ -482,3 +577,9 @@ docker run -p 5001:5001 --env-file .env serveasy-backend
 - **Rate-Limiting Protection**: Key endpoints like advertisement clicks and heavy queries use IP-based rate limiting to protect platform metrics and prevent abuse.
 - **Strict Token Lifecycle**: Short-lived 15-minute JWT access tokens paired with 7-day secure HTTP-only refresh tokens and role validation.
 - **Structured Error Handling & Logging**: Morgan request logger streaming to rotating log files combined with centralized Express error middleware for clean API responses.
+
+## 👨‍💻 Author
+
+**Abhiram TB**  
+Full Stack Developer   
+- GitHub: [@AbhiramTB](https://github.com/AbhiramTB)
