@@ -1,5 +1,4 @@
 
-import { Types } from "mongoose";
 import { INotification } from "../../domain/entities/INotification";
 import { INotificationRepository } from "../../domain/repositories/INotificationRepository";
 import NotificationModel from "../models/NotificationModel";
