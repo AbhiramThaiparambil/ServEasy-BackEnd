@@ -1,4 +1,4 @@
-# ServEasy — Backend API 🚀
+# ServEasy — Backend API 
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -507,7 +507,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 
 ---
 
-## 🚀 Getting Started & Local Setup
+##  Getting Started & Local Setup
 
 ### Prerequisites
 Make sure you have the following installed on your local machine:
